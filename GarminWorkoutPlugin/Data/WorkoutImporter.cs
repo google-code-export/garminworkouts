@@ -4,12 +4,13 @@ using System.IO;
 using System.Text;
 using System.Xml;
 using ZoneFiveSoftware.Common.Data.Fitness;
+using GarminWorkoutPlugin.View;
 
 namespace GarminWorkoutPlugin.Data
 {
     class WorkoutImporter
     {
-        public static bool ImportWorkout(Stream importStream, IActivityCategory category)
+        public static bool ImportWorkout(Stream importStream)
         {
             try
             {
@@ -20,6 +21,7 @@ namespace GarminWorkoutPlugin.Data
                 importStream.Read(byteContents, 0, (int)importStream.Length);
                 stringContents = Encoding.UTF8.GetString(byteContents, 0, (int)importStream.Length);
                 stringContents = stringContents.Replace("\r\n", "");
+                stringContents = stringContents.Replace("\n", "");
                 document.LoadXml(stringContents);
 
                 for (int i = 0; i < document.ChildNodes.Count; ++i)
@@ -34,7 +36,7 @@ namespace GarminWorkoutPlugin.Data
 
                             if (workoutsList.Name == "Workouts")
                             {
-                                return LoadWorkouts(workoutsList, category);
+                                return LoadWorkouts(workoutsList);
                             }
                         }
                     }
@@ -48,7 +50,7 @@ namespace GarminWorkoutPlugin.Data
             }
         }
 
-        private static bool LoadWorkouts(XmlNode workoutsList, IActivityCategory category)
+        private static bool LoadWorkouts(XmlNode workoutsList)
         {
             for (int i = 0; i < workoutsList.ChildNodes.Count; ++i)
             {
@@ -60,7 +62,11 @@ namespace GarminWorkoutPlugin.Data
 
                     if (newWorkout != null)
                     {
-                        newWorkout.Category = category;
+                        GarminWorkoutView currentView = (GarminWorkoutView)PluginMain.GetApplication().ActiveView;
+                        SelectCategoryDialog categoryDlg = new SelectCategoryDialog(currentView.UICulture);
+
+                        categoryDlg.ShowDialog();
+                        newWorkout.Category = categoryDlg.SelectedCategory;
                     }
                     else
                     {
