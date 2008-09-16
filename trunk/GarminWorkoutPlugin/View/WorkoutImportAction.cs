@@ -7,6 +7,7 @@ using System.IO;
 using System.Windows.Forms;
 using ZoneFiveSoftware.Common.Visuals;
 using GarminWorkoutPlugin.Data;
+using System.Text;
 
 namespace GarminWorkoutPlugin.View
 {
@@ -81,6 +82,68 @@ namespace GarminWorkoutPlugin.View
 
         public void FromDeviceEventHandler(object sender, EventArgs args)
         {
+            try
+            {
+                GarminDeviceManager deviceManager = new GarminDeviceManager();
+                deviceManager.TaskCompleted += new GarminDeviceManager.TaskCompletedEventHandler(OnDeviceManagerTaskCompleted);
+
+                PluginMain.GetApplication().ActiveView.CreatePageControl().Cursor = Cursors.WaitCursor;
+                deviceManager.ImportWorkouts();
+            }
+            catch (FileNotFoundException)
+            {
+                GarminWorkoutView currentView = (GarminWorkoutView)PluginMain.GetApplication().ActiveView;
+
+                MessageBox.Show(m_ResourceManager.GetString("DeviceCommunicationErrorText", currentView.UICulture),
+                                m_ResourceManager.GetString("ErrorText", currentView.UICulture),
+                                MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        void OnDeviceManagerTaskCompleted(GarminDeviceManager manager, GarminDeviceManager.BasicTask task, bool succeeded)
+        {
+            GarminWorkoutView currentView = (GarminWorkoutView)PluginMain.GetApplication().ActiveView;
+
+            if (!succeeded)
+            {
+                if (task.Type == GarminDeviceManager.BasicTask.TaskTypes.TaskType_Initialize)
+                {
+
+                    manager.CancelAllPendingTasks();
+
+                    MessageBox.Show(m_ResourceManager.GetString("DeviceCommunicationErrorText", currentView.UICulture),
+                                    m_ResourceManager.GetString("ErrorText", currentView.UICulture),
+                                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+            }
+            else
+            {
+                if (task.Type == GarminDeviceManager.BasicTask.TaskTypes.TaskType_ImportWorkouts)
+                {
+                    GarminDeviceManager.ImportWorkoutsTask concreteTask = (GarminDeviceManager.ImportWorkoutsTask)task;
+                    MemoryStream stream = new MemoryStream(Encoding.UTF8.GetBytes(concreteTask.WorkoutsXML));
+
+                    if (!WorkoutImporter.ImportWorkout(stream))
+                    {
+                        MessageBox.Show(m_ResourceManager.GetString("ImportErrorText", currentView.UICulture),
+                                        m_ResourceManager.GetString("ErrorText", currentView.UICulture),
+                                        MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
+                    else
+                    {
+                        Utils.SaveWorkoutsToLogbook();
+                    }
+
+                    PluginMain.GetApplication().ActiveView.ShowPage("");
+                    stream.Close();
+                }
+            }
+
+            if (manager.AreAllTasksFinished)
+            {
+                PluginMain.GetApplication().ActiveView.CreatePageControl().Cursor = Cursors.Default;
+                manager.TaskCompleted -= new GarminDeviceManager.TaskCompletedEventHandler(OnDeviceManagerTaskCompleted);
+            }
         }
 
         public void FromFileEventHandler(object sender, EventArgs args)
@@ -98,12 +161,9 @@ namespace GarminWorkoutPlugin.View
 
             if (result == DialogResult.OK)
             {
-                SelectCategoryDialog categoryDlg = new SelectCategoryDialog(currentView.UICulture);
-
-                categoryDlg.ShowDialog();
                 Stream workoutStream = dlg.OpenFile();
 
-                if (!WorkoutImporter.ImportWorkout(workoutStream, categoryDlg.SelectedCategory))
+                if (!WorkoutImporter.ImportWorkout(workoutStream))
                 {
                     MessageBox.Show(m_ResourceManager.GetString("ImportErrorText", currentView.UICulture),
                                     m_ResourceManager.GetString("ErrorText", currentView.UICulture),

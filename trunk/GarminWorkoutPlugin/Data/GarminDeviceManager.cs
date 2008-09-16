@@ -20,6 +20,7 @@ namespace GarminWorkoutPlugin.Data
             m_Controller.ReadyChanged += new EventHandler(OnControllerReadyChanged);
             m_Controller.FinishFindDevices += new GarminDeviceControl.FinishFindDevicesEventHandler(OnControllerFinishFindDevices);
             m_Controller.FinishWriteToDevice += new GarminDeviceControl.TransferCompleteEventHandler(OnControllerFinishWriteToDevice);
+            m_Controller.FinishReadFromDevice += new GarminDeviceControl.TransferCompleteEventHandler(OnControllerFinishReadFromDevice);
         }
 
         ~GarminDeviceManager()
@@ -27,6 +28,7 @@ namespace GarminWorkoutPlugin.Data
             m_Controller.ReadyChanged -= new EventHandler(OnControllerReadyChanged);
             m_Controller.FinishFindDevices -= new GarminDeviceControl.FinishFindDevicesEventHandler(OnControllerFinishFindDevices);
             m_Controller.FinishWriteToDevice -= new GarminDeviceControl.TransferCompleteEventHandler(OnControllerFinishWriteToDevice);
+            m_Controller.FinishReadFromDevice -= new GarminDeviceControl.TransferCompleteEventHandler(OnControllerFinishReadFromDevice);
         }
 
         public void RefreshDevices()
@@ -43,6 +45,11 @@ namespace GarminWorkoutPlugin.Data
         public void ExportWorkout(Workout workout)
         {
             AddTask(new ExportWorkoutTask(workout));
+        }
+
+        public void ImportWorkouts()
+        {
+            AddTask(new ImportWorkoutsTask());
         }
 
         public void CancelAllPendingTasks()
@@ -83,6 +90,8 @@ namespace GarminWorkoutPlugin.Data
                     }
                 case BasicTask.TaskTypes.TaskType_ExportWorkout:
                     {
+                        ValidateManagerState();
+
                         ExportWorkoutTask task = (ExportWorkoutTask)m_TaskQueue[0];
                         string fileName = task.Workout.Name;
                         MemoryStream textStream = new MemoryStream();
@@ -98,8 +107,11 @@ namespace GarminWorkoutPlugin.Data
 
                         break;
                     }
-                case BasicTask.TaskTypes.TaskType_ImportWorkout:
+                case BasicTask.TaskTypes.TaskType_ImportWorkouts:
                     {
+                        ValidateManagerState();
+
+                        m_Controller.ReadWktWorkouts(m_OperatingDevice);
                         break;
                     }
             }
@@ -185,6 +197,15 @@ namespace GarminWorkoutPlugin.Data
             CompleteCurrentTask(e.Success);
         }
 
+        void OnControllerFinishReadFromDevice(object sender, GarminDeviceControl.TransferCompleteEventArgs e)
+        {
+            Trace.Assert(m_TaskQueue[0].Type == BasicTask.TaskTypes.TaskType_ImportWorkouts);
+            ImportWorkoutsTask task = (ImportWorkoutsTask)m_TaskQueue[0];
+
+            task.WorkoutsXML = e.XmlData;
+            CompleteCurrentTask(e.Success);
+        }
+
         public class BasicTask
         {
             public BasicTask(TaskTypes type)
@@ -198,7 +219,7 @@ namespace GarminWorkoutPlugin.Data
                 TaskType_RefreshDevices,
                 TaskType_SetOperatingDevice,
                 TaskType_ExportWorkout,
-                TaskType_ImportWorkout
+                TaskType_ImportWorkouts
             };
 
             public TaskTypes Type
@@ -209,7 +230,7 @@ namespace GarminWorkoutPlugin.Data
             private TaskTypes m_Type;
         }
 
-        private class ExportWorkoutTask : BasicTask
+        public class ExportWorkoutTask : BasicTask
         {
             public ExportWorkoutTask(Workout workout) :
                 base(TaskTypes.TaskType_ExportWorkout)
@@ -223,6 +244,22 @@ namespace GarminWorkoutPlugin.Data
             }
 
             private Workout m_Workout;
+        }
+
+        public class ImportWorkoutsTask : BasicTask
+        {
+            public ImportWorkoutsTask() :
+                base(TaskTypes.TaskType_ImportWorkouts)
+            {
+            }
+
+            public string WorkoutsXML
+            {
+                get { return m_WorkoutsXML; }
+                set { m_WorkoutsXML = value; }
+            }
+
+            private string m_WorkoutsXML;
         }
 
         public bool AreAllTasksFinished
