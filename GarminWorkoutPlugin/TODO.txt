@@ -1,0 +1,16 @@
+Known bugs :
+
+TODO :
+- Be able to export directly to older non mass-storage device
+- Drag & drop step to move them inside the workout
+- Copy/paste steps of a workout to another workout
+- Allow to select which workouts to export (instead of all)
+- Complete globalization
+- Add last export date
+- Add possiblity to plan a workout
+- Select Garmin workout category (Running, Cycling, Other) for correct GTC import
+
+Nice to have :
+- Add a help web site/file
+- Put important info in steps list in bold
+- Check if the limit of 20 steps can be bypassed
