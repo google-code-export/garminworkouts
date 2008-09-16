@@ -11,7 +11,7 @@ namespace GarminWorkoutPlugin
 
         public static readonly string xmlns = "http://www.w3.org/2000/xmlns/";
         public static readonly string xsins = "http://www.w3.org/2001/XMLSchema-instance";
-
+        
         public static readonly string DeserializeMethodNamePrefix = "Deserialize_V";
 
         public static readonly string[] StepTypeTCXString =
