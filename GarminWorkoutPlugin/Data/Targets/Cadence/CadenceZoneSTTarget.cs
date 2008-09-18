@@ -137,7 +137,7 @@ namespace GarminWorkoutPlugin.Data
             parentNode.AppendChild(childNode);
 
             // High
-            Byte zoneHigh = (Byte)Math.Min(255, Zone.High);
+            Byte zoneHigh = (Byte)Math.Min(254, Zone.High);
             childNode = document.CreateElement("High");
             childNode.AppendChild(document.CreateTextNode(String.Format(culture.NumberFormat, "{0:0.00000}", zoneHigh)));
             parentNode.AppendChild(childNode);

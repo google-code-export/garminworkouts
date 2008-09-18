@@ -63,7 +63,7 @@ namespace GarminWorkoutPlugin.Data
                     if (newWorkout != null)
                     {
                         GarminWorkoutView currentView = (GarminWorkoutView)PluginMain.GetApplication().ActiveView;
-                        SelectCategoryDialog categoryDlg = new SelectCategoryDialog(currentView.UICulture);
+                        SelectCategoryDialog categoryDlg = new SelectCategoryDialog(newWorkout.Name, currentView.UICulture);
 
                         categoryDlg.ShowDialog();
                         newWorkout.Category = categoryDlg.SelectedCategory;

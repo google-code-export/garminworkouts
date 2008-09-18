@@ -115,6 +115,11 @@ namespace GarminWorkoutPlugin.Data
 
         public void Serialize(XmlNode parentNode, XmlDocument document)
         {
+            Serialize(parentNode, document, false);
+        }
+
+        public void Serialize(XmlNode parentNode, XmlDocument document, bool skipExtensions)
+        {
             XmlNode childNode;
             XmlAttribute attribute;
 
@@ -146,50 +151,53 @@ namespace GarminWorkoutPlugin.Data
             }
 
             // Extensions
-            childNode = document.CreateElement("Extensions");
-            // Steps extensions
-            if (m_StepsExtensions.Count > 0)
+            if (!skipExtensions)
             {
-                XmlNode extensionsNode = document.CreateElement("Steps");
-                attribute = document.CreateAttribute("xmlns");
-                attribute.Value = "http://www.garmin.com/xmlschemas/WorkoutExtension/v1";
-                extensionsNode.Attributes.Append(attribute);
-
-                for (int i = 0; i < m_StepsExtensions.Count; ++i)
+                childNode = document.CreateElement("Extensions");
+                // Steps extensions
+                if (m_StepsExtensions.Count > 0)
                 {
-                    XmlNode currentExtension = m_StepsExtensions[i];
+                    XmlNode extensionsNode = document.CreateElement("Steps");
+                    attribute = document.CreateAttribute("xmlns");
+                    attribute.Value = "http://www.garmin.com/xmlschemas/WorkoutExtension/v1";
+                    extensionsNode.Attributes.Append(attribute);
 
-                    extensionsNode.AppendChild(currentExtension);
+                    for (int i = 0; i < m_StepsExtensions.Count; ++i)
+                    {
+                        XmlNode currentExtension = m_StepsExtensions[i];
+
+                        extensionsNode.AppendChild(currentExtension);
+                    }
+                    childNode.AppendChild(extensionsNode);
+
+                    m_StepsExtensions.Clear();
                 }
-                childNode.AppendChild(extensionsNode);
 
-                m_StepsExtensions.Clear();
-            }
-
-            // ST extension
-            if (m_STExtensions.Count > 0)
-            {
-                XmlNode extensionsNode = document.CreateElement("SportTracksExtensions");
-                attribute = document.CreateAttribute("xmlns");
-                attribute.Value = "http://www.zonefivesoftware.com/SportTracks/Plugins/plugin_detail.php?id=97";
-                extensionsNode.Attributes.Append(attribute);
-
-                // Category
-                XmlNode categoryNode = document.CreateElement("SportTracksCategory");
-                categoryNode.AppendChild(document.CreateTextNode(Category.ReferenceId));
-                extensionsNode.AppendChild(categoryNode);
-
-                for (int i = 0; i < m_STExtensions.Count; ++i)
+                // ST extension
+                if (m_STExtensions.Count > 0)
                 {
-                    XmlNode currentExtension = m_STExtensions[i];
+                    XmlNode extensionsNode = document.CreateElement("SportTracksExtensions");
+                    attribute = document.CreateAttribute("xmlns");
+                    attribute.Value = "http://www.zonefivesoftware.com/SportTracks/Plugins/plugin_detail.php?id=97";
+                    extensionsNode.Attributes.Append(attribute);
 
-                    extensionsNode.AppendChild(currentExtension);
+                    // Category
+                    XmlNode categoryNode = document.CreateElement("SportTracksCategory");
+                    categoryNode.AppendChild(document.CreateTextNode(Category.ReferenceId));
+                    extensionsNode.AppendChild(categoryNode);
+
+                    for (int i = 0; i < m_STExtensions.Count; ++i)
+                    {
+                        XmlNode currentExtension = m_STExtensions[i];
+
+                        extensionsNode.AppendChild(currentExtension);
+                    }
+                    childNode.AppendChild(extensionsNode);
+
+                    m_STExtensions.Clear();
                 }
-                childNode.AppendChild(extensionsNode);
-
-                m_STExtensions.Clear();
+                parentNode.AppendChild(childNode);
             }
-            parentNode.AppendChild(childNode);
         }
 
         public bool Deserialize(XmlNode parentNode)

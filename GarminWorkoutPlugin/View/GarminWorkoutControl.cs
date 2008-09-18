@@ -550,8 +550,8 @@ namespace GarminWorkoutPlugin.View
                         CadenceRangeTarget concreteTarget = (CadenceRangeTarget)baseTarget.ConcreteTarget;
 
                         oldValue = concreteTarget.MinCadence.ToString();
-                        intMin = 1;
-                        intMax = 255;
+                        intMin = 0;
+                        intMax = 254;
                         inputType = RangeValidationInputType.Integer;
 
                         break;
@@ -831,8 +831,8 @@ namespace GarminWorkoutPlugin.View
                         CadenceRangeTarget concreteTarget = (CadenceRangeTarget)baseTarget.ConcreteTarget;
 
                         oldValue = concreteTarget.MaxCadence.ToString();
-                        intMin = 1;
-                        intMax = 255;
+                        intMin = 0;
+                        intMax = 254;
                         inputType = RangeValidationInputType.Integer;
 
                         break;

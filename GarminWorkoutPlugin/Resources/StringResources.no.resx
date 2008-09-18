@@ -183,6 +183,9 @@
   <data name="DeviceCommunicationErrorText" xml:space="preserve">
     <value>Unable to load the Garmin Cummunicator Plugin.  Please make sure you have SportTracks version 2.0.3170 or later and Garmin Cummunicator Plugin installed and activated.</value>
   </data>
+  <data name="DeviceText" xml:space="preserve">
+    <value>device</value>
+  </data>
   <data name="DistanceDurationComboBoxText" xml:space="preserve">
     <value>After I go a certain distance</value>
   </data>
@@ -202,7 +205,7 @@
     <value>There was an error while exporting workouts</value>
   </data>
   <data name="ExportSuccessText" xml:space="preserve">
-    <value>Workouts have been successfully exported to directory {0}</value>
+    <value>Workouts have been successfully exported to {0}</value>
   </data>
   <data name="ExportText" xml:space="preserve">
     <value>Export</value>
@@ -346,7 +349,7 @@
     <value>rpm</value>
   </data>
   <data name="SelectCategoryDialogText" xml:space="preserve">
-    <value>Select Category</value>
+    <value>Select category for workout </value>
   </data>
   <data name="SettingsPageNameText" xml:space="preserve">
     <value>Garmin Workouts Settings</value>

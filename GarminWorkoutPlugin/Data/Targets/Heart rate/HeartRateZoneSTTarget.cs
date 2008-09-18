@@ -137,24 +137,42 @@ namespace GarminWorkoutPlugin.Data
             parentNode.Attributes.Append(attribute);
 
             // Low
-            Byte lowPercent = (Byte)Math.Round(Zone.Low * baseMultiplier, 0, MidpointRounding.AwayFromZero);
+            Byte lowValue;
             childNode = document.CreateElement("Low");
             attribute = document.CreateAttribute("xsi", "type", Constants.xsins);
-            attribute.Value = Constants.HeartRateReferenceTCXString[1];
+            if (!baseMultiplier.Equals(float.NaN))
+            {
+                lowValue = (Byte)Math.Round(Zone.Low * baseMultiplier, 0, MidpointRounding.AwayFromZero);
+                attribute.Value = Constants.HeartRateReferenceTCXString[1];
+            }
+            else
+            {
+                lowValue = (Byte)Math.Min(240, Math.Max(30, Zone.Low));
+                attribute.Value = Constants.HeartRateReferenceTCXString[0];
+            }
             childNode.Attributes.Append(attribute);
             valueNode = document.CreateElement("Value");
-            valueNode.AppendChild(document.CreateTextNode(lowPercent.ToString()));
+            valueNode.AppendChild(document.CreateTextNode(lowValue.ToString()));
             childNode.AppendChild(valueNode);
             parentNode.AppendChild(childNode);
 
             // High
-            Byte highPercent = (Byte)Math.Min(100, Math.Round(Zone.High * baseMultiplier, 0, MidpointRounding.AwayFromZero));
+            Byte highValue;
             childNode = document.CreateElement("High");
             attribute = document.CreateAttribute("xsi", "type", Constants.xsins);
-            attribute.Value = Constants.HeartRateReferenceTCXString[1];
+            if (!baseMultiplier.Equals(float.NaN))
+            {
+                highValue = (Byte)Math.Min(100, Math.Round(Zone.High * baseMultiplier, 0, MidpointRounding.AwayFromZero));
+                attribute.Value = Constants.HeartRateReferenceTCXString[1];
+            }
+            else
+            {
+                highValue = (Byte)Math.Min(240, Math.Max(30, Zone.High));
+                attribute.Value = Constants.HeartRateReferenceTCXString[0];
+            }
             childNode.Attributes.Append(attribute);
             valueNode = document.CreateElement("Value");
-            valueNode.AppendChild(document.CreateTextNode(highPercent.ToString()));
+            valueNode.AppendChild(document.CreateTextNode(highValue.ToString()));
             childNode.AppendChild(valueNode);
             parentNode.AppendChild(childNode);
 

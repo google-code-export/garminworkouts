@@ -87,7 +87,7 @@ namespace GarminWorkoutPlugin.View
                 GarminDeviceManager deviceManager = new GarminDeviceManager();
                 deviceManager.TaskCompleted += new GarminDeviceManager.TaskCompletedEventHandler(OnDeviceManagerTaskCompleted);
 
-                PluginMain.GetApplication().ActiveView.CreatePageControl().Cursor = Cursors.WaitCursor;
+                PluginMain.GetApplication().ActiveView.CreatePageControl().Parent.Cursor = Cursors.WaitCursor;
                 deviceManager.ImportWorkouts();
             }
             catch (FileNotFoundException)
@@ -97,6 +97,39 @@ namespace GarminWorkoutPlugin.View
                 MessageBox.Show(m_ResourceManager.GetString("DeviceCommunicationErrorText", currentView.UICulture),
                                 m_ResourceManager.GetString("ErrorText", currentView.UICulture),
                                 MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        public void FromFileEventHandler(object sender, EventArgs args)
+        {
+            // Ask for file to import
+            GarminWorkoutView currentView = (GarminWorkoutView)PluginMain.GetApplication().ActiveView;
+            OpenFileDialog dlg = new OpenFileDialog();
+            DialogResult result;
+
+            dlg.Title = m_ResourceManager.GetString("OpenFileText", currentView.UICulture);
+            dlg.Filter = m_ResourceManager.GetString("FileDescriptionText", currentView.UICulture) + " (*.tcx)|*.tcx";
+            dlg.DefaultExt = "tcx";
+            dlg.CheckFileExists = true;
+            result = dlg.ShowDialog();
+
+            if (result == DialogResult.OK)
+            {
+                Stream workoutStream = dlg.OpenFile();
+
+                if (!WorkoutImporter.ImportWorkout(workoutStream))
+                {
+                    MessageBox.Show(m_ResourceManager.GetString("ImportErrorText", currentView.UICulture),
+                                    m_ResourceManager.GetString("ErrorText", currentView.UICulture),
+                                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+                else
+                {
+                    Utils.SaveWorkoutsToLogbook();
+                }
+
+                PluginMain.GetApplication().ActiveView.ShowPage("");
+                workoutStream.Close();
             }
         }
 
@@ -141,41 +174,8 @@ namespace GarminWorkoutPlugin.View
 
             if (manager.AreAllTasksFinished)
             {
-                PluginMain.GetApplication().ActiveView.CreatePageControl().Cursor = Cursors.Default;
+                PluginMain.GetApplication().ActiveView.CreatePageControl().Parent.Cursor = Cursors.Default;
                 manager.TaskCompleted -= new GarminDeviceManager.TaskCompletedEventHandler(OnDeviceManagerTaskCompleted);
-            }
-        }
-
-        public void FromFileEventHandler(object sender, EventArgs args)
-        {
-            // Ask for file to import
-            GarminWorkoutView currentView = (GarminWorkoutView)PluginMain.GetApplication().ActiveView;
-            OpenFileDialog dlg = new OpenFileDialog();
-            DialogResult result;
-
-            dlg.Title = m_ResourceManager.GetString("OpenFileText", currentView.UICulture);
-            dlg.Filter = m_ResourceManager.GetString("FileDescriptionText", currentView.UICulture) + " (*.tcx)|*.tcx";
-            dlg.DefaultExt = "tcx";
-            dlg.CheckFileExists = true;
-            result = dlg.ShowDialog();
-
-            if (result == DialogResult.OK)
-            {
-                Stream workoutStream = dlg.OpenFile();
-
-                if (!WorkoutImporter.ImportWorkout(workoutStream))
-                {
-                    MessageBox.Show(m_ResourceManager.GetString("ImportErrorText", currentView.UICulture),
-                                    m_ResourceManager.GetString("ErrorText", currentView.UICulture),
-                                    MessageBoxButtons.OK, MessageBoxIcon.Error);
-                }
-                else
-                {
-                    Utils.SaveWorkoutsToLogbook();
-                }
-
-                PluginMain.GetApplication().ActiveView.ShowPage("");
-                workoutStream.Close();
             }
         }
 

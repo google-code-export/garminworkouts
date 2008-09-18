@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
 using System.Resources;
@@ -81,12 +82,14 @@ namespace GarminWorkoutPlugin.View
 
         public void ToDeviceEventHandler(object sender, EventArgs args)
         {
+            GarminWorkoutView currentView = (GarminWorkoutView)PluginMain.GetApplication().ActiveView;
+
             try
             {
                 GarminDeviceManager deviceManager = new GarminDeviceManager();
                 deviceManager.TaskCompleted += new GarminDeviceManager.TaskCompletedEventHandler(OnDeviceManagerTaskCompleted);
 
-                PluginMain.GetApplication().ActiveView.CreatePageControl().Cursor = Cursors.WaitCursor;
+                PluginMain.GetApplication().ActiveView.CreatePageControl().Parent.Cursor = Cursors.WaitCursor;
                 for (int i = 0; i < WorkoutManager.Instance.Workouts.Count; ++i)
                 {
                     deviceManager.ExportWorkout(WorkoutManager.Instance.Workouts[i]);
@@ -94,11 +97,16 @@ namespace GarminWorkoutPlugin.View
             }
             catch (FileNotFoundException)
             {
-                GarminWorkoutView currentView = (GarminWorkoutView)PluginMain.GetApplication().ActiveView;
-
                 MessageBox.Show(m_ResourceManager.GetString("DeviceCommunicationErrorText", currentView.UICulture),
                                 m_ResourceManager.GetString("ErrorText", currentView.UICulture),
                                 MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show(m_ResourceManager.GetString("ExportFailedText", currentView.UICulture), m_ResourceManager.GetString("ErrorText", currentView.UICulture),
+                                MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+                throw e;
             }
         }
 
@@ -153,29 +161,58 @@ namespace GarminWorkoutPlugin.View
 
         void OnDeviceManagerTaskCompleted(GarminDeviceManager manager, GarminDeviceManager.BasicTask task, bool succeeded)
         {
+            GarminWorkoutView currentView = (GarminWorkoutView)PluginMain.GetApplication().ActiveView;
+            bool exportCancelled = false;
+
             if (!succeeded)
             {
                 if (task.Type == GarminDeviceManager.BasicTask.TaskTypes.TaskType_Initialize)
                 {
-                    GarminWorkoutView currentView = (GarminWorkoutView)PluginMain.GetApplication().ActiveView;
-
                     manager.CancelAllPendingTasks();
 
                     MessageBox.Show(m_ResourceManager.GetString("DeviceCommunicationErrorText", currentView.UICulture),
                                     m_ResourceManager.GetString("ErrorText", currentView.UICulture),
                                     MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
+                else if (task.Type == GarminDeviceManager.BasicTask.TaskTypes.TaskType_SetOperatingDevice)
+                {
+                    exportCancelled = true;
+                }
+                else if (task.Type == GarminDeviceManager.BasicTask.TaskTypes.TaskType_ExportWorkout)
+                {
+                    GarminDeviceManager.ExportWorkoutTask concreteTask = (GarminDeviceManager.ExportWorkoutTask)task;
+
+                    m_FailedExportList.Add(concreteTask.Workout);
+                }
             }
-            
+
             if (manager.AreAllTasksFinished)
             {
-                PluginMain.GetApplication().ActiveView.CreatePageControl().Cursor = Cursors.Default;
-                manager.TaskCompleted -= new GarminDeviceManager.TaskCompletedEventHandler(OnDeviceManagerTaskCompleted);
+                PluginMain.GetApplication().ActiveView.CreatePageControl().Parent.Cursor = Cursors.Default;
+
+                if (!exportCancelled)
+                {
+                    if (m_FailedExportList.Count == 0)
+                    {
+                        manager.TaskCompleted -= new GarminDeviceManager.TaskCompletedEventHandler(OnDeviceManagerTaskCompleted);
+
+                        MessageBox.Show(String.Format(m_ResourceManager.GetString("ExportSuccessText", currentView.UICulture), m_ResourceManager.GetString("DeviceText", currentView.UICulture)),
+                                        m_ResourceManager.GetString("SuccessText", currentView.UICulture), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    }
+                    else
+                    {
+                        m_FailedExportList.Clear();
+
+                        MessageBox.Show(m_ResourceManager.GetString("ExportFailedText", currentView.UICulture), m_ResourceManager.GetString("ErrorText", currentView.UICulture),
+                                        MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    }
+                }
             }
         }
 
         public event System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
         private ResourceManager m_ResourceManager = new ResourceManager("GarminWorkoutPlugin.Resources.StringResources",
                                                                         Assembly.GetExecutingAssembly());
+        private List<Workout> m_FailedExportList = new List<Workout>();
     }
 }
