@@ -1,4 +1,6 @@
 #summary Welcome to the Garmin Workouts Plugin Wiki!
 
 = Introduction =
-This wiki is used as a help file to guide you through the different features that can be found in the SportTracks Garmin Workouts plugin.  This page is currently under construction, please come back later for an updated version.
+This wiki is used as a help file to guide you through the different features that can be found in the SportTracks Garmin Workouts plugin.
+
+*** This page is currently under construction, please come back later for an updated version.
