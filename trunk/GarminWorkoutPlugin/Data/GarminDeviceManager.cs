@@ -16,6 +16,9 @@ namespace GarminWorkoutPlugin.Data
             AddTask(new BasicTask(BasicTask.TaskTypes.TaskType_Initialize));
             SetOperatingDevice();
 
+            m_TimeoutTimer.Tick += new EventHandler(OnTimeoutTimerTick);
+            m_TimeoutTimer.Interval = 30000;
+
             m_Controller = new GarminDeviceControl();
             m_Controller.ReadyChanged += new EventHandler(OnControllerReadyChanged);
             m_Controller.FinishFindDevices += new GarminDeviceControl.FinishFindDevicesEventHandler(OnControllerFinishFindDevices);
@@ -44,6 +47,7 @@ namespace GarminWorkoutPlugin.Data
 
         public void ExportWorkout(Workout workout)
         {
+            AddTask(new ExportWorkoutTask(null));
             AddTask(new ExportWorkoutTask(workout));
         }
 
@@ -54,7 +58,7 @@ namespace GarminWorkoutPlugin.Data
 
         public void CancelAllPendingTasks()
         {
-            m_TaskQueue.Clear();
+            m_TaskQueue.RemoveRange(1, m_TaskQueue.Count - 1);
         }
 
         private void AddTask(BasicTask task)
@@ -93,6 +97,7 @@ namespace GarminWorkoutPlugin.Data
                         ValidateManagerState();
 
                         ExportWorkoutTask task = (ExportWorkoutTask)m_TaskQueue[0];
+
                         string fileName = task.Workout.Name;
                         MemoryStream textStream = new MemoryStream();
 
@@ -101,10 +106,11 @@ namespace GarminWorkoutPlugin.Data
                         fileName += ".tcx";
 
                         WorkoutExporter.ExportWorkout(task.Workout, textStream);
+                        string xmlCode = Encoding.UTF8.GetString(textStream.GetBuffer());
                         m_Controller.WriteWorkouts(m_OperatingDevice,
-                                                   Encoding.UTF8.GetString(textStream.GetBuffer()),
+                                                   xmlCode,
                                                    fileName);
-
+ 
                         break;
                     }
                 case BasicTask.TaskTypes.TaskType_ImportWorkouts:
@@ -115,12 +121,15 @@ namespace GarminWorkoutPlugin.Data
                         break;
                     }
             }
+
+            m_TimeoutTimer.Start();
         }
 
         private void CompleteCurrentTask(bool success)
         {
             BasicTask task = m_TaskQueue[0];
 
+            m_TimeoutTimer.Stop();
             m_TaskQueue.RemoveAt(0);
 
             if (TaskCompleted != null)
@@ -128,7 +137,7 @@ namespace GarminWorkoutPlugin.Data
                 TaskCompleted(this, task, success);
             }
 
-            if (m_TaskQueue.Count > 0)
+            if (m_TaskQueue.Count > 0 && task.Type != BasicTask.TaskTypes.TaskType_RefreshDevices)
             {
                 StartNextTask();
             }
@@ -206,6 +215,20 @@ namespace GarminWorkoutPlugin.Data
             CompleteCurrentTask(e.Success);
         }
 
+        void OnTimeoutTimerTick(object sender, EventArgs e)
+        {
+            m_TimeoutTimer.Stop();
+
+            if (m_TaskQueue[0].Type == BasicTask.TaskTypes.TaskType_ExportWorkout)
+            {
+                m_Controller.FireFinishWriteToDevice(false, "");
+            }
+            else if (m_TaskQueue[0].Type == BasicTask.TaskTypes.TaskType_ImportWorkouts)
+            {
+                m_Controller.FireFinishReadFromDevice(false, "");
+            }
+        }
+
         public class BasicTask
         {
             public BasicTask(TaskTypes type)
@@ -279,5 +302,6 @@ namespace GarminWorkoutPlugin.Data
         private List<BasicTask> m_TaskQueue = new List<BasicTask>();
         private List<Device> m_Devices = new List<Device>();
         private Device m_OperatingDevice = null;
+        private Timer m_TimeoutTimer = new Timer();
     }
 }

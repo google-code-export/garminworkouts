@@ -29,8 +29,9 @@ namespace GarminWorkoutPlugin.View
         private void InitializeComponent()
         {
             this.splitContainer = new System.Windows.Forms.SplitContainer();
-            this.OkButton = new System.Windows.Forms.Button();
+            this.SelectCategoryLabel = new System.Windows.Forms.Label();
             this.ActivityCategoryList = new GarminWorkoutPlugin.View.AutoExpandTreeList();
+            this.OkButton = new System.Windows.Forms.Button();
             this.splitContainer.Panel1.SuspendLayout();
             this.splitContainer.Panel2.SuspendLayout();
             this.splitContainer.SuspendLayout();
@@ -46,6 +47,7 @@ namespace GarminWorkoutPlugin.View
             // 
             // splitContainer.Panel1
             // 
+            this.splitContainer.Panel1.Controls.Add(this.SelectCategoryLabel);
             this.splitContainer.Panel1.Controls.Add(this.ActivityCategoryList);
             // 
             // splitContainer.Panel2
@@ -55,15 +57,14 @@ namespace GarminWorkoutPlugin.View
             this.splitContainer.SplitterDistance = 401;
             this.splitContainer.TabIndex = 1;
             // 
-            // OkButton
+            // SelectCategoryLabel
             // 
-            this.OkButton.Location = new System.Drawing.Point(219, 2);
-            this.OkButton.Name = "OkButton";
-            this.OkButton.Size = new System.Drawing.Size(75, 23);
-            this.OkButton.TabIndex = 0;
-            this.OkButton.Text = "OK";
-            this.OkButton.UseVisualStyleBackColor = true;
-            this.OkButton.Click += new System.EventHandler(this.OkButton_Click);
+            this.SelectCategoryLabel.AutoSize = true;
+            this.SelectCategoryLabel.Location = new System.Drawing.Point(3, 9);
+            this.SelectCategoryLabel.Name = "SelectCategoryLabel";
+            this.SelectCategoryLabel.Size = new System.Drawing.Size(140, 13);
+            this.SelectCategoryLabel.TabIndex = 1;
+            this.SelectCategoryLabel.Text = "Select category for workout ";
             // 
             // ActivityCategoryList
             // 
@@ -72,9 +73,9 @@ namespace GarminWorkoutPlugin.View
             this.ActivityCategoryList.CheckBoxes = false;
             this.ActivityCategoryList.DefaultIndent = 15;
             this.ActivityCategoryList.DefaultRowHeight = -1;
-            this.ActivityCategoryList.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.ActivityCategoryList.Dock = System.Windows.Forms.DockStyle.Bottom;
             this.ActivityCategoryList.HeaderRowHeight = 21;
-            this.ActivityCategoryList.Location = new System.Drawing.Point(0, 0);
+            this.ActivityCategoryList.Location = new System.Drawing.Point(0, 25);
             this.ActivityCategoryList.MultiSelect = false;
             this.ActivityCategoryList.Name = "ActivityCategoryList";
             this.ActivityCategoryList.NumHeaderRows = ZoneFiveSoftware.Common.Visuals.TreeList.HeaderRows.Auto;
@@ -88,8 +89,19 @@ namespace GarminWorkoutPlugin.View
             this.ActivityCategoryList.RowSeparatorLines = true;
             this.ActivityCategoryList.ShowLines = false;
             this.ActivityCategoryList.ShowPlusMinus = false;
-            this.ActivityCategoryList.Size = new System.Drawing.Size(294, 401);
+            this.ActivityCategoryList.Size = new System.Drawing.Size(294, 376);
             this.ActivityCategoryList.TabIndex = 0;
+            this.ActivityCategoryList.DoubleClick += new System.EventHandler(this.ActivityCategoryList_DoubleClick);
+            // 
+            // OkButton
+            // 
+            this.OkButton.Location = new System.Drawing.Point(219, 2);
+            this.OkButton.Name = "OkButton";
+            this.OkButton.Size = new System.Drawing.Size(75, 23);
+            this.OkButton.TabIndex = 0;
+            this.OkButton.Text = "OK";
+            this.OkButton.UseVisualStyleBackColor = true;
+            this.OkButton.Click += new System.EventHandler(this.OkButton_Click);
             // 
             // SelectCategoryDialog
             // 
@@ -107,6 +119,7 @@ namespace GarminWorkoutPlugin.View
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Select Category";
             this.splitContainer.Panel1.ResumeLayout(false);
+            this.splitContainer.Panel1.PerformLayout();
             this.splitContainer.Panel2.ResumeLayout(false);
             this.splitContainer.ResumeLayout(false);
             this.ResumeLayout(false);
@@ -118,5 +131,6 @@ namespace GarminWorkoutPlugin.View
         private GarminWorkoutPlugin.View.AutoExpandTreeList ActivityCategoryList;
         private System.Windows.Forms.Button OkButton;
         private System.Windows.Forms.SplitContainer splitContainer;
+        private System.Windows.Forms.Label SelectCategoryLabel;
     }
 }

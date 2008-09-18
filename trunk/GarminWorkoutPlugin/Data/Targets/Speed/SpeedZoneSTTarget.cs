@@ -142,13 +142,13 @@ namespace GarminWorkoutPlugin.Data
             parentNode.AppendChild(valueNode);
 
             // Low
-            double lowInMetersPerSecond = Zone.Low;
+            double lowInMetersPerSecond = Math.Max(0.44722, Math.Min(26.8222, Zone.Low));
             valueNode = document.CreateElement("LowInMetersPerSecond");
             valueNode.AppendChild(document.CreateTextNode(String.Format(culture.NumberFormat, "{0:0.00000}", lowInMetersPerSecond)));
             parentNode.AppendChild(valueNode);
 
             // High
-            double highInMetersPerSecond = Zone.High;
+            double highInMetersPerSecond = Math.Max(0.44722, Math.Min(26.8222, Zone.High));
             valueNode = document.CreateElement("HighInMetersPerSecond");
             valueNode.AppendChild(document.CreateTextNode(String.Format(culture.NumberFormat, "{0:0.00000}", highInMetersPerSecond)));
             parentNode.AppendChild(valueNode);

@@ -198,8 +198,8 @@ namespace GarminWorkoutPlugin.Data
         {
             if (isPercentageMaxHeartRate)
             {
-                Trace.Assert(minHeartRate >= 1 && minHeartRate <= 100);
-                Trace.Assert(maxHeartRate >= 1 && maxHeartRate <= 100);
+                Trace.Assert(minHeartRate >= 0 && minHeartRate <= 100);
+                Trace.Assert(maxHeartRate >= 0 && maxHeartRate <= 100);
             }
             else
             {

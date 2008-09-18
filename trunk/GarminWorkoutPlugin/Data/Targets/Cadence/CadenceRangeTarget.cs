@@ -91,7 +91,7 @@ namespace GarminWorkoutPlugin.Data
                     }
                 }
 
-                if (minCadence > 0 && minCadence <= 255 && maxCadence > 0 && maxCadence <= 255)
+                if (minCadence > 0 && minCadence <= 254 && maxCadence > 0 && maxCadence <= 254)
                 {
                     Byte min = (Byte)minCadence;
                     Byte max = (Byte)maxCadence;
@@ -122,6 +122,7 @@ namespace GarminWorkoutPlugin.Data
         public void ValidateValues(Byte min, Byte max)
         {
             Trace.Assert(min <= max);
+            Trace.Assert(max <= 254);
         }
 
         public void SetValues(Byte min, Byte max)

@@ -136,7 +136,7 @@ namespace GarminWorkoutPlugin.Data
             parentNode.Attributes.Append(attribute);
 
             // Low
-            UInt16 zoneLow = (UInt16)Math.Max(Zone.Low, 20);
+            UInt16 zoneLow = (UInt16)Math.Min(999, Math.Max(20, Zone.Low));
             childNode = document.CreateElement("Low");
             attribute = document.CreateAttribute("xsi", "type", Constants.xsins);
             attribute.Value = "PowerInWatts_t";
@@ -147,7 +147,7 @@ namespace GarminWorkoutPlugin.Data
             parentNode.AppendChild(childNode);
 
             // High
-            UInt16 zoneHigh = (UInt16)Math.Min(Zone.High, 999);
+            UInt16 zoneHigh = (UInt16)Math.Min(999, Math.Max(20, Zone.High));
             childNode = document.CreateElement("High");
             attribute = document.CreateAttribute("xsi", "type", Constants.xsins);
             attribute.Value = "PowerInWatts_t";

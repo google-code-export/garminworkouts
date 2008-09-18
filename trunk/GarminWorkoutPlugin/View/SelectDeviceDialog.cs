@@ -15,8 +15,6 @@ namespace GarminWorkoutPlugin.View
             m_Manager.TaskCompleted += new GarminDeviceManager.TaskCompletedEventHandler(OnManagerTaskCompleted);
 
             RefreshDeviceComboBox();
-
-            OKButton.Enabled = (m_SelectedDevice != null);
         }
 
         private void RefreshButton_Click(object sender, System.EventArgs e)
@@ -25,7 +23,7 @@ namespace GarminWorkoutPlugin.View
             Cancel_Button.Enabled = false;
             RefreshButton.Enabled = false;
             DevicesComboBox.Enabled = false;
-            Cursor.Current = Cursors.WaitCursor;
+            Cursor = Cursors.WaitCursor;
 
             m_Manager.RefreshDevices();
         }
@@ -49,17 +47,19 @@ namespace GarminWorkoutPlugin.View
 
         private void RefreshDeviceComboBox()
         {
-            if (m_Manager.Devices.Count > 0)
-            {
-                m_SelectedDevice = m_Manager.Devices[0];
-            }
-
             DevicesComboBox.Items.Clear();
             for (int i = 0; i < m_Manager.Devices.Count; ++i)
             {
                 DevicesComboBox.Items.Add(m_Manager.Devices[i].DisplayName);
             }
-            DevicesComboBox.SelectedIndex = 0;
+
+            if (m_Manager.Devices.Count > 0)
+            {
+                m_SelectedDevice = m_Manager.Devices[0];
+                DevicesComboBox.SelectedIndex = 0;
+            }
+
+            OKButton.Enabled = (m_SelectedDevice != null);
         }
 
         private void OnManagerTaskCompleted(GarminDeviceManager manager, GarminDeviceManager.BasicTask task, bool succeeded)
@@ -70,7 +70,7 @@ namespace GarminWorkoutPlugin.View
                 Cancel_Button.Enabled = true;
                 RefreshButton.Enabled = true;
                 DevicesComboBox.Enabled = true;
-                Cursor.Current = Cursors.Default;
+                Cursor = Cursors.Default;
 
                 RefreshDeviceComboBox();
             }
