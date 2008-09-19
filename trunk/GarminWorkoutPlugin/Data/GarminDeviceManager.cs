@@ -47,7 +47,6 @@ namespace GarminWorkoutPlugin.Data
 
         public void ExportWorkout(Workout workout)
         {
-            AddTask(new ExportWorkoutTask(null));
             AddTask(new ExportWorkoutTask(workout));
         }
 
