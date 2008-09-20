@@ -21,8 +21,13 @@ namespace GarminWorkoutPlugin.Controller
 
                 importStream.Read(byteContents, 0, (int)importStream.Length);
                 stringContents = Encoding.UTF8.GetString(byteContents, 0, (int)importStream.Length);
-                stringContents = stringContents.Replace("\r", "");
-                stringContents = stringContents.Replace("\n", "");
+
+                // Remove all non-printing characters
+                for (int i = 0; i < 32; ++i)
+                {
+                    char currentCharacter = (char)i;
+                    stringContents = stringContents.Replace(currentCharacter.ToString(), "");
+                }
                 document.LoadXml(stringContents);
 
                 for (int i = 0; i < document.ChildNodes.Count; ++i)
