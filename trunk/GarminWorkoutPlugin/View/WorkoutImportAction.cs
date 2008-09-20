@@ -152,7 +152,6 @@ namespace GarminWorkoutPlugin.View
             {
                 if (task.Type == GarminDeviceManager.BasicTask.TaskTypes.TaskType_Initialize)
                 {
-
                     manager.CancelAllPendingTasks();
 
                     MessageBox.Show(m_ResourceManager.GetString("DeviceCommunicationErrorText", currentView.UICulture),
