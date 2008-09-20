@@ -12,7 +12,7 @@ If you have a version already installed in [http://www.zonefivesoftware.com/Spor
 
 ==Important Notes==
   # This version of the plugin requires the *latest version of [http://www.zonefivesoftware.com/SportTracks SportTracks] which is 2.0.3170 or later*
-  # The [http://www.garmin.com/products/communicator Garmin Communicator Plugin] must be installed and activated in Internet Explorer.  After it has installed, go to the [http://www.garmin.com/products/communicator/test test page] in *Internet Explorer* and *allow the ActiveX plugin*. Once this is done, your unit should be detected on the test page.
+  # The [http://www.garmin.com/products/communicator Garmin Communicator Plugin] must be *installed and activated in Internet Explorer*.  After it has installed, go to the [http://www.garmin.com/products/communicator/test test page] in Internet Explorer and *allow the ActiveX plugin*. Once this is done, your unit should be detected on the test page.
   # This new export to device feature *won't work on Vista x64* (and possibly XP x64, I need a confirmation on this) 
 
 *** This page is currently under construction, please come back later for an updated version.
