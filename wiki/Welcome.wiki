@@ -8,7 +8,7 @@ This wiki is used as a help file to guide you through the different features tha
   * Download the latest version on your hard drive.
   * Once the download has completed, open the .st2plugin file
 
-If you have a version already installed in [http://www.zonefivesoftware.com/SportTracks SportTracks] you should uninstall the current version prior to installing a new one with the above method.  You can also simply update directly from the Plugins section of the [http://www.zonefivesoftware.com/SportTracks SportTracks] settings page.
+If you have a version already installed in [http://www.zonefivesoftware.com/SportTracks SportTracks] you should uninstall the current version prior to installing a new one with the above method.  You can also simply update directly from the Plugins section of the [http://www.zonefivesoftware.com/SportTracks SportTracks] Settings page.
 
 ==Important Notes==
   # This version of the plugin requires the *latest version of [http://www.zonefivesoftware.com/SportTracks SportTracks] which is 2.0.3170 or later*
