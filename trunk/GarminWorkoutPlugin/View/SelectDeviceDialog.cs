@@ -1,7 +1,7 @@
 using System.Diagnostics;
 using System.Windows.Forms;
 using ZoneFiveSoftware.SportTracks.Device.GarminGPS;
-using GarminWorkoutPlugin.Data;
+using GarminWorkoutPlugin.Controller;
 
 namespace GarminWorkoutPlugin.View
 {

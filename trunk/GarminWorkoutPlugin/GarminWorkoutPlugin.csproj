@@ -58,6 +58,10 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>C:\ProgramData\ZoneFiveSoftware\SportTracks\2.0\Plugins\Installed\64c67771-aec3-4434-9ef1-ad6cabc1479e\GarminGPS\GarminGPS.dll</HintPath>
     </Reference>
+    <Reference Include="Sax, Version=2.0.0.0, Culture=neutral, PublicKeyToken=be21d24d19a1d110, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>dlls\Sax.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
@@ -69,11 +73,11 @@
     <Compile Include="Data\DataTooRecentException.cs" />
     <Compile Include="Data\DataVersion.cs" />
     <Compile Include="Data\Durations\DurationFactory.cs" />
-    <Compile Include="Data\GarminDeviceManager.cs" />
+    <Compile Include="Controller\GarminDeviceManager.cs" />
     <Compile Include="Data\IDirty.cs" />
     <Compile Include="Data\IPluginSerializable.cs" />
     <Compile Include="Data\IXMLSerializable.cs" />
-    <Compile Include="Data\StepDescriptionStringFormatter.cs" />
+    <Compile Include="Controller\StepDescriptionStringFormatter.cs" />
     <Compile Include="Data\StepDescriptionStringProviderAttribute.cs" />
     <Compile Include="Data\Targets\Cadence\BaseCadenceTarget.cs" />
     <Compile Include="Data\Targets\Cadence\CadenceZoneSTTarget.cs" />
@@ -92,7 +96,7 @@
     <Compile Include="Data\Targets\Speed\SpeedZoneSTTarget.cs" />
     <Compile Include="Data\Targets\Speed\IConcreteSpeedTarget.cs" />
     <Compile Include="Data\Targets\TargetFactory.cs" />
-    <Compile Include="Data\Utils.cs" />
+    <Compile Include="Controller\Utils.cs" />
     <Compile Include="Data\WorkoutElements\RegularStep.cs" />
     <Compile Include="Data\WorkoutElements\RepeatStep.cs" />
     <Compile Include="Data\WorkoutElements\IStep.cs" />
@@ -111,8 +115,8 @@
     <Compile Include="Data\Durations\LapButtonDuration.cs" />
     <Compile Include="Data\ComboBoxStringProviderAttribute.cs" />
     <Compile Include="Data\WorkoutManager.cs" />
-    <Compile Include="Data\WorkoutExporter.cs" />
-    <Compile Include="Data\WorkoutImporter.cs" />
+    <Compile Include="Controller\WorkoutExporter.cs" />
+    <Compile Include="Controller\WorkoutImporter.cs" />
     <Compile Include="GUIDs.cs" />
     <Compile Include="PluginMain.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -140,7 +144,7 @@
     </Compile>
     <Compile Include="View\GarminWorkoutPluginSettingsPages.cs" />
     <Compile Include="View\GarminWorkoutSettings.cs" />
-    <Compile Include="View\Options.cs" />
+    <Compile Include="Controller\Options.cs" />
     <Compile Include="View\SelectCategoryDialog.cs">
       <SubType>Form</SubType>
     </Compile>

@@ -12,6 +12,7 @@ using ZoneFiveSoftware.Common.Data.Fitness;
 using ZoneFiveSoftware.Common.Visuals.Fitness;
 using GarminWorkoutPlugin.Data;
 using GarminWorkoutPlugin.View;
+using GarminWorkoutPlugin.Controller;
 
 namespace GarminWorkoutPlugin
 {

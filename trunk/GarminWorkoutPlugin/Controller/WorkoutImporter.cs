@@ -5,8 +5,9 @@ using System.Text;
 using System.Xml;
 using ZoneFiveSoftware.Common.Data.Fitness;
 using GarminWorkoutPlugin.View;
+using GarminWorkoutPlugin.Data;
 
-namespace GarminWorkoutPlugin.Data
+namespace GarminWorkoutPlugin.Controller
 {
     class WorkoutImporter
     {

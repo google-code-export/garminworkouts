@@ -4,8 +4,9 @@ using System.Globalization;
 using System.IO;
 using System.Text;
 using System.Xml;
+using GarminWorkoutPlugin.Data;
 
-namespace GarminWorkoutPlugin.Data
+namespace GarminWorkoutPlugin.Controller
 {
     class WorkoutExporter
     {

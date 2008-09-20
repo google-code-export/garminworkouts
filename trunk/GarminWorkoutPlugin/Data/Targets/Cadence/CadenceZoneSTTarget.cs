@@ -5,7 +5,7 @@ using System.IO;
 using System.Text;
 using System.Xml;
 using ZoneFiveSoftware.Common.Data.Fitness;
-using GarminWorkoutPlugin.View;
+using GarminWorkoutPlugin.Controller;
 
 namespace GarminWorkoutPlugin.Data
 {
@@ -35,7 +35,7 @@ namespace GarminWorkoutPlugin.Data
         {
             base.Serialize(stream);
 
-            IZoneCategory zones = View.Options.CadenceZoneCategory;
+            IZoneCategory zones = Options.CadenceZoneCategory;
             String zoneRefID = zones.ReferenceId;
 
             // Zone categroy refId
@@ -54,7 +54,7 @@ namespace GarminWorkoutPlugin.Data
             // Call base deserialization
             Deserialize(typeof(IConcreteCadenceTarget), stream, version);
 
-            IZoneCategory zones = View.Options.CadenceZoneCategory;
+            IZoneCategory zones = Options.CadenceZoneCategory;
             byte[] intBuffer = new byte[sizeof(Int32)];
             byte[] stringBuffer;
             Int32 stringLength;
@@ -86,7 +86,7 @@ namespace GarminWorkoutPlugin.Data
             // Call base deserialization
             Deserialize(typeof(IConcreteCadenceTarget), stream, version);
 
-            IZoneCategory zones = View.Options.CadenceZoneCategory;
+            IZoneCategory zones = Options.CadenceZoneCategory;
             byte[] intBuffer = new byte[sizeof(Int32)];
             byte[] boolBuffer = new byte[sizeof(bool)];
             byte[] stringBuffer;

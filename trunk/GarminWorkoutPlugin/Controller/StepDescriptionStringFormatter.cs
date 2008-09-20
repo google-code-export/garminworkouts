@@ -4,8 +4,9 @@ using System.Globalization;
 using System.Reflection;
 using System.Resources;
 using ZoneFiveSoftware.Common.Data.Measurement;
+using GarminWorkoutPlugin.Data;
 
-namespace GarminWorkoutPlugin.Data
+namespace GarminWorkoutPlugin.Controller
 {
     class StepDescriptionStringFormatter
     {

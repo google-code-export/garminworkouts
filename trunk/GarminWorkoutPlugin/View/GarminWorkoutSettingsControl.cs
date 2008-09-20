@@ -5,6 +5,7 @@ using System.Resources;
 using System.Windows.Forms;
 using ZoneFiveSoftware.Common.Data.Fitness;
 using GarminWorkoutPlugin.Data;
+using GarminWorkoutPlugin.Controller;
 
 namespace GarminWorkoutPlugin.View
 {

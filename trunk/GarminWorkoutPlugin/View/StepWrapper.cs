@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using GarminWorkoutPlugin.Data;
 using ZoneFiveSoftware.Common.Visuals;
+using GarminWorkoutPlugin.Controller;
 
 namespace GarminWorkoutPlugin.View
 {

@@ -4,10 +4,10 @@ using System.Drawing;
 using System.Resources;
 using System.Reflection;
 using System.IO;
+using System.Text;
 using System.Windows.Forms;
 using ZoneFiveSoftware.Common.Visuals;
-using GarminWorkoutPlugin.Data;
-using System.Text;
+using GarminWorkoutPlugin.Controller;
 
 namespace GarminWorkoutPlugin.View
 {
@@ -44,19 +44,22 @@ namespace GarminWorkoutPlugin.View
 
         public void Run(System.Drawing.Rectangle rectButton)
         {
-            GarminWorkoutView currentView = (GarminWorkoutView)PluginMain.GetApplication().ActiveView;
-            Control control = PluginMain.GetApplication().ActiveView.CreatePageControl();
-            ContextMenu menu = new ContextMenu();
-            MenuItem menuItem;
+            if (m_IsEnabled)
+            {
+                GarminWorkoutView currentView = (GarminWorkoutView)PluginMain.GetApplication().ActiveView;
+                Control control = PluginMain.GetApplication().ActiveView.CreatePageControl();
+                ContextMenu menu = new ContextMenu();
+                MenuItem menuItem;
 
-            menuItem = new MenuItem(m_ResourceManager.GetString("FromDeviceText", currentView.UICulture),
-                                    new EventHandler(FromDeviceEventHandler));
-            menu.MenuItems.Add(menuItem);
-            menuItem = new MenuItem(m_ResourceManager.GetString("FromFileText", currentView.UICulture),
-                                    new EventHandler(FromFileEventHandler));
-            menu.MenuItems.Add(menuItem);
+                menuItem = new MenuItem(m_ResourceManager.GetString("FromDeviceText", currentView.UICulture),
+                                        new EventHandler(FromDeviceEventHandler));
+                menu.MenuItems.Add(menuItem);
+                menuItem = new MenuItem(m_ResourceManager.GetString("FromFileText", currentView.UICulture),
+                                        new EventHandler(FromFileEventHandler));
+                menu.MenuItems.Add(menuItem);
 
-            menu.Show(control, control.PointToClient(new Point(rectButton.Right, rectButton.Top)));
+                menu.Show(control, control.PointToClient(new Point(rectButton.Right, rectButton.Top)));
+            }
         }
 
         public string Title
@@ -87,7 +90,15 @@ namespace GarminWorkoutPlugin.View
                 GarminDeviceManager deviceManager = new GarminDeviceManager();
                 deviceManager.TaskCompleted += new GarminDeviceManager.TaskCompletedEventHandler(OnDeviceManagerTaskCompleted);
 
-                PluginMain.GetApplication().ActiveView.CreatePageControl().Parent.Cursor = Cursors.WaitCursor;
+                Control viewControl = PluginMain.GetApplication().ActiveView.CreatePageControl();
+
+                for (int i = 0; i < viewControl.Controls.Count; ++i)
+                {
+                    viewControl.Controls[i].Enabled = false;
+                }
+                m_IsEnabled = false;
+                viewControl.Cursor = Cursors.WaitCursor;
+
                 deviceManager.ImportWorkouts();
             }
             catch (FileNotFoundException)
@@ -174,10 +185,20 @@ namespace GarminWorkoutPlugin.View
 
             if (manager.AreAllTasksFinished)
             {
-                PluginMain.GetApplication().ActiveView.CreatePageControl().Parent.Cursor = Cursors.Default;
+                Control viewControl = PluginMain.GetApplication().ActiveView.CreatePageControl();
+
+                for (int i = 0; i < viewControl.Controls.Count; ++i)
+                {
+                    viewControl.Controls[i].Enabled = true;
+                }
+                m_IsEnabled = true;
+                viewControl.Cursor = Cursors.Default;
+
                 manager.TaskCompleted -= new GarminDeviceManager.TaskCompletedEventHandler(OnDeviceManagerTaskCompleted);
             }
         }
+
+        private static bool m_IsEnabled = true;
 
         public event System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
         private ResourceManager m_ResourceManager = new ResourceManager("GarminWorkoutPlugin.Resources.StringResources",

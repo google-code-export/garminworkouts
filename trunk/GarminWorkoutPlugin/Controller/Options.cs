@@ -5,7 +5,7 @@ using System.Text;
 using ZoneFiveSoftware.Common.Data.Fitness;
 using GarminWorkoutPlugin.Data;
 
-namespace GarminWorkoutPlugin.View
+namespace GarminWorkoutPlugin.Controller
 {
     class Options
     {

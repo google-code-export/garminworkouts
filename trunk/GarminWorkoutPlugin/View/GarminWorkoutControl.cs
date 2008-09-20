@@ -14,6 +14,7 @@ using ZoneFiveSoftware.Common.Data.Measurement;
 using ZoneFiveSoftware.Common.Visuals;
 using ZoneFiveSoftware.Common.Visuals.Fitness;
 using GarminWorkoutPlugin.Data;
+using GarminWorkoutPlugin.Controller;
 
 namespace GarminWorkoutPlugin.View
 {
@@ -2098,7 +2099,7 @@ namespace GarminWorkoutPlugin.View
                                             case IConcreteCadenceTarget.CadenceTargetType.ZoneST:
                                                 {
                                                     CadenceZoneSTTarget concreteTarget = (CadenceZoneSTTarget)baseTarget.ConcreteTarget;
-                                                    ZoneComboBox.SelectedIndex = Utils.FindIndexForZone(View.Options.CadenceZoneCategory.Zones,
+                                                    ZoneComboBox.SelectedIndex = Utils.FindIndexForZone(Options.CadenceZoneCategory.Zones,
                                                                                                                        concreteTarget.Zone) + 1;
                                                     break;
                                                 }
@@ -2223,7 +2224,7 @@ namespace GarminWorkoutPlugin.View
             ZoneComboBox.Items.Clear();
             ZoneComboBox.Items.Add(m_ResourceManager.GetString("CustomText"));
 
-            IList<INamedLowHighZone> zones = View.Options.CadenceZoneCategory.Zones;
+            IList<INamedLowHighZone> zones = Options.CadenceZoneCategory.Zones;
             for (byte i = 0; i < zones.Count; ++i)
             {
                 ZoneComboBox.Items.Add(zones[i].Name);
@@ -2657,7 +2658,7 @@ namespace GarminWorkoutPlugin.View
             {
                 CadenceZoneSTTarget concreteTarget = (CadenceZoneSTTarget)baseTarget.ConcreteTarget;
 
-                concreteTarget.Zone = View.Options.CadenceZoneCategory.Zones[selectedIndex - 1];
+                concreteTarget.Zone = Options.CadenceZoneCategory.Zones[selectedIndex - 1];
             }
         }
 
@@ -2699,7 +2700,7 @@ namespace GarminWorkoutPlugin.View
             {
                 PowerZoneSTTarget concreteTarget = (PowerZoneSTTarget)baseTarget.ConcreteTarget;
 
-                concreteTarget.Zone = View.Options.PowerZoneCategory.Zones[selectedIndex - 1];
+                concreteTarget.Zone = Options.PowerZoneCategory.Zones[selectedIndex - 1];
             }
             else if (baseTarget.ConcreteTarget.Type == IConcretePowerTarget.PowerTargetType.ZoneGTC)
             {
