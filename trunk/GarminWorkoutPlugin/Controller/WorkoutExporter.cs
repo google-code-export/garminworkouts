@@ -10,7 +10,6 @@ namespace GarminWorkoutPlugin.Controller
 {
     class WorkoutExporter
     {
-
         public static void ExportWorkout(Workout workout, Stream exportStream)
         {
             ExportWorkout(workout, exportStream, false);

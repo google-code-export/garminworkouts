@@ -21,7 +21,7 @@ namespace GarminWorkoutPlugin.Controller
 
                 importStream.Read(byteContents, 0, (int)importStream.Length);
                 stringContents = Encoding.UTF8.GetString(byteContents, 0, (int)importStream.Length);
-                stringContents = stringContents.Replace("\r\n", "");
+                stringContents = stringContents.Replace("\r", "");
                 stringContents = stringContents.Replace("\n", "");
                 document.LoadXml(stringContents);
 
@@ -45,8 +45,9 @@ namespace GarminWorkoutPlugin.Controller
 
                 return false;
             }
-            catch
+            catch (Exception e)
             {
+                System.Windows.Forms.MessageBox.Show(e.Message + "\n" + e.StackTrace);
                 return false;
             }
         }
