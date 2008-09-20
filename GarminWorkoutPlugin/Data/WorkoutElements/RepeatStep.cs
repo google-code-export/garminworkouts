@@ -4,7 +4,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Xml;
 using ZoneFiveSoftware.Common.Data.Fitness;
-using GarminWorkoutPlugin.View;
+using GarminWorkoutPlugin.Controller;
 
 namespace GarminWorkoutPlugin.Data
 {
