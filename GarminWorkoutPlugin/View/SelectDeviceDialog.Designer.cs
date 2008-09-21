@@ -31,7 +31,7 @@ namespace GarminWorkoutPlugin.View
             this.OKButton = new System.Windows.Forms.Button();
             this.Cancel_Button = new System.Windows.Forms.Button();
             this.DevicesComboBox = new System.Windows.Forms.ComboBox();
-            this.label1 = new System.Windows.Forms.Label();
+            this.IntroLabel = new System.Windows.Forms.Label();
             this.RefreshButton = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
@@ -65,14 +65,14 @@ namespace GarminWorkoutPlugin.View
             this.DevicesComboBox.TabIndex = 2;
             this.DevicesComboBox.SelectionChangeCommitted += new System.EventHandler(this.DevicesComboBox_SelectionChangeCommitted);
             // 
-            // label1
+            // IntroLabel
             // 
-            this.label1.Location = new System.Drawing.Point(12, 12);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(200, 55);
-            this.label1.TabIndex = 3;
-            this.label1.Text = "Select your device below.  If your device doesn\'t appear, make sure it is connect" +
-                "ed to your PC and hit the refresh button below.";
+            this.IntroLabel.Location = new System.Drawing.Point(12, 12);
+            this.IntroLabel.Name = "IntroLabel";
+            this.IntroLabel.Size = new System.Drawing.Size(200, 55);
+            this.IntroLabel.TabIndex = 3;
+            this.IntroLabel.Text = "Select your device below.  If your device doesn\'t appear, make sure it is connect" +
+                "ed to your PC and hit the refresh button.";
             // 
             // RefreshButton
             // 
@@ -92,7 +92,7 @@ namespace GarminWorkoutPlugin.View
             this.CancelButton = this.Cancel_Button;
             this.ClientSize = new System.Drawing.Size(223, 171);
             this.Controls.Add(this.RefreshButton);
-            this.Controls.Add(this.label1);
+            this.Controls.Add(this.IntroLabel);
             this.Controls.Add(this.DevicesComboBox);
             this.Controls.Add(this.Cancel_Button);
             this.Controls.Add(this.OKButton);
@@ -108,7 +108,7 @@ namespace GarminWorkoutPlugin.View
         private System.Windows.Forms.Button OKButton;
         private System.Windows.Forms.Button Cancel_Button;
         private System.Windows.Forms.ComboBox DevicesComboBox;
-        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.Label IntroLabel;
         private System.Windows.Forms.Button RefreshButton;
     }
 }
