@@ -12,11 +12,8 @@ namespace GarminWorkoutPlugin.Controller
 {
     class GarminDeviceManager
     {
-        public GarminDeviceManager()
+        private GarminDeviceManager()
         {
-            AddTask(new BasicTask(BasicTask.TaskTypes.TaskType_Initialize));
-            SetOperatingDevice();
-
             m_TimeoutTimer.Tick += new EventHandler(OnTimeoutTimerTick);
             m_TimeoutTimer.Interval = 30000;
 
@@ -25,6 +22,8 @@ namespace GarminWorkoutPlugin.Controller
             m_Controller.FinishFindDevices += new GarminDeviceControl.FinishFindDevicesEventHandler(OnControllerFinishFindDevices);
             m_Controller.FinishWriteToDevice += new GarminDeviceControl.TransferCompleteEventHandler(OnControllerFinishWriteToDevice);
             m_Controller.FinishReadFromDevice += new GarminDeviceControl.TransferCompleteEventHandler(OnControllerFinishReadFromDevice);
+
+            AddTask(new BasicTask(BasicTask.TaskTypes.TaskType_Initialize));
         }
 
         ~GarminDeviceManager()
@@ -33,6 +32,11 @@ namespace GarminWorkoutPlugin.Controller
             m_Controller.FinishFindDevices -= new GarminDeviceControl.FinishFindDevicesEventHandler(OnControllerFinishFindDevices);
             m_Controller.FinishWriteToDevice -= new GarminDeviceControl.TransferCompleteEventHandler(OnControllerFinishWriteToDevice);
             m_Controller.FinishReadFromDevice -= new GarminDeviceControl.TransferCompleteEventHandler(OnControllerFinishReadFromDevice);
+        }
+
+        public static GarminDeviceManager GetInstance()
+        {
+            return m_Instance;
         }
 
         public void RefreshDevices()
@@ -145,7 +149,7 @@ namespace GarminWorkoutPlugin.Controller
 
         private void ValidateManagerState()
         {
-            Trace.Assert(m_Controller.Ready && m_Controller.Initialized);
+            Trace.Assert(IsInitialized);
         }
 
         private void OnControllerReadyChanged(object sender, EventArgs e)
@@ -285,6 +289,16 @@ namespace GarminWorkoutPlugin.Controller
             private string m_WorkoutsXML;
         }
 
+        public int GetPendingTaskCount()
+        {
+            return m_TaskQueue.Count;
+        }
+
+        public bool IsInitialized
+        {
+            get { return m_Controller.Ready && m_Controller.Initialized; }
+        }
+
         public bool AreAllTasksFinished
         {
             get { return m_TaskQueue.Count == 0; }
@@ -303,5 +317,7 @@ namespace GarminWorkoutPlugin.Controller
         private List<Device> m_Devices = new List<Device>();
         private Device m_OperatingDevice = null;
         private Timer m_TimeoutTimer = new Timer();
+
+        private static GarminDeviceManager m_Instance = new GarminDeviceManager();
     }
 }

@@ -45,7 +45,8 @@ namespace GarminWorkoutPlugin.View
 
         public void Run(System.Drawing.Rectangle rectButton)
         {
-            if (m_IsEnabled)
+            if ((!GarminDeviceManager.GetInstance().IsInitialized && GarminDeviceManager.GetInstance().GetPendingTaskCount() == 1) ||
+                GarminDeviceManager.GetInstance().AreAllTasksFinished)
             {
                 GarminWorkoutView currentView = (GarminWorkoutView)PluginMain.GetApplication().ActiveView;
                 Control control = currentView.CreatePageControl();
@@ -90,21 +91,21 @@ namespace GarminWorkoutPlugin.View
 
             try
             {
+                GarminDeviceManager.GetInstance().TaskCompleted += new GarminDeviceManager.TaskCompletedEventHandler(OnDeviceManagerTaskCompleted);
+
                 Control viewControl = PluginMain.GetApplication().ActiveView.CreatePageControl();
-                GarminDeviceManager deviceManager = new GarminDeviceManager();
+                Control mainWindow = viewControl.Parent.Parent.Parent.Parent;
 
-                deviceManager.TaskCompleted += new GarminDeviceManager.TaskCompletedEventHandler(OnDeviceManagerTaskCompleted);
-
-                for (int i = 0; i < viewControl.Controls.Count; ++i)
+                for (int i = 0; i < mainWindow.Controls.Count; ++i)
                 {
-                    viewControl.Controls[i].Enabled = false;
+                    mainWindow.Controls[i].Enabled = false;
                 }
-                m_IsEnabled = false;
-                viewControl.Cursor = Cursors.WaitCursor;
+                mainWindow.Cursor = Cursors.WaitCursor;
 
+                GarminDeviceManager.GetInstance().SetOperatingDevice();
                 for (int i = 0; i < WorkoutManager.Instance.Workouts.Count; ++i)
                 {
-                    deviceManager.ExportWorkout(WorkoutManager.Instance.Workouts[i]);
+                    GarminDeviceManager.GetInstance().ExportWorkout(WorkoutManager.Instance.Workouts[i]);
                 }
             }
             catch (FileNotFoundException)
@@ -201,20 +202,20 @@ namespace GarminWorkoutPlugin.View
             if (manager.AreAllTasksFinished)
             {
                 Control viewControl = PluginMain.GetApplication().ActiveView.CreatePageControl();
+                Control mainWindow = viewControl.Parent.Parent.Parent.Parent;
 
-                for (int i = 0; i < viewControl.Controls.Count; ++i)
+                for (int i = 0; i < mainWindow.Controls.Count; ++i)
                 {
-                    viewControl.Controls[i].Enabled = true;
+                    mainWindow.Controls[i].Enabled = true;
                 }
-                m_IsEnabled = true;
-                viewControl.Cursor = Cursors.Default;
+                mainWindow.Cursor = Cursors.Default;
+
+                manager.TaskCompleted -= new GarminDeviceManager.TaskCompletedEventHandler(OnDeviceManagerTaskCompleted);
 
                 if (!exportCancelled)
                 {
                     if (m_FailedExportList.Count == 0)
                     {
-                        manager.TaskCompleted -= new GarminDeviceManager.TaskCompletedEventHandler(OnDeviceManagerTaskCompleted);
-
                         MessageBox.Show(String.Format(m_ResourceManager.GetString("ExportSuccessText", currentView.UICulture), m_ResourceManager.GetString("DeviceText", currentView.UICulture)),
                                         m_ResourceManager.GetString("SuccessText", currentView.UICulture), MessageBoxButtons.OK, MessageBoxIcon.Information);
                     }
@@ -229,7 +230,6 @@ namespace GarminWorkoutPlugin.View
             }
         }
 
-        private static bool m_IsEnabled = true;
         private List<Workout> m_FailedExportList = new List<Workout>();
 
         public event System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
