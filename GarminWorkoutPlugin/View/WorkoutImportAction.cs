@@ -44,7 +44,8 @@ namespace GarminWorkoutPlugin.View
 
         public void Run(System.Drawing.Rectangle rectButton)
         {
-            if (m_IsEnabled)
+            if ((!GarminDeviceManager.GetInstance().IsInitialized && GarminDeviceManager.GetInstance().GetPendingTaskCount() == 1) ||
+                GarminDeviceManager.GetInstance().AreAllTasksFinished)
             {
                 GarminWorkoutView currentView = (GarminWorkoutView)PluginMain.GetApplication().ActiveView;
                 Control control = PluginMain.GetApplication().ActiveView.CreatePageControl();
@@ -87,19 +88,19 @@ namespace GarminWorkoutPlugin.View
         {
             try
             {
-                GarminDeviceManager deviceManager = new GarminDeviceManager();
-                deviceManager.TaskCompleted += new GarminDeviceManager.TaskCompletedEventHandler(OnDeviceManagerTaskCompleted);
+                GarminDeviceManager.GetInstance().TaskCompleted += new GarminDeviceManager.TaskCompletedEventHandler(OnDeviceManagerTaskCompleted);
 
                 Control viewControl = PluginMain.GetApplication().ActiveView.CreatePageControl();
+                Control mainWindow = viewControl.Parent.Parent.Parent.Parent;
 
-                for (int i = 0; i < viewControl.Controls.Count; ++i)
+                for (int i = 0; i < mainWindow.Controls.Count; ++i)
                 {
-                    viewControl.Controls[i].Enabled = false;
+                    mainWindow.Controls[i].Enabled = false;
                 }
-                m_IsEnabled = false;
-                viewControl.Cursor = Cursors.WaitCursor;
+                mainWindow.Cursor = Cursors.WaitCursor;
 
-                deviceManager.ImportWorkouts();
+                GarminDeviceManager.GetInstance().SetOperatingDevice();
+                GarminDeviceManager.GetInstance().ImportWorkouts();
             }
             catch (FileNotFoundException)
             {
@@ -185,19 +186,17 @@ namespace GarminWorkoutPlugin.View
             if (manager.AreAllTasksFinished)
             {
                 Control viewControl = PluginMain.GetApplication().ActiveView.CreatePageControl();
+                Control mainWindow = viewControl.Parent.Parent.Parent.Parent;
 
-                for (int i = 0; i < viewControl.Controls.Count; ++i)
+                for (int i = 0; i < mainWindow.Controls.Count; ++i)
                 {
-                    viewControl.Controls[i].Enabled = true;
+                    mainWindow.Controls[i].Enabled = true;
                 }
-                m_IsEnabled = true;
-                viewControl.Cursor = Cursors.Default;
+                mainWindow.Cursor = Cursors.Default;
 
                 manager.TaskCompleted -= new GarminDeviceManager.TaskCompletedEventHandler(OnDeviceManagerTaskCompleted);
             }
         }
-
-        private static bool m_IsEnabled = true;
 
         public event System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
         private ResourceManager m_ResourceManager = new ResourceManager("GarminWorkoutPlugin.Resources.StringResources",

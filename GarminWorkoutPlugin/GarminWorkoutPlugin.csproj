@@ -12,10 +12,14 @@
     <AssemblyName>GarminWorkoutPlugin</AssemblyName>
     <StartupObject>
     </StartupObject>
-    <SccProjectName>Svn</SccProjectName>
-    <SccLocalPath>Svn</SccLocalPath>
-    <SccAuxPath>Svn</SccAuxPath>
-    <SccProvider>SubversionScc</SccProvider>
+    <SccProjectName>
+    </SccProjectName>
+    <SccLocalPath>
+    </SccLocalPath>
+    <SccAuxPath>
+    </SccAuxPath>
+    <SccProvider>
+    </SccProvider>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -57,10 +61,6 @@
     <Reference Include="GarminGPS, Version=2.0.3164.41516, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>C:\ProgramData\ZoneFiveSoftware\SportTracks\2.0\Plugins\Installed\64c67771-aec3-4434-9ef1-ad6cabc1479e\GarminGPS\GarminGPS.dll</HintPath>
-    </Reference>
-    <Reference Include="Sax, Version=2.0.0.0, Culture=neutral, PublicKeyToken=be21d24d19a1d110, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>dlls\Sax.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
