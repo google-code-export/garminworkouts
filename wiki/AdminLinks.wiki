@@ -1,3 +1,5 @@
-[http://code.google.com/p/garminworkouts/wiki/ Wiki Admin]
+[http://code.google.com/p/garminworkouts/wiki/ Wiki admin]
 
-[http://code.google.com/p/garminworkouts/source Sources Admin]
+[http://code.google.com/p/garminworkouts/source Sources admin]
+
+[http://code.google.com/p/garminworkouts/downloads Downloads admin]
