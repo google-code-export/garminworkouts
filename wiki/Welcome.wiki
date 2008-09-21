@@ -1,4 +1,5 @@
 #summary Welcome to the Garmin Workouts Plugin Wiki!
+#labels Featured
 
 = Introduction =
 This wiki is used as a help file to guide you through the different features that can be found in the [http://www.zonefivesoftware.com/SportTracks SportTracks] Garmin Workouts plugin.
