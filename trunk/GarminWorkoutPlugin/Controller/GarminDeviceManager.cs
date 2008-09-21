@@ -188,7 +188,7 @@ namespace GarminWorkoutPlugin.Controller
                 }
                 else
                 {
-                    SelectDeviceDialog dlg = new SelectDeviceDialog(this);
+                    SelectDeviceDialog dlg = new SelectDeviceDialog();
 
                     if (dlg.ShowDialog() == DialogResult.OK)
                     {

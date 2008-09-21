@@ -17,6 +17,7 @@ namespace GarminWorkoutPlugin.View
 
             this.Text = m_ResourceManager.GetString("SelectCategoryDialogText", UICulture) + workoutName;
             SelectCategoryLabel.Text = this.Text;
+            OkButton.Text = m_ResourceManager.GetString("OKButtonText", UICulture);
 
             // Fill list
             List<TreeList.TreeListNode> categories = new List<TreeList.TreeListNode>();

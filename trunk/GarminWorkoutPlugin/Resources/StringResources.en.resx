@@ -309,6 +309,9 @@
   <data name="NullTargetDescriptionText" xml:space="preserve">
     <value />
   </data>
+  <data name="OKButtonText" xml:space="preserve">
+    <value>OK</value>
+  </data>
   <data name="OpenFileText" xml:space="preserve">
     <value>Import Workout</value>
   </data>
@@ -336,6 +339,9 @@
   <data name="PowerZoneTargetDescriptionText" xml:space="preserve">
     <value>Try to keep my power in zone {0}.</value>
   </data>
+  <data name="RefreshButtonText" xml:space="preserve">
+    <value>Refresh devices</value>
+  </data>
   <data name="RepeatStepDescriptionText" xml:space="preserve">
     <value>Repeat the steps below {0} times:</value>
   </data>
@@ -350,6 +356,12 @@
   </data>
   <data name="SelectCategoryDialogText" xml:space="preserve">
     <value>Select category for workout </value>
+  </data>
+  <data name="SelectDeviceIntroText" xml:space="preserve">
+    <value>Select your device below.  If your device doesn't appear, make sure it is connected to your PC and hit the refresh button.</value>
+  </data>
+  <data name="SelectDeviceText" xml:space="preserve">
+    <value>Select device</value>
   </data>
   <data name="SettingsPageNameText" xml:space="preserve">
     <value>Garmin Workouts Settings</value>
