@@ -1,13 +1,7 @@
-#summary One-sentence summary of this page.
+#summary Explains how to setup the Garmin Workouts plugin using the dedicated settings page
 
 = Introduction =
-
-Add your content here.
+So you've just installed the Garmin Workouts plugin for SportTracks?  Of course the first thing you want to do is configure it to your needs.  This is what the settings page is for.  This page allows you to enable or disable SportTracks integration inside the plugin.  This way you can use it exactly as it is done in Garmin Training Center, or you can use the different options that SportTracks offers.  Let's see how it's done!
 
 
 = Details =
-
-Add your content here.  Format your content with:
-  * Text in *bold* or _italic_
-  * Headings, paragraphs, and lists
-  * Automatic links to other wiki pages
