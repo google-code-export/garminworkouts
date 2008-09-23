@@ -4,4 +4,20 @@
 So you've just installed the Garmin Workouts plugin for [http://www.zonefivesoftware.com/SportTracks SportTracks]?  Of course the first thing you want to do is configure it to your needs.  This is what the settings page is for.  This page allows you to enable or disable [http://www.zonefivesoftware.com/SportTracks SportTracks] integration inside the plugin.  This way you can use it exactly as it is done in Garmin Training Center, or you can use the different options that [http://www.zonefivesoftware.com/SportTracks SportTracks] offers.  Let's see how it's done!
 
 
-= Details =
+== Accessing the settings ==
+First of all, you want to access the settings page.  To do so, simply select the "Settings" link in the "Other tasks" panel to the left.
+
+http://garminworkouts.googlecode.com/files/Settings%20access.gif
+
+Once cllicked, this link will lead you to the settings page which has a special section for plugins.  In this section, you will find the "Garmin Workouts Settings" that looks like this.
+
+http://garminworkouts.googlecode.com/files/Settings%20passive.gif
+
+== Workouts and categories ==
+When first developing the plugin, I had to make a choice when it came to zones.  On one hand, the different Garmin fitness units use some user-defined zones.  On the other hand, [http://www.zonefivesoftware.com/SportTracks SportTracks] uses it's own user-defined zones.  In the first version of the plugin, only Garmin zones were supported and event then, only for some the heart rate target type.  After some discussions with the different early users, it was decided to give the user the choice to use either Garmin or [http://www.zonefivesoftware.com/SportTracks SportTracks] zones.  This lead to the option in the settings page.  As you can see you have the choice for every type of available target to use either Garmin or [http://www.zonefivesoftware.com/SportTracks SportTracks] zones by selecting the right combo box.  This affects the list of predefined zones that will be displayed when you define your target for a workout's step.  For instance, if I set the heart rate setting to "Garmin", the list will look as follows
+
+http://garminworkouts.googlecode.com/files/Garmin%20zones.gif
+
+If you select the [http://www.zonefivesoftware.com/SportTracks SportTracks] zone, it will be populated with your own [http://www.zonefivesoftware.com/SportTracks SportTracks] defined zones.  In my case it looks like this
+
+http://garminworkouts.googlecode.com/files/ST%20zones.gif
