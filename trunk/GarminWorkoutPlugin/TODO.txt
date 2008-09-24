@@ -9,6 +9,7 @@ TODO :
 - Complete globalization
 - Add last export date
 - Add possiblity to plan a workout
+- Allow to change workouts ordering in the list
 
 Nice to have :
 - Fill up the help web site

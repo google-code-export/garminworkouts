@@ -22,12 +22,19 @@ namespace GarminWorkoutPlugin.Controller
                 importStream.Read(byteContents, 0, (int)importStream.Length);
                 stringContents = Encoding.UTF8.GetString(byteContents, 0, (int)importStream.Length);
 
+                FileStream temp = new FileStream("C:\\input.txt", FileMode.CreateNew);
+                temp.Write(Encoding.UTF8.GetBytes(stringContents), 0, stringContents.Length);
+
                 // Remove all non-printing characters
                 for (int i = 0; i < 32; ++i)
                 {
                     char currentCharacter = (char)i;
                     stringContents = stringContents.Replace(currentCharacter.ToString(), "");
                 }
+
+                temp = new FileStream("C:\\output.txt", FileMode.CreateNew);
+                temp.Write(Encoding.UTF8.GetBytes(stringContents), 0, stringContents.Length);
+
                 document.LoadXml(stringContents);
 
                 for (int i = 0; i < document.ChildNodes.Count; ++i)
