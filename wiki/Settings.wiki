@@ -26,7 +26,13 @@ http://garminworkouts.googlecode.com/files/ST%20zones.gif
 Now that you have discovered how to change between Garmin and [http://www.zonefivesoftware.com/SportTracks SportTracks] zones you might want to change your already created workouts.  when doing so, you will notice that they have kept their old values regardless of the new setting value.  This is to prevent having invalid steps in a workout.  So you might wonder how you can apply the setting to your steps.  This is simple, you must simply choose the "Custom" zone to repopulate the list with the right (Garmin or [http://www.zonefivesoftware.com/SportTracks SportTracks]) zones.
 
 === Specifying the zone categories ===
-In the settings page you will also have noticed that you can select the zone categories to use for cadence and power.  This allows you to select which zone category will be used for the cadence and power target respectively.  For the heart rate and speed targets, the listbox will be populated with the heart rate and speed zone category as defined in the "Activity categories" of the "Categories" view.  As you can see below, I chose to use the "Cycling" heart rate zones and those zones are what appear in the target's listbox..
+In the settings page you will also have noticed that you can select the zone categories to use for cadence and power.  This allows you to select which zone category will be used for the cadence and power target respectively.  Opening the listbox will list all of the zones you have defined for either cadence or power.
+
+http://garminworkouts.googlecode.com/files/Settings%20expanded%20combo.gif
+http://garminworkouts.googlecode.com/files/Categories%20view.gif
+
+
+For the heart rate and speed targets, the listbox will be populated with the heart rate and speed zone category as defined in the "Activity categories" of the "Categories" view.  As you can see below, I chose to use the "Cycling" heart rate zones and those zones are what appear in the target's listbox..
 
 http://garminworkouts.googlecode.com/files/Activity%20Categories.gif
 http://garminworkouts.googlecode.com/files/Cycling%20HR%20Zones.gif
