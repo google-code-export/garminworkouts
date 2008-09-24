@@ -18,4 +18,5 @@ If you have a version already installed in [http://www.zonefivesoftware.com/Spor
 = Instructions and tutorials =
 [http://code.google.com/p/garminworkouts/wiki/Settings Plugin settings]
 
-*** This page is currently under construction, please come back later for an updated version.
+-----
+*^This page is currently under construction, please come back later for an updated version.^*
