@@ -1,0 +1,50 @@
+#summary This page describes the basic operation performed in the Garmin Workout Plugin
+
+= Introduction =
+Now that you're all set-up properly as described in the [Settings] page you are ready to create and manage your workouts.  Of course the basic operations are the same as in Garmin Training Center which is creating and deleting them, adding and removing steps, changing the order of those steps and of course filling them with the right information.  Keep on reading for instructions on accomplishing those tasks.
+
+= Accessing the Garmin Workouts view =
+To access the view available with the Garmin Workouts Plugin you will need to click on the link in the "Selct View" menu.
+
+http://garminworkouts.googlecode.com/files/Garmin%20Workouts%20Access.gif
+
+Once you have clicked this link, you will be presented the following screen.
+
+http://garminworkouts.googlecode.com/files/Garmin%20Workouts%20view.gif
+
+This screen is where you will be able to do everything this plugin allows.
+
+= Managing workouts =
+
+== Creating workouts ==
+The first thing you will want to do is to create a workout.  For this purpose, you must first select the category you want to put the workout in.  I have selected My Activites/Cycling/Road but feel free to choose the right category that suits your own workout.  Once done, you must hit the new workout button, in the upper left.  http://garminworkouts.googlecode.com/files/New%20Workout%20Button.gif  This creates a workout with a default name and that contains a single step.
+
+http://garminworkouts.googlecode.com/files/New%20workout.gif
+
+== Deleting a workout ==
+When a workout is selected in the workouts list, you will notice that the delete workout button is enabled.  Deleting a workout is simple, simply hit the delete button that is also located in the upper left corner http://garminworkouts.googlecode.com/files/Delete%20Workout%20Button.gif
+
+= Personalizing a workout =
+
+== Changing the workout's name ==
+Changing a workout's
+
+== Adding new steps ==
+
+=== Repeat steps ===
+
+== Removing a step ==
+
+=== Repeat steps ===
+
+== Changing the steps order ==
+
+= Personalizing steps =
+
+== Selecting the step's duration ==
+
+== Selecting the step's target ==
+
+=== Predefined target zones ===
+
+=== Custom target zone ===
