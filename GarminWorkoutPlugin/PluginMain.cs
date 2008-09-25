@@ -243,6 +243,11 @@ namespace GarminWorkoutPlugin
                     throw e;
                 }
             }
+            else
+            {
+                WorkoutManager.Instance.Workouts.Clear();
+            }
+
             stream.Close();
         }
 

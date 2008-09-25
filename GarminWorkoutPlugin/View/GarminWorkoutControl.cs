@@ -1415,6 +1415,20 @@ namespace GarminWorkoutPlugin.View
             Utils.SaveWorkoutsToLogbook();
         }
 
+        private void WorkoutNameText_Validating(object sender, CancelEventArgs e)
+        {
+            Workout workoutWithSameName = WorkoutManager.Instance.GetWorkoutWithName(WorkoutNameText.Text);
+
+            if (WorkoutNameText.Text == String.Empty || (workoutWithSameName != null && workoutWithSameName != m_SelectedWorkout))
+            {
+                e.Cancel = true;
+
+                MessageBox.Show(m_ResourceManager.GetString("InvalidWorkoutNameText", m_CurrentCulture),
+                                m_ResourceManager.GetString("ErrorText", m_CurrentCulture),
+                                MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
         private void WorkoutNameText_Validated(object sender, EventArgs e)
         {
             Trace.Assert(m_SelectedWorkout != null);
@@ -1571,6 +1585,16 @@ namespace GarminWorkoutPlugin.View
             StepDescriptionStringFormatter.CurrentCulture = m_CurrentCulture;
 
             UpdateUIStrings();
+            BuildWorkoutsList();
+            UpdateUIFromWorkout(m_SelectedWorkout);
+        }
+
+        public void ReloadLogbook()
+        {
+            m_SelectedCategory = null;
+            m_SelectedWorkout = null;
+            m_SelectedStep = null;
+
             BuildWorkoutsList();
             UpdateUIFromWorkout(m_SelectedWorkout);
         }

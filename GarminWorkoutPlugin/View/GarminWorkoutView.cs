@@ -130,7 +130,7 @@ namespace GarminWorkoutPlugin.View
         private void OnLogbookChanged(object sender, ILogbook oldLogbook, ILogbook newLogbook)
         {
             // Ewwww should call another function but this does the job (and some extra work)...
-            m_ViewControl.UICultureChanged(m_CurrentCulture);
+            m_ViewControl.ReloadLogbook();
         }
 
         public CultureInfo UICulture

@@ -215,6 +215,9 @@ namespace GarminWorkoutPlugin.Controller
             Trace.Assert(m_TaskQueue[0].Type == BasicTask.TaskTypes.TaskType_ImportWorkouts);
             ImportWorkoutsTask task = (ImportWorkoutsTask)m_TaskQueue[0];
 
+            FileStream temp = new FileStream("C:\\result.txt", FileMode.CreateNew);
+            temp.Write(Encoding.UTF8.GetBytes(e.XmlData), 0, Encoding.UTF8.GetByteCount(e.XmlData));
+
             task.WorkoutsXML = e.XmlData;
             CompleteCurrentTask(e.Success);
         }
