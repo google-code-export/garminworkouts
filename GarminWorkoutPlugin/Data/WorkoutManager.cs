@@ -160,8 +160,9 @@ namespace GarminWorkoutPlugin.Data
             workoutCount = BitConverter.ToInt32(intBuffer, 0);
             for (int i = 0; i < workoutCount; ++i)
             {
-                Workouts.Add(new Workout(stream, version));
+                m_Workouts.Add(new Workout(stream, version));
             }
+            m_Workouts.Sort(new WorkoutComparer());
         }
 
         public static WorkoutManager Instance
@@ -188,6 +189,7 @@ namespace GarminWorkoutPlugin.Data
 
             result = new Workout(baseName + workoutNumber.ToString(), category);
             m_Workouts.Add(result);
+            m_Workouts.Sort(new WorkoutComparer());
             return result;
         }
 
@@ -200,6 +202,7 @@ namespace GarminWorkoutPlugin.Data
             result = new Workout(uniqueName, category);
             result.Steps.AddRange(steps);
             m_Workouts.Add(result);
+            m_Workouts.Sort(new WorkoutComparer());
 
             return result;
         }
@@ -212,7 +215,9 @@ namespace GarminWorkoutPlugin.Data
 
             if (newWorkout.Deserialize(workoutNode))
             {
-                Workouts.Add(newWorkout);
+                m_Workouts.Add(newWorkout);
+                m_Workouts.Sort(new WorkoutComparer());
+
                 return newWorkout;
             }
 
@@ -320,6 +325,18 @@ namespace GarminWorkoutPlugin.Data
             {
                 m_Workouts[i].MarkAllPowerSTZoneTargetsAsDirty();
             }
+        }
+
+        private class WorkoutComparer : IComparer<Workout>
+        {
+            #region IComparer<Workout> Members
+
+            public int Compare(Workout x, Workout y)
+            {
+                return x.Name.CompareTo(y.Name);
+            }
+
+            #endregion
         }
 
         private static WorkoutManager m_Instance = new WorkoutManager();

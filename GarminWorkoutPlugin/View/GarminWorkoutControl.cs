@@ -1589,7 +1589,7 @@ namespace GarminWorkoutPlugin.View
             UpdateUIFromWorkout(m_SelectedWorkout);
         }
 
-        public void ReloadLogbook()
+        public void RefreshUIFromLogbook()
         {
             m_SelectedCategory = null;
             m_SelectedWorkout = null;
