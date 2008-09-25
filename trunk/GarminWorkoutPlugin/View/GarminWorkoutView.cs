@@ -60,11 +60,11 @@ namespace GarminWorkoutPlugin.View
 
         public System.Windows.Forms.Control CreatePageControl()
         {
-            PropertyChanged += new PropertyChangedEventHandler(OnPropertyChanged);
-            PluginMain.LogbookChanged += new PluginMain.LogbookChangedEventHandler(OnLogbookChanged);
-
             if (m_ViewControl == null)
             {
+                PropertyChanged += new PropertyChangedEventHandler(OnPropertyChanged);
+                PluginMain.LogbookChanged += new PluginMain.LogbookChangedEventHandler(OnLogbookChanged);
+
                 m_ViewControl = new GarminWorkoutControl();
             }
 
@@ -129,8 +129,9 @@ namespace GarminWorkoutPlugin.View
 
         private void OnLogbookChanged(object sender, ILogbook oldLogbook, ILogbook newLogbook)
         {
-            // Ewwww should call another function but this does the job (and some extra work)...
-            m_ViewControl.ReloadLogbook();
+            CreatePageControl();
+
+            m_ViewControl.RefreshUIFromLogbook();
         }
 
         public CultureInfo UICulture
