@@ -219,17 +219,22 @@ namespace GarminWorkoutPlugin.Data
             return null;
         }
 
-        private bool IsWorkoutNameAvailable(string name)
+        public Workout GetWorkoutWithName(string name)
         {
             for (int i = 0; i < m_Workouts.Count; ++i)
             {
-                if (m_Workouts[i].Name == name)
+                if (m_Workouts[i].Name.ToLower().Equals(name.ToLower()))
                 {
-                    return false;
+                    return m_Workouts[i];
                 }
             }
 
-            return true;
+            return null;
+        }
+
+        private bool IsWorkoutNameAvailable(string name)
+        {
+            return GetWorkoutWithName(name) == null;
         }
 
         public string GetUniqueName(string baseName)

@@ -288,6 +288,9 @@
   <data name="IntegerRangeValidationText" xml:space="preserve">
     <value>Value must be an integer between {0} and {1}</value>
   </data>
+  <data name="InvalidWorkoutNameText" xml:space="preserve">
+    <value>The entered workout name is invalid.  The name must be unique and cannot be empty.</value>
+  </data>
   <data name="LapButtonDurationComboBoxText" xml:space="preserve">
     <value>When I press the 'Lap' button on my device</value>
   </data>
