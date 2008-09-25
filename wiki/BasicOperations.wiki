@@ -27,7 +27,7 @@ When a workout is selected in the workouts list, you will notice that the delete
 = Personalizing a workout =
 
 == Changing the workout's name ==
-Changing a workout's
+Changing a workout's name is a simple task Simply click in the textbox next to the "Name :" label and enter your desired name.  The name you enter must be unique and cannot be empty
 
 == Adding new steps ==
 
