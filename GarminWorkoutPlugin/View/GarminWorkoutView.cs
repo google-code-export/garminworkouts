@@ -90,7 +90,7 @@ namespace GarminWorkoutPlugin.View
             Trace.Assert(m_ViewControl != null);
 
             // This is to make sure that the categories are up to date
-            m_ViewControl.BuildWorkoutsList();
+            m_ViewControl.RefreshUIFromLogbook();
         }
 
         public IPageStatus Status

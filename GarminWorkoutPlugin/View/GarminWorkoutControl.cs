@@ -138,6 +138,19 @@ namespace GarminWorkoutPlugin.View
             Utils.SaveWorkoutsToLogbook();
         }
 
+        private void ScheduleWorkoutButton_Click(object sender, EventArgs e)
+        {
+            DateSelectorDialog dlg = new DateSelectorDialog(m_CurrentCulture, m_CurrentTheme);
+
+            if (dlg.ShowDialog() == DialogResult.OK)
+            {
+                m_SelectedWorkout.ScheduledDates.Add(dlg.SelectedDate);
+
+                RefreshUIFromLogbook();
+                Utils.SaveWorkoutsToLogbook();
+            }
+        }
+
         private void StepsList_SelectedChanged(object sender, EventArgs e)
         {
             if (StepsList.Selected.Count > 0)
@@ -1569,6 +1582,8 @@ namespace GarminWorkoutPlugin.View
 
         public void ThemeChanged(ITheme visualTheme)
         {
+            m_CurrentTheme = visualTheme;
+
             CategoriesBanner.ThemeChanged(visualTheme);
             WorkoutsList.ThemeChanged(visualTheme);
             DetailsBanner.ThemeChanged(visualTheme);
@@ -1597,6 +1612,7 @@ namespace GarminWorkoutPlugin.View
 
             BuildWorkoutsList();
             UpdateUIFromWorkout(m_SelectedWorkout);
+            RefreshCalendarView();
         }
 
         private void AddCategoryNode(ActivityCategoryWrapper categoryNode, ActivityCategoryWrapper parent)
@@ -1885,6 +1901,7 @@ namespace GarminWorkoutPlugin.View
             {
                 StepSplit.Panel1.Enabled = false;
                 RemoveWorkoutButton.Enabled = false;
+                ScheduleWorkoutButton.Enabled = false;
                 StepSplit.Panel2.Enabled = false;
                 AddStepButton.Enabled = false;
                 AddRepeatButton.Enabled = false;
@@ -1899,6 +1916,7 @@ namespace GarminWorkoutPlugin.View
             else
             {
                 RemoveWorkoutButton.Enabled = true;
+                ScheduleWorkoutButton.Enabled = true;
                 StepSplit.Panel1.Enabled = true;
                 AddStepButton.Enabled = workout.GetStepCount() < 20;
                 AddRepeatButton.Enabled = workout.GetStepCount() < 19;
@@ -2359,6 +2377,24 @@ namespace GarminWorkoutPlugin.View
             }
         }
 
+        private void RefreshCalendarView()
+        {
+            List<DateTime> highlights = new List<DateTime>();
+
+            for(int i = 0; i < WorkoutManager.Instance.Workouts.Count; ++i)
+            {
+                Workout currentWorkout = WorkoutManager.Instance.Workouts[i];
+
+                for (int j = 0; j < currentWorkout.ScheduledDates.Count; ++j)
+                {
+                    highlights.Add(currentWorkout.ScheduledDates[j]);
+                }
+            }
+
+            PluginMain.GetApplication().Calendar.SetHighlightedDates(highlights);
+            PluginMain.GetApplication().Calendar.Selected = PluginMain.GetApplication().Calendar.Selected;
+        }
+
         private void AddNewStep(IStep newStep)
         {
             Trace.Assert(m_SelectedWorkout != null);
@@ -2769,6 +2805,7 @@ namespace GarminWorkoutPlugin.View
         private ResourceManager m_ResourceManager = new ResourceManager("GarminWorkoutPlugin.Resources.StringResources",
                                                                         Assembly.GetExecutingAssembly());
         private CultureInfo m_CurrentCulture;
+        private ITheme m_CurrentTheme;
         private ZoneFiveSoftware.Common.Visuals.Panel m_CurrentDurationPanel;
         private readonly ZoneFiveSoftware.Common.Visuals.Panel[] m_DurationPanels;
         private const int CTRL_KEY_CODE = 8;

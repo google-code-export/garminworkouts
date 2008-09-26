@@ -360,6 +360,9 @@
   <data name="SelectCategoryDialogText" xml:space="preserve">
     <value>Select category for workout </value>
   </data>
+  <data name="SelectDateText" xml:space="preserve">
+    <value>Select a date</value>
+  </data>
   <data name="SelectDeviceIntroText" xml:space="preserve">
     <value>Select your device below.  If your device doesn't appear, make sure it is connected to your PC and hit the refresh button.</value>
   </data>

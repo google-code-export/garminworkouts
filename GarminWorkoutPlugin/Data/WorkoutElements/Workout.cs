@@ -54,6 +54,13 @@ namespace GarminWorkoutPlugin.Data
             {
                 Steps[i].Serialize(stream);
             }
+
+            // Scheduled dates
+            stream.Write(BitConverter.GetBytes(ScheduledDates.Count), 0, sizeof(Int32));
+            for (int i = 0; i < ScheduledDates.Count; ++i)
+            {
+                stream.Write(BitConverter.GetBytes(ScheduledDates[i].Ticks), 0, sizeof(long));
+            }
         }
 
         public void Deserialize_V0(Stream stream, DataVersion version)
@@ -92,6 +99,7 @@ namespace GarminWorkoutPlugin.Data
             stream.Read(stringBuffer, 0, stringLength);
             Category = Utils.FindCategoryByID(Encoding.UTF8.GetString(stringBuffer));
 
+            // Steps
             stream.Read(intBuffer, 0, sizeof(Int32));
             stepCount = BitConverter.ToInt32(intBuffer, 0);
             Steps.Clear();
@@ -109,6 +117,83 @@ namespace GarminWorkoutPlugin.Data
                 else
                 {
                     Steps.Add(new RepeatStep(stream, version, this));
+                }
+            }
+        }
+
+        public void Deserialize_V4(Stream stream, DataVersion version)
+        {
+            byte[] intBuffer = new byte[sizeof(Int32)];
+            byte[] dateBuffer = new byte[sizeof(long)];
+            byte[] stringBuffer;
+            Int32 stringLength;
+            Int32 stepCount;
+            Int32 scheduledDatesCount;
+
+            // Name
+            stream.Read(intBuffer, 0, sizeof(Int32));
+            stringLength = BitConverter.ToInt32(intBuffer, 0);
+            stringBuffer = new byte[stringLength];
+            stream.Read(stringBuffer, 0, stringLength);
+            Name = Encoding.UTF8.GetString(stringBuffer);
+
+            // Notes
+            stream.Read(intBuffer, 0, sizeof(Int32));
+            stringLength = BitConverter.ToInt32(intBuffer, 0);
+
+            if (stringLength > 0)
+            {
+                stringBuffer = new byte[stringLength];
+                stream.Read(stringBuffer, 0, stringLength);
+                Notes = Encoding.UTF8.GetString(stringBuffer);
+            }
+            else
+            {
+                Notes = String.Empty;
+            }
+
+            // Category
+            stream.Read(intBuffer, 0, sizeof(Int32));
+            stringLength = BitConverter.ToInt32(intBuffer, 0);
+            stringBuffer = new byte[stringLength];
+            stream.Read(stringBuffer, 0, stringLength);
+            Category = Utils.FindCategoryByID(Encoding.UTF8.GetString(stringBuffer));
+
+            // Steps
+            stream.Read(intBuffer, 0, sizeof(Int32));
+            stepCount = BitConverter.ToInt32(intBuffer, 0);
+            Steps.Clear();
+            for (int i = 0; i < stepCount; ++i)
+            {
+                IStep.StepType type;
+
+                stream.Read(intBuffer, 0, sizeof(Int32));
+                type = (IStep.StepType)BitConverter.ToInt32(intBuffer, 0);
+
+                if (type == IStep.StepType.Regular)
+                {
+                    Steps.Add(new RegularStep(stream, version, this));
+                }
+                else
+                {
+                    Steps.Add(new RepeatStep(stream, version, this));
+                }
+            }
+
+            // Scheduled dates
+            stream.Read(intBuffer, 0, sizeof(Int32));
+            scheduledDatesCount = BitConverter.ToInt32(intBuffer, 0);
+            ScheduledDates.Clear();
+            for (int i = 0; i < scheduledDatesCount; ++i)
+            {
+                long scheduledDateInTicks;
+
+                stream.Read(dateBuffer, 0, sizeof(long));
+                scheduledDateInTicks = BitConverter.ToInt64(dateBuffer, 0);
+
+                if (scheduledDateInTicks >= DateTime.Today.Ticks)
+                {
+                    ScheduledDates.Add(new DateTime(scheduledDateInTicks));
                 }
             }
         }
@@ -139,6 +224,14 @@ namespace GarminWorkoutPlugin.Data
                 childNode = document.CreateElement("Step");
 
                 Steps[i].Serialize(childNode, document);
+                parentNode.AppendChild(childNode);
+            }
+
+            // Scheduled dates
+            for (int i = 0; i < ScheduledDates.Count; ++i)
+            {
+                childNode = document.CreateElement("ScheduledOn");
+                childNode.AppendChild(document.CreateTextNode(ScheduledDates[i].ToString("yyyy-MM-dd")));
                 parentNode.AppendChild(childNode);
             }
 
@@ -448,6 +541,11 @@ namespace GarminWorkoutPlugin.Data
             m_StepsExtensions.Add(extensionNode);
         }
 
+        public List<DateTime> ScheduledDates
+        {
+            get { return m_ScheduledDates; }
+        }
+
         public List<IStep> Steps
         {
             get { return m_Steps; }
@@ -576,6 +674,7 @@ namespace GarminWorkoutPlugin.Data
             }
         }
 
+        private List<DateTime> m_ScheduledDates = new List<DateTime>();
         private List<IStep> m_Steps = new List<IStep>();
         private List<XmlNode> m_STExtensions = new List<XmlNode>();
         private List<XmlNode> m_StepsExtensions = new List<XmlNode>();
