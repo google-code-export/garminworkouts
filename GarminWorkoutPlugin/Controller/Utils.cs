@@ -297,5 +297,24 @@ namespace GarminWorkoutPlugin.Controller
 
             return false;
         }
+
+        public static string GetWorkoutFilename(Workout workout)
+        {
+            string fileName = workout.Name;
+
+            // Replace invalid characters by underscores
+            fileName = fileName.Replace('\\', '_');
+            fileName = fileName.Replace('/', '_');
+            fileName = fileName.Replace(':', '_');
+            fileName = fileName.Replace('*', '_');
+            fileName = fileName.Replace('?', '_');
+            fileName = fileName.Replace('"', '_');
+            fileName = fileName.Replace('<', '_');
+            fileName = fileName.Replace('>', '_');
+            fileName = fileName.Replace('|', '_');
+            fileName += ".tcx";
+
+            return fileName;
+        }
     }
 }

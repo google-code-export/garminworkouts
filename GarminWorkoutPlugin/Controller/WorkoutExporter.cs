@@ -1,6 +1,7 @@
 using System;
 using System.Diagnostics;
 using System.Globalization;
+using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using System.Xml;
@@ -12,10 +13,19 @@ namespace GarminWorkoutPlugin.Controller
     {
         public static void ExportWorkout(Workout workout, Stream exportStream)
         {
-            ExportWorkout(workout, exportStream, false);
+            List<Workout> workouts = new List<Workout>();
+
+            workouts.Add(workout);
+
+            ExportWorkout(workouts, exportStream, false);
         }
 
-        public static void ExportWorkout(Workout workout, Stream exportStream, bool skipExtensions)
+        public static void ExportWorkout(List<Workout> workouts, Stream exportStream)
+        {
+            ExportWorkout(workouts, exportStream, false);
+        }
+
+        public static void ExportWorkout(List<Workout> workouts, Stream exportStream, bool skipExtensions)
         {
             Trace.Assert(exportStream.CanWrite && exportStream.Length == 0);
             XmlDocument document = new XmlDocument();
@@ -70,7 +80,11 @@ namespace GarminWorkoutPlugin.Controller
 */
             XmlNode workoutsNode = document.CreateNode(XmlNodeType.Element, "Workouts", null);
             database.AppendChild(workoutsNode);
-            ExportWorkoutInternal(workout, document, workoutsNode, skipExtensions);
+
+            for (int i = 0; i < workouts.Count; ++i)
+            {
+                ExportWorkoutInternal(workouts[i], document, workoutsNode, skipExtensions);
+            }
 
             document.Save(new StreamWriter(exportStream));
         }

@@ -105,7 +105,10 @@ namespace GarminWorkoutPlugin.View
                 GarminDeviceManager.GetInstance().SetOperatingDevice();
                 for (int i = 0; i < WorkoutManager.Instance.Workouts.Count; ++i)
                 {
-                    GarminDeviceManager.GetInstance().ExportWorkout(WorkoutManager.Instance.Workouts[i]);
+                    List<Workout> list = new List<Workout>();
+
+                    list.Add(WorkoutManager.Instance.Workouts[i]);
+                    GarminDeviceManager.GetInstance().ExportWorkout(WorkoutManager.Instance.Workouts);//list);
                 }
             }
             catch (FileNotFoundException)
@@ -137,12 +140,9 @@ namespace GarminWorkoutPlugin.View
                     for (int i = 0; i < WorkoutManager.Instance.Workouts.Count; ++i)
                     {
                         Workout currentWorkout = WorkoutManager.Instance.Workouts[i];
-                        string fileName = currentWorkout.Name;
+                        string fileName = Utils.GetWorkoutFilename(currentWorkout);
 
-                        fileName = fileName.Replace('\\', '_');
-                        fileName = fileName.Replace('/', '_');
                         file = File.Create(dlg.SelectedPath + "\\" + fileName + ".tcx");
-
                         if (file != null)
                         {
                             WorkoutExporter.ExportWorkout(currentWorkout, file);
@@ -195,7 +195,7 @@ namespace GarminWorkoutPlugin.View
                 {
                     GarminDeviceManager.ExportWorkoutTask concreteTask = (GarminDeviceManager.ExportWorkoutTask)task;
 
-                    m_FailedExportList.Add(concreteTask.Workout);
+                    m_FailedExportList.AddRange(concreteTask.Workouts);
                 }
             }
 
