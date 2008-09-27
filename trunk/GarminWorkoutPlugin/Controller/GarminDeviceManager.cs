@@ -50,9 +50,9 @@ namespace GarminWorkoutPlugin.Controller
             AddTask(new BasicTask(BasicTask.TaskTypes.TaskType_SetOperatingDevice));
         }
 
-        public void ExportWorkout(Workout workout)
+        public void ExportWorkout(List<Workout> workouts)
         {
-            AddTask(new ExportWorkoutTask(workout));
+            AddTask(new ExportWorkoutTask(workouts));
         }
 
         public void ImportWorkouts()
@@ -101,15 +101,20 @@ namespace GarminWorkoutPlugin.Controller
                         ValidateManagerState();
 
                         ExportWorkoutTask task = (ExportWorkoutTask)m_TaskQueue[0];
+                        
+                        string fileName;
 
-                        string fileName = task.Workout.Name;
+                        if (task.Workouts.Count == 1)
+                        {
+                            fileName = Utils.GetWorkoutFilename(task.Workouts[0]);
+                        }
+                        else
+                        {
+                            fileName = "Workouts.tcx";
+                        }
                         MemoryStream textStream = new MemoryStream();
 
-                        fileName = fileName.Replace('\\', '_');
-                        fileName = fileName.Replace('/', '_');
-                        fileName += ".tcx";
-
-                        WorkoutExporter.ExportWorkout(task.Workout, textStream);
+                        WorkoutExporter.ExportWorkout(task.Workouts, textStream);
                         string xmlCode = Encoding.UTF8.GetString(textStream.GetBuffer());
                         m_Controller.WriteWorkouts(m_OperatingDevice,
                                                    xmlCode,
@@ -259,18 +264,18 @@ namespace GarminWorkoutPlugin.Controller
 
         public class ExportWorkoutTask : BasicTask
         {
-            public ExportWorkoutTask(Workout workout) :
+            public ExportWorkoutTask(List<Workout> workouts) :
                 base(TaskTypes.TaskType_ExportWorkout)
             {
-                m_Workout = workout;
+                m_Workouts = workouts;
             }
 
-            public Workout Workout
+            public List<Workout> Workouts
             {
-                get { return m_Workout; }
+                get { return m_Workouts; }
             }
 
-            private Workout m_Workout;
+            private List<Workout> m_Workouts;
         }
 
         public class ImportWorkoutsTask : BasicTask
