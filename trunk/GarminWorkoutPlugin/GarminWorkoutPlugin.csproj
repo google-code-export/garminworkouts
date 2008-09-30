@@ -129,6 +129,7 @@
     <Compile Include="View\AutoExpandTreeList.cs">
       <SubType>UserControl</SubType>
     </Compile>
+    <Compile Include="View\WorkoutExportSelectedAction.cs" />
     <Compile Include="View\DateSelectorDialog.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -140,6 +141,12 @@
     </Compile>
     <Compile Include="View\SelectDeviceDialog.Designer.cs">
       <DependentUpon>SelectDeviceDialog.cs</DependentUpon>
+    </Compile>
+    <Compile Include="View\SingleSelectionCalendar.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="View\SingleSelectionCalendar.Designer.cs">
+      <DependentUpon>SingleSelectionCalendar.cs</DependentUpon>
     </Compile>
     <Compile Include="View\StepRowDataRenderer.cs" />
     <Compile Include="View\GarminWorkoutSettingsControl.cs">
@@ -160,7 +167,7 @@
     <Compile Include="View\StepIconLabelProvider.cs">
     </Compile>
     <Compile Include="View\StepWrapper.cs" />
-    <Compile Include="View\WorkoutExportAction.cs" />
+    <Compile Include="View\WorkoutExportAllAction.cs" />
     <Compile Include="View\GarminWorkoutControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -296,6 +303,7 @@
     <Content Include="Resources\Export.png" />
     <Content Include="Resources\Import.png" />
     <None Include="Resources\WorkoutDirtyIcon.png" />
+    <Content Include="Resources\PlanWorkout.png" />
     <Content Include="Resources\WorkoutIcon.png" />
     <Content Include="TODO.txt" />
   </ItemGroup>

@@ -61,6 +61,9 @@ namespace GarminWorkoutPlugin.Data
             {
                 stream.Write(BitConverter.GetBytes(ScheduledDates[i].Ticks), 0, sizeof(long));
             }
+
+            // Last export date
+            stream.Write(BitConverter.GetBytes(LastExportDate.Ticks), 0, sizeof(long));
         }
 
         public void Deserialize_V0(Stream stream, DataVersion version)
@@ -196,6 +199,87 @@ namespace GarminWorkoutPlugin.Data
                     ScheduledDates.Add(new DateTime(scheduledDateInTicks));
                 }
             }
+        }
+
+        public void Deserialize_V5(Stream stream, DataVersion version)
+        {
+            byte[] intBuffer = new byte[sizeof(Int32)];
+            byte[] dateBuffer = new byte[sizeof(long)];
+            byte[] stringBuffer;
+            Int32 stringLength;
+            Int32 stepCount;
+            Int32 scheduledDatesCount;
+
+            // Name
+            stream.Read(intBuffer, 0, sizeof(Int32));
+            stringLength = BitConverter.ToInt32(intBuffer, 0);
+            stringBuffer = new byte[stringLength];
+            stream.Read(stringBuffer, 0, stringLength);
+            Name = Encoding.UTF8.GetString(stringBuffer);
+
+            // Notes
+            stream.Read(intBuffer, 0, sizeof(Int32));
+            stringLength = BitConverter.ToInt32(intBuffer, 0);
+
+            if (stringLength > 0)
+            {
+                stringBuffer = new byte[stringLength];
+                stream.Read(stringBuffer, 0, stringLength);
+                Notes = Encoding.UTF8.GetString(stringBuffer);
+            }
+            else
+            {
+                Notes = String.Empty;
+            }
+
+            // Category
+            stream.Read(intBuffer, 0, sizeof(Int32));
+            stringLength = BitConverter.ToInt32(intBuffer, 0);
+            stringBuffer = new byte[stringLength];
+            stream.Read(stringBuffer, 0, stringLength);
+            Category = Utils.FindCategoryByID(Encoding.UTF8.GetString(stringBuffer));
+
+            // Steps
+            stream.Read(intBuffer, 0, sizeof(Int32));
+            stepCount = BitConverter.ToInt32(intBuffer, 0);
+            Steps.Clear();
+            for (int i = 0; i < stepCount; ++i)
+            {
+                IStep.StepType type;
+
+                stream.Read(intBuffer, 0, sizeof(Int32));
+                type = (IStep.StepType)BitConverter.ToInt32(intBuffer, 0);
+
+                if (type == IStep.StepType.Regular)
+                {
+                    Steps.Add(new RegularStep(stream, version, this));
+                }
+                else
+                {
+                    Steps.Add(new RepeatStep(stream, version, this));
+                }
+            }
+
+            // Scheduled dates
+            stream.Read(intBuffer, 0, sizeof(Int32));
+            scheduledDatesCount = BitConverter.ToInt32(intBuffer, 0);
+            ScheduledDates.Clear();
+            for (int i = 0; i < scheduledDatesCount; ++i)
+            {
+                long scheduledDateInTicks;
+
+                stream.Read(dateBuffer, 0, sizeof(long));
+                scheduledDateInTicks = BitConverter.ToInt64(dateBuffer, 0);
+
+                if (scheduledDateInTicks >= DateTime.Today.Ticks)
+                {
+                    ScheduledDates.Add(new DateTime(scheduledDateInTicks));
+                }
+            }
+
+            // Last export date
+            stream.Read(dateBuffer, 0, sizeof(long));
+            LastExportDate = new DateTime(BitConverter.ToInt64(dateBuffer, 0));
         }
 
         public void Serialize(XmlNode parentNode, XmlDocument document)
@@ -541,63 +625,6 @@ namespace GarminWorkoutPlugin.Data
             m_StepsExtensions.Add(extensionNode);
         }
 
-        public List<DateTime> ScheduledDates
-        {
-            get { return m_ScheduledDates; }
-        }
-
-        public List<IStep> Steps
-        {
-            get { return m_Steps; }
-        }
-
-        public IActivityCategory Category
-        {
-            get { return m_Category; }
-            set
-            {
-                Trace.Assert(value != null);
-                m_Category = value;
-            }
-        }
-
-        public string Name
-        {
-            get { return m_Name; }
-            set
-            {
-                Trace.Assert(value.Length > 0 && value.Length <= 15);
-                m_Name = value;
-            }
-        }
-
-        public string Notes
-        {
-            get { return m_Notes; }
-            set
-            {
-                Trace.Assert(value.Length <= 30000);
-                m_Notes = value;
-            }
-        }
-
-        public bool IsDirty
-        {
-            get
-            {
-                for (int i = 0; i < m_Steps.Count; ++i)
-                {
-                    if (m_Steps[i].IsDirty)
-                    {
-                        return true;
-                    }
-                }
-
-                return false;
-            }
-            set { Trace.Assert(false); }
-        }
-
         public bool ValidateAfterZoneCategoryChanged(IZoneCategory changedCategory)
         {
             bool valueChanged = false;
@@ -674,6 +701,70 @@ namespace GarminWorkoutPlugin.Data
             }
         }
 
+        public DateTime LastExportDate
+        {
+            get { return m_LastExportDate; }
+            set { m_LastExportDate = value; }
+        }
+
+        public List<DateTime> ScheduledDates
+        {
+            get { return m_ScheduledDates; }
+        }
+
+        public List<IStep> Steps
+        {
+            get { return m_Steps; }
+        }
+
+        public IActivityCategory Category
+        {
+            get { return m_Category; }
+            set
+            {
+                Trace.Assert(value != null);
+                m_Category = value;
+            }
+        }
+
+        public string Name
+        {
+            get { return m_Name; }
+            set
+            {
+                Trace.Assert(value.Length > 0 && value.Length <= 15);
+                m_Name = value;
+            }
+        }
+
+        public string Notes
+        {
+            get { return m_Notes; }
+            set
+            {
+                Trace.Assert(value.Length <= 30000);
+                m_Notes = value;
+            }
+        }
+
+        public bool IsDirty
+        {
+            get
+            {
+                for (int i = 0; i < m_Steps.Count; ++i)
+                {
+                    if (m_Steps[i].IsDirty)
+                    {
+                        return true;
+                    }
+                }
+
+                return false;
+            }
+            set { Trace.Assert(false); }
+        }
+
+        private DateTime m_LastExportDate = DateTime.Now;
         private List<DateTime> m_ScheduledDates = new List<DateTime>();
         private List<IStep> m_Steps = new List<IStep>();
         private List<XmlNode> m_STExtensions = new List<XmlNode>();

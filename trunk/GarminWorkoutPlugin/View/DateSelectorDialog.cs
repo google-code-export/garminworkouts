@@ -17,24 +17,20 @@ namespace GarminWorkoutPlugin.View
             SelectDateLabel.Text = m_ResourceManager.GetString("SelectDateText", UICulture) + " :";
             Calendar.ThemeChanged(UITheme);
 
-            m_SelectedDate = DateTime.Today;
-            Calendar.AddMarkedDate(m_SelectedDate);
+            Calendar.SelectedDate = DateTime.Today;
         }
 
         public DateTime SelectedDate
         {
-            get { return m_SelectedDate; }
+            get { return Calendar.SelectedDate; }
         }
-
-        private void Calendar_DayClick(object sender, ZoneFiveSoftware.Common.Visuals.Calendar.DayClickEventArgs e)
+        
+        private void Calendar_DoubleClick(object sender, EventArgs e)
         {
-            m_SelectedDate = e.DateClicked;
-
-            Calendar.RemoveAllMarkedDates();
-            Calendar.AddMarkedDate(m_SelectedDate);
+            this.DialogResult = DialogResult.OK;
+            this.Close();
         }
 
-        private DateTime m_SelectedDate;
         private ResourceManager m_ResourceManager = new ResourceManager("GarminWorkoutPlugin.Resources.StringResources",
                                                                         Assembly.GetExecutingAssembly());
     }

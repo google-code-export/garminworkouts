@@ -28,7 +28,7 @@ namespace GarminWorkoutPlugin.View
         /// </summary>
         private void InitializeComponent()
         {
-            this.Calendar = new ZoneFiveSoftware.Common.Visuals.Calendar();
+            this.Calendar = new SingleSelectionCalendar();
             this.SelectDateLabel = new System.Windows.Forms.Label();
             this.OKButton = new System.Windows.Forms.Button();
             this.Cancel_Button = new System.Windows.Forms.Button();
@@ -51,7 +51,7 @@ namespace GarminWorkoutPlugin.View
             this.Calendar.Size = new System.Drawing.Size(158, 384);
             this.Calendar.StartOfWeek = System.DayOfWeek.Monday;
             this.Calendar.TabIndex = 0;
-            this.Calendar.DayClick += new ZoneFiveSoftware.Common.Visuals.Calendar.DayClickHandler(this.Calendar_DayClick);
+            this.Calendar.DoubleClick += new System.EventHandler(this.Calendar_DoubleClick);
             // 
             // SelectDateLabel
             // 
@@ -102,7 +102,7 @@ namespace GarminWorkoutPlugin.View
 
         #endregion
 
-        private ZoneFiveSoftware.Common.Visuals.Calendar Calendar;
+        private SingleSelectionCalendar Calendar;
         private System.Windows.Forms.Label SelectDateLabel;
         private System.Windows.Forms.Button OKButton;
         private System.Windows.Forms.Button Cancel_Button;

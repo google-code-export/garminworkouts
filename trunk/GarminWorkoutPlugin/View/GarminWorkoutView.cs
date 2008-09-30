@@ -22,11 +22,7 @@ namespace GarminWorkoutPlugin.View
         {
             get
             {
-                return new IAction[]
-                {
-                    new WorkoutExportAction(),
-                    new WorkoutImportAction()
-                };
+                return m_Actions;
             }
         }
 
@@ -139,6 +135,12 @@ namespace GarminWorkoutPlugin.View
             get { return m_CurrentCulture; }
         }
 
+        private IAction[] m_Actions = new IAction[]
+                {
+                    new WorkoutExportAllAction(),
+                    new WorkoutExportSelectedAction(),
+                    new WorkoutImportAction()
+                };
         private GarminWorkoutControl m_ViewControl = null;
         private ResourceManager m_ResourceManager = new ResourceManager("GarminWorkoutPlugin.Resources.StringResources",
                                                                         Assembly.GetExecutingAssembly());

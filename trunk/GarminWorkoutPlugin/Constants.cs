@@ -62,6 +62,6 @@ namespace GarminWorkoutPlugin
                 "Resting"
             };
 
-        public static DataVersion CurrentVersion = new DataVersion(4);
+        public static DataVersion CurrentVersion = new DataVersion(5);
     }
 }

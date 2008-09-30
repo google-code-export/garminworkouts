@@ -12,9 +12,9 @@ using GarminWorkoutPlugin.Controller;
 
 namespace GarminWorkoutPlugin.View
 {
-    class WorkoutExportAction : IAction
+    class WorkoutExportAllAction : IAction
     {
-        public WorkoutExportAction()
+        public WorkoutExportAllAction()
         {
             PropertyChanged += new System.ComponentModel.PropertyChangedEventHandler(WorkoutExportAction_PropertyChanged);
         }
@@ -71,7 +71,7 @@ namespace GarminWorkoutPlugin.View
                 Trace.Assert(PluginMain.GetApplication().ActiveView.GetType() == typeof(GarminWorkoutView));
 
                 GarminWorkoutView currentView = (GarminWorkoutView)PluginMain.GetApplication().ActiveView;
-                return m_ResourceManager.GetString("ExportText", currentView.UICulture);
+                return m_ResourceManager.GetString("ExportAllText", currentView.UICulture);
             }
         }
 
@@ -103,13 +103,7 @@ namespace GarminWorkoutPlugin.View
                 mainWindow.Cursor = Cursors.WaitCursor;
 
                 GarminDeviceManager.GetInstance().SetOperatingDevice();
-                for (int i = 0; i < WorkoutManager.Instance.Workouts.Count; ++i)
-                {
-                    List<Workout> list = new List<Workout>();
-
-                    list.Add(WorkoutManager.Instance.Workouts[i]);
-                    GarminDeviceManager.GetInstance().ExportWorkout(WorkoutManager.Instance.Workouts);//list);
-                }
+                GarminDeviceManager.GetInstance().ExportWorkout(WorkoutManager.Instance.Workouts);
             }
             catch (FileNotFoundException)
             {
@@ -142,7 +136,7 @@ namespace GarminWorkoutPlugin.View
                         Workout currentWorkout = WorkoutManager.Instance.Workouts[i];
                         string fileName = Utils.GetWorkoutFilename(currentWorkout);
 
-                        file = File.Create(dlg.SelectedPath + "\\" + fileName + ".tcx");
+                        file = File.Create(dlg.SelectedPath + "\\" + fileName);
                         if (file != null)
                         {
                             WorkoutExporter.ExportWorkout(currentWorkout, file);
