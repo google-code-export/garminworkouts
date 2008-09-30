@@ -112,6 +112,10 @@ namespace GarminWorkoutPlugin
                             {
                                 Options.StepPanelSplitSize = int.Parse(child.FirstChild.Value);
                             }
+                            else if (child.Name == "CalendarSplitDistance")
+                            {
+                                Options.CalendarPanelSplitSize = int.Parse(child.FirstChild.Value);
+                            }
                             // Default export directory
                             else if (child.Name == "DefaultExportDirectory")
                             {
@@ -205,6 +209,10 @@ namespace GarminWorkoutPlugin
 
             child = xmlDoc.CreateElement("StepSplitDistance");
             child.AppendChild(xmlDoc.CreateTextNode(Options.StepPanelSplitSize.ToString()));
+            pluginNode.AppendChild(child);
+
+            child = xmlDoc.CreateElement("CalendarSplitDistance");
+            child.AppendChild(xmlDoc.CreateTextNode(Options.CalendarPanelSplitSize.ToString()));
             pluginNode.AppendChild(child);
 
             // Default export directory

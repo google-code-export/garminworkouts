@@ -201,14 +201,17 @@
   <data name="ErrorText" xml:space="preserve">
     <value>Error</value>
   </data>
+  <data name="ExportAllText" xml:space="preserve">
+    <value>Export All</value>
+  </data>
   <data name="ExportFailedText" xml:space="preserve">
     <value>There was an error while exporting workouts</value>
   </data>
+  <data name="ExportSelectedText" xml:space="preserve">
+    <value>Export Selected</value>
+  </data>
   <data name="ExportSuccessText" xml:space="preserve">
     <value>Workouts have been successfully exported to {0}</value>
-  </data>
-  <data name="ExportText" xml:space="preserve">
-    <value>Export</value>
   </data>
   <data name="FileDescriptionText" xml:space="preserve">
     <value>Workout Files</value>
@@ -297,6 +300,9 @@
   <data name="LapButtonDurationDescriptionText" xml:space="preserve">
     <value>Go until I press the 'lap' button on my device.</value>
   </data>
+  <data name="LastExportDateText" xml:space="preserve">
+    <value>Last export date :</value>
+  </data>
   <data name="MinuteAbbrText" xml:space="preserve">
     <value>min</value>
   </data>
@@ -356,6 +362,9 @@
   </data>
   <data name="RPMText" xml:space="preserve">
     <value>rpm</value>
+  </data>
+  <data name="ScheduleBannerText" xml:space="preserve">
+    <value>Schedule</value>
   </data>
   <data name="SelectCategoryDialogText" xml:space="preserve">
     <value>Select category for workout </value>
