@@ -5,11 +5,8 @@ Known bugs :
 
 TODO :
 - Copy/paste steps of a workout to another workout
-- Allow to select which workouts to export (instead of all)
 - Complete globalization
-- Add last export date
-- Add possiblity to plan a workout
-- Allow to change workouts ordering in the list
+- Allow workouts custom ordering in the list
 
 Nice to have :
 - Fill up the help web site
