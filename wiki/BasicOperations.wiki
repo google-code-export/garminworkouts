@@ -4,7 +4,7 @@
 Now that you're all set-up properly as described in the [Settings] page you are ready to create and manage your workouts.  Of course the basic operations are the same as in Garmin Training Center which is creating and deleting them, adding and removing steps, changing the order of those steps and of course filling them with the right information.  Keep on reading for instructions on accomplishing those tasks.
 
 = Accessing the Garmin Workouts view =
-To access the view available with the Garmin Workouts Plugin you will need to click on the link in the "Selct View" menu.
+To access the view available with the Garmin Workouts Plugin you will need to click on the link in the "Select View" menu.
 
 http://garminworkouts.googlecode.com/files/Garmin%20Workouts%20Access.gif
 
@@ -30,14 +30,25 @@ When a workout is selected in the workouts list, you will notice that the delete
 Changing a workout's name is a simple task Simply click in the textbox next to the "Name :" label and enter your desired name.  The name you enter must be unique and cannot be empty
 
 == Adding new steps ==
+After changing the workout's name, you will want to add steps to your workout.  To do so, you have two buttons, one to add regular steps http://garminworkouts.googlecode.com/files/New%20regular%20step%20button.gif, and one to add repeat steps http://garminworkouts.googlecode.com/files/New%20repeat%20step%20button.gif  The devices are limited to 20 steps per workout.  Notice also that when a step is selected, the new step (either regular or repeat) will be added right after the selected step.  When there is no step selected, it will be added as the first step of the workout.
 
 === Repeat steps ===
+Repeat steps are a special type of steps.  Basically, a repeat step contains a list of steps (either regular or repeat) that must be repeated a certain number of times before moving forward in the workout.  When creating a repeat step, it will automatically contain a single default step.
+
+This is the result of adding 2 new steps, one regular and one repeat.
+
+http://garminworkouts.googlecode.com/files/2%20new%20steps.gif
+
 
 == Removing a step ==
+Of course every so often you will want to remove a step from your workout.  A very simple button is meant for this purpose and you guessed it by now, it looks like this http://garminworkouts.googlecode.com/files/Delete%20Workout%20Button.gif.  Having empty workouts is useless so when you delete the last step of a workout, a new default step will automatically replace it.
 
 === Repeat steps ===
+Again, repeat steps need some more explications.  First of all, deleting the repeat step will also delete all of it's children, so make sure this is really what you want to do.  Secondly, just like workouts, an empty repeat step makes no sense.  So when you delete the last child inside a repeat step, the repeat step will also be automatically deleted.
+
 
 == Changing the steps order ==
+Next to the creation and deletion buttons, you find two buttons that are used to change the order of the steps inside the workout http://garminworkouts.googlecode.com/files/Move%20buttons.gif.  The up arrow moves the step up one position inside the workout or inside the repeat step.  Opposingly, the down arrow moves the step down one position.
 
 = Personalizing steps =
 
