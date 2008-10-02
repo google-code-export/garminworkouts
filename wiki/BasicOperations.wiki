@@ -1,4 +1,4 @@
-#summary This page describes the basic operation performed in the Garmin Workout Plugin
+#summary This page describes the basic operations performed in the Garmin Workout Plugin
 
 = Introduction =
 Now that you're all set-up properly as described in the [Settings] page you are ready to create and manage your workouts.  Of course the basic operations are the same as in Garmin Training Center which is creating and deleting them, adding and removing steps, changing the order of those steps and of course filling them with the right information.  Keep on reading for instructions on accomplishing those tasks.
@@ -51,8 +51,34 @@ Again, repeat steps need some more explications.  First of all, deleting the rep
 Next to the creation and deletion buttons, you find two buttons that are used to change the order of the steps inside the workout http://garminworkouts.googlecode.com/files/Move%20buttons.gif.  The up arrow moves the step up one position inside the workout or inside the repeat step.  Opposingly, the down arrow moves the step down one position.
 
 = Personalizing steps =
+Of course all the above means nothing if you don't setup the different steps that your workout contains.  First of all, you can give a custom name to your step.  To do so, you must simply type a name in the textbox right next to the "Custom step name:" label.  You can also specify if the step is active or resting.  By default, the step will be set as being active, checking the box next to the custom name textbox will rectify this situation.
+
+A step is composed of a duration and a target.  A step's duration defines when a certain step will end and the target defines a goal for a step.  Let's see how to define these elements.  Of course you must start by selecting the step you want to edit in the steps list.  This will enable the bottom section of the view as you can see in the following screenshot.
+
+http://garminworkouts.googlecode.com/files/Steps%20details.gif
+
 
 == Selecting the step's duration ==
+A step's duration is a condition that must be met for the step to end.  You have six different options for the duration
+
+  # When you press the 'lap' button on your device
+  # When you go for a certain distance
+  # When you go for a certain amount of time
+  # When your heart rate gets above a certain level
+  # When your heart rate get below a certain level
+  # When you have burned a certain number of calories
+
+To choose the duration you desire, simply click on the drop down list in the "Step Duration" section.
+
+http://garminworkouts.googlecode.com/files/Duration%20details.gif
+
+Once you have made your selection, the interface will update to allow you to set the parameters you desire.  Depending on the type of duration, you will see one of the following :
+
+|| For the 'Lap' button duration, you don't have to specify anything, you just press the 'Lap' button on your device when you wish the step to end. || http://garminworkouts.googlecode.com/files/Lap%20duration.gif ||
+|| For a distance duration, you have to specify the desired distance.  Note that even though the unit is in kilometers in the following screenshot, the unit used will be the one specified for the category in which you put the workout. || http://garminworkouts.googlecode.com/files/Distance%20duration.gif ||
+|| The time duration pops up a time control, that allows you to set the time you want for your step || http://garminworkouts.googlecode.com/files/Time%20duration.gif ||
+|| For the heart rate above and below, you will see the same controls.  With this duration though you have two choices.  You can either specify the heart rate to acheive in beats per minute (bpm) or in percentage of you maximum heart rate (% Max HR).  The drop down list is used to specify which option you want to use. || http://garminworkouts.googlecode.com/files/HR%20duration.gif ||
+|| Finally, for the calories burned duration, a simple textbox allows you to set the number of calories desired. || http://garminworkouts.googlecode.com/files/Calories%20duration.gif ||
 
 == Selecting the step's target ==
 
