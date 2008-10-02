@@ -305,6 +305,5 @@
     <None Include="Resources\WorkoutDirtyIcon.png" />
     <Content Include="Resources\PlanWorkout.png" />
     <Content Include="Resources\WorkoutIcon.png" />
-    <Content Include="TODO.txt" />
   </ItemGroup>
 </Project>

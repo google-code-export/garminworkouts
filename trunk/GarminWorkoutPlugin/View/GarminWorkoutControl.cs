@@ -1494,6 +1494,12 @@ namespace GarminWorkoutPlugin.View
 
         private void StepsList_MouseMove(object sender, MouseEventArgs e)
         {
+            if (StepsList.SelectedItems.Count == 0)
+            {
+                m_IsMouseDownInStepsList = false;
+                return;
+            }
+
             if (m_IsMouseDownInStepsList && m_MouseMovedPixels < 5)
             {
                 m_MouseMovedPixels += Math.Abs(m_LastMouseDownLocation.X - e.X);
@@ -2726,12 +2732,7 @@ namespace GarminWorkoutPlugin.View
 
         private void CleanUpWorkoutAfterDelete(Workout workout)
         {
-            if (workout.Steps.Count == 0)
-            {
-                // Cannot have an empty workout, recreate a base step
-                workout.Steps.Add(new RegularStep(SelectedWorkout));
-            }
-            else
+            if (workout.Steps.Count > 0)
             {
                 // Go through repeat steps and delete the ones which have 0 substeps
                 for (int i = 0; i < workout.Steps.Count; ++i)
@@ -2742,17 +2743,24 @@ namespace GarminWorkoutPlugin.View
                     {
                         RepeatStep concreteStep = (RepeatStep)currentStep;
 
-                        if (concreteStep.StepsToRepeat.Count == 0)
+                        if (concreteStep.StepsToRepeat.Count > 0)
+                        {
+                            CleanUpWorkoutAfterDelete(concreteStep);
+                        }
+
+                        if(concreteStep.StepsToRepeat.Count == 0)
                         {
                             workout.Steps.RemoveAt(i);
                             i--;
                         }
-                        else
-                        {
-                            CleanUpWorkoutAfterDelete(concreteStep);
-                        }
                     }
                 }
+            }
+
+            if (workout.Steps.Count == 0)
+            {
+                // Cannot have an empty workout, recreate a base step
+                workout.Steps.Add(new RegularStep(SelectedWorkout));
             }
         }
 
