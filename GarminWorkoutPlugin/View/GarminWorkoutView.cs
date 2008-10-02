@@ -96,6 +96,11 @@ namespace GarminWorkoutPlugin.View
 
         public void ThemeChanged(ITheme visualTheme)
         {
+            if (m_ViewControl == null)
+            {
+                CreatePageControl();
+            }
+
             m_ViewControl.ThemeChanged(visualTheme);
         }
 
