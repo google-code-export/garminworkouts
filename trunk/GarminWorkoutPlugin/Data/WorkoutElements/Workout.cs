@@ -425,6 +425,15 @@ namespace GarminWorkoutPlugin.Data
                         }
                     }
                 }
+                else if (child.Name == "Notes")
+                {
+                    if (child.ChildNodes.Count != 1 || child.FirstChild.GetType() != typeof(XmlText))
+                    {
+                        return false;
+                    }
+
+                    Notes = ((XmlText)child.FirstChild).Value;
+                }
                 else if (child.Name == "Extensions")
                 {
                     for (int j = 0; j < child.ChildNodes.Count; ++j)
