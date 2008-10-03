@@ -608,15 +608,16 @@ namespace GarminWorkoutPlugin.Data
             {
                 IStep currentStep = steps[i];
 
-                if (currentId == id)
-                {
-                    return currentStep;
-                }
-                else if (currentStep.Type == IStep.StepType.Repeat && id < currentId + currentStep.GetStepCount())
+                if (currentStep.Type == IStep.StepType.Repeat && id < currentId + currentStep.GetStepCount())
                 {
                     RepeatStep concreteStep = (RepeatStep)currentStep;
                     return GetStepByIdInternal(concreteStep.StepsToRepeat, id, currentId);
                 }
+                else if (currentId == id)
+                {
+                    return currentStep;
+                }
+
 
                 currentId += currentStep.GetStepCount();
             }
