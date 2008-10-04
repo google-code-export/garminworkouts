@@ -351,11 +351,20 @@
   <data name="RefreshButtonText" xml:space="preserve">
     <value>Refresh devices</value>
   </data>
+  <data name="RenameExplanationLabelText" xml:space="preserve">
+    <value>Selecting this option will use the following name for the workout.</value>
+  </data>
   <data name="RepeatStepDescriptionText" xml:space="preserve">
     <value>Repeat the steps below {0} times:</value>
   </data>
   <data name="RepetitionCountLabelText" xml:space="preserve">
     <value>How many repetitions do you want to do?</value>
+  </data>
+  <data name="ReplaceExplanationLabelText" xml:space="preserve">
+    <value>Selecting this option will overwrite the current workout that has the same name.</value>
+  </data>
+  <data name="ReplaceRenameIntroLabelText" xml:space="preserve">
+    <value>There is already a workout present that has the same name.  You can either replace the current workout or rename the new one.</value>
   </data>
   <data name="RestingCheckBoxText" xml:space="preserve">
     <value>Resting step</value>
