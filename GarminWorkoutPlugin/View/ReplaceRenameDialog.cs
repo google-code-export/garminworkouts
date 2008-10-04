@@ -12,6 +12,8 @@ namespace GarminWorkoutPlugin.View
     {
         public ReplaceRenameDialog(string newName)
         {
+            CultureInfo uiCulture = ((GarminWorkoutView)PluginMain.GetApplication().ActiveView).UICulture;
+
             InitializeComponent();
 
             ReplaceArrowPictureBox.Click += new EventHandler(ReplacePanel_Click);
@@ -23,6 +25,9 @@ namespace GarminWorkoutPlugin.View
             RenameExplanationLabel.Click += new EventHandler(RenamePanel_Click);
             NewNameLabel.Click += new EventHandler(RenamePanel_Click);
 
+            ReplaceRenameIntroLabel.Text = m_ResourceManager.GetString("ReplaceRenameIntroLabelText", uiCulture);
+            ReplaceExplanationLabel.Text = m_ResourceManager.GetString("ReplaceExplanationLabelText", uiCulture);
+            RenameExplanationLabel.Text = m_ResourceManager.GetString("RenameExplanationLabelText", uiCulture);
             NewNameTextBox.Text = newName;
         }
 

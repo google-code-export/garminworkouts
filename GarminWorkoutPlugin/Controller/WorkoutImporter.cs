@@ -66,6 +66,7 @@ namespace GarminWorkoutPlugin.Controller
 
                 if (child.Name == "Workout")
                 {
+                    IActivityCategory category = null;
                     string name = PeekWorkoutName(child);
 
                     if (!WorkoutManager.Instance.IsWorkoutNameAvailable(name))
@@ -75,7 +76,10 @@ namespace GarminWorkoutPlugin.Controller
                         if (dlg.ShowDialog() == System.Windows.Forms.DialogResult.Yes)
                         {
                             // Yes = replace, delete the current workout from the list
-                            WorkoutManager.Instance.Workouts.Remove(WorkoutManager.Instance.GetWorkoutWithName(name));
+                            Workout oldWorkout = WorkoutManager.Instance.GetWorkoutWithName(name);
+
+                            category = oldWorkout.Category;
+                            WorkoutManager.Instance.Workouts.Remove(oldWorkout);
                         }
                         else
                         {
@@ -90,11 +94,18 @@ namespace GarminWorkoutPlugin.Controller
                     {
                         newWorkout.Name = name;
 
-                        GarminWorkoutView currentView = (GarminWorkoutView)PluginMain.GetApplication().ActiveView;
-                        SelectCategoryDialog categoryDlg = new SelectCategoryDialog(newWorkout.Name, currentView.UICulture);
+                        if (category == null)
+                        {
+                            GarminWorkoutView currentView = (GarminWorkoutView)PluginMain.GetApplication().ActiveView;
+                            SelectCategoryDialog categoryDlg = new SelectCategoryDialog(newWorkout.Name, currentView.UICulture);
 
-                        categoryDlg.ShowDialog();
-                        newWorkout.Category = categoryDlg.SelectedCategory;
+                            categoryDlg.ShowDialog();
+                            newWorkout.Category = categoryDlg.SelectedCategory;
+                        }
+                        else
+                        {
+                            newWorkout.Category = category;
+                        }
                     }
                     else
                     {
