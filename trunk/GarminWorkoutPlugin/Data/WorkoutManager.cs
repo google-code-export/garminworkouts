@@ -237,9 +237,16 @@ namespace GarminWorkoutPlugin.Data
             return null;
         }
 
-        private bool IsWorkoutNameAvailable(string name)
+        public bool IsWorkoutNameAvailable(string name)
         {
             return GetWorkoutWithName(name) == null;
+        }
+
+        public bool IsWorkoutNameValid(string name)
+        {
+            Workout workoutWithSameName = GetWorkoutWithName(name);
+
+            return name != String.Empty && workoutWithSameName == null;
         }
 
         public string GetUniqueName(string baseName)
@@ -293,7 +300,7 @@ namespace GarminWorkoutPlugin.Data
             }
         }
 
-        void OnZoneCategoryChanged(object sender, IZoneCategory changedCategory)
+        private void OnZoneCategoryChanged(object sender, IZoneCategory changedCategory)
         {
             bool valueChanged = false;
 

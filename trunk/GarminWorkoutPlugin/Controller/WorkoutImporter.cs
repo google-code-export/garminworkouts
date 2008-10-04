@@ -66,10 +66,30 @@ namespace GarminWorkoutPlugin.Controller
 
                 if (child.Name == "Workout")
                 {
+                    string name = PeekWorkoutName(child);
+
+                    if (!WorkoutManager.Instance.IsWorkoutNameAvailable(name))
+                    {
+                        ReplaceRenameDialog dlg = new ReplaceRenameDialog(WorkoutManager.Instance.GetUniqueName(name));
+
+                        if (dlg.ShowDialog() == System.Windows.Forms.DialogResult.Yes)
+                        {
+                            // Yes = replace, delete the current workout from the list
+                            WorkoutManager.Instance.Workouts.Remove(WorkoutManager.Instance.GetWorkoutWithName(name));
+                        }
+                        else
+                        {
+                            // No = rename
+                            name = dlg.NewName;
+                        }
+                    }
+
                     Workout newWorkout = WorkoutManager.Instance.CreateWorkout(child);
 
                     if (newWorkout != null)
                     {
+                        newWorkout.Name = name;
+
                         GarminWorkoutView currentView = (GarminWorkoutView)PluginMain.GetApplication().ActiveView;
                         SelectCategoryDialog categoryDlg = new SelectCategoryDialog(newWorkout.Name, currentView.UICulture);
 
@@ -84,6 +104,24 @@ namespace GarminWorkoutPlugin.Controller
             }
 
             return true;
+        }
+
+        private static string PeekWorkoutName(XmlNode workoutNode)
+        {
+            for (int i = 0; i < workoutNode.ChildNodes.Count; ++i)
+            {
+                XmlNode child = workoutNode.ChildNodes.Item(i);
+
+                if (child.Name == "Name")
+                {
+                    if (child.ChildNodes.Count == 1 && child.FirstChild.GetType() == typeof(XmlText))
+                    {
+                        return ((XmlText)child.FirstChild).Value;
+                    }
+                }
+            }
+
+            return String.Empty;
         }
     }
 }

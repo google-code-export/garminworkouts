@@ -129,6 +129,12 @@
     <Compile Include="View\AutoExpandTreeList.cs">
       <SubType>UserControl</SubType>
     </Compile>
+    <Compile Include="View\ReplaceRenameDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="View\ReplaceRenameDialog.Designer.cs">
+      <DependentUpon>ReplaceRenameDialog.cs</DependentUpon>
+    </Compile>
     <Compile Include="View\WorkoutExportSelectedAction.cs" />
     <Compile Include="View\DateSelectorDialog.cs">
       <SubType>Form</SubType>
@@ -259,6 +265,10 @@
       <SubType>Designer</SubType>
       <DependentUpon>GarminWorkoutControl.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="View\ReplaceRenameDialog.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>ReplaceRenameDialog.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="View\SelectCategoryDialog.resx">
       <SubType>Designer</SubType>
       <DependentUpon>SelectCategoryDialog.cs</DependentUpon>
@@ -299,6 +309,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\CategoryIcon.png" />
+    <Content Include="Resources\Arrow.png" />
     <Content Include="Resources\DirtyWarning.png" />
     <Content Include="Resources\Export.png" />
     <Content Include="Resources\Import.png" />
