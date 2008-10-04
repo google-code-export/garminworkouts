@@ -60,6 +60,13 @@ namespace GarminWorkoutPlugin.Properties {
             }
         }
         
+        internal static System.Drawing.Bitmap Arrow {
+            get {
+                object obj = ResourceManager.GetObject("Arrow", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
         internal static System.Drawing.Bitmap CategoryIcon {
             get {
                 object obj = ResourceManager.GetObject("CategoryIcon", resourceCulture);
