@@ -293,7 +293,7 @@ namespace GarminWorkoutPlugin.Controller
                         SpeedRangeTarget concreteTarget = (SpeedRangeTarget)target;
                         Length.Units systemUnit = target.BaseTarget.ParentStep.ParentWorkout.Category.DistanceUnits;
 
-                        if (concreteTarget.ViewAsPace)
+                        if (concreteTarget.BaseTarget.ParentStep.ParentWorkout.Category.SpeedUnits == Speed.Units.Pace)
                         {
                             baseString = resManager.GetString("PaceRangeTargetDescriptionText");
 
