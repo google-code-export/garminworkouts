@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Globalization;
 using System.Reflection;
 using System.IO;
 using System.Text;
@@ -385,6 +386,8 @@ namespace GarminWorkoutPlugin.Data
             XmlNode StepsExtensionsNode = null;
             XmlNode STExtensionsNode = null;
 
+            ScheduledDates.Clear();
+
             for (int i = 0; i < parentNode.ChildNodes.Count; ++i)
             {
                 XmlNode child = parentNode.ChildNodes.Item(i);
@@ -433,6 +436,17 @@ namespace GarminWorkoutPlugin.Data
                     }
 
                     Notes = ((XmlText)child.FirstChild).Value;
+                }
+                else if (child.Name == "ScheduledOn")
+                {
+                    CultureInfo info = new CultureInfo("En-us");
+
+                    if (child.ChildNodes.Count != 1 || child.FirstChild.GetType() != typeof(XmlText))
+                    {
+                        return false;
+                    }
+
+                    ScheduledDates.Add(DateTime.ParseExact(((XmlText)child.FirstChild).Value, "yyyy-MM-dd", info.DateTimeFormat));
                 }
                 else if (child.Name == "Extensions")
                 {
@@ -774,7 +788,7 @@ namespace GarminWorkoutPlugin.Data
             set { Trace.Assert(false); }
         }
 
-        private DateTime m_LastExportDate = DateTime.Now;
+        private DateTime m_LastExportDate = new DateTime(0);
         private List<DateTime> m_ScheduledDates = new List<DateTime>();
         private List<IStep> m_Steps = new List<IStep>();
         private List<XmlNode> m_STExtensions = new List<XmlNode>();

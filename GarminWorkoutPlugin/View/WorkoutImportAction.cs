@@ -120,8 +120,7 @@ namespace GarminWorkoutPlugin.View
             DialogResult result;
 
             dlg.Title = m_ResourceManager.GetString("OpenFileText", currentView.UICulture);
-            dlg.Filter = m_ResourceManager.GetString("FileDescriptionText", currentView.UICulture) + " (*.tcx)|*.tcx";
-            dlg.DefaultExt = "tcx";
+            dlg.Filter = m_ResourceManager.GetString("FileDescriptionText", currentView.UICulture) + " (*.tcx;*.wkt)|*.tcx;*.wkt";
             dlg.CheckFileExists = true;
             result = dlg.ShowDialog();
 
