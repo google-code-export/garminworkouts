@@ -2141,7 +2141,15 @@ namespace GarminWorkoutPlugin.View
                 WorkoutCalendar.Enabled = true;
                 ExportDateTextLabel.Enabled = true;
                 ExportDateLabel.Enabled = true;
-                ExportDateLabel.Text = workout.LastExportDate.ToString(CultureInfo.CreateSpecificCulture(m_CurrentCulture.Name).DateTimeFormat.ShortDatePattern) + " " + workout.LastExportDate.ToString(CultureInfo.CreateSpecificCulture(m_CurrentCulture.Name).DateTimeFormat.ShortTimePattern);
+
+                if (workout.LastExportDate.Ticks == 0)
+                {
+                    ExportDateLabel.Text = m_ResourceManager.GetString("NeverExportedText", m_CurrentCulture);
+                }
+                else
+                {
+                    ExportDateLabel.Text = workout.LastExportDate.ToString(CultureInfo.CreateSpecificCulture(m_CurrentCulture.Name).DateTimeFormat.ShortDatePattern) + " " + workout.LastExportDate.ToString(CultureInfo.CreateSpecificCulture(m_CurrentCulture.Name).DateTimeFormat.ShortTimePattern);
+                }
 
                 ScheduleWorkoutButton.Enabled = WorkoutCalendar.SelectedDate >= DateTime.Today && !workout.ScheduledDates.Contains(WorkoutCalendar.SelectedDate);
                 RemoveScheduledDateButton.Enabled = workout.ScheduledDates.Contains(WorkoutCalendar.SelectedDate);

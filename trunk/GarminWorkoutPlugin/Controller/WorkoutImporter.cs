@@ -112,6 +112,20 @@ namespace GarminWorkoutPlugin.Controller
                         return false;
                     }
                 }
+                else if (child.Name == "Running" ||
+                         child.Name == "Biking" ||
+                         child.Name == "Other")
+                {
+                    // This seems could be a V1 formatting
+                    if (child.ChildNodes.Count == 1 &&
+                        child.FirstChild.Name == "Folder")
+                    {
+                        // Still looks valid, keep on
+                        XmlNode folderList = child.FirstChild;
+
+                        LoadWorkouts(folderList);
+                    }
+                }
             }
 
             return true;

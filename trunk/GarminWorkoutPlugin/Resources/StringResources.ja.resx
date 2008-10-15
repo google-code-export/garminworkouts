@@ -309,6 +309,9 @@
   <data name="NameLabelText" xml:space="preserve">
     <value>Name:</value>
   </data>
+  <data name="NeverExportedText" xml:space="preserve">
+    <value>Never exported</value>
+  </data>
   <data name="NotesLabelText" xml:space="preserve">
     <value>Notes:</value>
   </data>
