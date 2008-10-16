@@ -682,7 +682,7 @@ namespace GarminWorkoutPlugin.View
                         Trace.Assert(baseTarget.ConcreteTarget != null && baseTarget.ConcreteTarget.Type == IConcreteSpeedTarget.SpeedTargetType.Range);
                         SpeedRangeTarget concreteTarget = (SpeedRangeTarget)baseTarget.ConcreteTarget;
 
-                        if (baseTarget.ParentStep.ParentWorkout.Category.SpeedUnits == Speed.Units.Pace)
+                        if (concreteTarget.ViewAsPace)
                         {
                             double paceTime = concreteTarget.GetMaxSpeedInMinutesPerUnit(SelectedWorkout.Category.DistanceUnits);
                             UInt16 minutes, seconds;
@@ -834,7 +834,7 @@ namespace GarminWorkoutPlugin.View
                         Trace.Assert(baseTarget.ConcreteTarget != null && baseTarget.ConcreteTarget.Type == IConcreteSpeedTarget.SpeedTargetType.Range);
                         SpeedRangeTarget concreteTarget = (SpeedRangeTarget)baseTarget.ConcreteTarget;
 
-                        if (baseTarget.ParentStep.ParentWorkout.Category.SpeedUnits == Speed.Units.Pace)
+                        if (concreteTarget.ViewAsPace)
                         {
                             double time = Utils.TimeToFloat(LowRangeTargetText.Text);
 
@@ -963,7 +963,7 @@ namespace GarminWorkoutPlugin.View
                         Trace.Assert(baseTarget.ConcreteTarget != null && baseTarget.ConcreteTarget.Type == IConcreteSpeedTarget.SpeedTargetType.Range);
                         SpeedRangeTarget concreteTarget = (SpeedRangeTarget)baseTarget.ConcreteTarget;
 
-                        if (baseTarget.ParentStep.ParentWorkout.Category.SpeedUnits == Speed.Units.Pace)
+                        if (concreteTarget.ViewAsPace)
                         {
                             double paceTime = concreteTarget.GetMinSpeedInMinutesPerUnit(SelectedWorkout.Category.DistanceUnits);
                             UInt16 minutes, seconds;
@@ -1115,7 +1115,7 @@ namespace GarminWorkoutPlugin.View
                         Trace.Assert(baseTarget.ConcreteTarget != null && baseTarget.ConcreteTarget.Type == IConcreteSpeedTarget.SpeedTargetType.Range);
                         SpeedRangeTarget concreteTarget = (SpeedRangeTarget)baseTarget.ConcreteTarget;
 
-                        if (baseTarget.ParentStep.ParentWorkout.Category.SpeedUnits == Speed.Units.Pace)
+                        if (concreteTarget.ViewAsPace)
                         {
                             float time = Utils.TimeToFloat(HighRangeTargetText.Text);
 
@@ -2347,7 +2347,7 @@ namespace GarminWorkoutPlugin.View
                                                     Length.Units unit = SelectedWorkout.Category.DistanceUnits;
                                                     SpeedRangeTarget concreteTarget = (SpeedRangeTarget)baseTarget.ConcreteTarget;
 
-                                                    if (baseTarget.ParentStep.ParentWorkout.Category.SpeedUnits == Speed.Units.Pace)
+                                                    if (concreteTarget.ViewAsPace)
                                                     {
                                                         RangeTargetUnitsLabel.Text = m_ResourceManager.GetString("MinuteAbbrText", m_CurrentCulture) + "/" + Length.LabelAbbr(unit);
                                                         double min = concreteTarget.GetMinSpeedInMinutesPerUnit(unit);
