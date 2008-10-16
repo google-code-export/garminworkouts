@@ -110,7 +110,7 @@
     <Compile Include="Data\Durations\IDuration.cs" />
     <Compile Include="Data\Durations\TimeDuration.cs" />
     <Compile Include="Data\Durations\HeartRateBelowDuration.cs" />
-    <Compile Include="Data\Targets\Speed\BaseSpeedRangeTarget.cs" />
+    <Compile Include="Data\Targets\Speed\BaseSpeedTarget.cs" />
     <Compile Include="Data\Targets\ITarget.cs" />
     <Compile Include="Data\Durations\LapButtonDuration.cs" />
     <Compile Include="Data\ComboBoxStringProviderAttribute.cs" />

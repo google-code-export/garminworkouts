@@ -22,8 +22,6 @@ namespace GarminWorkoutPlugin.Data
             {
                 SetRangeInUnitsPerHour(15, 25, baseUnits);
             }
-
-            m_SpeedOrPace = baseTarget.ParentStep.ParentWorkout.Category.SpeedUnits;
         }
 
         public SpeedRangeTarget(double minUnitsPerHour, double maxUnitsPerHour, Length.Units speedUnit, Speed.Units speedPace, BaseSpeedTarget baseTarget)
@@ -52,7 +50,9 @@ namespace GarminWorkoutPlugin.Data
             stream.Write(BitConverter.GetBytes(m_MinUnitsPerSecond), 0, sizeof(double));
             stream.Write(BitConverter.GetBytes(m_MaxUnitsPerSecond), 0, sizeof(double));
             stream.Write(BitConverter.GetBytes((Int32)m_SpeedUnit), 0, sizeof(Int32));
-            stream.Write(BitConverter.GetBytes((Int32)m_SpeedOrPace), 0, sizeof(Int32));
+
+            // This is deprecated in version 0.2.58, should be removed from next data version
+            stream.Write(BitConverter.GetBytes(0/*(Int32)m_SpeedOrPace*/), 0, sizeof(Int32));
         }
 
         public new void Deserialize_V0(Stream stream, DataVersion version)
@@ -92,11 +92,12 @@ namespace GarminWorkoutPlugin.Data
             maxSpeed = BitConverter.ToDouble(doubleBuffer, 0) * Constants.SecondsPerHour;
             stream.Read(intBuffer, 0, sizeof(Int32));
             speedUnit = (Length.Units)BitConverter.ToInt32(intBuffer, 0);
+
+            // This is deprecated in version 0.2.58, should be removed from next data version
             stream.Read(intBuffer, 0, sizeof(Int32));
             speedOrPace = (Speed.Units)BitConverter.ToInt32(intBuffer, 0);
 
             SetRangeInUnitsPerHour(minSpeed, maxSpeed, speedUnit);
-            m_SpeedOrPace = speedOrPace;
         }
 
         public override void Serialize(XmlNode parentNode, XmlDocument document)
@@ -114,7 +115,7 @@ namespace GarminWorkoutPlugin.Data
 
             // View as
             valueNode = document.CreateElement("ViewAs");
-            valueNode.AppendChild(document.CreateTextNode(Constants.SpeedOrPaceTCXString[m_SpeedOrPace == Speed.Units.Speed ? 0 : 1]));
+            valueNode.AppendChild(document.CreateTextNode(Constants.SpeedOrPaceTCXString[!ViewAsPace ? 0 : 1]));
             parentNode.AppendChild(valueNode);
 
             // Low
@@ -134,14 +135,13 @@ namespace GarminWorkoutPlugin.Data
             {
                 double minSpeed = 0;
                 double maxSpeed = 0;
-                Speed.Units speedOrPace = Speed.Units.Speed;
 
                 for (int i = 0; i < parentNode.ChildNodes.Count; ++i)
                 {
                     XmlNode valueNode = parentNode.ChildNodes[i];
                     CultureInfo culture = new CultureInfo("en-us");
 
-                    if(valueNode.Name == "ViewAs" &&
+/*                    if(valueNode.Name == "ViewAs" &&
                         valueNode.ChildNodes.Count == 1 && valueNode.FirstChild.GetType() == typeof(XmlText))
                     {
                         if (valueNode.FirstChild.Value == "Pace")
@@ -149,7 +149,7 @@ namespace GarminWorkoutPlugin.Data
                             speedOrPace = Speed.Units.Pace;
                         }
                     }
-                    else if (valueNode.Name == "LowInMetersPerSecond" &&
+                    else */if (valueNode.Name == "LowInMetersPerSecond" &&
                         valueNode.ChildNodes.Count == 1 && valueNode.FirstChild.GetType() == typeof(XmlText))
                     {
                         minSpeed = double.Parse(valueNode.FirstChild.Value, culture.NumberFormat);
@@ -180,7 +180,6 @@ namespace GarminWorkoutPlugin.Data
                                                    minSpeed * Constants.SecondsPerHour,
                                                    Length.Units.Meter);
                         }
-                        m_SpeedOrPace = speedOrPace;
 
                         return true;
                     }
@@ -202,7 +201,7 @@ namespace GarminWorkoutPlugin.Data
 
         public bool ViewAsPace
         {
-            get { return m_SpeedOrPace == Speed.Units.Pace; }
+            get { return BaseTarget.ParentStep.ParentWorkout.Category.SpeedUnits == Speed.Units.Pace; }
         }
 
         public double GetMinSpeedInUnitsPerHour(Length.Units speedUnit)
@@ -242,7 +241,6 @@ namespace GarminWorkoutPlugin.Data
             }
 
             m_SpeedUnit = speedUnit;
-            m_SpeedOrPace = Speed.Units.Speed;
         }
 
         public void SetMaxSpeedInUnitsPerHour(double maxUnitsPerHour, Length.Units speedUnit)
@@ -260,21 +258,18 @@ namespace GarminWorkoutPlugin.Data
             }
 
             m_SpeedUnit = speedUnit;
-            m_SpeedOrPace = Speed.Units.Speed;
         }
 
         public void SetMinSpeedInMinutesPerUnit(double minMinutesPerUnit, Length.Units speedUnit)
         {
             // Convert to speed (units/hr)
             SetMinSpeedInUnitsPerHour(60.0 / minMinutesPerUnit, speedUnit);
-            m_SpeedOrPace = Speed.Units.Pace;
         }
 
         public void SetMaxSpeedInMinutesPerUnit(double maxMinutesPerUnit, Length.Units speedUnit)
         {
             // Convert to speed (units/hr)
             SetMaxSpeedInUnitsPerHour(60.0 / maxMinutesPerUnit, speedUnit);
-            m_SpeedOrPace = Speed.Units.Pace;
         }
 
         public void SetRangeInUnitsPerHour(double minUnitsPerHour, double maxUnitsPerHour, Length.Units speedUnit)
@@ -288,14 +283,12 @@ namespace GarminWorkoutPlugin.Data
             m_MinUnitsPerSecond = minUnitsPerHour / Constants.SecondsPerHour;
             m_MaxUnitsPerSecond = maxUnitsPerHour / Constants.SecondsPerHour;
             m_SpeedUnit = speedUnit;
-            m_SpeedOrPace = Speed.Units.Speed;
         }
 
         public void SetRangeInMinutesPerUnit(double minMinutesPerUnit, double maxMinutesPerUnit, Length.Units speedUnit)
         {
             // Convert to speed (units/hr)
             SetRangeInMinutesPerUnit(60.0 / minMinutesPerUnit, 60.0 / maxMinutesPerUnit, speedUnit);
-            m_SpeedOrPace = Speed.Units.Pace;
         }
 
         public override bool IsDirty
@@ -307,6 +300,5 @@ namespace GarminWorkoutPlugin.Data
         private double m_MinUnitsPerSecond;
         private double m_MaxUnitsPerSecond;
         private Length.Units m_SpeedUnit;
-        private Speed.Units m_SpeedOrPace;
     }
 }
