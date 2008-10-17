@@ -110,3 +110,14 @@ http://garminworkouts.googlecode.com/files/Cadence%20custom.gif
 As you can see, you can now specify you minimum and maximum cadence for your target.  All the different target types follow the same pattern.
 
 *Note on speed targets* : When setting up a custom speed target, you will be asked to enter the speed in either pace or in units per hour.  The usage of either pace or speed is determined by the category the workout has been put in.  If that category is set to use pace, so will the workout and vice-versa.
+
+= Exporting/Importing workouts =
+To export or import workouts, there is a little panel to the left that allows it.
+
+http://garminworkouts.googlecode.com/files/Actions.gif
+
+When you click on one of the different export/import functions, you are offered the choice of doing the action to/from the device or to/from a file.
+
+http://garminworkouts.googlecode.com/files/Actions%20clicked.gif
+
+*Notes on export/import to device* : Note that there is some problems with the export/import to device since it uses the Garmin Communicator Plugin.  Thus plugin is a little buggy and even Garmin admits that it's not tested for workouts.  To have a lsit of Communicator related bugs, head to the [http://code.google.com/p/garminworkouts/issues/list issues] page.
