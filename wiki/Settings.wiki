@@ -39,7 +39,7 @@ http://garminworkouts.googlecode.com/files/Cycling%20HR%20Zones.gif
 
 Since I use information contained within the activity category, it is very important to select the right activity category when creating your workouts.  Failure to do so will result in the display of the wrong zones in your target.
 
-You can also notice the reason why the user is given the selection of what cadence and power sone to use.  These options are simply not available in the activity categories.  At the moment, there is no option to select what zone to use on a per-activity category basis.
+You can also notice the reason why the user is given the selection of what cadence and power zone to use.  These options are simply not available in the activity categories.  At the moment, there is no option to select what zone to use on a per-activity category basis.
 
 == Default export directory ==
 The last option available in the settings page is the "Default Export Directory".  This option is used when you select to export your workouts to files.  Rather than asking for the directory at every time you export, the directory entered in this option will automatically be selected, speeding up the export process.
