@@ -120,4 +120,16 @@ When you click on one of the different export/import functions, you are offered 
 
 http://garminworkouts.googlecode.com/files/Actions%20clicked.gif
 
+The export is pretty much straight forward.  If you export to device, it will send the workouts to your device.  If you export to file, you select a folder and it creates one file per workout.
+
+The import is just as easy.  When a new workout is created though you must select it's category.  Since the category determines the units used and if pace or speed is used you must select this category according to your needs.  This is done in the following window :
+
+http://garminworkouts.googlecode.com/files/Category%20selection.gif
+
+It is also possible that you are trying to import a workout which is already present in your logbook.  In that case, you will be asked if you want to replace the old workout or rename the new one.  To rename it, simply type the new name in the textbox atr the bottom before clicking on "Rename".  To replace it, simply click on "Replace".
+
+http://garminworkouts.googlecode.com/files/ReplaceRename.gif
+
+
+
 *Notes on export/import to device* : Note that there is some problems with the export/import to device since it uses the Garmin Communicator Plugin.  Thus plugin is a little buggy and even Garmin admits that it's not tested for workouts.  To have a lsit of Communicator related bugs, head to the [http://code.google.com/p/garminworkouts/issues/list issues] page.
