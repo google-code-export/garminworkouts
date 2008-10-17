@@ -81,7 +81,32 @@ Once you have made your selection, the interface will update to allow you to set
 || Finally, for the calories burned duration, a simple textbox allows you to set the number of calories desired. || http://garminworkouts.googlecode.com/files/Calories%20duration.gif ||
 
 == Selecting the step's target ==
+After selecting the right duration for your step, you must also set it's target.  This is done right below the duration portion, where you encounter the following :
+
+http://garminworkouts.googlecode.com/files/Target%20expanded.gif
+
+Just like the durations, you have multiple target types :
+
+  # You have no specific target for this step
+  # You want to keep your speed in a certain zone
+  # You want to keep your cadence in a certain zone
+  # You want to keep your heart rate in a certain zone
+  # You want to keep your power in a certain zone
+
+All of the target types use the same model, respectively you can select a predefined zone of define a custom one.  For instance if you choose to keep your cadence in a certain zone you will be offered the following :
+
+http://garminworkouts.googlecode.com/files/Cadence%20expanded.gif
+
+The custom zone corresponds to the first item in the list and all the other options are predefined zones.
 
 === Predefined target zones ===
+Each one of the target types have their own predefined zones.  For added versatility, the plugin allows to use the zones already defined in [http://www.zonefivesoftware.com/SportTracks/ SportTracks].  This is what you see in the above screenshot, my cadence zones are "Very low", "Low", "Normal", "High", "Very High" and "Extreme".  You can also use the standard Garmin zones.  To set which zones to use, head to the [Settings] page.
 
 === Custom target zone ===
+It happens sometimes that your predefined zones don't correspond to what you want to target in your workout.  This is why the "Custom" option is available and when you select it, you are given text boxes to setup your zone.  Keeping up with the same example, you will get the following for a custom cadence target :
+
+http://garminworkouts.googlecode.com/files/Cadence%20custom.gif
+
+As you can see, you can now specify you minimum and maximum cadence for your target.  All the different target types follow the same pattern.
+
+*Note on speed targets* : When setting up a custom speed target, you will be asked to enter the speed in either pace or in units per hour.  The usage of either pace or speed is determined by the category the workout has been put in.  If that category is set to use pace, so will the workout and vice-versa.
