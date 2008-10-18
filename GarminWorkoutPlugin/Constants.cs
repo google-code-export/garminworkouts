@@ -21,8 +21,8 @@ namespace GarminWorkoutPlugin
             };
         public static readonly string[] SpeedOrPaceTCXString =
             {
-                "Speed",
-                "Pace"
+                "Pace",
+                "Speed"
             };
         public static readonly string[] DurationTypeTCXString =
             {

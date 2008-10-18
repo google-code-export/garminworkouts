@@ -2,6 +2,7 @@ using System;
 using System.Diagnostics;
 using System.IO;
 using System.Xml;
+using ZoneFiveSoftware.Common.Data.Measurement;
 using GarminWorkoutPlugin.Controller;
 
 namespace GarminWorkoutPlugin.Data
@@ -46,6 +47,11 @@ namespace GarminWorkoutPlugin.Data
         public BaseSpeedTarget BaseTarget
         {
             get { return m_BaseTarget; }
+        }
+
+        public bool ViewAsPace
+        {
+            get { return BaseTarget.ParentStep.ParentWorkout.Category.SpeedUnits == Speed.Units.Pace; }
         }
 
         public abstract bool IsDirty

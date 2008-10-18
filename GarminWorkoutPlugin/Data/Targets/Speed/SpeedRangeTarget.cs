@@ -115,7 +115,7 @@ namespace GarminWorkoutPlugin.Data
 
             // View as
             valueNode = document.CreateElement("ViewAs");
-            valueNode.AppendChild(document.CreateTextNode(Constants.SpeedOrPaceTCXString[!ViewAsPace ? 0 : 1]));
+            valueNode.AppendChild(document.CreateTextNode(Constants.SpeedOrPaceTCXString[ViewAsPace ? 0 : 1]));
             parentNode.AppendChild(valueNode);
 
             // Low
@@ -197,11 +197,6 @@ namespace GarminWorkoutPlugin.Data
         public double MaxMetersPerSecond
         {
             get { return Length.Convert(m_MaxUnitsPerSecond, m_SpeedUnit, Length.Units.Meter); }
-        }
-
-        public bool ViewAsPace
-        {
-            get { return BaseTarget.ParentStep.ParentWorkout.Category.SpeedUnits == Speed.Units.Pace; }
         }
 
         public double GetMinSpeedInUnitsPerHour(Length.Units speedUnit)
