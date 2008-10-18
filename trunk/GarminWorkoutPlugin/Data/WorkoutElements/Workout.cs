@@ -594,6 +594,36 @@ namespace GarminWorkoutPlugin.Data
                         }
                     }
                 }
+                else if (currentExtension.Name == "StepNotes")
+                {
+                    XmlNode idNode = null;
+                    XmlNode notesNode = null;
+
+                    for (int j = 0; j < currentExtension.ChildNodes.Count; ++j)
+                    {
+                        XmlNode childNode = currentExtension.ChildNodes[j];
+
+                        if (childNode.Name == "StepId" && childNode.ChildNodes.Count == 1 &&
+                            childNode.FirstChild.GetType() == typeof(XmlText) &&
+                            Utils.IsTextIntegerInRange(childNode.FirstChild.Value, 1, 20))
+                        {
+                            idNode = childNode.FirstChild;
+                        }
+                        else if (childNode.Name == "Notes" && childNode.ChildNodes.Count == 1 &&
+                                 childNode.FirstChild.GetType() == typeof(XmlText))
+                        {
+                            notesNode = childNode;
+                        }
+                    }
+
+                    if (idNode != null && notesNode != null)
+                    {
+                        int stepId = Byte.Parse(idNode.Value);
+                        IStep step = GetStepById(stepId);
+
+                        step.Notes = notesNode.FirstChild.Value;
+                    }
+                }
             }
         }
 
@@ -611,7 +641,7 @@ namespace GarminWorkoutPlugin.Data
 
         public IStep GetStepById(int id)
         {
-            return GetStepByIdInternal(Steps, id, 1);
+            return GetStepByIdInternal(Steps, id, 0);
         }
 
         private static IStep GetStepByIdInternal(IList<IStep> steps, int id, int baseId)
@@ -622,16 +652,15 @@ namespace GarminWorkoutPlugin.Data
             {
                 IStep currentStep = steps[i];
 
-                if (currentStep.Type == IStep.StepType.Repeat && id < currentId + currentStep.GetStepCount())
+                if (currentId + currentStep.GetStepCount() == id)
+                {
+                    return currentStep;
+                }
+                else if (currentStep.Type == IStep.StepType.Repeat && id <= currentId + currentStep.GetStepCount())
                 {
                     RepeatStep concreteStep = (RepeatStep)currentStep;
                     return GetStepByIdInternal(concreteStep.StepsToRepeat, id, currentId);
                 }
-                else if (currentId == id)
-                {
-                    return currentStep;
-                }
-
 
                 currentId += currentStep.GetStepCount();
             }

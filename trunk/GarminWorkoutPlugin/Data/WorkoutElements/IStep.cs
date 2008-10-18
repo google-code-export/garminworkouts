@@ -76,6 +76,20 @@ namespace GarminWorkoutPlugin.Data
             XmlNode idNode = document.CreateElement("StepId");
             idNode.AppendChild(document.CreateTextNode(Utils.GetStepExportId(this).ToString()));
             parentNode.AppendChild(idNode);
+
+            // Extension
+            XmlNode valueNode;
+            XmlNode extensionNode;
+
+            extensionNode = document.CreateElement("StepNotes");
+            valueNode = document.CreateElement("StepId");
+            valueNode.AppendChild(document.CreateTextNode(Utils.GetStepExportId(this).ToString()));
+            extensionNode.AppendChild(valueNode);
+            valueNode = document.CreateElement("Notes");
+            valueNode.AppendChild(document.CreateTextNode(Notes));
+            extensionNode.AppendChild(valueNode);
+
+            ParentWorkout.AddSportTracksExtension(extensionNode);
         }
 
         public virtual bool Deserialize(XmlNode parentNode)

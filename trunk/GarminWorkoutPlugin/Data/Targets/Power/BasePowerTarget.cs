@@ -104,7 +104,7 @@ namespace GarminWorkoutPlugin.Data
                     else if(child.Attributes.Count == 1 && child.Attributes[0].Name == "xsi:type" &&
                         child.Attributes[0].Value == "CustomPowerZone_t")
                     {
-                        // We have either a range or a ST HR zone but we can't tell before the
+                        // We have either a range or a ST power zone but we can't tell before the
                         //  extension section so create a range and if it ends up being a ST
                         //  zone, replace it
                         ConcreteTarget = new PowerRangeTarget(this);
