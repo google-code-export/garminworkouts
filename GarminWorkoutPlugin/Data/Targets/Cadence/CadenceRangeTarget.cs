@@ -101,13 +101,11 @@ namespace GarminWorkoutPlugin.Data
                         // Reorder, GTC doesn't enforce
                         if (minCadence < maxCadence)
                         {
-                            MinCadence = min;
-                            MaxCadence = max;
+                            SetValues(min, max);
                         }
                         else
                         {
-                            MinCadence = max;
-                            MaxCadence = min;
+                            SetValues(max, min);
                         }
 
                         return true;

@@ -119,7 +119,7 @@ namespace GarminWorkoutPlugin.Data
             if (Target.Type == ITarget.TargetType.Power)
             {
                 // Power was added to the format as an extension which gives me a headache
-                //  Si we need to serialize this target as having a NullTarget and then
+                //  So we need to serialize this target as having a NullTarget and then
                 //  add a step extension that uses the real target with power info
                 ITarget realTarget = Target;
 
