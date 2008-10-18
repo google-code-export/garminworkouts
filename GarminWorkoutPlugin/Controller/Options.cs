@@ -48,6 +48,12 @@ namespace GarminWorkoutPlugin.Controller
             set { m_CalendarPanelSplitSize = value; }
         }
 
+        public static int StepNotesSplitSize
+        {
+            get { return m_StepNotesSplitSize; }
+            set { m_StepNotesSplitSize = value; }
+        }
+
         public static bool UseSportTracksHeartRateZones
         {
             get { return m_UseSportTracksHeartRateZones; }
@@ -124,6 +130,7 @@ namespace GarminWorkoutPlugin.Controller
         private static int m_WorkoutPanelSplitSize = 180;
         private static int m_StepPanelSplitSize = 220;
         private static int m_CalendarPanelSplitSize = 350;
+        private static int m_StepNotesSplitSize = 520;
 
         private static bool m_UseSportTracksHeartRateZones = true;
         private static bool m_UseSportTracksSpeedZones = true;
