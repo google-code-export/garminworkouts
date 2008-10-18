@@ -33,7 +33,8 @@ namespace GarminWorkoutPlugin.Data
             {
                 MethodInfo currentMethod = methods[i];
 
-                if (currentMethod.Name.StartsWith(Constants.DeserializeMethodNamePrefix))
+                if (currentMethod.Name.StartsWith(Constants.DeserializeMethodNamePrefix) &&
+                    currentMethod.DeclaringType.FullName == forcedType.FullName)
                 {
                     Byte currentMethodVersionNumber = 0;
 

@@ -50,9 +50,6 @@ namespace GarminWorkoutPlugin.Data
             stream.Write(BitConverter.GetBytes(m_MinUnitsPerSecond), 0, sizeof(double));
             stream.Write(BitConverter.GetBytes(m_MaxUnitsPerSecond), 0, sizeof(double));
             stream.Write(BitConverter.GetBytes((Int32)m_SpeedUnit), 0, sizeof(Int32));
-
-            // This is deprecated in version 0.2.58, should be removed from next data version
-            stream.Write(BitConverter.GetBytes(0/*(Int32)m_SpeedOrPace*/), 0, sizeof(Int32));
         }
 
         public new void Deserialize_V0(Stream stream, DataVersion version)
@@ -96,6 +93,27 @@ namespace GarminWorkoutPlugin.Data
             // This is deprecated in version 0.2.58, should be removed from next data version
             stream.Read(intBuffer, 0, sizeof(Int32));
             speedOrPace = (Speed.Units)BitConverter.ToInt32(intBuffer, 0);
+
+            SetRangeInUnitsPerHour(minSpeed, maxSpeed, speedUnit);
+        }
+
+        public void Deserialize_V6(Stream stream, DataVersion version)
+        {
+            // Call base deserialization
+            Deserialize(typeof(IConcreteSpeedTarget), stream, version);
+
+            byte[] doubleBuffer = new byte[sizeof(double)];
+            byte[] intBuffer = new byte[sizeof(Int32)];
+            double minSpeed;
+            double maxSpeed;
+            Length.Units speedUnit;
+
+            stream.Read(doubleBuffer, 0, sizeof(double));
+            minSpeed = BitConverter.ToDouble(doubleBuffer, 0) * Constants.SecondsPerHour;
+            stream.Read(doubleBuffer, 0, sizeof(double));
+            maxSpeed = BitConverter.ToDouble(doubleBuffer, 0) * Constants.SecondsPerHour;
+            stream.Read(intBuffer, 0, sizeof(Int32));
+            speedUnit = (Length.Units)BitConverter.ToInt32(intBuffer, 0);
 
             SetRangeInUnitsPerHour(minSpeed, maxSpeed, speedUnit);
         }

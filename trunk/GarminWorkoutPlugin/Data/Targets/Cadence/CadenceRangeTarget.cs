@@ -41,8 +41,7 @@ namespace GarminWorkoutPlugin.Data
             // Call base deserialization
             Deserialize(typeof(IConcreteCadenceTarget), stream, version);
 
-            MinCadence = (Byte)stream.ReadByte();
-            MaxCadence = (Byte)stream.ReadByte();
+            SetValues((Byte)stream.ReadByte(), (Byte)stream.ReadByte());
         }
 
         public override void Serialize(XmlNode parentNode, XmlDocument document)

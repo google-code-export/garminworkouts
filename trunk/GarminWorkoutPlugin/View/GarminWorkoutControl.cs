@@ -1098,7 +1098,7 @@ namespace GarminWorkoutPlugin.View
                         CadenceRangeTarget concreteTarget = (CadenceRangeTarget)baseTarget.ConcreteTarget;
                         Byte newValue = Byte.Parse(HighRangeTargetText.Text);
 
-                        if (newValue > concreteTarget.MinCadence)
+                        if (newValue >= concreteTarget.MinCadence)
                         {
                             concreteTarget.MaxCadence = newValue;
                         }
@@ -1554,7 +1554,17 @@ namespace GarminWorkoutPlugin.View
         {
             Trace.Assert(SelectedWorkout != null);
 
-            SelectedWorkout.Notes = NotesText.Text;
+            SelectedWorkout.Notes = WorkoutNotesText.Text;
+
+            Utils.SaveWorkoutsToLogbook();
+        }
+
+
+        private void StepNotesText_Validated(object sender, EventArgs e)
+        {
+            Trace.Assert(m_SelectedStep != null);
+
+            m_SelectedStep.Notes = StepNotesText.Text;
 
             Utils.SaveWorkoutsToLogbook();
         }
@@ -1709,6 +1719,11 @@ namespace GarminWorkoutPlugin.View
             }
         }
 
+        private void splitContainer9_SplitterMoving(object sender, SplitterCancelEventArgs e)
+        {
+            Options.StepNotesSplitSize = e.SplitY;
+        }
+
 #endregion
 
         public void ThemeChanged(ITheme visualTheme)
@@ -1775,7 +1790,8 @@ namespace GarminWorkoutPlugin.View
             ScheduleBanner.Text = m_ResourceManager.GetString("ScheduleBannerText", m_CurrentCulture);
 
             NameLabel.Text = m_ResourceManager.GetString("NameLabelText", m_CurrentCulture);
-            NotesLabel.Text = m_ResourceManager.GetString("NotesLabelText", m_CurrentCulture);
+            WorkoutNotesLabel.Text = m_ResourceManager.GetString("NotesLabelText", m_CurrentCulture);
+            StepNotesLabel.Text = m_ResourceManager.GetString("NotesLabelText", m_CurrentCulture);
             StepNameLabel.Text = m_ResourceManager.GetString("StepNameLabelText", m_CurrentCulture);
             RestingCheckBox.Text = m_ResourceManager.GetString("RestingCheckBoxText", m_CurrentCulture);
             StepDurationGroup.Text = m_ResourceManager.GetString("StepDurationGroupText", m_CurrentCulture);
@@ -2156,7 +2172,7 @@ namespace GarminWorkoutPlugin.View
 
                 // Update control with workout data
                 WorkoutNameText.Text = workout.Name;
-                NotesText.Text = workout.Notes;
+                WorkoutNotesText.Text = workout.Notes;
 
                 if(StepsList.RowData == null)
                 {
@@ -2225,6 +2241,8 @@ namespace GarminWorkoutPlugin.View
                 Utils.GetStepInfo(m_SelectedStep, SelectedWorkout.Steps, out selectedList, out selectedPosition);
                 MoveUpButton.Enabled = selectedPosition != 0; // Not the first step
                 MoveDownButton.Enabled = selectedPosition < selectedList.Count - 1; // Not the last step
+
+                StepNotesText.Text = step.Notes;
 
                 switch (step.Type)
                 {
