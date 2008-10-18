@@ -4,6 +4,7 @@ using System.Globalization;
 using System.IO;
 using System.Xml;
 using ZoneFiveSoftware.Common.Data.Measurement;
+using GarminWorkoutPlugin.Controller;
 
 namespace GarminWorkoutPlugin.Data
 {
@@ -159,15 +160,9 @@ namespace GarminWorkoutPlugin.Data
                     XmlNode valueNode = parentNode.ChildNodes[i];
                     CultureInfo culture = new CultureInfo("en-us");
 
-/*                    if(valueNode.Name == "ViewAs" &&
-                        valueNode.ChildNodes.Count == 1 && valueNode.FirstChild.GetType() == typeof(XmlText))
-                    {
-                        if (valueNode.FirstChild.Value == "Pace")
-                        {
-                            speedOrPace = Speed.Units.Pace;
-                        }
-                    }
-                    else */if (valueNode.Name == "LowInMetersPerSecond" &&
+                    // We purposefully ignore the "View as" tag since we derive this from the category
+
+                    if (valueNode.Name == "LowInMetersPerSecond" &&
                         valueNode.ChildNodes.Count == 1 && valueNode.FirstChild.GetType() == typeof(XmlText))
                     {
                         minSpeed = double.Parse(valueNode.FirstChild.Value, culture.NumberFormat);
@@ -181,26 +176,20 @@ namespace GarminWorkoutPlugin.Data
 
                 if (minSpeed > 0 && maxSpeed > 0)
                 {
-                    double minInMiles = Length.Convert(minSpeed * Constants.SecondsPerHour, Length.Units.Meter, Length.Units.Mile);
-                    double maxInMiles = Length.Convert(maxSpeed * Constants.SecondsPerHour, Length.Units.Meter, Length.Units.Mile);
-
-                    if (minInMiles >= 1 && minInMiles <= 60 && maxInMiles >= 1 && maxInMiles <= 60)
+                    if (minSpeed < maxSpeed)
                     {
-                        if (minSpeed < maxSpeed)
-                        {
-                            SetRangeInUnitsPerHour(minSpeed * Constants.SecondsPerHour,
-                                                   maxSpeed * Constants.SecondsPerHour,
-                                                   Length.Units.Meter);
-                        }
-                        else
-                        {
-                            SetRangeInUnitsPerHour(maxSpeed * Constants.SecondsPerHour,
-                                                   minSpeed * Constants.SecondsPerHour,
-                                                   Length.Units.Meter);
-                        }
-
-                        return true;
+                        SetRangeInUnitsPerHour(minSpeed * Constants.SecondsPerHour,
+                                               maxSpeed * Constants.SecondsPerHour,
+                                               Length.Units.Meter);
                     }
+                    else
+                    {
+                        SetRangeInUnitsPerHour(maxSpeed * Constants.SecondsPerHour,
+                                               minSpeed * Constants.SecondsPerHour,
+                                               Length.Units.Meter);
+                    }
+
+                    return true;
                 }
             }
 
@@ -243,8 +232,9 @@ namespace GarminWorkoutPlugin.Data
         {
             double minInMiles = Length.Convert(minUnitsPerHour, speedUnit, Length.Units.Mile);
 
-            Trace.Assert(minInMiles >= 1 && minInMiles <= 60);
+            Utils.Clamp(minInMiles, 1, 60);
 
+            minUnitsPerHour = Length.Convert(minInMiles, Length.Units.Mile, speedUnit);
             m_MinUnitsPerSecond = minUnitsPerHour / Constants.SecondsPerHour;
 
             if (speedUnit != m_SpeedUnit)
@@ -260,8 +250,9 @@ namespace GarminWorkoutPlugin.Data
         {
             double maxInMiles = Length.Convert(maxUnitsPerHour, speedUnit, Length.Units.Mile);
 
-            Trace.Assert(maxInMiles >= 1 && maxInMiles <= 60);
+            Utils.Clamp(maxInMiles, 1, 60);
 
+            maxUnitsPerHour = Length.Convert(maxInMiles, Length.Units.Mile, speedUnit);
             m_MaxUnitsPerSecond = maxUnitsPerHour / Constants.SecondsPerHour;
 
             if (speedUnit != m_SpeedUnit)
@@ -290,8 +281,11 @@ namespace GarminWorkoutPlugin.Data
             double minInMiles = Length.Convert(minUnitsPerHour, speedUnit, Length.Units.Mile);
             double maxInMiles = Length.Convert(maxUnitsPerHour, speedUnit, Length.Units.Mile);
 
-            Trace.Assert(minInMiles >= 1 && minInMiles <= 60);
-            Trace.Assert(maxInMiles >= 1 && maxInMiles <= 60);
+            Utils.Clamp(minInMiles, 1, 60);
+            Utils.Clamp(maxInMiles, 1, 60);
+
+            minUnitsPerHour = Length.Convert(minInMiles, Length.Units.Mile, speedUnit);
+            maxUnitsPerHour = Length.Convert(maxInMiles, Length.Units.Mile, speedUnit);
 
             m_MinUnitsPerSecond = minUnitsPerHour / Constants.SecondsPerHour;
             m_MaxUnitsPerSecond = maxUnitsPerHour / Constants.SecondsPerHour;

@@ -316,5 +316,10 @@ namespace GarminWorkoutPlugin.Controller
 
             return fileName;
         }
+
+        public static double Clamp(double value, double min, double max)
+        {
+            return Math.Max(Math.Min(value, max), min);
+        }
     }
 }
