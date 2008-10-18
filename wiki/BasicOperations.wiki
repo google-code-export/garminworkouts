@@ -111,6 +111,9 @@ As you can see, you can now specify you minimum and maximum cadence for your tar
 
 *Note on speed targets* : When setting up a custom speed target, you will be asked to enter the speed in either pace or in units per hour.  The usage of either pace or speed is determined by the category the workout has been put in.  If that category is set to use pace, so will the workout and vice-versa.
 
+== Step notes ==
+At the very bottom of the screen you find a second notes text box.  These notes are step notes.  It allows you to add some more information and instructions about your step.  For instance, you could put a note regarding the position to keep on the bike (Standing, seated, aero, etc.)  Note that these informations are an addition that this plugin allows but it is not supported by any device so even though it is exported to the device, it is not available from the unit.
+
 = Exporting/Importing workouts =
 To export or import workouts, there is a little panel to the left that allows it.
 
