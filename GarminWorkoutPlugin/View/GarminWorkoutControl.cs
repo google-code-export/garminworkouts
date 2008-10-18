@@ -83,6 +83,7 @@ namespace GarminWorkoutPlugin.View
             // Reset splitter distances
             CategoriesSplit.SplitterDistance = Options.CategoriesPanelSplitSize;
             WorkoutSplit.SplitterDistance = Options.WorkoutPanelSplitSize;
+            StepsNotesSplitter.SplitterDistance = Options.StepNotesSplitSize;
             StepSplit.SplitterDistance = Math.Max(StepSplit.Panel1MinSize, StepSplit.Height - Options.StepPanelSplitSize);
             CalendarSplit.SplitterDistance = Math.Max(CalendarSplit.Panel1MinSize, CalendarSplit.Height - Options.CalendarPanelSplitSize);
         }
