@@ -220,21 +220,50 @@ namespace GarminWorkoutPlugin.View
 
         private void StepsList_SelectedChanged(object sender, EventArgs e)
         {
+            m_CancelledStepSelection = false;
+
             if (StepsList.Selected.Count > 0)
             {
-                SelectedStep = (IStep)((StepWrapper)StepsList.Selected[0]).Element;
+                if (StepsList.Selected.Count == 1)
+                {
+                    IStep selectedStep = (IStep)((StepWrapper)StepsList.Selected[0]).Element;
+
+                    if (!m_SelectedSteps.Contains(selectedStep))
+                    {
+                        SelectedStep = selectedStep;
+                    }
+                    else
+                    {
+                        SelectStepsInList(m_SelectedSteps);
+
+                        m_CancelledStepSelection = true;
+                        m_SelectedStepCancelled = selectedStep;
+                    }
+                }
+                else
+                {
+                    // We have multiple items selected
+                    m_SelectedSteps.Clear();
+                    for (int i = 0; i < StepsList.Selected.Count; ++i)
+                    {
+                        m_SelectedSteps.Add((IStep)((StepWrapper)StepsList.Selected[i]).Element);
+                    }
+
+                    m_SelectedSteps.Sort(SelectedStepComparison);
+                }
             }
             else
             {
-                SelectedSteps.Clear();
+                SelectedStep = null;
             }
 
-            UpdateUIFromStep(SelectedStep);
+            RefreshActions();
+            UpdateUIFromStep(m_SelectedSteps);
         }
         
         private void WorkoutsList_SelectedChanged(object sender, EventArgs e)
         {
-            m_CancelledSelection = false;
+            m_CancelledWorkoutSelection = false;
 
             if (WorkoutsList.Selected.Count > 0)
             {
@@ -258,8 +287,8 @@ namespace GarminWorkoutPlugin.View
                         {
                             SelectWorkoutsInList(m_SelectedWorkouts);
 
-                            m_CancelledSelection = true;
-                            m_SelectedItemCancelled = selectedWorkout;
+                            m_CancelledWorkoutSelection = true;
+                            m_SelectedWorkoutCancelled = selectedWorkout;
                         }
                     }
                     else
@@ -1309,10 +1338,10 @@ namespace GarminWorkoutPlugin.View
         {
             m_IsMouseDownInWorkoutsList = false;
 
-            if (m_CancelledSelection)
+            if (m_CancelledWorkoutSelection)
             {
                 m_SelectedWorkouts.Clear();
-                m_SelectedWorkouts.Add(m_SelectedItemCancelled);
+                m_SelectedWorkouts.Add(m_SelectedWorkoutCancelled);
 
                 SelectWorkoutsInList(m_SelectedWorkouts);
             }
@@ -1335,63 +1364,73 @@ namespace GarminWorkoutPlugin.View
 
         private void StepsList_DragDrop(object sender, DragEventArgs e)
         {
+            int rowNumber;
+            bool isInUpperHalf;
+            object destination;
+            UInt16 index;
+            Point clientPoint = StepsList.PointToClient(new Point(e.X, e.Y));
+            IStep destinationStep;
+            List<IStep> parentList;
+            List<IStep> newSelection = new List<IStep>();
+            List<IStep> stepsToMove = (List<IStep>)e.Data.GetData(typeof(List<IStep>));
             StepRowDataRenderer renderer = (StepRowDataRenderer)StepsList.RowDataRenderer;
-            IStep stepToMove = (RegularStep)e.Data.GetData(typeof(RegularStep));
 
-            // we can have either a regular or a repeat step
-            if (stepToMove == null)
+            destination = renderer.RowHitTest(clientPoint, out rowNumber, out isInUpperHalf);
+
+            if (destination == null)
             {
-                stepToMove = (RepeatStep)e.Data.GetData(typeof(RepeatStep));
+                // Insert as the last item in the workout
+                destinationStep = SelectedWorkout.Steps[SelectedWorkout.Steps.Count - 1];
+                isInUpperHalf = false;
+            }
+            else
+            {
+                destinationStep = (IStep)((StepWrapper)destination).Element;
+            }
+            Utils.GetStepInfo(destinationStep, SelectedWorkout.Steps, out parentList, out index);
+
+            if (!isInUpperHalf)
+            {
+                index++;
             }
 
-            if (stepToMove != null)
+            // Add new items
+            for (int i = 0; i < stepsToMove.Count; ++i)
             {
-                int rowNumber;
-                bool isInUpperHalf;
-                object destination;
-                IStep destinationStep;
-                Point clientPoint = StepsList.PointToClient(new Point(e.X, e.Y));
-
-                destination = renderer.RowHitTest(clientPoint, out rowNumber, out isInUpperHalf);
-
-                if(destination == null)
-                {
-                    // Insert as the last item in the workout
-                    destinationStep = SelectedWorkout.Steps[SelectedWorkout.Steps.Count - 1];
-                    isInUpperHalf = false;
-                }
-                else
-                {
-                    destinationStep = (IStep)((StepWrapper)destination).Element;
-                }
+                IStep stepToMove = stepsToMove[i];
 
                 if (e.Effect == DragDropEffects.Copy || stepToMove != destinationStep)
                 {
                     IStep movedStep = stepToMove.Clone();
-                    List<IStep> parentList;
-                    UInt16 index;
 
-                    Utils.GetStepInfo(destinationStep, SelectedWorkout.Steps, out parentList, out index);
-
-                    if(!isInUpperHalf)
-                    {
-                        index++;
-                    }
-
+                    newSelection.Add(movedStep);
                     parentList.Insert(index, movedStep);
+                }
+                else
+                {
+                    newSelection.Add(stepToMove);
+                }
 
-                    if (e.Effect == DragDropEffects.Move)
-                    {
-                        Utils.GetStepInfo(stepToMove, SelectedWorkout.Steps, out parentList, out index);
+                // This causes the subsequent steps to be appended to this one
+                //  This way they keep their original order
+                index++;
+            }
 
-                        parentList.RemoveAt(index);
-                        CleanUpWorkoutAfterDelete(SelectedWorkout);
-                    }
+            // Remove the old ones
+            if (e.Effect == DragDropEffects.Move)
+            {
+                for (int i = 0; i < stepsToMove.Count; ++i)
+                {
+                    UInt16 srcIndex;
+                    Utils.GetStepInfo(stepsToMove[i], SelectedWorkout.Steps, out parentList, out srcIndex);
 
-                    Utils.SaveWorkoutsToLogbook();
-                    UpdateUIFromWorkout(SelectedWorkout, movedStep);
+                    parentList.RemoveAt(srcIndex);
                 }
             }
+
+            CleanUpWorkoutAfterDelete(SelectedWorkout);
+            Utils.SaveWorkoutsToLogbook();
+            UpdateUIFromWorkout(SelectedWorkout, newSelection);
 
             m_IsMouseDownInStepsList = false;
             renderer.IsInDrag = false;
@@ -1400,22 +1439,17 @@ namespace GarminWorkoutPlugin.View
         private void StepsList_DragOver(object sender, DragEventArgs e)
         {
             bool isCtrlKeyDown = (e.KeyState & CTRL_KEY_CODE) != 0;
-            IStep stepToMove = (RegularStep)e.Data.GetData(typeof(RegularStep));
-
-            // we can have either a regular or a repeat step
-            if (stepToMove == null)
-            {
-                stepToMove = (RepeatStep)e.Data.GetData(typeof(RepeatStep));
-            }
+            List<IStep> stepsToMove = (List<IStep>)e.Data.GetData(typeof(List<IStep>));
 
             e.Effect = DragDropEffects.None;
 
-            if (stepToMove != null)
+            if (stepsToMove != null)
             {
                 StepRowDataRenderer renderer = (StepRowDataRenderer)StepsList.RowDataRenderer;
                 Point mouseLocation = StepsList.PointToClient(new Point(e.X, e.Y));
                 object item = renderer.RowHitTest(mouseLocation);
                 IStep destinationStep;
+                int stepsDragged = 0;
 
                 if (item == null)
                 {
@@ -1427,17 +1461,29 @@ namespace GarminWorkoutPlugin.View
                     destinationStep = (IStep)((StepWrapper)item).Element;
                 }
 
-                if (!isCtrlKeyDown ||
-                    (isCtrlKeyDown && SelectedWorkout.GetStepCount() + stepToMove.GetStepCount() <= 20))
+                // We need to count the number of items being moved
+                for (int i = 0; i < stepsToMove.Count; ++i)
                 {
-                    // In case of a repeat make sure we're not moving the step inside itself
-                    if (!isCtrlKeyDown && stepToMove.Type == IStep.StepType.Repeat)
-                    {
-                        RepeatStep repeatStep = (RepeatStep)stepToMove;
+                    stepsDragged += stepsToMove[i].GetStepCount();
+                }
 
-                        if (repeatStep.IsChildStep(destinationStep))
+                if (!isCtrlKeyDown ||
+                    (isCtrlKeyDown && SelectedWorkout.GetStepCount() + stepsDragged <= 20))
+                {
+                    // Make sure we are not moving a repeat inside itself
+                    if (!isCtrlKeyDown)
+                    {
+                        for (int i = 0; i < stepsToMove.Count; ++i)
                         {
-                            return;
+                            if (stepsToMove[i].Type == IStep.StepType.Repeat)
+                            {
+                                RepeatStep repeatStep = (RepeatStep)stepsToMove[i];
+
+                                if (repeatStep.IsChildStep(destinationStep))
+                                {
+                                    return;
+                                }
+                            }
                         }
                     }
 
@@ -1482,6 +1528,14 @@ namespace GarminWorkoutPlugin.View
 
             m_IsMouseDownInStepsList = false;
             renderer.IsInDrag = false;
+
+            if (m_CancelledStepSelection)
+            {
+                m_SelectedSteps.Clear();
+                m_SelectedSteps.Add(m_SelectedStepCancelled);
+
+                SelectStepsInList(m_SelectedSteps);
+            }
         }
 
         private void StepsList_MouseMove(object sender, MouseEventArgs e)
@@ -1500,7 +1554,7 @@ namespace GarminWorkoutPlugin.View
                 if (m_MouseMovedPixels >= 5)
                 {
                     // Start drag & drop operation
-                    DoDragDrop(((StepWrapper)StepsList.SelectedItems[0]).Element, DragDropEffects.Move | DragDropEffects.Copy);
+                    DoDragDrop(GetMinimalStepsBase(m_SelectedSteps), DragDropEffects.Move | DragDropEffects.Copy);
                 }
             }
         }
@@ -1648,7 +1702,7 @@ namespace GarminWorkoutPlugin.View
 
         private void RemoveItemButton_Click(object sender, EventArgs e)
         {
-            DeleteSelectedStep();
+            DeleteSelectedSteps();
         }
 
         private void MoveUpButton_Click(object sender, EventArgs e)
@@ -1700,9 +1754,9 @@ namespace GarminWorkoutPlugin.View
 
         private void StepsList_KeyDown(object sender, KeyEventArgs e)
         {
-            if (e.KeyCode == Keys.Delete && SelectedStep != null)
+            if (e.KeyCode == Keys.Delete && m_SelectedSteps.Count > 0)
             {
-                DeleteSelectedStep();
+                DeleteSelectedSteps();
             }
         }
 
@@ -2090,10 +2144,18 @@ namespace GarminWorkoutPlugin.View
 
         private void UpdateUIFromWorkout(Workout workout)
         {
-            UpdateUIFromWorkout(workout, null);
+            UpdateUIFromWorkout(workout, new List<IStep>(0));
         }
 
         private void UpdateUIFromWorkout(Workout workout, IStep forcedSelection)
+        {
+            List<IStep> selection = new List<IStep>(1);
+
+            selection.Add(forcedSelection);
+            UpdateUIFromWorkout(workout, selection);
+        }
+
+        private void UpdateUIFromWorkout(Workout workout, List<IStep> forcedSelection)
         {
             PaintEnabled = false;
 
@@ -2185,21 +2247,45 @@ namespace GarminWorkoutPlugin.View
                 if (forcedSelection != null)
                 {
                     List<StepWrapper> newSelection = new List<StepWrapper>();
-                    StepWrapper wrapper = GetStepWrapper((List<TreeList.TreeListNode>)StepsList.RowData, forcedSelection);
 
-                    if (wrapper != null)
+                    for (int i = 0; i < forcedSelection.Count; ++i)
                     {
-                        newSelection.Add(wrapper);
+                        StepWrapper wrapper = GetStepWrapper((List<TreeList.TreeListNode>)StepsList.RowData, forcedSelection[i]);
+
+                        if (wrapper != null)
+                        {
+                            newSelection.Add(wrapper);
+                        }
                     }
 
                     // Force update
                     StepsList.Selected = newSelection;
                 }
 
-                UpdateUIFromStep(SelectedStep);
+                UpdateUIFromStep(SelectedSteps);
             }
 
             PaintEnabled = true;
+        }
+
+        private void UpdateUIFromStep(List<IStep> steps)
+        {
+            if (steps.Count <= 1)
+            {
+                AddStepButton.Enabled = SelectedWorkout.GetStepCount() < 20;
+                AddRepeatButton.Enabled = SelectedWorkout.GetStepCount() < 19;
+                StepsNotesSplitter.Enabled = true;
+
+                UpdateUIFromStep(SelectedStep);
+            }
+            else
+            {
+                AddStepButton.Enabled = false;
+                AddRepeatButton.Enabled = false;
+                MoveDownButton.Enabled = false;
+                MoveUpButton.Enabled = false;
+                StepsNotesSplitter.Enabled = false;
+            }
         }
 
         private void UpdateUIFromStep(IStep step)
@@ -3060,6 +3146,20 @@ namespace GarminWorkoutPlugin.View
             WorkoutsList.Selected = selection;
         }
 
+        private void SelectStepsInList(List<IStep> steps)
+        {
+            List<TreeList.TreeListNode> selection = new List<TreeList.TreeListNode>();
+
+            for (int i = 0; i < steps.Count; ++i)
+            {
+                IStep currentStep = steps[i];
+
+                selection.Add(GetStepWrapper((List<TreeList.TreeListNode>)StepsList.RowData, currentStep));
+            }
+
+            StepsList.Selected = selection;
+        }
+
         private void RefreshActions()
         {
             for (int i = 0; i < PluginMain.GetApplication().ActiveView.Actions.Count; ++i)
@@ -3082,34 +3182,128 @@ namespace GarminWorkoutPlugin.View
             Utils.SaveWorkoutsToLogbook();
         }
 
+        private void DeleteSelectedSteps()
+        {
+            for (int i = 0; i < m_SelectedSteps.Count; ++i)
+            {
+                DeleteStep(m_SelectedSteps[i]);
+            }
+
+            m_SelectedSteps.Clear();
+            UpdateUIFromWorkout(SelectedWorkout);
+            Utils.SaveWorkoutsToLogbook();
+        }
+
         private void DeleteSelectedStep()
         {
-            Trace.Assert(SelectedWorkout != null && SelectedStep != null);
+            DeleteStep(SelectedStep);
+
+            UpdateUIFromWorkout(SelectedWorkout);
+            Utils.SaveWorkoutsToLogbook();
+        }
+
+        private void DeleteStep(IStep step)
+        {
+            Trace.Assert(SelectedWorkout != null && step != null);
             UInt16 selectedPosition = 0;
             List<IStep> selectedList = null;
 
-            if (Utils.GetStepInfo(SelectedStep, SelectedWorkout.Steps, out selectedList, out selectedPosition))
+            if (Utils.GetStepInfo(step, SelectedWorkout.Steps, out selectedList, out selectedPosition))
             {
                 selectedList.RemoveAt(selectedPosition);
 
                 CleanUpWorkoutAfterDelete(SelectedWorkout);
-                if (selectedPosition < selectedList.Count)
+            }
+        }
+
+        private List<IStep> GetMinimalStepsBase(List<IStep> steps)
+        {
+            List<IStep> result = new List<IStep>();
+            List<RepeatStep> baseRepeatSteps = new List<RepeatStep>();
+            List<RepeatStep> repeatSteps = new List<RepeatStep>();
+
+            // 1st pass, add all the base repeat steps to the result list
+            for (int i = 0; i < steps.Count; ++i)
+            {
+                if (steps[i].Type == IStep.StepType.Repeat)
                 {
-                    UpdateUIFromWorkout(SelectedWorkout, selectedList[selectedPosition]);
+                    repeatSteps.Add((RepeatStep)steps[i]);
                 }
-                else
+            }
+
+            for (int i = 0; i < repeatSteps.Count; ++i)
+            {
+                RepeatStep currentRepeat = repeatSteps[i];
+                bool isChild = false;
+
+                // We must check if this repeat is a base, or a child of another repeat
+                for (int j = 0; j < repeatSteps.Count; j++)
                 {
-                    if (selectedList.Count > 0)
+                    if (i != j && repeatSteps[j].IsChildStep(currentRepeat))
                     {
-                        UpdateUIFromWorkout(SelectedWorkout, selectedList[selectedList.Count - 1]);
-                    }
-                    else
-                    {
-                        UpdateUIFromWorkout(SelectedWorkout);
+                        isChild = true;
+                        break;
                     }
                 }
 
-                Utils.SaveWorkoutsToLogbook();
+                if(!isChild)
+                {
+                    baseRepeatSteps.Add(currentRepeat);
+                }
+            }
+
+            // We now have all base repeat steps in our result, check all regular steps
+            //  for inheritance against that base
+            for (int i = 0; i < steps.Count; ++i)
+            {
+                if (steps[i].Type == IStep.StepType.Regular)
+                {
+                    RegularStep currentStep = (RegularStep)steps[i];
+                    bool isChild = false;
+
+                    for (int j = 0; j < baseRepeatSteps.Count; ++j)
+                    {
+                        // We must check if this repeat is a base, or a child of another repeat
+                        if (baseRepeatSteps[j].IsChildStep(currentStep))
+                        {
+                            isChild = true;
+                            break;
+                        }
+                    }
+
+                    if (!isChild)
+                    {
+                        result.Add(currentStep);
+                    }
+                }
+                else if(baseRepeatSteps.Contains((RepeatStep)steps[i]))
+                {
+                    // Add repeats in the right order
+                    result.Add(steps[i]);
+                }
+            }
+
+            return result;
+        }
+
+        private int SelectedStepComparison(IStep x, IStep y)
+        {
+            int xId, yId;
+
+            xId = Utils.GetStepExportId(x);
+            yId = Utils.GetStepExportId(y);
+
+            if (xId < yId)
+            {
+                return -1;
+            }
+            else if (xId == yId)
+            {
+                return 0;
+            }
+            else
+            {
+                return 1;
             }
         }
 
@@ -3217,7 +3411,9 @@ namespace GarminWorkoutPlugin.View
         private Point m_LastMouseDownLocation;
         private int m_MouseMovedPixels = 0;
 
-        private bool m_CancelledSelection = false;
-        private Workout m_SelectedItemCancelled;
+        private bool m_CancelledWorkoutSelection = false;
+        private bool m_CancelledStepSelection = false;
+        private Workout m_SelectedWorkoutCancelled;
+        private IStep m_SelectedStepCancelled;
     }
 }
