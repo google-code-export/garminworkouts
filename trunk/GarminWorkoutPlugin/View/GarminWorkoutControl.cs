@@ -1398,18 +1398,10 @@ namespace GarminWorkoutPlugin.View
             for (int i = 0; i < stepsToMove.Count; ++i)
             {
                 IStep stepToMove = stepsToMove[i];
+                IStep movedStep = stepToMove.Clone();
 
-                if (e.Effect == DragDropEffects.Copy || stepToMove != destinationStep)
-                {
-                    IStep movedStep = stepToMove.Clone();
-
-                    newSelection.Add(movedStep);
-                    parentList.Insert(index, movedStep);
-                }
-                else
-                {
-                    newSelection.Add(stepToMove);
-                }
+                parentList.Insert(index, movedStep);
+                newSelection.Add(movedStep);
 
                 // This causes the subsequent steps to be appended to this one
                 //  This way they keep their original order
@@ -1421,8 +1413,9 @@ namespace GarminWorkoutPlugin.View
             {
                 for (int i = 0; i < stepsToMove.Count; ++i)
                 {
+                    IStep stepToMove = stepsToMove[i];
                     UInt16 srcIndex;
-                    Utils.GetStepInfo(stepsToMove[i], SelectedWorkout.Steps, out parentList, out srcIndex);
+                    Utils.GetStepInfo(stepToMove, SelectedWorkout.Steps, out parentList, out srcIndex);
 
                     parentList.RemoveAt(srcIndex);
                 }
