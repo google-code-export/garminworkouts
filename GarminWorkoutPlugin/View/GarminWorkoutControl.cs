@@ -2995,7 +2995,16 @@ namespace GarminWorkoutPlugin.View
                     if (currentCategory.Element == workout.Category)
                     {
                         WorkoutWrapper wrapper = new WorkoutWrapper(currentCategory, workout);
-                        currentCategory.Children.Add(wrapper);
+
+                        int index = 0;
+                        while(index < currentCategory.Children.Count &&
+                              (currentCategory.Children[index].GetType() != typeof(WorkoutWrapper) ||
+                              ((Workout)((WorkoutWrapper)currentCategory.Children[index]).Element).Name.CompareTo(wrapper.Name) < 0))
+                        {
+                            index++;
+                        }
+
+                        currentCategory.Children.Insert(index, wrapper);
 
                         return wrapper;
                     }

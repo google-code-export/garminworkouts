@@ -819,7 +819,7 @@ namespace GarminWorkoutPlugin.Data
 
         private DateTime m_LastExportDate = new DateTime(0);
         private List<DateTime> m_ScheduledDates = new List<DateTime>();
-        private List<IStep> m_Steps = new List<IStep>();
+        private List<IStep> m_Steps = new List<IStep>(20);
         private List<XmlNode> m_STExtensions = new List<XmlNode>();
         private List<XmlNode> m_StepsExtensions = new List<XmlNode>();
         private IActivityCategory m_Category;
