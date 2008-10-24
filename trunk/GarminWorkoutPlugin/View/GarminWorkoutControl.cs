@@ -8,6 +8,7 @@ using System.Globalization;
 using System.IO;
 using System.Reflection;
 using System.Resources;
+using System.Runtime.Serialization;
 using System.Windows.Forms;
 using ZoneFiveSoftware.Common.Data.Fitness;
 using ZoneFiveSoftware.Common.Data.Measurement;
@@ -1209,6 +1210,15 @@ namespace GarminWorkoutPlugin.View
                 SendKeys.Send("{TAB}");
             }
         }
+
+        private void WorkoutsList_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Delete && m_SelectedWorkouts.Count > 0)
+            {
+                DeleteSelectedWorkouts();
+            }
+        }
+
         private void WorkoutsList_DragDrop(object sender, DragEventArgs e)
         {
             TreeList.RowHitState type;
@@ -1358,6 +1368,77 @@ namespace GarminWorkoutPlugin.View
                 {
                     // Start drag & drop operation
                     DoDragDrop(m_SelectedWorkouts, DragDropEffects.Move | DragDropEffects.Copy);
+                }
+            }
+        }
+
+        private void StepsList_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Delete && m_SelectedSteps.Count > 0)
+            {
+                DeleteSelectedSteps();
+            }
+            else if (e.Control)
+            {
+                if (e.KeyCode == Keys.C || e.KeyCode == Keys.X)
+                {
+                    // Copy data to clipboard
+                    MemoryStream stepsData = new MemoryStream();
+
+                    // Number of steps to deserialize
+                    stepsData.WriteByte((Byte)m_SelectedSteps.Count);
+                    for (int i = 0; i < m_SelectedSteps.Count; ++i)
+                    {
+                        m_SelectedSteps[i].Serialize(stepsData);
+                    }
+
+                    Clipboard.SetData("GWP_StepsList", stepsData);
+
+                    if (e.KeyCode == Keys.X)
+                    {
+                        // Cut, so remove from workout
+                        DeleteSelectedSteps();
+                    }
+                }
+                else if (e.KeyCode == Keys.V)
+                {
+                    if (Clipboard.ContainsData("GWP_StepsList"))
+                    {
+                        MemoryStream pasteResult = (MemoryStream)Clipboard.GetData("GWP_StepsList");
+
+                        if (pasteResult != null && SelectedWorkout != null)
+                        {
+                            // Set back to start
+                            pasteResult.Seek(0, SeekOrigin.Begin);
+
+                            List<IStep> stepsPasted = new List<IStep>();
+                            byte[] intBuffer = new byte[sizeof(Int32)];
+                            Byte stepCount = (Byte)pasteResult.ReadByte();
+
+                            for (int i = 0; i < stepCount; i++)
+                            {
+                                IStep.StepType type;
+
+                                pasteResult.Read(intBuffer, 0, sizeof(Int32));
+                                type = (IStep.StepType)BitConverter.ToInt32(intBuffer, 0);
+
+                                if (type == IStep.StepType.Regular)
+                                {
+                                    stepsPasted.Add(new RegularStep(pasteResult, Constants.CurrentVersion, SelectedWorkout));
+                                }
+                                else
+                                {
+                                    stepsPasted.Add(new RepeatStep(pasteResult, Constants.CurrentVersion, SelectedWorkout));
+                                }
+                            }
+
+                            // Now that we deserialized, paste in the current workout
+                            SelectedWorkout.Steps.AddRange(stepsPasted);
+
+                            UpdateUIFromWorkout(SelectedWorkout, stepsPasted);
+                            Utils.SaveWorkoutsToLogbook();
+                        }
+                    }
                 }
             }
         }
@@ -1735,22 +1816,6 @@ namespace GarminWorkoutPlugin.View
         private void splitContainer9_SplitterMoving(object sender, SplitterCancelEventArgs e)
         {
             Options.StepNotesSplitSize = e.SplitY;
-        }
-
-        private void WorkoutsList_KeyDown(object sender, KeyEventArgs e)
-        {
-            if (e.KeyCode == Keys.Delete && m_SelectedWorkouts.Count > 0)
-            {
-                DeleteSelectedWorkouts();
-            }
-        }
-
-        private void StepsList_KeyDown(object sender, KeyEventArgs e)
-        {
-            if (e.KeyCode == Keys.Delete && m_SelectedSteps.Count > 0)
-            {
-                DeleteSelectedSteps();
-            }
         }
 
 #endregion
