@@ -1710,6 +1710,7 @@ namespace GarminWorkoutPlugin.View
             SelectedWorkout.Name = WorkoutNameText.Text;
             WorkoutsList.Invalidate();
 
+            BuildWorkoutsList();
             Utils.SaveWorkoutsToLogbook();
         }
 
