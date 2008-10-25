@@ -127,7 +127,7 @@ The import is just as easy.  When a new workout is created though you must selec
 
 http://garminworkouts.googlecode.com/files/Category%20selection.gif
 
-It is also possible that you are trying to import a workout which is already present in your logbook.  In that case, you will be asked if you want to replace the old workout or rename the new one.  To rename it, simply type the new name in the textbox atr the bottom before clicking on "Rename".  To replace it, simply click on "Replace".
+It is also possible that you are trying to import a workout which is already present in your logbook.  In that case, you will be asked if you want to replace the old workout or rename the new one.  To rename it, simply type the new name in the textbox at the bottom before clicking on "Rename".  To replace it, simply click on "Replace".
 
 http://garminworkouts.googlecode.com/files/ReplaceRename.gif
 
