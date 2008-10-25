@@ -1,7 +1,7 @@
 #summary Explains how to setup the Garmin Workouts plugin using the dedicated settings page
 
 = Introduction =
-So you've just installed the Garmin Workouts plugin for [http://www.zonefivesoftware.com/SportTracks SportTracks]?  Of course the first thing you want to do is configure it to your needs.  This is what the settings page is for.  This page allows you to enable or disable [http://www.zonefivesoftware.com/SportTracks SportTracks] integration inside the plugin.  This way you can use it exactly as it is done in Garmin Training Center, or you can use the different options that [http://www.zonefivesoftware.com/SportTracks SportTracks] offers.  Let's see how it's done!
+So you've just installed the Garmin Workouts plugin for [http://www.zonefivesoftware.com/SportTracks SportTracks]!  Of course the first thing you want to do is configure it to your needs.  This is what the settings page is for.  This page allows you to enable or disable [http://www.zonefivesoftware.com/SportTracks SportTracks] integration inside the plugin.  This way you can use it exactly as it is done in Garmin Training Center, or you can use the different options that [http://www.zonefivesoftware.com/SportTracks SportTracks] offers.  Let's see how it's done!
 
 == Accessing the settings ==
 First of all, you want to access the settings page.  To do so, simply select the "Settings" link in the "Other tasks" panel to the left.
