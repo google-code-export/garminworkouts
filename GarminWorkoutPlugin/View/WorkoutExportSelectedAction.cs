@@ -63,10 +63,10 @@ namespace GarminWorkoutPlugin.View
                 ContextMenu menu = new ContextMenu();
                 MenuItem menuItem;
 
-                menuItem = new MenuItem(m_ResourceManager.GetString("ToDeviceText", currentView.UICulture),
+                menuItem = new MenuItem(m_ResourceManager.GetString("ToDeviceText", GarminWorkoutView.UICulture),
                                         new EventHandler(ToDeviceEventHandler));
                 menu.MenuItems.Add(menuItem);
-                menuItem = new MenuItem(m_ResourceManager.GetString("ToFileText", currentView.UICulture),
+                menuItem = new MenuItem(m_ResourceManager.GetString("ToFileText", GarminWorkoutView.UICulture),
                                         new EventHandler(ToFileEventHandler));
                 menu.MenuItems.Add(menuItem);
 
@@ -80,8 +80,7 @@ namespace GarminWorkoutPlugin.View
             {
                 Trace.Assert(PluginMain.GetApplication().ActiveView.GetType() == typeof(GarminWorkoutView));
 
-                GarminWorkoutView currentView = (GarminWorkoutView)PluginMain.GetApplication().ActiveView;
-                return m_ResourceManager.GetString("ExportSelectedText", currentView.UICulture);
+                return m_ResourceManager.GetString("ExportSelectedText", GarminWorkoutView.UICulture);
             }
         }
 
@@ -119,13 +118,14 @@ namespace GarminWorkoutPlugin.View
             }
             catch (FileNotFoundException)
             {
-                MessageBox.Show(m_ResourceManager.GetString("DeviceCommunicationErrorText", currentView.UICulture),
-                                m_ResourceManager.GetString("ErrorText", currentView.UICulture),
+                MessageBox.Show(m_ResourceManager.GetString("DeviceCommunicationErrorText", GarminWorkoutView.UICulture),
+                                m_ResourceManager.GetString("ErrorText", GarminWorkoutView.UICulture),
                                 MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
             catch (Exception e)
             {
-                MessageBox.Show(m_ResourceManager.GetString("ExportFailedText", currentView.UICulture), m_ResourceManager.GetString("ErrorText", currentView.UICulture),
+                MessageBox.Show(m_ResourceManager.GetString("ExportFailedText", GarminWorkoutView.UICulture),
+                                m_ResourceManager.GetString("ErrorText", GarminWorkoutView.UICulture),
                                 MessageBoxButtons.OK, MessageBoxIcon.Information);
 
                 throw e;
@@ -135,8 +135,6 @@ namespace GarminWorkoutPlugin.View
         public void ToFileEventHandler(object sender, EventArgs args)
         {
             FileStream file = null;
-            GarminWorkoutView currentView = (GarminWorkoutView)PluginMain.GetApplication().ActiveView;
-            GarminWorkoutControl viewControl = (GarminWorkoutControl)currentView.CreatePageControl();
             FolderBrowserDialog dlg = new FolderBrowserDialog();
 
             dlg.SelectedPath = Options.DefaultExportDirectory;
@@ -144,6 +142,8 @@ namespace GarminWorkoutPlugin.View
             {
                 try
                 {
+                    GarminWorkoutControl viewControl = (GarminWorkoutControl)PluginMain.GetApplication().ActiveView.CreatePageControl();
+
                     for (int i = 0; i < viewControl.SelectedWorkouts.Count; ++i)
                     {
                         Workout currentWorkout = viewControl.SelectedWorkouts[i];
@@ -162,12 +162,13 @@ namespace GarminWorkoutPlugin.View
                         }
                     }
 
-                    MessageBox.Show(String.Format(m_ResourceManager.GetString("ExportSuccessText", currentView.UICulture), dlg.SelectedPath),
-                                    m_ResourceManager.GetString("SuccessText", currentView.UICulture), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    MessageBox.Show(String.Format(m_ResourceManager.GetString("ExportSuccessText", GarminWorkoutView.UICulture), dlg.SelectedPath),
+                                    m_ResourceManager.GetString("SuccessText", GarminWorkoutView.UICulture), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
                 catch (Exception e)
                 {
-                    MessageBox.Show(m_ResourceManager.GetString("ExportFailedText", currentView.UICulture), m_ResourceManager.GetString("ErrorText", currentView.UICulture),
+                    MessageBox.Show(m_ResourceManager.GetString("ExportFailedText", GarminWorkoutView.UICulture),
+                                    m_ResourceManager.GetString("ErrorText", GarminWorkoutView.UICulture),
                                     MessageBoxButtons.OK, MessageBoxIcon.Information);
 
                     throw e;
@@ -181,7 +182,6 @@ namespace GarminWorkoutPlugin.View
 
         void OnDeviceManagerTaskCompleted(GarminDeviceManager manager, GarminDeviceManager.BasicTask task, bool succeeded)
         {
-            GarminWorkoutView currentView = (GarminWorkoutView)PluginMain.GetApplication().ActiveView;
             bool exportCancelled = false;
 
             if (!succeeded)
@@ -190,8 +190,8 @@ namespace GarminWorkoutPlugin.View
                 {
                     manager.CancelAllPendingTasks();
 
-                    MessageBox.Show(m_ResourceManager.GetString("DeviceCommunicationErrorText", currentView.UICulture),
-                                    m_ResourceManager.GetString("ErrorText", currentView.UICulture),
+                    MessageBox.Show(m_ResourceManager.GetString("DeviceCommunicationErrorText", GarminWorkoutView.UICulture),
+                                    m_ResourceManager.GetString("ErrorText", GarminWorkoutView.UICulture),
                                     MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
                 else if (task.Type == GarminDeviceManager.BasicTask.TaskTypes.TaskType_SetOperatingDevice)
@@ -223,14 +223,16 @@ namespace GarminWorkoutPlugin.View
                 {
                     if (m_FailedExportList.Count == 0)
                     {
-                        MessageBox.Show(String.Format(m_ResourceManager.GetString("ExportSuccessText", currentView.UICulture), m_ResourceManager.GetString("DeviceText", currentView.UICulture)),
-                                        m_ResourceManager.GetString("SuccessText", currentView.UICulture), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        MessageBox.Show(String.Format(m_ResourceManager.GetString("ExportSuccessText", GarminWorkoutView.UICulture),
+                                        m_ResourceManager.GetString("DeviceText", GarminWorkoutView.UICulture)),
+                                        m_ResourceManager.GetString("SuccessText", GarminWorkoutView.UICulture), MessageBoxButtons.OK, MessageBoxIcon.Information);
                     }
                     else
                     {
                         m_FailedExportList.Clear();
 
-                        MessageBox.Show(m_ResourceManager.GetString("ExportFailedText", currentView.UICulture), m_ResourceManager.GetString("ErrorText", currentView.UICulture),
+                        MessageBox.Show(m_ResourceManager.GetString("ExportFailedText", GarminWorkoutView.UICulture),
+                                        m_ResourceManager.GetString("ErrorText", GarminWorkoutView.UICulture),
                                         MessageBoxButtons.OK, MessageBoxIcon.Information);
                     }
                 }

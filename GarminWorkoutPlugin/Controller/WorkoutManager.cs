@@ -37,6 +37,19 @@ namespace GarminWorkoutPlugin.Controller
             // Power dirty flag
             stream.Write(BitConverter.GetBytes(Options.IsPowerZoneDirty), 0, sizeof(bool));
 
+            // Garmin to ST category map
+            Dictionary<IActivityCategory, GarminCategories>.Enumerator iter = Options.STToGarminCategoryMap.GetEnumerator();
+            stream.Write(BitConverter.GetBytes(Options.STToGarminCategoryMap.Count), 0, sizeof(int));
+            while (iter.MoveNext())
+            {
+                // ST category Id
+                stream.Write(BitConverter.GetBytes(Encoding.UTF8.GetByteCount(iter.Current.Key.ReferenceId)), 0, sizeof(int));
+                stream.Write(Encoding.UTF8.GetBytes(iter.Current.Key.ReferenceId), 0, Encoding.UTF8.GetByteCount(iter.Current.Key.ReferenceId));
+
+                // Mapped Garmin category
+                stream.Write(BitConverter.GetBytes((int)iter.Current.Value), 0, sizeof(int));
+            }
+
             stream.Write(BitConverter.GetBytes(Workouts.Count), 0, sizeof(int));
             for (int i = 0; i < Workouts.Count; ++i)
             {
@@ -153,6 +166,68 @@ namespace GarminWorkoutPlugin.Controller
             // Power dirty flag
             stream.Read(boolBuffer, 0, sizeof(bool));
             Options.IsPowerZoneDirty = BitConverter.ToBoolean(boolBuffer, 0);
+
+            stream.Read(intBuffer, 0, sizeof(Int32));
+            workoutCount = BitConverter.ToInt32(intBuffer, 0);
+            for (int i = 0; i < workoutCount; ++i)
+            {
+                m_Workouts.Add(new Workout(stream, version));
+            }
+            m_Workouts.Sort(new WorkoutComparer());
+        }
+
+        public void Deserialize_V7(Stream stream, DataVersion version)
+        {
+            byte[] intBuffer = new byte[sizeof(Int32)];
+            byte[] boolBuffer = new byte[sizeof(bool)];
+            byte[] stringBuffer;
+            int workoutCount;
+            int mappingCount;
+            int stringLength;
+
+            // Read options that are stored in logbook
+            // Cadence zone
+            stream.Read(intBuffer, 0, sizeof(int));
+            stringLength = BitConverter.ToInt32(intBuffer, 0);
+            stringBuffer = new byte[stringLength];
+            stream.Read(stringBuffer, 0, stringLength);
+            Options.CadenceZoneCategory = Utils.FindZoneCategoryByID(PluginMain.GetApplication().Logbook.CadenceZones, Encoding.UTF8.GetString(stringBuffer));
+
+            // Cadence dirty flag
+            stream.Read(boolBuffer, 0, sizeof(bool));
+            Options.IsCadenceZoneDirty = BitConverter.ToBoolean(boolBuffer, 0);
+
+            // Power zone
+            stream.Read(intBuffer, 0, sizeof(int));
+            stringLength = BitConverter.ToInt32(intBuffer, 0);
+            stringBuffer = new byte[stringLength];
+            stream.Read(stringBuffer, 0, stringLength);
+            Options.PowerZoneCategory = Utils.FindZoneCategoryByID(PluginMain.GetApplication().Logbook.PowerZones, Encoding.UTF8.GetString(stringBuffer));
+
+            // Power dirty flag
+            stream.Read(boolBuffer, 0, sizeof(bool));
+            Options.IsPowerZoneDirty = BitConverter.ToBoolean(boolBuffer, 0);
+
+            // Load Garmin to ST category map
+            stream.Read(intBuffer, 0, sizeof(int));
+            mappingCount = BitConverter.ToInt32(intBuffer, 0);
+
+            for (int i = 0; i < mappingCount; ++i)
+            {
+                int garminCategory;
+
+                // ST category Id
+                stream.Read(intBuffer, 0, sizeof(int));
+                stringLength = BitConverter.ToInt32(intBuffer, 0);
+                stringBuffer = new byte[stringLength];
+                stream.Read(stringBuffer, 0, stringLength);
+
+                // Mapped Garmin category
+                stream.Read(intBuffer, 0, sizeof(int));
+                garminCategory = BitConverter.ToInt32(intBuffer, 0);
+
+                Options.STToGarminCategoryMap[Utils.FindCategoryByIDSafe(Encoding.UTF8.GetString(stringBuffer))] = (GarminCategories)garminCategory;
+            }
 
             stream.Read(intBuffer, 0, sizeof(Int32));
             workoutCount = BitConverter.ToInt32(intBuffer, 0);

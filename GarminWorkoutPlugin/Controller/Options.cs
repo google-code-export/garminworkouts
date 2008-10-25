@@ -9,18 +9,21 @@ namespace GarminWorkoutPlugin.Controller
 {
     class Options
     {
-        public static void ValidateAfterZoneCategoryChanged(IZoneCategory categoryChanged)
+        public static void OnActivityCategoryChanged(object sender, IActivityCategory categoryChanged)
         {
-            if(!Utils.ZoneCategoryStillExists(PluginMain.GetApplication().Logbook.CadenceZones, m_CadenceZoneCategory))
+            List<IActivityCategory> itemsToDelete = new List<IActivityCategory>();
+            Dictionary<IActivityCategory, GarminCategories>.KeyCollection.Enumerator iter = m_STToGarminCategoryMap.Keys.GetEnumerator();
+            while(iter.MoveNext())
             {
-                m_CadenceZoneCategory = PluginMain.GetApplication().Logbook.CadenceZones[0];
-                IsCadenceZoneDirty = true;
+                if (Utils.FindCategoryByID(iter.Current.ReferenceId) == null)
+                {
+                    itemsToDelete.Add(iter.Current);
+                }
             }
 
-            if(!Utils.ZoneCategoryStillExists(PluginMain.GetApplication().Logbook.PowerZones, m_PowerZoneCategory))
+            for (int i = 0; i < itemsToDelete.Count; ++i)
             {
-                m_PowerZoneCategory = PluginMain.GetApplication().Logbook.PowerZones[0];
-                IsPowerZoneDirty = true;
+                m_STToGarminCategoryMap.Remove(itemsToDelete[i]);
             }
         }
 
@@ -126,6 +129,24 @@ namespace GarminWorkoutPlugin.Controller
             set { m_IsCadenceZoneDirty = value; }
         }
 
+        public static Dictionary<IActivityCategory, GarminCategories>  STToGarminCategoryMap
+        {
+            get { return m_STToGarminCategoryMap; }
+            set { m_STToGarminCategoryMap = value; }
+        }
+
+        public static GarminCategories GetGarminCategory(IActivityCategory STCategory)
+        {
+            if(m_STToGarminCategoryMap.ContainsKey(STCategory))
+            {
+                return m_STToGarminCategoryMap[STCategory];
+            }
+            else
+            {
+                return GetGarminCategory(STCategory.Parent);
+            }
+        }
+
         private static int m_CategoriesPanelSplitSize = 200;
         private static int m_WorkoutPanelSplitSize = 180;
         private static int m_StepPanelSplitSize = 220;
@@ -137,7 +158,7 @@ namespace GarminWorkoutPlugin.Controller
         private static bool m_UseSportTracksPowerZones = true;
         private static IZoneCategory m_CadenceZoneCategory;
         private static IZoneCategory m_PowerZoneCategory;
-
+        private static Dictionary<IActivityCategory, GarminCategories> m_STToGarminCategoryMap = new Dictionary<IActivityCategory, GarminCategories>();
         private static String m_DefaultExportDirectory = Assembly.GetCallingAssembly().Location.Substring(0, Assembly.GetCallingAssembly().Location.LastIndexOf('\\'));
 
         private static bool m_IsPowerZoneDirty = false;

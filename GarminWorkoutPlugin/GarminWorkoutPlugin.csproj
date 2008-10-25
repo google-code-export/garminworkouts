@@ -70,10 +70,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Constants.cs" />
+    <Compile Include="Controller\GarminCategoryStringProviderAttribute.cs" />
     <Compile Include="Data\DataTooRecentException.cs" />
     <Compile Include="Data\DataVersion.cs" />
     <Compile Include="Data\Durations\DurationFactory.cs" />
     <Compile Include="Controller\GarminDeviceManager.cs" />
+    <Compile Include="Data\GarminCategories.cs" />
     <Compile Include="Data\IDirty.cs" />
     <Compile Include="Data\IPluginSerializable.cs" />
     <Compile Include="Data\IXMLSerializable.cs" />
@@ -113,7 +115,7 @@
     <Compile Include="Data\Targets\Speed\BaseSpeedTarget.cs" />
     <Compile Include="Data\Targets\ITarget.cs" />
     <Compile Include="Data\Durations\LapButtonDuration.cs" />
-    <Compile Include="Data\ComboBoxStringProviderAttribute.cs" />
+    <Compile Include="Controller\ComboBoxStringProviderAttribute.cs" />
     <Compile Include="Controller\WorkoutManager.cs" />
     <Compile Include="Controller\WorkoutExporter.cs" />
     <Compile Include="Controller\WorkoutImporter.cs" />
@@ -129,6 +131,7 @@
     <Compile Include="View\AutoExpandTreeList.cs">
       <SubType>UserControl</SubType>
     </Compile>
+    <Compile Include="View\STToGarminActivityCategoryWrapper.cs" />
     <Compile Include="View\ReplaceRenameDialog.cs">
       <SubType>Form</SubType>
     </Compile>

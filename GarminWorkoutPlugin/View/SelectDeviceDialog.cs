@@ -3,6 +3,7 @@ using System.Globalization;
 using System.Reflection;
 using System.Resources;
 using System.Windows.Forms;
+using ZoneFiveSoftware.Common.Visuals;
 using ZoneFiveSoftware.SportTracks.Device.GarminGPS;
 using GarminWorkoutPlugin.Controller;
 
@@ -12,8 +13,7 @@ namespace GarminWorkoutPlugin.View
     {
         public SelectDeviceDialog()
         {
-            GarminWorkoutView currentView = (GarminWorkoutView)PluginMain.GetApplication().ActiveView;
-            CultureInfo UICulture = currentView.UICulture;
+            CultureInfo UICulture = GarminWorkoutView.UICulture;
 
             InitializeComponent();
 
@@ -22,8 +22,8 @@ namespace GarminWorkoutPlugin.View
             this.Text = m_ResourceManager.GetString("SelectDeviceText", UICulture);
             IntroLabel.Text = m_ResourceManager.GetString("SelectDeviceIntroText", UICulture);
             RefreshButton.Text = m_ResourceManager.GetString("RefreshButtonText", UICulture);
-            Cancel_Button.Text = m_ResourceManager.GetString("CancelButtonText", UICulture);
-            OKButton.Text = m_ResourceManager.GetString("OKButtonText", UICulture);
+            Cancel_Button.Text = CommonResources.Text.ActionCancel;
+            OKButton.Text = CommonResources.Text.ActionOk;
 
             RefreshDeviceComboBox();
         }
