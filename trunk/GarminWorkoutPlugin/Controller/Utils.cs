@@ -11,7 +11,12 @@ namespace GarminWorkoutPlugin.Controller
     {
         public static IActivityCategory FindCategoryByID(string categoryID)
         {
-            IActivityCategory category = FindCategoryByIDInList(categoryID, PluginMain.GetApplication().Logbook.ActivityCategories);
+            return FindCategoryByIDInList(categoryID, PluginMain.GetApplication().Logbook.ActivityCategories);
+        }
+
+        public static IActivityCategory FindCategoryByIDSafe(string categoryID)
+        {
+            IActivityCategory category = FindCategoryByID(categoryID);
             if (category != null)
             {
                 return category;

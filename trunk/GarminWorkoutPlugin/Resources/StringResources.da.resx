@@ -123,8 +123,8 @@
   <data name="BetweenText" xml:space="preserve">
     <value>Between</value>
   </data>
-  <data name="BPMText" xml:space="preserve">
-    <value>bpm</value>
+  <data name="BikingText" xml:space="preserve">
+    <value>Biking</value>
   </data>
   <data name="BrowseButtonText" xml:space="preserve">
     <value>Browse...</value>
@@ -152,9 +152,6 @@
   </data>
   <data name="CaloriesDurationLabelText" xml:space="preserve">
     <value>How many calories?</value>
-  </data>
-  <data name="CancelButtonText" xml:space="preserve">
-    <value>Cancel</value>
   </data>
   <data name="CategoriesText" xml:space="preserve">
     <value>Categories</value>
@@ -222,6 +219,9 @@
   <data name="FromFileText" xml:space="preserve">
     <value>From File</value>
   </data>
+  <data name="GarminText" xml:space="preserve">
+    <value>Garmin</value>
+  </data>
   <data name="GarminWorkoutsText" xml:space="preserve">
     <value>Garmin Workouts</value>
   </data>
@@ -285,9 +285,6 @@
   <data name="ImportErrorText" xml:space="preserve">
     <value>There was an error while importing the workout</value>
   </data>
-  <data name="ImportText" xml:space="preserve">
-    <value>Import</value>
-  </data>
   <data name="IntegerRangeValidationText" xml:space="preserve">
     <value>Value must be an integer between {0} and {1}</value>
   </data>
@@ -307,13 +304,13 @@
     <value>min</value>
   </data>
   <data name="NameLabelText" xml:space="preserve">
-    <value>Name:</value>
+    <value>Name :</value>
   </data>
   <data name="NeverExportedText" xml:space="preserve">
     <value>Never exported</value>
   </data>
   <data name="NotesLabelText" xml:space="preserve">
-    <value>Notes:</value>
+    <value>Notes :</value>
   </data>
   <data name="NullTargetComboBoxText" xml:space="preserve">
     <value>I don't have a specific target for this step</value>
@@ -321,17 +318,14 @@
   <data name="NullTargetDescriptionText" xml:space="preserve">
     <value />
   </data>
-  <data name="OKButtonText" xml:space="preserve">
-    <value>OK</value>
-  </data>
   <data name="OpenFileText" xml:space="preserve">
     <value>Import Workout</value>
   </data>
+  <data name="OtherText" xml:space="preserve">
+    <value>Other</value>
+  </data>
   <data name="PaceRangeTargetDescriptionText" xml:space="preserve">
     <value>Try to keep my pace between {0:00}:{1:00} and {2:00}:{3:00} min/{4}.</value>
-  </data>
-  <data name="PercentMaxHeartRateText" xml:space="preserve">
-    <value>% Max HR</value>
   </data>
   <data name="PerHourText" xml:space="preserve">
     <value>/h</value>
@@ -372,8 +366,8 @@
   <data name="RestingCheckBoxText" xml:space="preserve">
     <value>Resting step</value>
   </data>
-  <data name="RPMText" xml:space="preserve">
-    <value>rpm</value>
+  <data name="RunningText" xml:space="preserve">
+    <value>Running</value>
   </data>
   <data name="ScheduleBannerText" xml:space="preserve">
     <value>Schedule</value>
@@ -404,6 +398,9 @@
   </data>
   <data name="SpeedZoneTargetDescriptionText" xml:space="preserve">
     <value>Try to keep my speed in zone {0}</value>
+  </data>
+  <data name="SportTracksText" xml:space="preserve">
+    <value>SportTracks</value>
   </data>
   <data name="StepDetailsText" xml:space="preserve">
     <value>Step</value>
@@ -450,11 +447,14 @@
   <data name="TooRecentDataText" xml:space="preserve">
     <value>Data is too recent for the version of the plugin installed.  Please install the latest version of the plugin.</value>
   </data>
+  <data name="UseCustomCategoryText" xml:space="preserve">
+    <value>Use custom category</value>
+  </data>
+  <data name="UseParentCategoryText" xml:space="preserve">
+    <value>Use parent category</value>
+  </data>
   <data name="ValueValidationTitleText" xml:space="preserve">
     <value>Invalid value</value>
-  </data>
-  <data name="WattsText" xml:space="preserve">
-    <value>watts</value>
   </data>
   <data name="WhichZoneText" xml:space="preserve">
     <value>Which zone?</value>

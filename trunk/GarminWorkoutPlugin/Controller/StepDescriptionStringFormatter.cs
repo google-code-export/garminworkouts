@@ -5,6 +5,7 @@ using System.Reflection;
 using System.Resources;
 using ZoneFiveSoftware.Common.Data.Measurement;
 using GarminWorkoutPlugin.Data;
+using ZoneFiveSoftware.Common.Visuals;
 
 namespace GarminWorkoutPlugin.Controller
 {
@@ -87,11 +88,11 @@ namespace GarminWorkoutPlugin.Controller
 
                         if(concreteDuration.IsPercentageMaxHeartRate)
                         {
-                            unitsString = m_ResourceManager.GetString("PercentMaxHeartRateText", m_CurrentCulture);
+                            unitsString = CommonResources.Text.LabelPercentOfMax;
                         }
                         else
                         {
-                            unitsString = m_ResourceManager.GetString("BPMText", m_CurrentCulture);
+                            unitsString = CommonResources.Text.LabelBPM;
                         }
 
                         result = String.Format(baseString, concreteDuration.MaxHeartRate, unitsString);
@@ -104,11 +105,11 @@ namespace GarminWorkoutPlugin.Controller
 
                         if(concreteDuration.IsPercentageMaxHeartRate)
                         {
-                            unitsString = m_ResourceManager.GetString("PercentMaxHeartRateText", m_CurrentCulture);
+                            unitsString = CommonResources.Text.LabelPercentOfMax;
                         }
                         else
                         {
-                            unitsString = m_ResourceManager.GetString("BPMText", m_CurrentCulture);
+                            unitsString = CommonResources.Text.LabelBPM;
                         }
 
                         result = String.Format(baseString, concreteDuration.MinHeartRate, unitsString);
@@ -202,7 +203,7 @@ namespace GarminWorkoutPlugin.Controller
                     {
                         CadenceRangeTarget concreteTarget = (CadenceRangeTarget)target;
 
-                        result = String.Format(baseString, concreteTarget.MinCadence, concreteTarget.MaxCadence, resManager.GetString("RPMText", culture));
+                        result = String.Format(baseString, concreteTarget.MinCadence, concreteTarget.MaxCadence, CommonResources.Text.LabelRPM);
                         break;
                     }
                 case IConcreteCadenceTarget.CadenceTargetType.ZoneST:
@@ -242,11 +243,11 @@ namespace GarminWorkoutPlugin.Controller
 
                         if (concreteTarget.IsPercentageMaxHeartRate)
                         {
-                            unitsString = resManager.GetString("PercentMaxHeartRateText", culture);
+                            unitsString = CommonResources.Text.LabelPercentOfMax;
                         }
                         else
                         {
-                            unitsString = resManager.GetString("BPMText", culture);
+                            unitsString = CommonResources.Text.LabelBPM;
                         }
 
                         result = String.Format(baseString, concreteTarget.MinHeartRate, concreteTarget.MaxHeartRate, unitsString);
@@ -353,7 +354,7 @@ namespace GarminWorkoutPlugin.Controller
                 case IConcretePowerTarget.PowerTargetType.Range:
                     {
                         PowerRangeTarget concreteTarget = (PowerRangeTarget)target;
-                        string unitsString = resManager.GetString("WattsText", culture);
+                        string unitsString = CommonResources.Text.LabelWatts;
 
                         result = String.Format(baseString, concreteTarget.MinPower, concreteTarget.MaxPower, unitsString);
                         break;

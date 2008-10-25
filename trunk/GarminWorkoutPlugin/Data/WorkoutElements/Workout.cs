@@ -99,7 +99,7 @@ namespace GarminWorkoutPlugin.Data
             stringLength = BitConverter.ToInt32(intBuffer, 0);
             stringBuffer = new byte[stringLength];
             stream.Read(stringBuffer, 0, stringLength);
-            Category = Utils.FindCategoryByID(Encoding.UTF8.GetString(stringBuffer));
+            Category = Utils.FindCategoryByIDSafe(Encoding.UTF8.GetString(stringBuffer));
 
             // Steps
             stream.Read(intBuffer, 0, sizeof(Int32));
@@ -159,7 +159,7 @@ namespace GarminWorkoutPlugin.Data
             stringLength = BitConverter.ToInt32(intBuffer, 0);
             stringBuffer = new byte[stringLength];
             stream.Read(stringBuffer, 0, stringLength);
-            Category = Utils.FindCategoryByID(Encoding.UTF8.GetString(stringBuffer));
+            Category = Utils.FindCategoryByIDSafe(Encoding.UTF8.GetString(stringBuffer));
 
             // Steps
             stream.Read(intBuffer, 0, sizeof(Int32));
@@ -236,7 +236,7 @@ namespace GarminWorkoutPlugin.Data
             stringLength = BitConverter.ToInt32(intBuffer, 0);
             stringBuffer = new byte[stringLength];
             stream.Read(stringBuffer, 0, stringLength);
-            Category = Utils.FindCategoryByID(Encoding.UTF8.GetString(stringBuffer));
+            Category = Utils.FindCategoryByIDSafe(Encoding.UTF8.GetString(stringBuffer));
 
             // Steps
             stream.Read(intBuffer, 0, sizeof(Int32));
@@ -293,7 +293,7 @@ namespace GarminWorkoutPlugin.Data
 
             // Sport attribute
             attribute = document.CreateAttribute(null, "Sport", null);
-            attribute.Value = "Other";
+            attribute.Value = Constants.GarminCategoryTCXString[(int)Options.GetGarminCategory(Category)];
             parentNode.Attributes.Append(attribute);
 
             // Name
@@ -459,7 +459,7 @@ namespace GarminWorkoutPlugin.Data
                         {
                             XmlText categoryNode = (XmlText)child.FirstChild.FirstChild;
 
-                            category = Utils.FindCategoryByID(categoryNode.Value);
+                            category = Utils.FindCategoryByIDSafe(categoryNode.Value);
                         }
                         else if (currentNode.Name == "SportTracksExtensions")
                         {
@@ -569,7 +569,7 @@ namespace GarminWorkoutPlugin.Data
                     {
                         XmlText categoryNode = (XmlText)currentExtension.FirstChild;
 
-                        Category = Utils.FindCategoryByID(categoryNode.Value);
+                        Category = Utils.FindCategoryByIDSafe(categoryNode.Value);
                     }
                 }
                 else if (currentExtension.Name == "TargetOverride")

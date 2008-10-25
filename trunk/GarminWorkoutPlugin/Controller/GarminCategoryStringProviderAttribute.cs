@@ -2,9 +2,9 @@ using System;
 
 namespace GarminWorkoutPlugin.Controller
 {
-    class StepDescriptionStringProviderAttribute : Attribute
+    class GarminCategoryStringProviderAttribute : Attribute
     {
-        public StepDescriptionStringProviderAttribute(string name)
+        public GarminCategoryStringProviderAttribute(string name)
         {
             m_StringName = name;
 		}

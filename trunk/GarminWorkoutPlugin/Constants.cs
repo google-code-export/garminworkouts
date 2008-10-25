@@ -61,7 +61,13 @@ namespace GarminWorkoutPlugin
                 "Active",
                 "Resting"
             };
+        public static readonly string[] GarminCategoryTCXString =
+            {
+                "Running",
+                "Biking",
+                "Other"
+            };
 
-        public static DataVersion CurrentVersion = new DataVersion(6);
+        public static DataVersion CurrentVersion = new DataVersion(7);
     }
 }

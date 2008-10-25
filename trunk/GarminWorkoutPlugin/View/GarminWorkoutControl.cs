@@ -1965,13 +1965,13 @@ namespace GarminWorkoutPlugin.View
 
             // Update duration heart rate reference combo box text
             HeartRateReferenceComboBox.Items.Clear();
-            HeartRateReferenceComboBox.Items.Add(m_ResourceManager.GetString("BPMText", m_CurrentCulture));
-            HeartRateReferenceComboBox.Items.Add(m_ResourceManager.GetString("PercentMaxHeartRateText", m_CurrentCulture));
+            HeartRateReferenceComboBox.Items.Add(CommonResources.Text.LabelBPM);
+            HeartRateReferenceComboBox.Items.Add(CommonResources.Text.LabelPercentOfMax);
 
             // Update target heart rate reference combo box text
             HRRangeReferenceComboBox.Items.Clear();
-            HRRangeReferenceComboBox.Items.Add(m_ResourceManager.GetString("BPMText", m_CurrentCulture));
-            HRRangeReferenceComboBox.Items.Add(m_ResourceManager.GetString("PercentMaxHeartRateText", m_CurrentCulture));
+            HRRangeReferenceComboBox.Items.Add(CommonResources.Text.LabelBPM);
+            HRRangeReferenceComboBox.Items.Add(CommonResources.Text.LabelPercentOfMax);
 
             // Update duration combo box
             int currentSelection = DurationComboBox.SelectedIndex;
@@ -2597,7 +2597,7 @@ namespace GarminWorkoutPlugin.View
                                                 {
                                                     CadenceRangeTarget concreteTarget = (CadenceRangeTarget)baseTarget.ConcreteTarget;
 
-                                                    RangeTargetUnitsLabel.Text = m_ResourceManager.GetString("RPMText", m_CurrentCulture);
+                                                    RangeTargetUnitsLabel.Text = CommonResources.Text.LabelRPM;
                                                     ZoneComboBox.SelectedIndex = 0;
                                                     LowRangeTargetText.Text = concreteTarget.MinCadence.ToString();
                                                     HighRangeTargetText.Text = concreteTarget.MaxCadence.ToString();
@@ -2664,7 +2664,7 @@ namespace GarminWorkoutPlugin.View
                                                 {
                                                     PowerRangeTarget concreteTarget = (PowerRangeTarget)baseTarget.ConcreteTarget;
 
-                                                    RangeTargetUnitsLabel.Text = m_ResourceManager.GetString("WattsText", m_CurrentCulture);
+                                                    RangeTargetUnitsLabel.Text = CommonResources.Text.LabelWatts;
                                                     ZoneComboBox.SelectedIndex = 0;
                                                     LowRangeTargetText.Text = concreteTarget.MinPower.ToString();
                                                     HighRangeTargetText.Text = concreteTarget.MaxPower.ToString();
@@ -3290,9 +3290,12 @@ namespace GarminWorkoutPlugin.View
 
         private void RefreshActions()
         {
-            for (int i = 0; i < PluginMain.GetApplication().ActiveView.Actions.Count; ++i)
+            if (PluginMain.GetApplication().ActiveView.GetType() == typeof(GarminWorkoutView))
             {
-                PluginMain.GetApplication().ActiveView.Actions[i].Refresh();
+                for (int i = 0; i < PluginMain.GetApplication().ActiveView.Actions.Count; ++i)
+                {
+                    PluginMain.GetApplication().ActiveView.Actions[i].Refresh();
+                }
             }
         }
 

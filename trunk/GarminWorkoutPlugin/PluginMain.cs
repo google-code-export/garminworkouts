@@ -47,6 +47,13 @@ namespace GarminWorkoutPlugin
                     m_CurrentLogbook.DataChanged -= new ZoneFiveSoftware.Common.Data.NotifyDataChangedEventHandler(LogbookDataChanged);
                 }
 
+                // Set default Garmin to ST category map values
+                Options.STToGarminCategoryMap.Clear();
+                for (int i = 0; i < PluginMain.GetApplication().Logbook.ActivityCategories.Count; ++i)
+                {
+                    Options.STToGarminCategoryMap.Add(PluginMain.GetApplication().Logbook.ActivityCategories[i], GarminCategories.Other);
+                }
+
                 LoadWorkoutsFromLogbook();
                 if (LogbookChanged != null)
                 {
@@ -59,11 +66,13 @@ namespace GarminWorkoutPlugin
                 {
                     m_CurrentLogbook.DataChanged += new ZoneFiveSoftware.Common.Data.NotifyDataChangedEventHandler(LogbookDataChanged);
 
+                    // Set default cadence zone
                     if (Options.CadenceZoneCategory == null)
                     {
                         Options.CadenceZoneCategory = m_CurrentLogbook.CadenceZones[0];
                     }
 
+                    // Set default power zone
                     if (Options.PowerZoneCategory == null)
                     {
                         Options.PowerZoneCategory = m_CurrentLogbook.PowerZones[0];
@@ -148,11 +157,18 @@ namespace GarminWorkoutPlugin
             {
                 Trace.Assert(referenceList.Count == 1);
 
-                if (referenceList[0].GetType().Name == "ZoneCategory")
+                if (referenceList[0].GetType().FullName == "ZoneFiveSoftware.SportTracks.Data.ZoneCategory")
                 {
                     if (ZoneCategoryChanged != null)
                     {
                         ZoneCategoryChanged(this, (IZoneCategory)referenceList[0]);
+                    }
+                }
+                else if (referenceList[0].GetType().FullName == "ZoneFiveSoftware.SportTracks.Data.ActivityCategory")
+                {
+                    if (ActivityCategoryChanged != null)
+                    {
+                        ActivityCategoryChanged(this, (IActivityCategory)referenceList[0]);
                     }
                 }
             }
@@ -171,6 +187,8 @@ namespace GarminWorkoutPlugin
         public void ReadOptions(XmlDocument xmlDoc, XmlNamespaceManager nsmgr, XmlElement pluginNode)
         {
             m_PluginOptions = pluginNode;
+
+            ActivityCategoryChanged += new PluginMain.ActivityCategoryChangedEventHandler(Options.OnActivityCategoryChanged);
         }
 
         public string Version
@@ -272,6 +290,9 @@ namespace GarminWorkoutPlugin
 
         public delegate void ZoneCategoryChangedEventHandler(object sender, IZoneCategory category);
         public static event ZoneCategoryChangedEventHandler ZoneCategoryChanged;
+
+        public delegate void ActivityCategoryChangedEventHandler(object sender, IActivityCategory category);
+        public static event ActivityCategoryChangedEventHandler ActivityCategoryChanged;
 
         private static ResourceManager m_ResourceManager = new ResourceManager("GarminWorkoutPlugin.Resources.StringResources",
                                                                 Assembly.GetExecutingAssembly());

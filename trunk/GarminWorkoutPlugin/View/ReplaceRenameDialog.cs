@@ -13,7 +13,7 @@ namespace GarminWorkoutPlugin.View
     {
         public ReplaceRenameDialog(string newName)
         {
-            CultureInfo uiCulture = ((GarminWorkoutView)PluginMain.GetApplication().ActiveView).UICulture;
+            CultureInfo uiCulture = GarminWorkoutView.UICulture;
 
             InitializeComponent();
 
@@ -40,7 +40,7 @@ namespace GarminWorkoutPlugin.View
 
         private void RenamePanel_Click(object sender, EventArgs e)
         {
-            CultureInfo uiCulture = ((GarminWorkoutView)PluginMain.GetApplication().ActiveView).UICulture;
+            CultureInfo uiCulture = GarminWorkoutView.UICulture;
 
             if(!WorkoutManager.Instance.IsWorkoutNameValid(NewName))
             {

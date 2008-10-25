@@ -135,7 +135,7 @@ namespace GarminWorkoutPlugin.View
             m_ViewControl.RefreshUIFromLogbook();
         }
 
-        public CultureInfo UICulture
+        public static CultureInfo UICulture
         {
             get { return m_CurrentCulture; }
         }
@@ -149,6 +149,6 @@ namespace GarminWorkoutPlugin.View
         private GarminWorkoutControl m_ViewControl = null;
         private ResourceManager m_ResourceManager = new ResourceManager("GarminWorkoutPlugin.Resources.StringResources",
                                                                         Assembly.GetExecutingAssembly());
-        private CultureInfo m_CurrentCulture;
+        private static CultureInfo m_CurrentCulture;
     }
 }
