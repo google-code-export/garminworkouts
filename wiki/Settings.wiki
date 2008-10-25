@@ -12,8 +12,8 @@ Once cllicked, this link will lead you to the settings page which has a special 
 
 http://garminworkouts.googlecode.com/files/Settings%20passive-b.gif
 
-== Categories ==
-=== Workouts and categories ===
+== Zone categories ==
+=== Workouts and zone categories ===
 When first developing the plugin, I had to make a choice when it came to zones.  On one hand, the different Garmin fitness units use some user-defined zones.  On the other hand, [http://www.zonefivesoftware.com/SportTracks SportTracks] uses it's own user-defined zones.  In the first version of the plugin, only Garmin zones were supported and event then, only for the heart rate target type.  After some discussions with the different early users, it was decided to give the user the choice to use either Garmin or [http://www.zonefivesoftware.com/SportTracks SportTracks] zones.  This lead to the option in the settings page.  As you can see you have the choice for every type of available target to use either Garmin or [http://www.zonefivesoftware.com/SportTracks SportTracks] zones by selecting the right combo box.  This affects the list of predefined zones that will be displayed when you define your target for a workout's step.  For instance, if I set the heart rate setting to "Garmin", the list will look as follows
 
 http://garminworkouts.googlecode.com/files/Garmin%20zones.gif
@@ -35,11 +35,31 @@ http://garminworkouts.googlecode.com/files/Categories%20view.gif
 For the heart rate and speed targets, the listbox will be populated with the heart rate and speed zone category as defined in the "Activity categories" of the "Categories" view.  As you can see below, I chose to use the "Cycling" heart rate zones and those zones are what appear in the target's listbox..
 
 http://garminworkouts.googlecode.com/files/Activity%20Categories.gif
+
 http://garminworkouts.googlecode.com/files/Cycling%20HR%20Zones.gif
 
 Since I use information contained within the activity category, it is very important to select the right activity category when creating your workouts.  Failure to do so will result in the display of the wrong zones in your target.
 
 You can also notice the reason why the user is given the selection of what cadence and power zone to use.  These options are simply not available in the activity categories.  At the moment, there is no option to select what zone to use on a per-activity category basis.
+
+== Garmin activity categories ==
+To integrate the Garmin Workouts Plugin seamlessly into SportTracks, it was chosen to associate every activity category to a Garmin activity category.  Garmin only provides 3 categories : running, biking and other.  Each of these categories has their own speed and heart rate zones.  The "Biking" category also has power zones.  Since these zones might not match with the zones defined in [http://www.zonefivesoftware.com/SportTracks SportTracks], you must decide to which sport each [http://www.zonefivesoftware.com/SportTracks SportTracks] corresponds.  This is what the section is for and it looks like the following :
+
+http://garminworkouts.googlecode.com/files/Categories%20settings.gif
+
+By default, all categories are assigned to Garmin's "Other" activity category.  To change this, simply click on the zone you wish to modify.  For instance, if I click on "Running" I get the following :
+
+http://garminworkouts.googlecode.com/files/Running%20category%20details.gif
+
+You notice that it is currently set to inherit it's parent setting which is the following :
+
+http://garminworkouts.googlecode.com/files/My%20Activities%20category%20details.gif
+
+To change the "Running" activity category setting, you must use the radio buttons to the right.  Since you don't want to inherit the parent's category anymore, start by clicking on the "Use custom category" radio button.  This enables the following three radio buttons for you to select the right one.  Of course it makes sense to choose the "Running" Garmin category.  This gives the following result :
+
+http://garminworkouts.googlecode.com/files/Running%20category%20modified%20details.gif
+
+You can notice that all the children have been updated to "Running".  That is because they all have the "Use parent category" setting.  If any one of those categories was overriden, it would have kept it's setting.
 
 == Default export directory ==
 The last option available in the settings page is the "Default Export Directory".  This option is used when you select to export your workouts to files.  Rather than asking for the directory at every time you export, the directory entered in this option will automatically be selected, speeding up the export process.
