@@ -1,5 +1,3 @@
-#summary This page describes the basic operations performed in the Garmin Workout Plugin
-
 = Introduction =
 Now that you're all set-up properly as described in the [Settings] page you are ready to create and manage your workouts.  Of course the basic operations are the same as in Garmin Training Center which is creating and deleting them, adding and removing steps, changing the order of those steps and of course filling them with the right information.  Keep on reading for instructions on accomplishing those tasks.
 
