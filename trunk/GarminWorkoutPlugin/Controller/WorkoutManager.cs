@@ -6,12 +6,10 @@ using System.Text;
 using System.Xml;
 using ZoneFiveSoftware.Common.Data.Fitness;
 using System.Runtime.Serialization.Formatters.Binary;
-using GarminWorkoutPlugin.Controller;
+using GarminWorkoutPlugin.Data;
 
-namespace GarminWorkoutPlugin.Data
+namespace GarminWorkoutPlugin.Controller
 {
-    [Serializable()]
-
     class WorkoutManager : IPluginSerializable
     {
         private WorkoutManager()

@@ -5,6 +5,7 @@ using System.Resources;
 using System.Text;
 using System.Windows.Forms;
 using GarminWorkoutPlugin.Data;
+using GarminWorkoutPlugin.Controller;
 
 namespace GarminWorkoutPlugin.View
 {

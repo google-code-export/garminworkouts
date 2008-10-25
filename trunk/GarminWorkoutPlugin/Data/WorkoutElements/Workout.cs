@@ -11,8 +11,6 @@ using GarminWorkoutPlugin.Controller;
 
 namespace GarminWorkoutPlugin.Data
 {
-    [Serializable()]
-
     class Workout : IPluginSerializable, IXMLSerializable, IDirty
     {
         public Workout(string name, IActivityCategory category)
