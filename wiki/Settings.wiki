@@ -10,7 +10,7 @@ http://garminworkouts.googlecode.com/files/Settings%20access.gif
 
 Once cllicked, this link will lead you to the settings page which has a special section for plugins.  In this section, you will find the "Garmin Workouts Settings" that looks like this.
 
-http://garminworkouts.googlecode.com/files/Settings%20passive.gif
+http://garminworkouts.googlecode.com/files/Settings%20passive-b.gif
 
 == Categories ==
 === Workouts and categories ===
@@ -28,7 +28,7 @@ Now that you have discovered how to change between Garmin and [http://www.zonefi
 === Specifying the zone categories ===
 In the settings page you will also have noticed that you can select the zone categories to use for cadence and power.  This allows you to select which zone category will be used for the cadence and power target respectively.  Opening the listbox will list all of the zones you have defined for either cadence or power.
 
-http://garminworkouts.googlecode.com/files/Settings%20expanded%20combo.gif
+http://garminworkouts.googlecode.com/files/Settings%20expanded%20combo-b.gif
 http://garminworkouts.googlecode.com/files/Categories%20view.gif
 
 
