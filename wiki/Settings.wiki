@@ -63,3 +63,5 @@ You can notice that all the children have been updated to "Running".  That is be
 
 == Default export directory ==
 The last option available in the settings page is the "Default Export Directory".  This option is used when you select to export your workouts to files.  Rather than asking for the directory at every time you export, the directory entered in this option will automatically be selected, speeding up the export process.
+
+Once you are done setting up the plugin, you can move on to the [BasicOperations basic operations].
