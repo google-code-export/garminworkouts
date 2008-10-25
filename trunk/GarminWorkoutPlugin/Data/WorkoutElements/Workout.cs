@@ -502,6 +502,22 @@ namespace GarminWorkoutPlugin.Data
             }
         }
 
+        public Workout Clone()
+        {
+            Workout result;
+            MemoryStream stream = new MemoryStream();
+
+            Serialize(stream);
+
+            // Put back at start but skip the first 4 bytes which are the step type
+            stream.Seek(0, SeekOrigin.Begin);
+
+            result = WorkoutManager.Instance.CreateWorkout(Category);
+            result.Deserialize(stream, Constants.CurrentVersion);
+
+            return result;
+        }
+
         private void HandleStepExtension(XmlNode extensionsNode)
         {
             for (int i = 0; i < extensionsNode.ChildNodes.Count; ++i)

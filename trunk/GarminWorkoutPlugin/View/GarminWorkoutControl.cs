@@ -1217,6 +1217,79 @@ namespace GarminWorkoutPlugin.View
             {
                 DeleteSelectedWorkouts();
             }
+            else if (e.Control)
+            {
+                if (e.KeyCode == Keys.C || e.KeyCode == Keys.X)
+                {
+                    // Copy data to clipboard
+                    MemoryStream workoutsData = new MemoryStream();
+
+                    // Number of workouts to deserialize
+                    workoutsData.WriteByte((Byte)m_SelectedWorkouts.Count);
+                    for (int i = 0; i < m_SelectedWorkouts.Count; ++i)
+                    {
+                        m_SelectedWorkouts[i].Serialize(workoutsData);
+                    }
+
+                    Clipboard.SetData("GWP_WorkoutsList", workoutsData);
+
+                    if (e.KeyCode == Keys.X)
+                    {
+                        // Cut, so remove from workout
+                        DeleteSelectedWorkouts();
+                    }
+                }
+                else if (e.KeyCode == Keys.V)
+                {
+                    if (Clipboard.ContainsData("GWP_WorkoutsList"))
+                    {
+                        MemoryStream pasteResult = (MemoryStream)Clipboard.GetData("GWP_WorkoutsList");
+
+                        if (SelectedCategory == null)
+                        {
+                            SelectedCategory = PluginMain.GetApplication().Logbook.ActivityCategories[0];
+                        }
+
+                        if (pasteResult != null)
+                        {
+                            // Set back to start
+                            pasteResult.Seek(0, SeekOrigin.Begin);
+
+                            List<Workout> workoutsPasted = new List<Workout>();
+                            byte[] intBuffer = new byte[sizeof(Int32)];
+                            Byte workoutCount = (Byte)pasteResult.ReadByte();
+
+                            for (int i = 0; i < workoutCount; i++)
+                            {
+                                Workout newWorkout = WorkoutManager.Instance.CreateWorkout(SelectedCategory);
+
+                                newWorkout.Deserialize(pasteResult, Constants.CurrentVersion);
+                                newWorkout.Category = SelectedCategory;
+                                workoutsPasted.Add(newWorkout);
+
+                                // We must update the name to avoid duplicates
+                                string tempName = newWorkout.Name;
+
+                                if (!Utils.IsTextInteger(tempName))
+                                {
+                                    // Remove all trailing numbers
+                                    while (tempName.LastIndexOfAny("0123456789".ToCharArray()) == tempName.Length - 1)
+                                    {
+                                        tempName = tempName.Substring(0, tempName.Length - 1);
+                                    }
+                                }
+
+                                newWorkout.Name = WorkoutManager.Instance.GetUniqueName(tempName);
+                            }
+
+                            m_SelectedWorkouts = workoutsPasted;
+                            BuildWorkoutsList();
+                            UpdateUIFromWorkout(SelectedWorkouts);
+                            Utils.SaveWorkoutsToLogbook();
+                        }
+                    }
+                }
+            }
         }
 
         private void WorkoutsList_DragDrop(object sender, DragEventArgs e)
@@ -1252,23 +1325,10 @@ namespace GarminWorkoutPlugin.View
                 {
                     for (int i = 0; i < workoutsToMove.Count; ++i)
                     {
-                        Workout workoutToMove = workoutsToMove[i];
-
-                        // Clone the current object
-                        MemoryStream tempStream = new MemoryStream();
-
-                        // Serialize
-                        workoutToMove.Serialize(tempStream);
-
-                        // Deserialize to copy in a new object
-                        tempStream.Seek(0, SeekOrigin.Begin);
-                        workoutToMove = WorkoutManager.Instance.CreateWorkout(category);
-                        workoutToMove.Deserialize(tempStream, Constants.CurrentVersion);
-                        workoutsToMove[i] = workoutToMove;
-                        tempStream.Close();
+                        workoutsToMove[i] = workoutsToMove[i].Clone();
 
                         // We must update the name to avoid duplicates
-                        string tempName = workoutToMove.Name;
+                        string tempName = workoutsToMove[i].Name;
 
                         if (!Utils.IsTextInteger(tempName))
                         {
@@ -1279,7 +1339,7 @@ namespace GarminWorkoutPlugin.View
                             }
                         }
 
-                        workoutToMove.Name = WorkoutManager.Instance.GetUniqueName(tempName);
+                        workoutsToMove[i].Name = WorkoutManager.Instance.GetUniqueName(tempName);
                     }
 
                 }
@@ -3452,6 +3512,35 @@ namespace GarminWorkoutPlugin.View
         public List<IStep> SelectedSteps
         {
             get { return m_SelectedSteps; }
+        }
+
+        public IActivityCategory SelectedCategory
+        {
+            get
+            {
+                if (m_SelectedCategory == null)
+                {
+                    // We probably have multiple workouts selected, find the common category
+                    IActivityCategory selection = null;
+
+                    for (int i = 0; i < SelectedWorkouts.Count; ++i)
+                    {
+                        if (selection == null)
+                        {
+                            selection = SelectedWorkouts[i].Category;
+                        }
+                        else if (selection != SelectedWorkouts[i].Category)
+                        {
+                            return null;
+                        }
+                    }
+
+                    return selection;
+                }
+
+                return m_SelectedCategory;
+            }
+            set { m_SelectedCategory = value; }
         }
 
         private enum RangeValidationInputType
