@@ -1444,12 +1444,14 @@ namespace GarminWorkoutPlugin.View
                 {
                     // Copy data to clipboard
                     MemoryStream stepsData = new MemoryStream();
+                    List<IStep> baseSteps;
 
+                    baseSteps = GetMinimalStepsBase(m_SelectedSteps);
                     // Number of steps to deserialize
-                    stepsData.WriteByte((Byte)m_SelectedSteps.Count);
-                    for (int i = 0; i < m_SelectedSteps.Count; ++i)
+                    stepsData.WriteByte((Byte)baseSteps.Count);
+                    for (int i = 0; i < baseSteps.Count; ++i)
                     {
-                        m_SelectedSteps[i].Serialize(stepsData);
+                        baseSteps[i].Serialize(stepsData);
                     }
 
                     Clipboard.SetData("GWP_StepsList", stepsData);
