@@ -73,7 +73,7 @@ It seems some people make mistakes, so what are you going to do when you've plan
 For instance, with the above example, if we made a mistake and wanted to plan, not on the 31st but on the 1st of November.  After all we ate a lot of candy the previous evening and we have to lose that extra weight.  Start by selecting the 31st, then hit the "remove shedule" button.  The little red triangle disappears, all is good.
 
 === Workouts planned on a certain day ===
-Often, we would like to know what workouts were planned on a certain date, to prepare ourselves mentally I suppose.  For this purpose the plugin uses the SportTracks calendar in the upper left corner.  You might not have noticed, but as you plan your workouts, the dates on which workouts are planned get highlighted.
+Often, we would like to know what workouts were planned on a certain date, to prepare ourselves mentally I suppose.  For this purpose the plugin uses the  [http://www.zonefivesoftware.com/SportTracks SportTracks] calendar in the upper left corner.  You might not have noticed, but as you plan your workouts, the dates on which workouts are planned get highlighted.
 
 http://garminworkouts.googlecode.com/files/SportTracks%20calendar.gif
 
