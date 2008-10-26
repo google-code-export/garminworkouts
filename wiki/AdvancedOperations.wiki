@@ -84,9 +84,51 @@ http://garminworkouts.googlecode.com/files/SportTracks%20calendar%20result.gif
 You can see that "!NewWorkout 3" and "!NewWorkout 5" were planned on the 31st.  
 
 = Advanced steps operations =
+The advanced step operations are basically the same as the advanced workout steps, namely drag and dropping and copy-pasting.  Of course multiple selection is also possible.
 
 == Multiple selection ==
+Just like with the workouts, multiple step selection is acheived with the CTRL and SHIFt keys.  For more detail, read the above "Multiple selection" section.  One thing that is worth of mention though is repeat steps.  When selecting a repeat step, it will automatically select all of it's children.  So if you move or copy a repeat step, all it's children will also be moved or copied.  That means that when you select a repeat step and one of it's children, the second selection (the child) won't be double selected.  This means that the following two selections are considered the same and therefore all actions made with these selections will have the same result.
+
+http://garminworkouts.googlecode.com/files/Repeat%20selection.gif
+
+http://garminworkouts.googlecode.com/files/Repeat%20and%20child%20selection.gif
 
 == Drag and dropping ==
+Again, drag and dropping is done in the same manner as with workouts.  Hold CTRL to copy the selected steps or else they will be moved instead of copied.
+
+The biggest difference between drag and dropping steps, as opposed to workouts, is regarding the order.  This is worthy of mention because it can be tricky.  The thing to remember though is that when dropping a step, it will always be placed on the same level as the step on top of which you release the mouse.  This is important because of repeat steps.  For instance you won't drop the step at the same position if you want your step to be the last one of the repeat as opposed to the one immediately following the repeat.  An illustrated example will help with the understanding.
+
+Let's say that we start with the following scenario :
+
+http://garminworkouts.googlecode.com/files/Step%20dragdrop%20example%201.gif
+
+We have 9 steps, 8 regular steps and 1 repeat.  Now let's say I want to move the step 2 inside the repeat, as the second step.  This is an easy scenario, you simply drag and drop the step over it's destination (that is between step 4 and 5).  When dragging you will notice that a line serves as an idicator of the destination.
+
+http://garminworkouts.googlecode.com/files/Step%20dragdrop%20example%202.gif
+
+Release the mouse gives us the following :
+
+http://garminworkouts.googlecode.com/files/Step%20dragdrop%20example%203.gif
+
+As I said, this is a simple scenario.  The complication comes when dealing with repeat borders.  Let's start with the same base.  Now what if I want to drag step 2 inside the repeat, after step 6.  We have two options but they will not give the same results.
+
+The first option is to drop the step in the lower half of step 6 :
+
+http://garminworkouts.googlecode.com/files/Step%20dragdrop%20example%204.gif
+
+The second option is to drop the step in the upper half of step 7 :
+
+http://garminworkouts.googlecode.com/files/Step%20dragdrop%20example%205.gif
+
+In both cases the indication line is at the same spot.  Here is where you must remember the golden rule : "When dropping a step, it will always be placed on the same level as the step on top of which you release the mouse".  With that in mind, you immediately understand that you must choose to drop according to the first option.  This give the following result :
+
+http://garminworkouts.googlecode.com/files/Step%20dragdrop%20example%206.gif
+
+Had you chosen to drop over step 7, you would have gotten the following :
+
+http://garminworkouts.googlecode.com/files/Step%20dragdrop%20example%207.gif
+
+The same applies when you want to drop as the first step inside a repeat.  You msut drop over the upper half of the first step inside the reapeat to achieve this.  So be careful when moving steps around and always remember the golden rule.
 
 == Copy-Pasting ==
+There is nothing new with steps copy-pasting.  The steps can be copied inside a workout, between workouts and between logbooks in the same manner that is done with workouts.
