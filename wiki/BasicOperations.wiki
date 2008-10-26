@@ -20,7 +20,7 @@ The first thing you will want to do is to create a workout.  For this purpose, y
 http://garminworkouts.googlecode.com/files/New%20workout.gif
 
 == Deleting a workout ==
-When a workout is selected in the workouts list, you will notice that the delete workout button is enabled.  Deleting a workout is simple, simply hit the delete button that is also located in the upper left corner http://garminworkouts.googlecode.com/files/Delete%20Workout%20Button.gif
+When a workout is selected in the workouts list, you will notice that the delete workout button is enabled.  Deleting a workout is simple, simply hit the delete button that is also located in the upper left corner http://garminworkouts.googlecode.com/files/Delete%20Workout%20Button.gif  You can also hit the "delete" key on the keyboard if you prefer.
 
 = Personalizing a workout =
 
@@ -39,7 +39,7 @@ http://garminworkouts.googlecode.com/files/2%20new%20steps.gif
 
 
 == Removing a step ==
-Of course every so often you will want to remove a step from your workout.  A very simple button is meant for this purpose and you guessed it by now, it looks like this http://garminworkouts.googlecode.com/files/Delete%20Workout%20Button.gif.  Having empty workouts is useless so when you delete the last step of a workout, a new default step will automatically replace it.
+Of course every so often you will want to remove a step from your workout.  A very simple button is meant for this purpose and, you guessed it by now, it looks like this http://garminworkouts.googlecode.com/files/Delete%20Workout%20Button.gif.  Here again, the "delete" key on the keyboard will have the same effect.  Having empty workouts is useless so when you delete the last step of a workout, a new default step will automatically replace it.
 
 === Repeat steps ===
 Again, repeat steps need some more explications.  First of all, deleting the repeat step will also delete all of it's children, so make sure this is really what you want to do.  Secondly, just like workouts, an empty repeat step makes no sense.  So when you delete the last child inside a repeat step, the repeat step will also be automatically deleted.
