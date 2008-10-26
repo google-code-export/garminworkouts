@@ -39,7 +39,7 @@ http://garminworkouts.googlecode.com/files/Drag%20copy%20workout.gif
 == Copy-Pasting ==
 As mentionned previously, drag & dropping is the mouse equivalent of copy pasting.  In fact this is not 100% true.  Truth is that copy pasting is more versatile because it allows you to paste in a different logbook.  That means you can have a workout duplicated in two logbooks.  This can be usefull when starting a new logbook and wanting to transfer your workouts to the it.
 
-With copy-pasting, you must remember three keyboard shortcuts :
+With copy-pasting, you must remember three following keyboard shortcuts :
 
   # CTRL-X : This shortcut corresponds to the "cut" command.  It makes a copy of your workouts for you to paste and removes them immediately for the current logbook.  Hitting this shortcut is equivalent to the move drag & drop operation described above.
   # CTRL-C : This shortcut corresponds to the "copy" command.  Just like the "cut" operation, it makes a copy of your selected workouts but it differs in that it doesn't remove the workouts from the logbook.  Hitting this shortcut is equivalent to the copy  drag & drop operation (holding CTRL) described above.
