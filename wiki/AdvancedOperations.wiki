@@ -1,5 +1,59 @@
-#summary One-sentence summary of this page.
-
 = Introduction =
+So you've mastered the basic operations?  It wasn't so hard, was it?  You are now ready for the advanced operations.  These different operations will help you become faster when you create or manage your workouts.  Let's see in what it consists.
 
-Add your content here.
+= Advanced workout operations =
+There are three advanced operations that are related to the workouts.  They are drag & dropping, copy & pasting ans scheduling.  The first two do the same thing, they allow you to move or make a copy of a workout.  The third one allows you to schedule your workouts in time.
+
+== Multiple selection ==
+The advanced workout operations can be done on multiple items at once.  To select multiple items you must hold a key on the keyboard when clicking in the workouts list. Hold either the CTRL key to add/remove the clicked item to the selection or hold SHIFT to select all items between your last selection and the item you just clicked.
+
+Here is the effet of selecting two items using the CTRL key :
+
+http://garminworkouts.googlecode.com/files/CTRL%20multiple%20workouts.gif
+
+Here is the effet of selecting multiple items using the SHIFT key :
+
+http://garminworkouts.googlecode.com/files/SHIFT%20multiple%20workouts.gif
+
+Note that when multiple workouts are selected, only the advanced operations are available.  That means you can't edit or view your steps.
+
+In the following examples, I'll always work with a single item selected for the sake of simplicity but the operations are done exactly the same way with a multiple selection.
+
+== Drag and dropping ==
+The first way to move or copy workouts is by using drap and dropping.  Drag & dropping is a common technique in many software.  It consists in clicking an item and, while holding the left mouse button, moving the mouse until you release the button.  It's as if you were grabbing on an object, moving it and then releasing it at it's destination.
+
+=== Changing a workout's category ===
+Using the above techinque, you can change a workout's category.  It's very simple to do, simply click the item you want to move, when dragging you willl see you mouse icon change to the following :
+
+http://garminworkouts.googlecode.com/files/Drag%20workout.gif
+
+Simply release the mouse button on the destination category and your workout will be moved accordingly.
+
+http://garminworkouts.googlecode.com/files/Dropped%20workout.gif
+
+=== Copying a workout ===
+Basically, copying a workout is done in the same manner.  The only difference is that you must hold the CTRL key on the keyboard when releasing the mouse button.  You will notice that the mouse pointer will also change to the copy icon.
+
+http://garminworkouts.googlecode.com/files/Drag%20copy%20workout.gif
+
+== Copy-Pasting ==
+As mentionned previously, drag & dropping is the mouse equivalent of copy pasting.  In fact this is not 100% true.  Truth is that copy pasting is more versatile because it allows you to paste in a different logbook.  That means you can have a workout duplicated in two logbooks.  This can be usefull when starting a new logbook and wanting to transfer your workouts to the it.
+
+So with copy-pasting, you must remember three keyboard shortcuts :
+
+  # CTRL-X : This shortcut corresponds to the "cut" command.  It makes a copy of your workouts for you to paste and removes them immediately for the current logbook.  Hitting this shortcut is equivalent to the move drag & drop operation described above.
+  # CTRL-C : This shortcut corresponds to the "copy" command.  Just like the "cut" operation, it makes a copy of your selected workouts but it differs in that it doesn't remove the workouts from the logbook.  Hitting this shortcut is equivalent to the copy  drag & drop operation (holding CTRL) described above.
+  # CTRL-V This shortcut corresponds to the "paste" command.  This operation takes the copy made during the "cut" or "copy" and returns it to the logbook.  Hitting this shortcut is equivalent to releasing the mouse button in the drag & drop operations described above.
+
+To determine in what category your workouts will be pasted, simply select that category before hitting the "paste" keyboard shortcut.
+
+== Scheduling ==
+
+
+= Advanced steps operations =
+
+== Multiple selection ==
+
+== Drag and dropping ==
+
+== Copy-Pasting ==
