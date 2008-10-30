@@ -103,6 +103,8 @@ namespace GarminWorkoutPlugin.Controller
             MemoryStream stream = new MemoryStream();
 
             WorkoutManager.Instance.Serialize(stream);
+            GarminProfileManager.Instance.Serialize(stream);
+
             PluginMain.GetApplication().Logbook.SetExtensionData(GUIDs.PluginMain, stream.GetBuffer());
             PluginMain.GetApplication().Logbook.Modified = true;
             stream.Close();

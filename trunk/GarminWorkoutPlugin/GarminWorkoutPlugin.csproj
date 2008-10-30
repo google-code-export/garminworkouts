@@ -71,11 +71,14 @@
   <ItemGroup>
     <Compile Include="Constants.cs" />
     <Compile Include="Controller\GarminCategoryStringProviderAttribute.cs" />
+    <Compile Include="Controller\GarminProfileManager.cs" />
     <Compile Include="Data\DataTooRecentException.cs" />
     <Compile Include="Data\DataVersion.cs" />
     <Compile Include="Data\Durations\DurationFactory.cs" />
     <Compile Include="Controller\GarminDeviceManager.cs" />
+    <Compile Include="Data\GarminActivityProfile.cs" />
     <Compile Include="Data\GarminCategories.cs" />
+    <Compile Include="Data\GarminExtendedActivityProfile.cs" />
     <Compile Include="Data\IDirty.cs" />
     <Compile Include="Data\IPluginSerializable.cs" />
     <Compile Include="Data\IXMLSerializable.cs" />
@@ -131,6 +134,14 @@
     <Compile Include="View\AutoExpandTreeList.cs">
       <SubType>UserControl</SubType>
     </Compile>
+    <Compile Include="View\GarminProfileControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="View\GarminProfileControl.Designer.cs">
+      <DependentUpon>GarminProfileControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="View\IGarminPluginControl.cs" />
+    <Compile Include="View\PluginViews.cs" />
     <Compile Include="View\STToGarminActivityCategoryWrapper.cs" />
     <Compile Include="View\ReplaceRenameDialog.cs">
       <SubType>Form</SubType>
@@ -259,6 +270,10 @@
     <EmbeddedResource Include="View\DateSelectorDialog.resx">
       <SubType>Designer</SubType>
       <DependentUpon>DateSelectorDialog.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="View\GarminProfileControl.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>GarminProfileControl.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="View\GarminWorkoutSettingsControl.resx">
       <SubType>Designer</SubType>

@@ -42,7 +42,7 @@ namespace GarminWorkoutPlugin.View
 
         public string PageName
         {
-            get { return m_ResourceManager.GetString("SettingsPageNameText", m_CurrentCulture); }
+            get{ return m_ResourceManager.GetString("SettingsPageNameText", m_CurrentCulture); }
         }
 
         public void ShowPage(string bookmark)
