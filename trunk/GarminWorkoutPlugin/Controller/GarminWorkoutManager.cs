@@ -10,9 +10,9 @@ using GarminFitnessPlugin.Data;
 
 namespace GarminFitnessPlugin.Controller
 {
-    class WorkoutManager : IPluginSerializable
+    class GarminWorkoutManager : IPluginSerializable
     {
-        private WorkoutManager()
+        private GarminWorkoutManager()
         {
             PluginMain.ZoneCategoryChanged += new PluginMain.ZoneCategoryChangedEventHandler(OnZoneCategoryChanged);
         }
@@ -238,7 +238,7 @@ namespace GarminFitnessPlugin.Controller
             m_Workouts.Sort(new WorkoutComparer());
         }
 
-        public static WorkoutManager Instance
+        public static GarminWorkoutManager Instance
         {
             get { return m_Instance; }
         }
@@ -363,11 +363,11 @@ namespace GarminFitnessPlugin.Controller
             {
                 BinaryFormatter formatter = new BinaryFormatter();
 
-                m_Instance = (WorkoutManager)formatter.Deserialize(stream);
+                m_Instance = (GarminWorkoutManager)formatter.Deserialize(stream);
             }
             catch(Exception e)
             {
-                m_Instance = new WorkoutManager();
+                m_Instance = new GarminWorkoutManager();
 
                 throw e;
             }
@@ -419,7 +419,7 @@ namespace GarminFitnessPlugin.Controller
             #endregion
         }
 
-        private static WorkoutManager m_Instance = new WorkoutManager();
+        private static GarminWorkoutManager m_Instance = new GarminWorkoutManager();
 
         private List<Workout> m_Workouts = new List<Workout>();
         private const byte HeaderSize = 128;

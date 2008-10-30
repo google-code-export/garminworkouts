@@ -61,9 +61,9 @@ namespace GarminFitnessPlugin.View
         {
             m_SelectedWorkouts.Clear();
             // Find the workouts planned on the selected date
-            for (int i = 0; i < WorkoutManager.Instance.Workouts.Count; ++i)
+            for (int i = 0; i < GarminWorkoutManager.Instance.Workouts.Count; ++i)
             {
-                Workout currentWorkout = WorkoutManager.Instance.Workouts[i];
+                Workout currentWorkout = GarminWorkoutManager.Instance.Workouts[i];
 
                 if(currentWorkout.ScheduledDates.Contains(PluginMain.GetApplication().Calendar.Selected))
                 {
@@ -1261,7 +1261,7 @@ namespace GarminFitnessPlugin.View
 
                             for (int i = 0; i < workoutCount; i++)
                             {
-                                Workout newWorkout = WorkoutManager.Instance.CreateWorkout(SelectedCategory);
+                                Workout newWorkout = GarminWorkoutManager.Instance.CreateWorkout(SelectedCategory);
 
                                 newWorkout.Deserialize(pasteResult, Constants.CurrentVersion);
                                 newWorkout.Category = SelectedCategory;
@@ -1279,7 +1279,7 @@ namespace GarminFitnessPlugin.View
                                     }
                                 }
 
-                                newWorkout.Name = WorkoutManager.Instance.GetUniqueName(tempName);
+                                newWorkout.Name = GarminWorkoutManager.Instance.GetUniqueName(tempName);
                             }
 
                             m_SelectedWorkouts = workoutsPasted;
@@ -1339,7 +1339,7 @@ namespace GarminFitnessPlugin.View
                             }
                         }
 
-                        workoutsToMove[i].Name = WorkoutManager.Instance.GetUniqueName(tempName);
+                        workoutsToMove[i].Name = GarminWorkoutManager.Instance.GetUniqueName(tempName);
                     }
 
                 }
@@ -1753,7 +1753,7 @@ namespace GarminFitnessPlugin.View
 
         private void WorkoutNameText_Validating(object sender, CancelEventArgs e)
         {
-            Workout workoutWithSameName = WorkoutManager.Instance.GetWorkoutWithName(WorkoutNameText.Text);
+            Workout workoutWithSameName = GarminWorkoutManager.Instance.GetWorkoutWithName(WorkoutNameText.Text);
 
             if (WorkoutNameText.Text == String.Empty || (workoutWithSameName != null && workoutWithSameName != SelectedWorkout))
             {
@@ -2826,9 +2826,9 @@ namespace GarminFitnessPlugin.View
         {
             List<DateTime> highlights = new List<DateTime>();
 
-            for(int i = 0; i < WorkoutManager.Instance.Workouts.Count; ++i)
+            for(int i = 0; i < GarminWorkoutManager.Instance.Workouts.Count; ++i)
             {
-                Workout currentWorkout = WorkoutManager.Instance.Workouts[i];
+                Workout currentWorkout = GarminWorkoutManager.Instance.Workouts[i];
 
                 for (int j = 0; j < currentWorkout.ScheduledDates.Count; ++j)
                 {
@@ -2874,7 +2874,7 @@ namespace GarminFitnessPlugin.View
             WorkoutWrapper wrapper;
             Trace.Assert(m_SelectedCategory != null);
 
-            SelectedWorkout = WorkoutManager.Instance.CreateWorkout(m_SelectedCategory);
+            SelectedWorkout = GarminWorkoutManager.Instance.CreateWorkout(m_SelectedCategory);
             wrapper = AddWorkoutToList((List<TreeList.TreeListNode>)WorkoutsList.RowData, SelectedWorkout);
             selection.Add(wrapper);
             WorkoutsList.Selected = selection;
@@ -3018,11 +3018,11 @@ namespace GarminFitnessPlugin.View
                 }
             }
 
-            for (int i = 0; i < WorkoutManager.Instance.Workouts.Count; ++i)
+            for (int i = 0; i < GarminWorkoutManager.Instance.Workouts.Count; ++i)
             {
-                WorkoutWrapper newItem = AddWorkoutToList(categories, WorkoutManager.Instance.Workouts[i]);
+                WorkoutWrapper newItem = AddWorkoutToList(categories, GarminWorkoutManager.Instance.Workouts[i]);
 
-                if (m_SelectedWorkouts.Contains(WorkoutManager.Instance.Workouts[i]))
+                if (m_SelectedWorkouts.Contains(GarminWorkoutManager.Instance.Workouts[i]))
                 {
                     selection.Add(newItem);
                 }
@@ -3300,7 +3300,7 @@ namespace GarminFitnessPlugin.View
         {
             for (int i = 0; i < m_SelectedWorkouts.Count; ++i)
             {
-                WorkoutManager.Instance.Workouts.Remove(m_SelectedWorkouts[i]);
+                GarminWorkoutManager.Instance.Workouts.Remove(m_SelectedWorkouts[i]);
             }
             SelectedWorkout = null;
 

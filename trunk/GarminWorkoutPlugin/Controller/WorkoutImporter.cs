@@ -74,17 +74,17 @@ namespace GarminFitnessPlugin.Controller
                     IActivityCategory category = null;
                     string name = PeekWorkoutName(child);
 
-                    if (!WorkoutManager.Instance.IsWorkoutNameAvailable(name))
+                    if (!GarminWorkoutManager.Instance.IsWorkoutNameAvailable(name))
                     {
-                        ReplaceRenameDialog dlg = new ReplaceRenameDialog(WorkoutManager.Instance.GetUniqueName(name));
+                        ReplaceRenameDialog dlg = new ReplaceRenameDialog(GarminWorkoutManager.Instance.GetUniqueName(name));
 
                         if (dlg.ShowDialog() == System.Windows.Forms.DialogResult.Yes)
                         {
                             // Yes = replace, delete the current workout from the list
-                            Workout oldWorkout = WorkoutManager.Instance.GetWorkoutWithName(name);
+                            Workout oldWorkout = GarminWorkoutManager.Instance.GetWorkoutWithName(name);
 
                             category = oldWorkout.Category;
-                            WorkoutManager.Instance.Workouts.Remove(oldWorkout);
+                            GarminWorkoutManager.Instance.Workouts.Remove(oldWorkout);
                         }
                         else
                         {
@@ -93,7 +93,7 @@ namespace GarminFitnessPlugin.Controller
                         }
                     }
 
-                    Workout newWorkout = WorkoutManager.Instance.CreateWorkout(child);
+                    Workout newWorkout = GarminWorkoutManager.Instance.CreateWorkout(child);
 
                     if (newWorkout != null)
                     {

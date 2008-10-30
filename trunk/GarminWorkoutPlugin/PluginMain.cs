@@ -264,7 +264,7 @@ namespace GarminFitnessPlugin
             {
                 try
                 {
-                    WorkoutManager.Instance.Deserialize(stream);
+                    GarminWorkoutManager.Instance.Deserialize(stream);
                 }
                 catch (Data.DataTooRecentException)
                 {
@@ -279,7 +279,7 @@ namespace GarminFitnessPlugin
             }
             else
             {
-                WorkoutManager.Instance.Workouts.Clear();
+                GarminWorkoutManager.Instance.Workouts.Clear();
             }
 
             stream.Close();

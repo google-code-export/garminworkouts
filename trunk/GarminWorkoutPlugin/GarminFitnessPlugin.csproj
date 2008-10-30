@@ -119,7 +119,7 @@
     <Compile Include="Data\Targets\ITarget.cs" />
     <Compile Include="Data\Durations\LapButtonDuration.cs" />
     <Compile Include="Controller\ComboBoxStringProviderAttribute.cs" />
-    <Compile Include="Controller\WorkoutManager.cs" />
+    <Compile Include="Controller\GarminWorkoutManager.cs" />
     <Compile Include="Controller\WorkoutExporter.cs" />
     <Compile Include="Controller\WorkoutImporter.cs" />
     <Compile Include="GUIDs.cs" />

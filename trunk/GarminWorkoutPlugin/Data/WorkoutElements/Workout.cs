@@ -479,7 +479,7 @@ namespace GarminFitnessPlugin.Data
             }
             else
             {
-                string finalName = WorkoutManager.Instance.GetUniqueName(workoutName);
+                string finalName = GarminWorkoutManager.Instance.GetUniqueName(workoutName);
 
                 Name = finalName;
                 Steps.Clear();
@@ -510,7 +510,7 @@ namespace GarminFitnessPlugin.Data
             // Put back at start but skip the first 4 bytes which are the step type
             stream.Seek(0, SeekOrigin.Begin);
 
-            result = WorkoutManager.Instance.CreateWorkout(Category);
+            result = GarminWorkoutManager.Instance.CreateWorkout(Category);
             result.Deserialize(stream, Constants.CurrentVersion);
 
             return result;

@@ -87,7 +87,7 @@ namespace GarminFitnessPlugin.Controller
 
                     if (m_CadenceZoneCategory != null)
                     {
-                        WorkoutManager.Instance.MarkAllCadenceSTZoneTargetsAsDirty();
+                        GarminWorkoutManager.Instance.MarkAllCadenceSTZoneTargetsAsDirty();
                     }
                 }
             }
@@ -105,7 +105,7 @@ namespace GarminFitnessPlugin.Controller
 
                     if (m_CadenceZoneCategory != null)
                     {
-                        WorkoutManager.Instance.MarkAllPowerSTZoneTargetsAsDirty();
+                        GarminWorkoutManager.Instance.MarkAllPowerSTZoneTargetsAsDirty();
                     }
                 }
             }
