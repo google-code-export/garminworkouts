@@ -9,7 +9,7 @@
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>GarminFitnessPlugin</RootNamespace>
-    <AssemblyName>GarminWorkoutPlugin</AssemblyName>
+    <AssemblyName>GarminFitnessPlugin</AssemblyName>
     <StartupObject>
     </StartupObject>
     <SccProjectName>
@@ -304,7 +304,7 @@
     <None Include="app.config" />
   </ItemGroup>
   <PropertyGroup>
-    <PostBuildEvent>xcopy "$(TargetDir)GarminWorkoutPlugin*.*" "C:\ProgramData\ZoneFiveSoftware\SportTracks\2.0\Plugins\Installed\ba218e6e-01a1-4a63-9fda-1fa937e56fe9\GarminWorkoutPlugin" /S /Y
+    <PostBuildEvent>xcopy "$(TargetDir)GarminFitnessPlugin*.*" "C:\ProgramData\ZoneFiveSoftware\SportTracks\2.0\Plugins\Installed\ba218e6e-01a1-4a63-9fda-1fa937e56fe9\GarminFitnessPlugin" /S /Y
 </PostBuildEvent>
   </PropertyGroup>
   <ItemGroup>
