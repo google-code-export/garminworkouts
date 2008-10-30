@@ -372,6 +372,9 @@
   <data name="RestingCheckBoxText" xml:space="preserve">
     <value>Resting step</value>
   </data>
+  <data name="RestText" xml:space="preserve">
+    <value>Rest</value>
+  </data>
   <data name="RunningText" xml:space="preserve">
     <value>Running</value>
   </data>

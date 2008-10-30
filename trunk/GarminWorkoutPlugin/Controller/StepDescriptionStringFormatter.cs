@@ -29,7 +29,13 @@ namespace GarminFitnessPlugin.Controller
                         }
                         else
                         {
-                            return regularStep.Name;
+                            result = regularStep.Name;
+                        }
+
+
+                        if (regularStep.IsRestingStep)
+                        {
+                            result += " " + "(" + GarminFitnessView.ResourceManager.GetString("RestText", GarminFitnessView.UICulture) + ")";
                         }
                         break;
                     }
