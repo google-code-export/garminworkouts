@@ -102,7 +102,7 @@ namespace GarminFitnessPlugin.Controller
             // Save Workouts to logbook
             MemoryStream stream = new MemoryStream();
 
-            WorkoutManager.Instance.Serialize(stream);
+            GarminWorkoutManager.Instance.Serialize(stream);
             GarminProfileManager.Instance.Serialize(stream);
 
             PluginMain.GetApplication().Logbook.SetExtensionData(GUIDs.PluginMain, stream.GetBuffer());

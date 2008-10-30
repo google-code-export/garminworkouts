@@ -100,7 +100,7 @@ namespace GarminFitnessPlugin.View
                 mainWindow.Cursor = Cursors.WaitCursor;
 
                 GarminDeviceManager.GetInstance().SetOperatingDevice();
-                GarminDeviceManager.GetInstance().ExportWorkout(WorkoutManager.Instance.Workouts);
+                GarminDeviceManager.GetInstance().ExportWorkout(GarminWorkoutManager.Instance.Workouts);
             }
             catch (FileNotFoundException)
             {
@@ -128,9 +128,9 @@ namespace GarminFitnessPlugin.View
             {
                 try
                 {
-                    for (int i = 0; i < WorkoutManager.Instance.Workouts.Count; ++i)
+                    for (int i = 0; i < GarminWorkoutManager.Instance.Workouts.Count; ++i)
                     {
-                        Workout currentWorkout = WorkoutManager.Instance.Workouts[i];
+                        Workout currentWorkout = GarminWorkoutManager.Instance.Workouts[i];
                         string fileName = Utils.GetWorkoutFilename(currentWorkout);
 
                         file = File.Create(dlg.SelectedPath + "\\" + fileName);

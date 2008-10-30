@@ -42,7 +42,7 @@ namespace GarminFitnessPlugin.View
         {
             CultureInfo uiCulture = GarminFitnessView.UICulture;
 
-            if(!WorkoutManager.Instance.IsWorkoutNameValid(NewName))
+            if(!GarminWorkoutManager.Instance.IsWorkoutNameValid(NewName))
             {
                 MessageBox.Show(GarminFitnessView.ResourceManager.GetString("InvalidWorkoutNameText", uiCulture),
                                 GarminFitnessView.ResourceManager.GetString("ErrorText", uiCulture),
