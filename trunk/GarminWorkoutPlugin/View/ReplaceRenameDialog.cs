@@ -4,16 +4,16 @@ using System.Reflection;
 using System.Resources;
 using System.Text;
 using System.Windows.Forms;
-using GarminWorkoutPlugin.Data;
-using GarminWorkoutPlugin.Controller;
+using GarminFitnessPlugin.Data;
+using GarminFitnessPlugin.Controller;
 
-namespace GarminWorkoutPlugin.View
+namespace GarminFitnessPlugin.View
 {
     public partial class ReplaceRenameDialog : Form
     {
         public ReplaceRenameDialog(string newName)
         {
-            CultureInfo uiCulture = GarminWorkoutView.UICulture;
+            CultureInfo uiCulture = GarminFitnessView.UICulture;
 
             InitializeComponent();
 
@@ -26,9 +26,9 @@ namespace GarminWorkoutPlugin.View
             RenameExplanationLabel.Click += new EventHandler(RenamePanel_Click);
             NewNameLabel.Click += new EventHandler(RenamePanel_Click);
 
-            ReplaceRenameIntroLabel.Text = m_ResourceManager.GetString("ReplaceRenameIntroLabelText", uiCulture);
-            ReplaceExplanationLabel.Text = m_ResourceManager.GetString("ReplaceExplanationLabelText", uiCulture);
-            RenameExplanationLabel.Text = m_ResourceManager.GetString("RenameExplanationLabelText", uiCulture);
+            ReplaceRenameIntroLabel.Text = GarminFitnessView.ResourceManager.GetString("ReplaceRenameIntroLabelText", uiCulture);
+            ReplaceExplanationLabel.Text = GarminFitnessView.ResourceManager.GetString("ReplaceExplanationLabelText", uiCulture);
+            RenameExplanationLabel.Text = GarminFitnessView.ResourceManager.GetString("RenameExplanationLabelText", uiCulture);
             NewNameTextBox.Text = newName;
         }
 
@@ -40,12 +40,12 @@ namespace GarminWorkoutPlugin.View
 
         private void RenamePanel_Click(object sender, EventArgs e)
         {
-            CultureInfo uiCulture = GarminWorkoutView.UICulture;
+            CultureInfo uiCulture = GarminFitnessView.UICulture;
 
             if(!WorkoutManager.Instance.IsWorkoutNameValid(NewName))
             {
-                MessageBox.Show(m_ResourceManager.GetString("InvalidWorkoutNameText", uiCulture),
-                                m_ResourceManager.GetString("ErrorText", uiCulture),
+                MessageBox.Show(GarminFitnessView.ResourceManager.GetString("InvalidWorkoutNameText", uiCulture),
+                                GarminFitnessView.ResourceManager.GetString("ErrorText", uiCulture),
                                 MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
             else
@@ -59,8 +59,5 @@ namespace GarminWorkoutPlugin.View
         {
             get { return NewNameTextBox.Text; }
         }
-
-        private ResourceManager m_ResourceManager = new ResourceManager("GarminWorkoutPlugin.Resources.StringResources",
-                                                                        Assembly.GetExecutingAssembly());
     }
 }

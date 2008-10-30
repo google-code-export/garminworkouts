@@ -7,9 +7,9 @@ using System.IO;
 using System.Text;
 using System.Windows.Forms;
 using ZoneFiveSoftware.Common.Visuals;
-using GarminWorkoutPlugin.Controller;
+using GarminFitnessPlugin.Controller;
 
-namespace GarminWorkoutPlugin.View
+namespace GarminFitnessPlugin.View
 {
     class WorkoutImportAction : IAction
     {
@@ -34,7 +34,7 @@ namespace GarminWorkoutPlugin.View
         {
             get
             {
-                return global::GarminWorkoutPlugin.Properties.Resources.Import;
+                return global::GarminFitnessPlugin.Properties.Resources.Import;
             }
         }
 
@@ -51,10 +51,10 @@ namespace GarminWorkoutPlugin.View
                 ContextMenu menu = new ContextMenu();
                 MenuItem menuItem;
 
-                menuItem = new MenuItem(m_ResourceManager.GetString("FromDeviceText", GarminWorkoutView.UICulture),
+                menuItem = new MenuItem(GarminFitnessView.ResourceManager.GetString("FromDeviceText", GarminFitnessView.UICulture),
                                         new EventHandler(FromDeviceEventHandler));
                 menu.MenuItems.Add(menuItem);
-                menuItem = new MenuItem(m_ResourceManager.GetString("FromFileText", GarminWorkoutView.UICulture),
+                menuItem = new MenuItem(GarminFitnessView.ResourceManager.GetString("FromFileText", GarminFitnessView.UICulture),
                                         new EventHandler(FromFileEventHandler));
                 menu.MenuItems.Add(menuItem);
 
@@ -100,8 +100,8 @@ namespace GarminWorkoutPlugin.View
             }
             catch (FileNotFoundException)
             {
-                MessageBox.Show(m_ResourceManager.GetString("DeviceCommunicationErrorText", GarminWorkoutView.UICulture),
-                                m_ResourceManager.GetString("ErrorText", GarminWorkoutView.UICulture),
+                MessageBox.Show(GarminFitnessView.ResourceManager.GetString("DeviceCommunicationErrorText", GarminFitnessView.UICulture),
+                                GarminFitnessView.ResourceManager.GetString("ErrorText", GarminFitnessView.UICulture),
                                 MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
@@ -112,8 +112,8 @@ namespace GarminWorkoutPlugin.View
             OpenFileDialog dlg = new OpenFileDialog();
             DialogResult result;
 
-            dlg.Title = m_ResourceManager.GetString("OpenFileText", GarminWorkoutView.UICulture);
-            dlg.Filter = m_ResourceManager.GetString("FileDescriptionText", GarminWorkoutView.UICulture) + " (*.tcx;*.wkt)|*.tcx;*.wkt";
+            dlg.Title = GarminFitnessView.ResourceManager.GetString("OpenFileText", GarminFitnessView.UICulture);
+            dlg.Filter = GarminFitnessView.ResourceManager.GetString("FileDescriptionText", GarminFitnessView.UICulture) + " (*.tcx;*.wkt)|*.tcx;*.wkt";
             dlg.CheckFileExists = true;
             result = dlg.ShowDialog();
 
@@ -123,8 +123,8 @@ namespace GarminWorkoutPlugin.View
 
                 if (!WorkoutImporter.ImportWorkout(workoutStream))
                 {
-                    MessageBox.Show(m_ResourceManager.GetString("ImportErrorText", GarminWorkoutView.UICulture),
-                                    m_ResourceManager.GetString("ErrorText", GarminWorkoutView.UICulture),
+                    MessageBox.Show(GarminFitnessView.ResourceManager.GetString("ImportErrorText", GarminFitnessView.UICulture),
+                                    GarminFitnessView.ResourceManager.GetString("ErrorText", GarminFitnessView.UICulture),
                                     MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
                 else
@@ -145,8 +145,8 @@ namespace GarminWorkoutPlugin.View
                 {
                     manager.CancelAllPendingTasks();
 
-                    MessageBox.Show(m_ResourceManager.GetString("DeviceCommunicationErrorText", GarminWorkoutView.UICulture),
-                                    m_ResourceManager.GetString("ErrorText", GarminWorkoutView.UICulture),
+                    MessageBox.Show(GarminFitnessView.ResourceManager.GetString("DeviceCommunicationErrorText", GarminFitnessView.UICulture),
+                                    GarminFitnessView.ResourceManager.GetString("ErrorText", GarminFitnessView.UICulture),
                                     MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
             }
@@ -159,8 +159,8 @@ namespace GarminWorkoutPlugin.View
 
                     if (!WorkoutImporter.ImportWorkout(stream))
                     {
-                        MessageBox.Show(m_ResourceManager.GetString("ImportErrorText", GarminWorkoutView.UICulture),
-                                        m_ResourceManager.GetString("ErrorText", GarminWorkoutView.UICulture),
+                        MessageBox.Show(GarminFitnessView.ResourceManager.GetString("ImportErrorText", GarminFitnessView.UICulture),
+                                        GarminFitnessView.ResourceManager.GetString("ErrorText", GarminFitnessView.UICulture),
                                         MessageBoxButtons.OK, MessageBoxIcon.Error);
                     }
                     else
@@ -189,7 +189,5 @@ namespace GarminWorkoutPlugin.View
         }
 
         public event System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
-        private ResourceManager m_ResourceManager = new ResourceManager("GarminWorkoutPlugin.Resources.StringResources",
-                                                                        Assembly.GetExecutingAssembly());
     }
 }

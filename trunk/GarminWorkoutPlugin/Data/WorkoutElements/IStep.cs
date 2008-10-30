@@ -4,9 +4,9 @@ using System.IO;
 using System.Text;
 using System.Xml;
 using ZoneFiveSoftware.Common.Data.Fitness;
-using GarminWorkoutPlugin.Controller;
+using GarminFitnessPlugin.Controller;
 
-namespace GarminWorkoutPlugin.Data
+namespace GarminFitnessPlugin.Data
 {
     abstract class IStep : IPluginSerializable, IXMLSerializable, IDirty
     {

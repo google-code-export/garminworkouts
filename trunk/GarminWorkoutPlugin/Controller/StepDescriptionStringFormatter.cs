@@ -4,10 +4,11 @@ using System.Globalization;
 using System.Reflection;
 using System.Resources;
 using ZoneFiveSoftware.Common.Data.Measurement;
-using GarminWorkoutPlugin.Data;
 using ZoneFiveSoftware.Common.Visuals;
+using GarminFitnessPlugin.Data;
+using GarminFitnessPlugin.View;
 
-namespace GarminWorkoutPlugin.Controller
+namespace GarminFitnessPlugin.Controller
 {
     class StepDescriptionStringFormatter
     {
@@ -35,7 +36,7 @@ namespace GarminWorkoutPlugin.Controller
                 case IStep.StepType.Repeat:
                     {
                         RepeatStep concreteStep = (RepeatStep)step;
-                        string baseString = m_ResourceManager.GetString("RepeatStepDescriptionText", m_CurrentCulture);
+                        string baseString = GarminFitnessView.ResourceManager.GetString("RepeatStepDescriptionText", GarminFitnessView.UICulture);
                         result = String.Format(baseString, concreteStep.RepetitionCount);
                         break;
                     }
@@ -59,7 +60,7 @@ namespace GarminWorkoutPlugin.Controller
             FieldInfo fieldInfo = type.GetType().GetField(Enum.GetName(type.GetType(), type));
             StepDescriptionStringProviderAttribute providerAttribute = (StepDescriptionStringProviderAttribute)Attribute.GetCustomAttribute(fieldInfo, typeof(StepDescriptionStringProviderAttribute));
 
-            baseString = m_ResourceManager.GetString(providerAttribute.StringName, m_CurrentCulture);
+            baseString = GarminFitnessView.ResourceManager.GetString(providerAttribute.StringName, GarminFitnessView.UICulture);
 
             switch(type)
             {
@@ -142,7 +143,7 @@ namespace GarminWorkoutPlugin.Controller
 
             if (providerAttribute != null)
             {
-                baseString = m_ResourceManager.GetString(providerAttribute.StringName, m_CurrentCulture);
+                baseString = GarminFitnessView.ResourceManager.GetString(providerAttribute.StringName, GarminFitnessView.UICulture);
             }
 
             switch(type)
@@ -155,25 +156,25 @@ namespace GarminWorkoutPlugin.Controller
                 case ITarget.TargetType.Speed:
                     {
                         BaseSpeedTarget baseTarget = (BaseSpeedTarget)target;
-                        result = FormatSpeedTarget(baseTarget.ConcreteTarget, m_ResourceManager, m_CurrentCulture);
+                        result = FormatSpeedTarget(baseTarget.ConcreteTarget, GarminFitnessView.ResourceManager, GarminFitnessView.UICulture);
                         break;
                     }
                 case ITarget.TargetType.Cadence:
                     {
                         BaseCadenceTarget baseTarget = (BaseCadenceTarget)target;
-                        result = FormatCadenceTarget(baseTarget.ConcreteTarget, m_ResourceManager, m_CurrentCulture);
+                        result = FormatCadenceTarget(baseTarget.ConcreteTarget, GarminFitnessView.ResourceManager, GarminFitnessView.UICulture);
                         break;
                     }
                 case ITarget.TargetType.HeartRate:
                     {
                         BaseHeartRateTarget baseTarget = (BaseHeartRateTarget)target;
-                        result = FormatHeartRateTarget(baseTarget.ConcreteTarget, m_ResourceManager, m_CurrentCulture);
+                        result = FormatHeartRateTarget(baseTarget.ConcreteTarget, GarminFitnessView.ResourceManager, GarminFitnessView.UICulture);
                         break;
                     }
                 case ITarget.TargetType.Power:
                     {
                         BasePowerTarget baseTarget = (BasePowerTarget)target;
-                        result = FormatPowerTarget(baseTarget.ConcreteTarget, m_ResourceManager, m_CurrentCulture);
+                        result = FormatPowerTarget(baseTarget.ConcreteTarget, GarminFitnessView.ResourceManager, GarminFitnessView.UICulture);
                         break;
                     }
                 default:
@@ -381,18 +382,5 @@ namespace GarminWorkoutPlugin.Controller
 
             return result;
         }
-
-        public static ResourceManager ResourceManager
-        {
-            set { m_ResourceManager = value; }
-        }
-
-        public static CultureInfo CurrentCulture
-        {
-            set { m_CurrentCulture = value; }
-        }
-
-        private static ResourceManager m_ResourceManager = null;
-        private static CultureInfo m_CurrentCulture = null;
     }
 }

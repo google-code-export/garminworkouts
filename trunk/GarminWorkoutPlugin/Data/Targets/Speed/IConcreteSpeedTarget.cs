@@ -3,9 +3,9 @@ using System.Diagnostics;
 using System.IO;
 using System.Xml;
 using ZoneFiveSoftware.Common.Data.Measurement;
-using GarminWorkoutPlugin.Controller;
+using GarminFitnessPlugin.Controller;
 
-namespace GarminWorkoutPlugin.Data
+namespace GarminFitnessPlugin.Data
 {
     abstract class IConcreteSpeedTarget : IPluginSerializable, IXMLSerializable, IDirty
     {

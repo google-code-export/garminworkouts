@@ -3,7 +3,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Xml;
 
-namespace GarminWorkoutPlugin.Data
+namespace GarminFitnessPlugin.Data
 {
     class DurationFactory
     {

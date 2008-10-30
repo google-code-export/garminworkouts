@@ -2,9 +2,9 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using ZoneFiveSoftware.Common.Visuals;
-using GarminWorkoutPlugin.Data;
+using GarminFitnessPlugin.Data;
 
-namespace GarminWorkoutPlugin.View
+namespace GarminFitnessPlugin.View
 {
     class StepIconLabelProvider : TreeList.DefaultLabelProvider
     {
@@ -16,7 +16,7 @@ namespace GarminWorkoutPlugin.View
 
                 if (((IStep)wrapper.Element).IsDirty)
                 {
-                    return global::GarminWorkoutPlugin.Properties.Resources.DirtyWarning;
+                    return global::GarminFitnessPlugin.Properties.Resources.DirtyWarning;
                 }
             }
 

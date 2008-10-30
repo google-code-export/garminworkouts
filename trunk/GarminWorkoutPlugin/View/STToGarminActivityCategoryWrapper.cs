@@ -3,10 +3,10 @@ using System.Reflection;
 using System.Resources;
 using ZoneFiveSoftware.Common.Data.Fitness;
 using ZoneFiveSoftware.Common.Visuals;
-using GarminWorkoutPlugin.Controller;
-using GarminWorkoutPlugin.Data;
+using GarminFitnessPlugin.Controller;
+using GarminFitnessPlugin.Data;
 
-namespace GarminWorkoutPlugin.View
+namespace GarminFitnessPlugin.View
 {
     class STToGarminActivityCategoryWrapper : TreeList.TreeListNode
     {
@@ -29,11 +29,8 @@ namespace GarminWorkoutPlugin.View
                 FieldInfo fieldInfo = garminCategory.GetType().GetField(Enum.GetName(garminCategory.GetType(), garminCategory));
                 GarminCategoryStringProviderAttribute providerAttribute = (GarminCategoryStringProviderAttribute)Attribute.GetCustomAttribute(fieldInfo, typeof(GarminCategoryStringProviderAttribute));
 
-                return m_ResourceManager.GetString(providerAttribute.StringName, GarminWorkoutView.UICulture);
+                return GarminFitnessView.ResourceManager.GetString(providerAttribute.StringName, GarminFitnessView.UICulture);
             }
         }
-
-        private ResourceManager m_ResourceManager = new ResourceManager("GarminWorkoutPlugin.Resources.StringResources",
-                                                                Assembly.GetExecutingAssembly());
     }
 }

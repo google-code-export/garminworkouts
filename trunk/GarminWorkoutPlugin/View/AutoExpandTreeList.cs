@@ -3,7 +3,7 @@ using System.Diagnostics;
 using System.Windows.Forms;
 using ZoneFiveSoftware.Common.Visuals;
 
-namespace GarminWorkoutPlugin.View
+namespace GarminFitnessPlugin.View
 {
     class AutoExpandTreeList : TreeList
     {

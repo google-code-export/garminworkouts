@@ -1,7 +1,7 @@
 using System;
-using GarminWorkoutPlugin.Data;
+using GarminFitnessPlugin.Data;
 
-namespace GarminWorkoutPlugin
+namespace GarminFitnessPlugin
 {
     class Constants
     {

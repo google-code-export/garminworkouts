@@ -10,11 +10,11 @@ using System.Xml;
 using System.Windows.Forms;
 using ZoneFiveSoftware.Common.Data.Fitness;
 using ZoneFiveSoftware.Common.Visuals.Fitness;
-using GarminWorkoutPlugin.Data;
-using GarminWorkoutPlugin.View;
-using GarminWorkoutPlugin.Controller;
+using GarminFitnessPlugin.Data;
+using GarminFitnessPlugin.View;
+using GarminFitnessPlugin.Controller;
 
-namespace GarminWorkoutPlugin
+namespace GarminFitnessPlugin
 {
     class PluginMain : IPlugin
     {
@@ -268,8 +268,8 @@ namespace GarminWorkoutPlugin
                 }
                 catch (Data.DataTooRecentException)
                 {
-                    MessageBox.Show("Cannot open this data with this version of the GarminWorkoutPlugin, please update to the latest version",
-                                    "Error",
+                    MessageBox.Show(GarminFitnessView.ResourceManager.GetString("DataTooRecentErrorText", GarminFitnessView.UICulture),
+                                    GarminFitnessView.ResourceManager.GetString("ErrorText", GarminFitnessView.UICulture),
                                     MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
                 catch (Exception e)
@@ -294,8 +294,6 @@ namespace GarminWorkoutPlugin
         public delegate void ActivityCategoryChangedEventHandler(object sender, IActivityCategory category);
         public static event ActivityCategoryChangedEventHandler ActivityCategoryChanged;
 
-        private static ResourceManager m_ResourceManager = new ResourceManager("GarminWorkoutPlugin.Resources.StringResources",
-                                                                Assembly.GetExecutingAssembly());
         private static IApplication m_App = null;
         private static ILogbook m_CurrentLogbook = null;
         XmlNode m_PluginOptions;

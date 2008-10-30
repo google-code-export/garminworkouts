@@ -5,23 +5,23 @@ using System.Resources;
 using System.Windows.Forms;
 using ZoneFiveSoftware.Common.Visuals;
 using ZoneFiveSoftware.SportTracks.Device.GarminGPS;
-using GarminWorkoutPlugin.Controller;
+using GarminFitnessPlugin.Controller;
 
-namespace GarminWorkoutPlugin.View
+namespace GarminFitnessPlugin.View
 {
     partial class SelectDeviceDialog : Form
     {
         public SelectDeviceDialog()
         {
-            CultureInfo UICulture = GarminWorkoutView.UICulture;
+            CultureInfo UICulture = GarminFitnessView.UICulture;
 
             InitializeComponent();
 
             GarminDeviceManager.GetInstance().TaskCompleted += new GarminDeviceManager.TaskCompletedEventHandler(OnManagerTaskCompleted);
 
-            this.Text = m_ResourceManager.GetString("SelectDeviceText", UICulture);
-            IntroLabel.Text = m_ResourceManager.GetString("SelectDeviceIntroText", UICulture);
-            RefreshButton.Text = m_ResourceManager.GetString("RefreshButtonText", UICulture);
+            this.Text = GarminFitnessView.ResourceManager.GetString("SelectDeviceText", UICulture);
+            IntroLabel.Text = GarminFitnessView.ResourceManager.GetString("SelectDeviceIntroText", UICulture);
+            RefreshButton.Text = GarminFitnessView.ResourceManager.GetString("RefreshButtonText", UICulture);
             Cancel_Button.Text = CommonResources.Text.ActionCancel;
             OKButton.Text = CommonResources.Text.ActionOk;
 
@@ -98,8 +98,5 @@ namespace GarminWorkoutPlugin.View
         }
 
         private Device m_SelectedDevice = null;
-
-        private ResourceManager m_ResourceManager = new ResourceManager("GarminWorkoutPlugin.Resources.StringResources",
-                                                                        Assembly.GetExecutingAssembly());
     }
 }

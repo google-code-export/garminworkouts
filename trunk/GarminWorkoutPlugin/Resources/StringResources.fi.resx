@@ -162,6 +162,9 @@
   <data name="CustomText" xml:space="preserve">
     <value>Custom</value>
   </data>
+  <data name="DataTooRecentErrorText" xml:space="preserve">
+    <value>Cannot open this data with this version of the Garmin Fitness Plugin, please update to the latest version.</value>
+  </data>
   <data name="DefaultExportDirectoryGroupBoxText" xml:space="preserve">
     <value>Default Export Directory</value>
   </data>

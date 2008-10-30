@@ -5,7 +5,7 @@ using System.Resources;
 using System.Windows.Forms;
 using ZoneFiveSoftware.Common.Visuals;
 
-namespace GarminWorkoutPlugin.View
+namespace GarminFitnessPlugin.View
 {
     public partial class DateSelectorDialog : Form
     {
@@ -13,8 +13,8 @@ namespace GarminWorkoutPlugin.View
         {
             InitializeComponent();
 
-            this.Text = m_ResourceManager.GetString("SelectDateText", UICulture);
-            SelectDateLabel.Text = m_ResourceManager.GetString("SelectDateText", UICulture) + " :";
+            this.Text = GarminFitnessView.ResourceManager.GetString("SelectDateText", UICulture);
+            SelectDateLabel.Text = GarminFitnessView.ResourceManager.GetString("SelectDateText", UICulture) + " :";
             Calendar.ThemeChanged(UITheme);
 
             Calendar.SelectedDate = DateTime.Today;
@@ -30,8 +30,5 @@ namespace GarminWorkoutPlugin.View
             this.DialogResult = DialogResult.OK;
             this.Close();
         }
-
-        private ResourceManager m_ResourceManager = new ResourceManager("GarminWorkoutPlugin.Resources.StringResources",
-                                                                        Assembly.GetExecutingAssembly());
     }
 }

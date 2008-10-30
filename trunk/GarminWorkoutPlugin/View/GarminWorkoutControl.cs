@@ -14,12 +14,12 @@ using ZoneFiveSoftware.Common.Data.Fitness;
 using ZoneFiveSoftware.Common.Data.Measurement;
 using ZoneFiveSoftware.Common.Visuals;
 using ZoneFiveSoftware.Common.Visuals.Fitness;
-using GarminWorkoutPlugin.Data;
-using GarminWorkoutPlugin.Controller;
+using GarminFitnessPlugin.Data;
+using GarminFitnessPlugin.Controller;
 
-namespace GarminWorkoutPlugin.View
+namespace GarminFitnessPlugin.View
 {
-    partial class GarminWorkoutControl : UserControl, IGarminPluginControl
+    partial class GarminWorkoutControl : UserControl, IGarminFitnessPluginControl
     {
         public GarminWorkoutControl()
         {
@@ -356,8 +356,8 @@ namespace GarminWorkoutPlugin.View
             }
             else
             {
-                MessageBox.Show(String.Format(m_ResourceManager.GetString("IntegerRangeValidationText"), 1, 65535),
-                                m_ResourceManager.GetString("ValueValidationTitleText"), MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show(String.Format(GarminFitnessView.ResourceManager.GetString("IntegerRangeValidationText"), 1, 65535),
+                                GarminFitnessView.ResourceManager.GetString("ValueValidationTitleText"), MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 System.Media.SystemSounds.Asterisk.Play();
                 CaloriesDurationText.Text = concreteDuration.CaloriesToSpend.ToString();
                 e.Cancel = true;
@@ -466,8 +466,8 @@ namespace GarminWorkoutPlugin.View
                 }
                 else
                 {
-                    MessageBox.Show(String.Format(m_ResourceManager.GetString("IntegerRangeValidationText"), 1, 100),
-                                    m_ResourceManager.GetString("ValueValidationTitleText"), MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    MessageBox.Show(String.Format(GarminFitnessView.ResourceManager.GetString("IntegerRangeValidationText"), 1, 100),
+                                    GarminFitnessView.ResourceManager.GetString("ValueValidationTitleText"), MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     System.Media.SystemSounds.Asterisk.Play();
                     HeartRateDurationText.Text = HRValue.ToString();
                     e.Cancel = true;
@@ -481,8 +481,8 @@ namespace GarminWorkoutPlugin.View
                 }
                 else
                 {
-                    MessageBox.Show(String.Format(m_ResourceManager.GetString("IntegerRangeValidationText"), 30, 240),
-                                    m_ResourceManager.GetString("ValueValidationTitleText"), MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    MessageBox.Show(String.Format(GarminFitnessView.ResourceManager.GetString("IntegerRangeValidationText"), 30, 240),
+                                    GarminFitnessView.ResourceManager.GetString("ValueValidationTitleText"), MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     System.Media.SystemSounds.Asterisk.Play();
                     HeartRateDurationText.Text = HRValue.ToString();
                     e.Cancel = true;
@@ -556,8 +556,8 @@ namespace GarminWorkoutPlugin.View
             }
             else
             {
-                MessageBox.Show(String.Format(m_ResourceManager.GetString("DoubleRangeValidationText"), minDistance, maxDistance),
-                                m_ResourceManager.GetString("ValueValidationTitleText"), MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show(String.Format(GarminFitnessView.ResourceManager.GetString("DoubleRangeValidationText"), minDistance, maxDistance),
+                                GarminFitnessView.ResourceManager.GetString("ValueValidationTitleText"), MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 System.Media.SystemSounds.Asterisk.Play();
                 DistanceDurationText.Text = String.Format("{0:0.00}", concreteDuration.GetDistanceInUnits(SelectedWorkout.Category.DistanceUnits));
                 e.Cancel = true;
@@ -755,8 +755,8 @@ namespace GarminWorkoutPlugin.View
                         }
                         else
                         {
-                            MessageBox.Show(String.Format(m_ResourceManager.GetString("IntegerRangeValidationText"), intMin, intMax),
-                                            m_ResourceManager.GetString("ValueValidationTitleText"), MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                            MessageBox.Show(String.Format(GarminFitnessView.ResourceManager.GetString("IntegerRangeValidationText"), intMin, intMax),
+                                            GarminFitnessView.ResourceManager.GetString("ValueValidationTitleText"), MessageBoxButtons.OK, MessageBoxIcon.Warning);
                             System.Media.SystemSounds.Asterisk.Play();
                             LowRangeTargetText.Text = oldValue;
                             e.Cancel = true;
@@ -771,8 +771,8 @@ namespace GarminWorkoutPlugin.View
                         }
                         else
                         {
-                            MessageBox.Show(String.Format(m_ResourceManager.GetString("DoubleRangeValidationText"), doubleMin, doubleMax),
-                                            m_ResourceManager.GetString("ValueValidationTitleText"), MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                            MessageBox.Show(String.Format(GarminFitnessView.ResourceManager.GetString("DoubleRangeValidationText"), doubleMin, doubleMax),
+                                            GarminFitnessView.ResourceManager.GetString("ValueValidationTitleText"), MessageBoxButtons.OK, MessageBoxIcon.Warning);
                             System.Media.SystemSounds.Asterisk.Play();
                             LowRangeTargetText.Text = oldValue;
                             e.Cancel = true;
@@ -792,10 +792,10 @@ namespace GarminWorkoutPlugin.View
 
                             Utils.FloatToTime(doubleMin, out minMinutes, out minSeconds);
                             Utils.FloatToTime(doubleMax, out maxMinutes, out maxSeconds);
-                            MessageBox.Show(String.Format(m_ResourceManager.GetString("TimeRangeValidationText"),
+                            MessageBox.Show(String.Format(GarminFitnessView.ResourceManager.GetString("TimeRangeValidationText"),
                                                           minMinutes, minSeconds,
                                                           maxMinutes, maxSeconds),
-                                            m_ResourceManager.GetString("ValueValidationTitleText"), MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                                            GarminFitnessView.ResourceManager.GetString("ValueValidationTitleText"), MessageBoxButtons.OK, MessageBoxIcon.Warning);
                             System.Media.SystemSounds.Asterisk.Play();
                             LowRangeTargetText.Text = oldValue;
                             e.Cancel = true;
@@ -1036,8 +1036,8 @@ namespace GarminWorkoutPlugin.View
                         }
                         else
                         {
-                            MessageBox.Show(String.Format(m_ResourceManager.GetString("IntegerRangeValidationText"), intMin, intMax),
-                                            m_ResourceManager.GetString("ValueValidationTitleText"), MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                            MessageBox.Show(String.Format(GarminFitnessView.ResourceManager.GetString("IntegerRangeValidationText"), intMin, intMax),
+                                            GarminFitnessView.ResourceManager.GetString("ValueValidationTitleText"), MessageBoxButtons.OK, MessageBoxIcon.Warning);
                             System.Media.SystemSounds.Asterisk.Play();
                             HighRangeTargetText.Text = oldValue;
                             e.Cancel = true;
@@ -1052,8 +1052,8 @@ namespace GarminWorkoutPlugin.View
                         }
                         else
                         {
-                            MessageBox.Show(String.Format(m_ResourceManager.GetString("DoubleRangeValidationText"), doubleMin, doubleMax),
-                                            m_ResourceManager.GetString("ValueValidationTitleText"), MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                            MessageBox.Show(String.Format(GarminFitnessView.ResourceManager.GetString("DoubleRangeValidationText"), doubleMin, doubleMax),
+                                            GarminFitnessView.ResourceManager.GetString("ValueValidationTitleText"), MessageBoxButtons.OK, MessageBoxIcon.Warning);
                             System.Media.SystemSounds.Asterisk.Play();
                             HighRangeTargetText.Text = oldValue;
                             e.Cancel = true;
@@ -1073,10 +1073,10 @@ namespace GarminWorkoutPlugin.View
 
                             Utils.FloatToTime(doubleMin, out minMinutes, out minSeconds);
                             Utils.FloatToTime(doubleMax, out maxMinutes, out maxSeconds);
-                            MessageBox.Show(String.Format(m_ResourceManager.GetString("TimeRangeValidationText"),
+                            MessageBox.Show(String.Format(GarminFitnessView.ResourceManager.GetString("TimeRangeValidationText"),
                                                           minMinutes, minSeconds,
                                                           maxMinutes, maxSeconds),
-                                            m_ResourceManager.GetString("ValueValidationTitleText"), MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                                            GarminFitnessView.ResourceManager.GetString("ValueValidationTitleText"), MessageBoxButtons.OK, MessageBoxIcon.Warning);
                             System.Media.SystemSounds.Asterisk.Play();
                             HighRangeTargetText.Text = oldValue;
                             e.Cancel = true;
@@ -1759,8 +1759,8 @@ namespace GarminWorkoutPlugin.View
             {
                 e.Cancel = true;
 
-                MessageBox.Show(m_ResourceManager.GetString("InvalidWorkoutNameText", m_CurrentCulture),
-                                m_ResourceManager.GetString("ErrorText", m_CurrentCulture),
+                MessageBox.Show(GarminFitnessView.ResourceManager.GetString("InvalidWorkoutNameText", GarminFitnessView.UICulture),
+                                GarminFitnessView.ResourceManager.GetString("ErrorText", GarminFitnessView.UICulture),
                                 MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
@@ -1900,11 +1900,6 @@ namespace GarminWorkoutPlugin.View
 
         public void UICultureChanged(System.Globalization.CultureInfo culture)
         {
-            m_CurrentCulture = culture;
-
-            StepDescriptionStringFormatter.ResourceManager = m_ResourceManager;
-            StepDescriptionStringFormatter.CurrentCulture = m_CurrentCulture;
-
             UpdateUIStrings();
             BuildWorkoutsList();
             UpdateUIFromWorkout(SelectedWorkout);
@@ -1941,29 +1936,29 @@ namespace GarminWorkoutPlugin.View
 
         private void UpdateUIStrings()
         {
-            CategoriesBanner.Text = m_ResourceManager.GetString("CategoriesText", m_CurrentCulture);
-            DetailsBanner.Text = m_ResourceManager.GetString("DetailsText", m_CurrentCulture);
-            StepDetailsBanner.Text = m_ResourceManager.GetString("StepDetailsText", m_CurrentCulture);
-            ScheduleBanner.Text = m_ResourceManager.GetString("ScheduleBannerText", m_CurrentCulture);
+            CategoriesBanner.Text = GarminFitnessView.ResourceManager.GetString("CategoriesText", GarminFitnessView.UICulture);
+            DetailsBanner.Text = GarminFitnessView.ResourceManager.GetString("DetailsText", GarminFitnessView.UICulture);
+            StepDetailsBanner.Text = GarminFitnessView.ResourceManager.GetString("StepDetailsText", GarminFitnessView.UICulture);
+            ScheduleBanner.Text = GarminFitnessView.ResourceManager.GetString("ScheduleBannerText", GarminFitnessView.UICulture);
 
-            NameLabel.Text = m_ResourceManager.GetString("NameLabelText", m_CurrentCulture);
-            WorkoutNotesLabel.Text = m_ResourceManager.GetString("NotesLabelText", m_CurrentCulture);
-            StepNotesLabel.Text = m_ResourceManager.GetString("NotesLabelText", m_CurrentCulture);
-            StepNameLabel.Text = m_ResourceManager.GetString("StepNameLabelText", m_CurrentCulture);
-            RestingCheckBox.Text = m_ResourceManager.GetString("RestingCheckBoxText", m_CurrentCulture);
-            StepDurationGroup.Text = m_ResourceManager.GetString("StepDurationGroupText", m_CurrentCulture);
-            StepDurationLabel.Text = m_ResourceManager.GetString("StepDurationLabelText", m_CurrentCulture);
-            StepTargetGroup.Text = m_ResourceManager.GetString("StepTargetGroupText", m_CurrentCulture);
-            StepTargetLabel.Text = m_ResourceManager.GetString("StepTargetLabelText", m_CurrentCulture);
-            CaloriesDurationLabel.Text = m_ResourceManager.GetString("CaloriesDurationLabelText", m_CurrentCulture);
-            DistanceDurationLabel.Text = m_ResourceManager.GetString("DistanceDurationLabelText", m_CurrentCulture);
-            HeartRateDurationLabel.Text = m_ResourceManager.GetString("HeartRateDurationLabelText", m_CurrentCulture);
-            TimeDurationLabel.Text = m_ResourceManager.GetString("TimeDurationLabelText", m_CurrentCulture);
-            ZoneLabel.Text = m_ResourceManager.GetString("WhichZoneText", m_CurrentCulture);
-            LowRangeTargetLabel.Text = m_ResourceManager.GetString("BetweenText", m_CurrentCulture);
-            MiddleRangeTargetLabel.Text = m_ResourceManager.GetString("AndText", m_CurrentCulture);
-            RepetitionCountLabel.Text = m_ResourceManager.GetString("RepetitionCountLabelText", m_CurrentCulture);
-            ExportDateTextLabel.Text = m_ResourceManager.GetString("LastExportDateText", m_CurrentCulture);
+            NameLabel.Text = GarminFitnessView.ResourceManager.GetString("NameLabelText", GarminFitnessView.UICulture);
+            WorkoutNotesLabel.Text = GarminFitnessView.ResourceManager.GetString("NotesLabelText", GarminFitnessView.UICulture);
+            StepNotesLabel.Text = GarminFitnessView.ResourceManager.GetString("NotesLabelText", GarminFitnessView.UICulture);
+            StepNameLabel.Text = GarminFitnessView.ResourceManager.GetString("StepNameLabelText", GarminFitnessView.UICulture);
+            RestingCheckBox.Text = GarminFitnessView.ResourceManager.GetString("RestingCheckBoxText", GarminFitnessView.UICulture);
+            StepDurationGroup.Text = GarminFitnessView.ResourceManager.GetString("StepDurationGroupText", GarminFitnessView.UICulture);
+            StepDurationLabel.Text = GarminFitnessView.ResourceManager.GetString("StepDurationLabelText", GarminFitnessView.UICulture);
+            StepTargetGroup.Text = GarminFitnessView.ResourceManager.GetString("StepTargetGroupText", GarminFitnessView.UICulture);
+            StepTargetLabel.Text = GarminFitnessView.ResourceManager.GetString("StepTargetLabelText", GarminFitnessView.UICulture);
+            CaloriesDurationLabel.Text = GarminFitnessView.ResourceManager.GetString("CaloriesDurationLabelText", GarminFitnessView.UICulture);
+            DistanceDurationLabel.Text = GarminFitnessView.ResourceManager.GetString("DistanceDurationLabelText", GarminFitnessView.UICulture);
+            HeartRateDurationLabel.Text = GarminFitnessView.ResourceManager.GetString("HeartRateDurationLabelText", GarminFitnessView.UICulture);
+            TimeDurationLabel.Text = GarminFitnessView.ResourceManager.GetString("TimeDurationLabelText", GarminFitnessView.UICulture);
+            ZoneLabel.Text = GarminFitnessView.ResourceManager.GetString("WhichZoneText", GarminFitnessView.UICulture);
+            LowRangeTargetLabel.Text = GarminFitnessView.ResourceManager.GetString("BetweenText", GarminFitnessView.UICulture);
+            MiddleRangeTargetLabel.Text = GarminFitnessView.ResourceManager.GetString("AndText", GarminFitnessView.UICulture);
+            RepetitionCountLabel.Text = GarminFitnessView.ResourceManager.GetString("RepetitionCountLabelText", GarminFitnessView.UICulture);
+            ExportDateTextLabel.Text = GarminFitnessView.ResourceManager.GetString("LastExportDateText", GarminFitnessView.UICulture);
 
             // Update duration heart rate reference combo box text
             HeartRateReferenceComboBox.Items.Clear();
@@ -1984,11 +1979,11 @@ namespace GarminWorkoutPlugin.View
                 FieldInfo durationFieldInfo = currentDuration.GetType().GetField(Enum.GetName(currentDuration.GetType(), currentDuration));
                 ComboBoxStringProviderAttribute providerAttribute = (ComboBoxStringProviderAttribute)Attribute.GetCustomAttribute(durationFieldInfo, typeof(ComboBoxStringProviderAttribute));
 
-                DurationComboBox.Items.Add(m_ResourceManager.GetString(providerAttribute.StringName, m_CurrentCulture));
+                DurationComboBox.Items.Add(GarminFitnessView.ResourceManager.GetString(providerAttribute.StringName, GarminFitnessView.UICulture));
 
                 if (currentSelection == i)
                 {
-                    DurationComboBox.Text = m_ResourceManager.GetString(providerAttribute.StringName, m_CurrentCulture);
+                    DurationComboBox.Text = GarminFitnessView.ResourceManager.GetString(providerAttribute.StringName, GarminFitnessView.UICulture);
                 }
             }
 
@@ -2001,11 +1996,11 @@ namespace GarminWorkoutPlugin.View
                 FieldInfo targetFieldInfo = currentTarget.GetType().GetField(Enum.GetName(currentTarget.GetType(), currentTarget));
                 ComboBoxStringProviderAttribute providerAttribute = (ComboBoxStringProviderAttribute)Attribute.GetCustomAttribute(targetFieldInfo, typeof(ComboBoxStringProviderAttribute));
 
-                TargetComboBox.Items.Add(m_ResourceManager.GetString(providerAttribute.StringName, m_CurrentCulture));
+                TargetComboBox.Items.Add(GarminFitnessView.ResourceManager.GetString(providerAttribute.StringName, GarminFitnessView.UICulture));
 
                 if (currentSelection == i)
                 {
-                    TargetComboBox.Text = m_ResourceManager.GetString(providerAttribute.StringName, m_CurrentCulture);
+                    TargetComboBox.Text = GarminFitnessView.ResourceManager.GetString(providerAttribute.StringName, GarminFitnessView.UICulture);
                 }
             }
         }
@@ -2325,11 +2320,11 @@ namespace GarminWorkoutPlugin.View
 
                 if (workout.LastExportDate.Ticks == 0)
                 {
-                    ExportDateLabel.Text = m_ResourceManager.GetString("NeverExportedText", m_CurrentCulture);
+                    ExportDateLabel.Text = GarminFitnessView.ResourceManager.GetString("NeverExportedText", GarminFitnessView.UICulture);
                 }
                 else
                 {
-                    ExportDateLabel.Text = workout.LastExportDate.ToString(CultureInfo.CreateSpecificCulture(m_CurrentCulture.Name).DateTimeFormat.ShortDatePattern) + " " + workout.LastExportDate.ToString(CultureInfo.CreateSpecificCulture(m_CurrentCulture.Name).DateTimeFormat.ShortTimePattern);
+                    ExportDateLabel.Text = workout.LastExportDate.ToString(CultureInfo.CreateSpecificCulture(GarminFitnessView.UICulture.Name).DateTimeFormat.ShortDatePattern) + " " + workout.LastExportDate.ToString(CultureInfo.CreateSpecificCulture(GarminFitnessView.UICulture.Name).DateTimeFormat.ShortTimePattern);
                 }
 
                 ScheduleWorkoutButton.Enabled = WorkoutCalendar.SelectedDate >= DateTime.Today && !workout.ScheduledDates.Contains(WorkoutCalendar.SelectedDate);
@@ -2556,7 +2551,7 @@ namespace GarminWorkoutPlugin.View
 
                                                     if (concreteTarget.ViewAsPace)
                                                     {
-                                                        RangeTargetUnitsLabel.Text = m_ResourceManager.GetString("MinuteAbbrText", m_CurrentCulture) + "/" + Length.LabelAbbr(unit);
+                                                        RangeTargetUnitsLabel.Text = GarminFitnessView.ResourceManager.GetString("MinuteAbbrText", GarminFitnessView.UICulture) + "/" + Length.LabelAbbr(unit);
                                                         double min = concreteTarget.GetMinSpeedInMinutesPerUnit(unit);
                                                         double max = concreteTarget.GetMaxSpeedInMinutesPerUnit(unit);
                                                         UInt16 minutes;
@@ -2569,7 +2564,7 @@ namespace GarminWorkoutPlugin.View
                                                     }
                                                     else
                                                     {
-                                                        RangeTargetUnitsLabel.Text = Length.LabelAbbr(unit) + m_ResourceManager.GetString("PerHourText", m_CurrentCulture);
+                                                        RangeTargetUnitsLabel.Text = Length.LabelAbbr(unit) + GarminFitnessView.ResourceManager.GetString("PerHourText", GarminFitnessView.UICulture);
                                                         LowRangeTargetText.Text = String.Format("{0:0.00}", concreteTarget.GetMinSpeedInUnitsPerHour(unit));
                                                         HighRangeTargetText.Text = String.Format("{0:0.00}", concreteTarget.GetMaxSpeedInUnitsPerHour(unit));
                                                     }
@@ -2714,7 +2709,7 @@ namespace GarminWorkoutPlugin.View
         private void BuildCadenceComboBox(BaseCadenceTarget target)
         {
             ZoneComboBox.Items.Clear();
-            ZoneComboBox.Items.Add(m_ResourceManager.GetString("CustomText"));
+            ZoneComboBox.Items.Add(GarminFitnessView.ResourceManager.GetString("CustomText"));
 
             IList<INamedLowHighZone> zones = Options.CadenceZoneCategory.Zones;
             for (byte i = 0; i < zones.Count; ++i)
@@ -2728,7 +2723,7 @@ namespace GarminWorkoutPlugin.View
             IConcreteHeartRateTarget.HeartRateTargetType type = target.ConcreteTarget.Type;
 
             ZoneComboBox.Items.Clear();
-            ZoneComboBox.Items.Add(m_ResourceManager.GetString("CustomText"));
+            ZoneComboBox.Items.Add(GarminFitnessView.ResourceManager.GetString("CustomText"));
 
             if(type == IConcreteHeartRateTarget.HeartRateTargetType.ZoneGTC ||
                (type == IConcreteHeartRateTarget.HeartRateTargetType.Range && !Options.UseSportTracksHeartRateZones))
@@ -2754,7 +2749,7 @@ namespace GarminWorkoutPlugin.View
             IConcretePowerTarget.PowerTargetType type = target.ConcreteTarget.Type;
 
             ZoneComboBox.Items.Clear();
-            ZoneComboBox.Items.Add(m_ResourceManager.GetString("CustomText"));
+            ZoneComboBox.Items.Add(GarminFitnessView.ResourceManager.GetString("CustomText"));
 
             if (type == IConcretePowerTarget.PowerTargetType.ZoneGTC ||
                (type == IConcretePowerTarget.PowerTargetType.Range && !Options.UseSportTracksPowerZones))
@@ -2780,7 +2775,7 @@ namespace GarminWorkoutPlugin.View
             IConcreteSpeedTarget.SpeedTargetType type = target.ConcreteTarget.Type;
 
             ZoneComboBox.Items.Clear();
-            ZoneComboBox.Items.Add(m_ResourceManager.GetString("CustomText"));
+            ZoneComboBox.Items.Add(GarminFitnessView.ResourceManager.GetString("CustomText"));
 
             // Use GTC zones
             if (type == IConcreteSpeedTarget.SpeedTargetType.ZoneGTC ||
@@ -2788,7 +2783,7 @@ namespace GarminWorkoutPlugin.View
             {
                 for (byte i = 1; i <= 10; ++i)
                 {
-                    ZoneComboBox.Items.Add(m_ResourceManager.GetString("GTCSpeedZone" + i.ToString() + "Text", m_CurrentCulture));
+                    ZoneComboBox.Items.Add(GarminFitnessView.ResourceManager.GetString("GTCSpeedZone" + i.ToString() + "Text", GarminFitnessView.UICulture));
                 }
             }
             // Use ST zones
@@ -3040,7 +3035,7 @@ namespace GarminWorkoutPlugin.View
 
             WorkoutsList.RowData = categories;
             WorkoutsList.Columns.Clear();
-            WorkoutsList.Columns.Add(new TreeList.Column("Name", m_ResourceManager.GetString("CategoryText", m_CurrentCulture),
+            WorkoutsList.Columns.Add(new TreeList.Column("Name", GarminFitnessView.ResourceManager.GetString("CategoryText", GarminFitnessView.UICulture),
                                                          150, StringAlignment.Near));
             WorkoutsList.Selected = selection;
             WorkoutsList.SetExpanded(WorkoutsList.RowData, true, true);
@@ -3292,7 +3287,7 @@ namespace GarminWorkoutPlugin.View
 
         private void RefreshActions()
         {
-            if (PluginMain.GetApplication().ActiveView.GetType() == typeof(GarminWorkoutView))
+            if (PluginMain.GetApplication().ActiveView.GetType() == typeof(GarminFitnessView))
             {
                 for (int i = 0; i < PluginMain.GetApplication().ActiveView.Actions.Count; ++i)
                 {
@@ -3555,9 +3550,6 @@ namespace GarminWorkoutPlugin.View
             Time
         }
 
-        private ResourceManager m_ResourceManager = new ResourceManager("GarminWorkoutPlugin.Resources.StringResources",
-                                                                        Assembly.GetExecutingAssembly());
-        private CultureInfo m_CurrentCulture;
         private ITheme m_CurrentTheme;
         private ZoneFiveSoftware.Common.Visuals.Panel m_CurrentDurationPanel;
         private readonly ZoneFiveSoftware.Common.Visuals.Panel[] m_DurationPanels;

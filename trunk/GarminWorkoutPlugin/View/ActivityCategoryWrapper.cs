@@ -2,7 +2,7 @@ using System;
 using ZoneFiveSoftware.Common.Data.Fitness;
 using ZoneFiveSoftware.Common.Visuals;
 
-namespace GarminWorkoutPlugin.View
+namespace GarminFitnessPlugin.View
 {
     class ActivityCategoryWrapper : TreeList.TreeListNode
     {

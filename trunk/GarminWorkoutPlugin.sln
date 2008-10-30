@@ -1,13 +1,9 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 9.00
 # Visual Studio 2005
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GarminWorkoutPlugin", "GarminWorkoutPlugin\GarminWorkoutPlugin.csproj", "{32D78A8D-8A25-4D6A-AB26-2C24F851E49D}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GarminFitnessPlugin", "GarminWorkoutPlugin\GarminFitnessPlugin.csproj", "{32D78A8D-8A25-4D6A-AB26-2C24F851E49D}"
 EndProject
 Global
-	GlobalSection(SubversionScc) = preSolution
-		Svn-Managed = True
-		Manager = AnkhSVN - Subversion Support for Visual Studio
-	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU
@@ -20,5 +16,9 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(SubversionScc) = preSolution
+		Svn-Managed = True
+		Manager = AnkhSVN - Subversion Support for Visual Studio
 	EndGlobalSection
 EndGlobal

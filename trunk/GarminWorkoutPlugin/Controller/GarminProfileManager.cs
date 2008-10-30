@@ -1,7 +1,7 @@
 using System.IO;
-using GarminWorkoutPlugin.Data;
+using GarminFitnessPlugin.Data;
 
-namespace GarminWorkoutPlugin.Controller
+namespace GarminFitnessPlugin.Controller
 {
     class GarminProfileManager : IPluginSerializable
     {

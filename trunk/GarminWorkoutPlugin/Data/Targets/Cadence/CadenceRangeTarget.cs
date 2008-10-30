@@ -4,7 +4,7 @@ using System.Globalization;
 using System.IO;
 using System.Xml;
 
-namespace GarminWorkoutPlugin.Data
+namespace GarminFitnessPlugin.Data
 {
     class CadenceRangeTarget : IConcreteCadenceTarget
     {

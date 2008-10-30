@@ -1,4 +1,4 @@
-namespace GarminWorkoutPlugin.View
+namespace GarminFitnessPlugin.View
 {
     partial class SingleSelectionCalendar
     {
