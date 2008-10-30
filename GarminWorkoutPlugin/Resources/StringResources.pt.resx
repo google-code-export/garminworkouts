@@ -219,11 +219,11 @@
   <data name="FromFileText" xml:space="preserve">
     <value>From File</value>
   </data>
+  <data name="GarminFitnessText" xml:space="preserve">
+    <value>Garmin Fitness</value>
+  </data>
   <data name="GarminText" xml:space="preserve">
     <value>Garmin</value>
-  </data>
-  <data name="GarminWorkoutsText" xml:space="preserve">
-    <value>Garmin Workouts</value>
   </data>
   <data name="GTCSpeedZone10Text" xml:space="preserve">
     <value>10 - Max Speed</value>
@@ -345,6 +345,9 @@
   <data name="PowerZoneTargetDescriptionText" xml:space="preserve">
     <value>Try to keep my power in zone {0}.</value>
   </data>
+  <data name="ProfileText" xml:space="preserve">
+    <value>Profile</value>
+  </data>
   <data name="RefreshButtonText" xml:space="preserve">
     <value>Refresh devices</value>
   </data>
@@ -385,7 +388,7 @@
     <value>Select device</value>
   </data>
   <data name="SettingsPageNameText" xml:space="preserve">
-    <value>Garmin Workouts Settings</value>
+    <value>Garmin Fitness Settings</value>
   </data>
   <data name="SpeedRangeTargetDescriptionText" xml:space="preserve">
     <value>Try to keep my speed between {0:0.00} {2}/h and {1:0.00} {2}/h.</value>

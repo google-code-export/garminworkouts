@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Drawing;
 using System.Resources;
@@ -49,7 +50,7 @@ namespace GarminWorkoutPlugin.View
         {
             if (PropertyChanged != null)
             {
-                PropertyChanged(this, new System.ComponentModel.PropertyChangedEventArgs("Enabled"));
+                PropertyChanged(this, new PropertyChangedEventArgs("Enabled"));
             }
         }
 

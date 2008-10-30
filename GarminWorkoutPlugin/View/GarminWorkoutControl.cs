@@ -19,7 +19,7 @@ using GarminWorkoutPlugin.Controller;
 
 namespace GarminWorkoutPlugin.View
 {
-    partial class GarminWorkoutControl : UserControl
+    partial class GarminWorkoutControl : UserControl, IGarminPluginControl
     {
         public GarminWorkoutControl()
         {

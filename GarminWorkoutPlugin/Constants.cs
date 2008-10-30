@@ -68,6 +68,6 @@ namespace GarminWorkoutPlugin
                 "Other"
             };
 
-        public static DataVersion CurrentVersion = new DataVersion(7);
+        public static DataVersion CurrentVersion = new DataVersion(8);
     }
 }
