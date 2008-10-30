@@ -31,7 +31,7 @@ namespace GarminFitnessPlugin.View
             this.ProfileTabs = new System.Windows.Forms.TabControl();
             this.RunningPage = new System.Windows.Forms.TabPage();
             this.BikingPage = new System.Windows.Forms.TabPage();
-            this.tabPage3 = new System.Windows.Forms.TabPage();
+            this.OtherPage = new System.Windows.Forms.TabPage();
             this.ProfileTabs.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -39,7 +39,7 @@ namespace GarminFitnessPlugin.View
             // 
             this.ProfileTabs.Controls.Add(this.RunningPage);
             this.ProfileTabs.Controls.Add(this.BikingPage);
-            this.ProfileTabs.Controls.Add(this.tabPage3);
+            this.ProfileTabs.Controls.Add(this.OtherPage);
             this.ProfileTabs.Location = new System.Drawing.Point(0, 4);
             this.ProfileTabs.Name = "ProfileTabs";
             this.ProfileTabs.SelectedIndex = 0;
@@ -63,18 +63,18 @@ namespace GarminFitnessPlugin.View
             this.BikingPage.Padding = new System.Windows.Forms.Padding(3);
             this.BikingPage.Size = new System.Drawing.Size(508, 286);
             this.BikingPage.TabIndex = 1;
-            this.BikingPage.Text = "tabPage2";
+            this.BikingPage.Text = "Biking";
             this.BikingPage.UseVisualStyleBackColor = true;
             // 
-            // tabPage3
+            // OtherPage
             // 
-            this.tabPage3.Location = new System.Drawing.Point(4, 22);
-            this.tabPage3.Name = "tabPage3";
-            this.tabPage3.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage3.Size = new System.Drawing.Size(511, 286);
-            this.tabPage3.TabIndex = 2;
-            this.tabPage3.Text = "tabPage3";
-            this.tabPage3.UseVisualStyleBackColor = true;
+            this.OtherPage.Location = new System.Drawing.Point(4, 22);
+            this.OtherPage.Name = "OtherPage";
+            this.OtherPage.Padding = new System.Windows.Forms.Padding(3);
+            this.OtherPage.Size = new System.Drawing.Size(508, 286);
+            this.OtherPage.TabIndex = 2;
+            this.OtherPage.Text = "Other";
+            this.OtherPage.UseVisualStyleBackColor = true;
             // 
             // GarminProfileControl
             // 
@@ -93,7 +93,7 @@ namespace GarminFitnessPlugin.View
         private System.Windows.Forms.TabControl ProfileTabs;
         private System.Windows.Forms.TabPage RunningPage;
         private System.Windows.Forms.TabPage BikingPage;
-        private System.Windows.Forms.TabPage tabPage3;
+        private System.Windows.Forms.TabPage OtherPage;
 
     }
 }
