@@ -1,9 +1,9 @@
 using ZoneFiveSoftware.Common.Visuals;
 using ZoneFiveSoftware.Common.Visuals.Fitness;
 
-namespace GarminWorkoutPlugin.View
+namespace GarminFitnessPlugin.View
 {
-    class GarminWorkoutPluginViews : IExtendViews
+    class GarminFitnessPluginViews : IExtendViews
     {
         #region IExtendViews Members
 
@@ -13,7 +13,7 @@ namespace GarminWorkoutPlugin.View
             {
                 return new IView[]
                 {
-                    new GarminWorkoutView()
+                    new GarminFitnessView()
                 };
             }
         }

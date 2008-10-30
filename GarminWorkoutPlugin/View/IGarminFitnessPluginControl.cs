@@ -1,8 +1,8 @@
 using ZoneFiveSoftware.Common.Visuals;
 
-namespace GarminWorkoutPlugin.View
+namespace GarminFitnessPlugin.View
 {
-    interface IGarminPluginControl
+    interface IGarminFitnessPluginControl
     {
         void RefreshUIFromLogbook();
         void ThemeChanged(ITheme visualTheme);

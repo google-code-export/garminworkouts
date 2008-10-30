@@ -6,11 +6,11 @@ using System.Resources;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("Garmin Workout Plugin")]
+[assembly: AssemblyTitle("Garmin Fitness Plugin")]
 [assembly: AssemblyDescription("Allows to add and edit Garmin workouts in SportTracks 2.0")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("GarminWorkoutPlugin.Properties")]
+[assembly: AssemblyProduct("GarminFitnessPlugin.Properties")]
 [assembly: AssemblyCopyright("")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]

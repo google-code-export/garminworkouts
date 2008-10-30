@@ -5,15 +5,15 @@ using System.Resources;
 using ZoneFiveSoftware.Common.Visuals;
 using ZoneFiveSoftware.Common.Visuals.Fitness;
 
-namespace GarminWorkoutPlugin.View
+namespace GarminFitnessPlugin.View
 {
-    class GarminWorkoutSettings : ISettingsPage
+    class GarminFitnessSettings : ISettingsPage
     {
         #region ISettingsPage Members
 
         public System.Guid Id
         {
-            get { return GUIDs.GarminWorkoutSettings; }
+            get { return GUIDs.GarminFitnessSettings; }
         }
 
         public System.Collections.Generic.IList<ISettingsPage> SubPages
@@ -29,7 +29,7 @@ namespace GarminWorkoutPlugin.View
         {
             if (m_SettingsControl == null)
             {
-                m_SettingsControl = new GarminWorkoutSettingsControl();
+                m_SettingsControl = new GarminFitnessSettingsControl();
             }
 
             return m_SettingsControl;
@@ -42,12 +42,12 @@ namespace GarminWorkoutPlugin.View
 
         public string PageName
         {
-            get{ return m_ResourceManager.GetString("SettingsPageNameText", m_CurrentCulture); }
+            get{ return GarminFitnessView.ResourceManager.GetString("SettingsPageNameText", GarminFitnessView.UICulture); }
         }
 
         public void ShowPage(string bookmark)
         {
-            m_SettingsControl.UICultureChanged(m_CurrentCulture);
+            m_SettingsControl.UICultureChanged(GarminFitnessView.UICulture);
         }
 
         public IPageStatus Status
@@ -61,13 +61,11 @@ namespace GarminWorkoutPlugin.View
 
         public string Title
         {
-            get { return m_ResourceManager.GetString("SettingsPageNameText", m_CurrentCulture); }
+            get { return GarminFitnessView.ResourceManager.GetString("SettingsPageNameText", GarminFitnessView.UICulture); }
         }
 
         public void UICultureChanged(CultureInfo culture)
         {
-            m_CurrentCulture = culture;
-
             CreatePageControl();
             m_SettingsControl.UICultureChanged(culture);
         }
@@ -80,7 +78,7 @@ namespace GarminWorkoutPlugin.View
 
         #endregion
 
-        public GarminWorkoutSettings()
+        public GarminFitnessSettings()
         {
             PropertyChanged = new PropertyChangedEventHandler(OnPropertyChanged);
         }
@@ -89,9 +87,6 @@ namespace GarminWorkoutPlugin.View
         {
         }
 
-        private GarminWorkoutSettingsControl m_SettingsControl = null;
-        private ResourceManager m_ResourceManager = new ResourceManager("GarminWorkoutPlugin.Resources.StringResources",
-                                                                        Assembly.GetExecutingAssembly());
-        private CultureInfo m_CurrentCulture;
+        private GarminFitnessSettingsControl m_SettingsControl = null;
     }
 }

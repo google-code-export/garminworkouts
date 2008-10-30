@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Text;
 using ZoneFiveSoftware.Common.Visuals;
 using System.Drawing;
-using GarminWorkoutPlugin.Data;
+using GarminFitnessPlugin.Data;
 
-namespace GarminWorkoutPlugin.View
+namespace GarminFitnessPlugin.View
 {
     class WorkoutRowDataRenderer : TreeList.DefaultRowDataRenderer
     {

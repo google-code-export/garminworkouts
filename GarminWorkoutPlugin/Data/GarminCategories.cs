@@ -1,6 +1,6 @@
-using GarminWorkoutPlugin.Controller;
+using GarminFitnessPlugin.Controller;
 
-namespace GarminWorkoutPlugin.Data
+namespace GarminFitnessPlugin.Data
 {
     enum GarminCategories
     {

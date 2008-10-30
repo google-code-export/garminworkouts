@@ -6,9 +6,9 @@ using System.Text;
 using System.Xml;
 using ZoneFiveSoftware.Common.Data.Fitness;
 using ZoneFiveSoftware.Common.Data.Measurement;
-using GarminWorkoutPlugin.Controller;
+using GarminFitnessPlugin.Controller;
 
-namespace GarminWorkoutPlugin.Data
+namespace GarminFitnessPlugin.Data
 {
     class SpeedZoneSTTarget : IConcreteSpeedTarget
     {

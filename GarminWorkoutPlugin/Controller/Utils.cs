@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using ZoneFiveSoftware.Common.Data.Fitness;
-using GarminWorkoutPlugin.Data;
+using GarminFitnessPlugin.Data;
 
-namespace GarminWorkoutPlugin.Controller
+namespace GarminFitnessPlugin.Controller
 {
     class Utils
     {

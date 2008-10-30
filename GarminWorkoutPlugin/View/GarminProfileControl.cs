@@ -4,9 +4,9 @@ using System.Resources;
 using System.Windows.Forms;
 using ZoneFiveSoftware.Common.Visuals;
 
-namespace GarminWorkoutPlugin.View
+namespace GarminFitnessPlugin.View
 {
-    public partial class GarminProfileControl : UserControl, IGarminPluginControl
+    public partial class GarminProfileControl : UserControl, IGarminFitnessPluginControl
     {
         public GarminProfileControl()
         {
@@ -20,16 +20,12 @@ namespace GarminWorkoutPlugin.View
 
         public void UICultureChanged(System.Globalization.CultureInfo culture)
         {
-            m_CurrentCulture = culture;
         }
 
         public void RefreshUIFromLogbook()
         {
         }
 
-        private ResourceManager m_ResourceManager = new ResourceManager("GarminWorkoutPlugin.Resources.StringResources",
-                                                                Assembly.GetExecutingAssembly());
-        private CultureInfo m_CurrentCulture;
         private ITheme m_CurrentTheme;
     }
 }

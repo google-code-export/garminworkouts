@@ -1,4 +1,4 @@
-namespace GarminWorkoutPlugin.View
+namespace GarminFitnessPlugin.View
 {
     partial class SelectCategoryDialog
     {
@@ -30,7 +30,7 @@ namespace GarminWorkoutPlugin.View
         {
             this.splitContainer = new System.Windows.Forms.SplitContainer();
             this.SelectCategoryLabel = new System.Windows.Forms.Label();
-            this.ActivityCategoryList = new GarminWorkoutPlugin.View.AutoExpandTreeList();
+            this.ActivityCategoryList = new GarminFitnessPlugin.View.AutoExpandTreeList();
             this.OkButton = new System.Windows.Forms.Button();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.splitContainer.Panel1.SuspendLayout();
@@ -153,7 +153,7 @@ namespace GarminWorkoutPlugin.View
 
         #endregion
 
-        private GarminWorkoutPlugin.View.AutoExpandTreeList ActivityCategoryList;
+        private GarminFitnessPlugin.View.AutoExpandTreeList ActivityCategoryList;
         private System.Windows.Forms.Button OkButton;
         private System.Windows.Forms.SplitContainer splitContainer;
         private System.Windows.Forms.Label SelectCategoryLabel;

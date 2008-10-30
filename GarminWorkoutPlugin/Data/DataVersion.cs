@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace GarminWorkoutPlugin.Data
+namespace GarminFitnessPlugin.Data
 {
     public class DataVersion
     {

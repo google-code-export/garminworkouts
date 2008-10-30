@@ -5,10 +5,10 @@ using System.IO;
 using System.Text;
 using System.Windows.Forms;
 using ZoneFiveSoftware.SportTracks.Device.GarminGPS;
-using GarminWorkoutPlugin.View;
-using GarminWorkoutPlugin.Data;
+using GarminFitnessPlugin.View;
+using GarminFitnessPlugin.Data;
 
-namespace GarminWorkoutPlugin.Controller
+namespace GarminFitnessPlugin.Controller
 {
     class GarminDeviceManager
     {

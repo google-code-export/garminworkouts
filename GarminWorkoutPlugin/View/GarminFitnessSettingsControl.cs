@@ -8,14 +8,14 @@ using System.Windows.Forms;
 using ZoneFiveSoftware.Common.Data.Fitness;
 using ZoneFiveSoftware.Common.Visuals;
 using ZoneFiveSoftware.Common.Visuals.Fitness;
-using GarminWorkoutPlugin.Data;
-using GarminWorkoutPlugin.Controller;
+using GarminFitnessPlugin.Data;
+using GarminFitnessPlugin.Controller;
 
-namespace GarminWorkoutPlugin.View
+namespace GarminFitnessPlugin.View
 {
-    public partial class GarminWorkoutSettingsControl : UserControl
+    public partial class GarminFitnessSettingsControl : UserControl
     {
-        public GarminWorkoutSettingsControl()
+        public GarminFitnessSettingsControl()
         {
             InitializeComponent();
         }
@@ -25,7 +25,7 @@ namespace GarminWorkoutPlugin.View
             UpdateUIStrings();
         }
 
-        private void GarminWorkoutSettingsControl_Load(object sender, System.EventArgs e)
+        private void GarminFitnessSettingsControl_Load(object sender, System.EventArgs e)
         {
             UpdateUIStrings();
 
@@ -231,32 +231,30 @@ namespace GarminWorkoutPlugin.View
 
         public void UICultureChanged(CultureInfo culture)
         {
-            m_CurrentCulture = culture;
-
             UpdateUIStrings();
         }
 
         private void UpdateUIStrings()
         {
-            HRGarminRadioButton.Text = m_ResourceManager.GetString("GarminText", m_CurrentCulture);
-            HRSportTracksRadioButton.Text = m_ResourceManager.GetString("SportTracksText", m_CurrentCulture);
-            SpeedGarminRadioButton.Text = m_ResourceManager.GetString("GarminText", m_CurrentCulture);
-            SpeedSportTracksRadioButton.Text = m_ResourceManager.GetString("SportTracksText", m_CurrentCulture);
-            PowerGarminRadioButton.Text = m_ResourceManager.GetString("GarminText", m_CurrentCulture);
-            PowerSportTracksRadioButton.Text = m_ResourceManager.GetString("SportTracksText", m_CurrentCulture);
+            HRGarminRadioButton.Text = GarminFitnessView.ResourceManager.GetString("GarminText", GarminFitnessView.UICulture);
+            HRSportTracksRadioButton.Text = GarminFitnessView.ResourceManager.GetString("SportTracksText", GarminFitnessView.UICulture);
+            SpeedGarminRadioButton.Text = GarminFitnessView.ResourceManager.GetString("GarminText", GarminFitnessView.UICulture);
+            SpeedSportTracksRadioButton.Text = GarminFitnessView.ResourceManager.GetString("SportTracksText", GarminFitnessView.UICulture);
+            PowerGarminRadioButton.Text = GarminFitnessView.ResourceManager.GetString("GarminText", GarminFitnessView.UICulture);
+            PowerSportTracksRadioButton.Text = GarminFitnessView.ResourceManager.GetString("SportTracksText", GarminFitnessView.UICulture);
 
-            HRSettingsGroupBox.Text = m_ResourceManager.GetString("HRSettingsGroupBoxText", m_CurrentCulture);
-            SpeedSettingsGroupBox.Text = m_ResourceManager.GetString("SpeedSettingsGroupBoxText", m_CurrentCulture);
-            CadenceSettingsGroupBox.Text = m_ResourceManager.GetString("CadenceSettingsGroupBoxText", m_CurrentCulture);
-            PowerSettingsGroupBox.Text = m_ResourceManager.GetString("PowerSettingsGroupBoxText", m_CurrentCulture);
-            ExportDirectoryGroupBox.Text = m_ResourceManager.GetString("DefaultExportDirectoryGroupBoxText", m_CurrentCulture);
+            HRSettingsGroupBox.Text = GarminFitnessView.ResourceManager.GetString("HRSettingsGroupBoxText", GarminFitnessView.UICulture);
+            SpeedSettingsGroupBox.Text = GarminFitnessView.ResourceManager.GetString("SpeedSettingsGroupBoxText", GarminFitnessView.UICulture);
+            CadenceSettingsGroupBox.Text = GarminFitnessView.ResourceManager.GetString("CadenceSettingsGroupBoxText", GarminFitnessView.UICulture);
+            PowerSettingsGroupBox.Text = GarminFitnessView.ResourceManager.GetString("PowerSettingsGroupBoxText", GarminFitnessView.UICulture);
+            ExportDirectoryGroupBox.Text = GarminFitnessView.ResourceManager.GetString("DefaultExportDirectoryGroupBoxText", GarminFitnessView.UICulture);
 
-            DefaultHeartRateZonesLabel.Text = m_ResourceManager.GetString("DefaultHeartRateZoneLabelText", m_CurrentCulture);
-            DefaultSpeedZoneLabel.Text = m_ResourceManager.GetString("DefaultSpeedZoneLabelText", m_CurrentCulture);
-            CadenceZoneSelectionLabel.Text = m_ResourceManager.GetString("CadenceZoneSelectionLabelText", m_CurrentCulture);
-            DefaultPowerZonesLabel.Text = m_ResourceManager.GetString("DefaultPowerZoneLabelText", m_CurrentCulture);
-            PowerZoneSelectionLabel.Text = m_ResourceManager.GetString("PowerZoneSelectionLabelText", m_CurrentCulture);
-            BrowseButton.Text = m_ResourceManager.GetString("BrowseButtonText", m_CurrentCulture);
+            DefaultHeartRateZonesLabel.Text = GarminFitnessView.ResourceManager.GetString("DefaultHeartRateZoneLabelText", GarminFitnessView.UICulture);
+            DefaultSpeedZoneLabel.Text = GarminFitnessView.ResourceManager.GetString("DefaultSpeedZoneLabelText", GarminFitnessView.UICulture);
+            CadenceZoneSelectionLabel.Text = GarminFitnessView.ResourceManager.GetString("CadenceZoneSelectionLabelText", GarminFitnessView.UICulture);
+            DefaultPowerZonesLabel.Text = GarminFitnessView.ResourceManager.GetString("DefaultPowerZoneLabelText", GarminFitnessView.UICulture);
+            PowerZoneSelectionLabel.Text = GarminFitnessView.ResourceManager.GetString("PowerZoneSelectionLabelText", GarminFitnessView.UICulture);
+            BrowseButton.Text = GarminFitnessView.ResourceManager.GetString("BrowseButtonText", GarminFitnessView.UICulture);
 
             int cadenceSelectedIndex = Utils.FindIndexForZoneCategory(PluginMain.GetApplication().Logbook.CadenceZones, Options.CadenceZoneCategory);
             CadenceZoneComboBox.Items.Clear();
@@ -276,11 +274,11 @@ namespace GarminWorkoutPlugin.View
                 PowerZoneComboBox.Items.Add(currentZone.Name);
             }
 
-            ParentCategoryRadioButton.Text = m_ResourceManager.GetString("UseParentCategoryText", m_CurrentCulture);
-            CustomCategoryRadioButton.Text = m_ResourceManager.GetString("UseCustomCategoryText", m_CurrentCulture);
-            RunningRadioButton.Text = m_ResourceManager.GetString("RunningText", m_CurrentCulture);
-            CyclingRadioButton.Text = m_ResourceManager.GetString("BikingText", m_CurrentCulture);
-            OtherRadioButton.Text = m_ResourceManager.GetString("OtherText", m_CurrentCulture);
+            ParentCategoryRadioButton.Text = GarminFitnessView.ResourceManager.GetString("UseParentCategoryText", GarminFitnessView.UICulture);
+            CustomCategoryRadioButton.Text = GarminFitnessView.ResourceManager.GetString("UseCustomCategoryText", GarminFitnessView.UICulture);
+            RunningRadioButton.Text = GarminFitnessView.ResourceManager.GetString("RunningText", GarminFitnessView.UICulture);
+            CyclingRadioButton.Text = GarminFitnessView.ResourceManager.GetString("BikingText", GarminFitnessView.UICulture);
+            OtherRadioButton.Text = GarminFitnessView.ResourceManager.GetString("OtherText", GarminFitnessView.UICulture);
 
             // Fill category list
             IApplication app = PluginMain.GetApplication();
@@ -297,7 +295,7 @@ namespace GarminWorkoutPlugin.View
 
             ActivityCategoryList.RowData = categories;
             ActivityCategoryList.Columns.Clear();
-            ActivityCategoryList.Columns.Add(new TreeList.Column("Name", m_ResourceManager.GetString("CategoryText", m_CurrentCulture),
+            ActivityCategoryList.Columns.Add(new TreeList.Column("Name", GarminFitnessView.ResourceManager.GetString("CategoryText", GarminFitnessView.UICulture),
                                                                  140, StringAlignment.Near));
             ActivityCategoryList.Columns.Add(new TreeList.Column("GarminCategory", "", 75, StringAlignment.Near));
 
@@ -338,9 +336,5 @@ namespace GarminWorkoutPlugin.View
                 AddCategoryNode(newNode, categoryNode);
             }
         }
-
-        private ResourceManager m_ResourceManager = new ResourceManager("GarminWorkoutPlugin.Resources.StringResources",
-                                                                        Assembly.GetExecutingAssembly());
-        private CultureInfo m_CurrentCulture;
     }
 }

@@ -1,6 +1,6 @@
 using System;
 
-namespace GarminWorkoutPlugin.Controller
+namespace GarminFitnessPlugin.Controller
 {
     class ComboBoxStringProviderAttribute : Attribute
     {

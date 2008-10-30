@@ -7,7 +7,7 @@ using System.Text;
 using System.Windows.Forms;
 using ZoneFiveSoftware.Common.Visuals;
 
-namespace GarminWorkoutPlugin.View
+namespace GarminFitnessPlugin.View
 {
     [DefaultEvent("SelectionChanged")]
     public partial class SingleSelectionCalendar : Calendar

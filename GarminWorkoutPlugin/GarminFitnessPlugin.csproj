@@ -8,7 +8,7 @@
     <ProjectGuid>{32D78A8D-8A25-4D6A-AB26-2C24F851E49D}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>GarminWorkoutPlugin</RootNamespace>
+    <RootNamespace>GarminFitnessPlugin</RootNamespace>
     <AssemblyName>GarminWorkoutPlugin</AssemblyName>
     <StartupObject>
     </StartupObject>
@@ -140,7 +140,7 @@
     <Compile Include="View\GarminProfileControl.Designer.cs">
       <DependentUpon>GarminProfileControl.cs</DependentUpon>
     </Compile>
-    <Compile Include="View\IGarminPluginControl.cs" />
+    <Compile Include="View\IGarminFitnessPluginControl.cs" />
     <Compile Include="View\PluginViews.cs" />
     <Compile Include="View\STToGarminActivityCategoryWrapper.cs" />
     <Compile Include="View\ReplaceRenameDialog.cs">
@@ -169,14 +169,14 @@
       <DependentUpon>SingleSelectionCalendar.cs</DependentUpon>
     </Compile>
     <Compile Include="View\StepRowDataRenderer.cs" />
-    <Compile Include="View\GarminWorkoutSettingsControl.cs">
+    <Compile Include="View\GarminFitnessSettingsControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="View\GarminWorkoutSettingsControl.Designer.cs">
-      <DependentUpon>GarminWorkoutSettingsControl.cs</DependentUpon>
+    <Compile Include="View\GarminFitnessSettingsControl.Designer.cs">
+      <DependentUpon>GarminFitnessSettingsControl.cs</DependentUpon>
     </Compile>
-    <Compile Include="View\GarminWorkoutPluginSettingsPages.cs" />
-    <Compile Include="View\GarminWorkoutSettings.cs" />
+    <Compile Include="View\GarminFitnessPluginSettingsPages.cs" />
+    <Compile Include="View\GarminFitnessSettings.cs" />
     <Compile Include="Controller\Options.cs" />
     <Compile Include="View\SelectCategoryDialog.cs">
       <SubType>Form</SubType>
@@ -194,8 +194,8 @@
     <Compile Include="View\GarminWorkoutControl.Designer.cs">
       <DependentUpon>GarminWorkoutControl.cs</DependentUpon>
     </Compile>
-    <Compile Include="View\GarminWorkoutPluginViews.cs" />
-    <Compile Include="View\GarminWorkoutView.cs" />
+    <Compile Include="View\GarminFitnessPluginViews.cs" />
+    <Compile Include="View\GarminFitnessView.cs" />
     <Compile Include="View\WorkoutIconLabelProvider.cs" />
     <Compile Include="View\WorkoutImportAction.cs" />
     <Compile Include="View\TimeDurationUpDown.cs">
@@ -275,9 +275,9 @@
       <SubType>Designer</SubType>
       <DependentUpon>GarminProfileControl.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="View\GarminWorkoutSettingsControl.resx">
+    <EmbeddedResource Include="View\GarminFitnessSettingsControl.resx">
       <SubType>Designer</SubType>
-      <DependentUpon>GarminWorkoutSettingsControl.cs</DependentUpon>
+      <DependentUpon>GarminFitnessSettingsControl.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="View\GarminWorkoutControl.resx">
       <SubType>Designer</SubType>

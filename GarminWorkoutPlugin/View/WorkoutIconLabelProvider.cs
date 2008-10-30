@@ -2,9 +2,9 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using ZoneFiveSoftware.Common.Visuals;
-using GarminWorkoutPlugin.Data;
+using GarminFitnessPlugin.Data;
 
-namespace GarminWorkoutPlugin.View
+namespace GarminFitnessPlugin.View
 {
     class WorkoutIconLabelProvider : TreeList.DefaultLabelProvider
     {
@@ -20,14 +20,14 @@ namespace GarminWorkoutPlugin.View
 
                 if (((Workout)wrapper.Element).IsDirty)
                 {
-                    return global::GarminWorkoutPlugin.Properties.Resources.WorkoutDirtyIcon;
+                    return global::GarminFitnessPlugin.Properties.Resources.WorkoutDirtyIcon;
                 }
 
-                return global::GarminWorkoutPlugin.Properties.Resources.WorkoutIcon;
+                return global::GarminFitnessPlugin.Properties.Resources.WorkoutIcon;
             }
             else if (element.GetType() == typeof(ActivityCategoryWrapper))
             {
-                return global::GarminWorkoutPlugin.Properties.Resources.CategoryIcon;
+                return global::GarminFitnessPlugin.Properties.Resources.CategoryIcon;
             }
 
             return base.GetImage(element, column);

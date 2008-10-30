@@ -7,7 +7,7 @@ using System.Windows.Forms;
 using ZoneFiveSoftware.Common.Data.Fitness;
 using ZoneFiveSoftware.Common.Visuals;
 
-namespace GarminWorkoutPlugin.View
+namespace GarminFitnessPlugin.View
 {
     public partial class SelectCategoryDialog : Form
     {
@@ -15,7 +15,7 @@ namespace GarminWorkoutPlugin.View
         {
             InitializeComponent();
 
-            this.Text = m_ResourceManager.GetString("SelectCategoryDialogText", UICulture) + workoutName;
+            this.Text = GarminFitnessView.ResourceManager.GetString("SelectCategoryDialogText", UICulture) + workoutName;
             SelectCategoryLabel.Text = this.Text;
             OkButton.Text = CommonResources.Text.ActionOk;
 
@@ -39,7 +39,7 @@ namespace GarminWorkoutPlugin.View
 
             ActivityCategoryList.RowData = categories;
             ActivityCategoryList.Columns.Clear();
-            ActivityCategoryList.Columns.Add(new TreeList.Column("Name", m_ResourceManager.GetString("CategoryText", UICulture),
+            ActivityCategoryList.Columns.Add(new TreeList.Column("Name", GarminFitnessView.ResourceManager.GetString("CategoryText", UICulture),
                                                          150, StringAlignment.Near));
             ActivityCategoryList.Selected = selection;
             ActivityCategoryList.SetExpanded(ActivityCategoryList.RowData, true, true);
@@ -77,9 +77,6 @@ namespace GarminWorkoutPlugin.View
         {
             get { return (IActivityCategory)((ActivityCategoryWrapper)ActivityCategoryList.SelectedItems[0]).Element; }
         }
-
-        private ResourceManager m_ResourceManager = new ResourceManager("GarminWorkoutPlugin.Resources.StringResources",
-                                                                        Assembly.GetExecutingAssembly());
     }
 
 }

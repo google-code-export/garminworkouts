@@ -4,9 +4,9 @@ using System.Globalization;
 using System.IO;
 using System.Xml;
 using ZoneFiveSoftware.Common.Data.Measurement;
-using GarminWorkoutPlugin.Controller;
+using GarminFitnessPlugin.Controller;
 
-namespace GarminWorkoutPlugin.Data
+namespace GarminFitnessPlugin.Data
 {
     class SpeedRangeTarget : IConcreteSpeedTarget
     {

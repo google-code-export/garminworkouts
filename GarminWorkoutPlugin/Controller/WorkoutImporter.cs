@@ -4,10 +4,10 @@ using System.IO;
 using System.Text;
 using System.Xml;
 using ZoneFiveSoftware.Common.Data.Fitness;
-using GarminWorkoutPlugin.View;
-using GarminWorkoutPlugin.Data;
+using GarminFitnessPlugin.View;
+using GarminFitnessPlugin.Data;
 
-namespace GarminWorkoutPlugin.Controller
+namespace GarminFitnessPlugin.Controller
 {
     class WorkoutImporter
     {
@@ -101,7 +101,7 @@ namespace GarminWorkoutPlugin.Controller
 
                         if (category == null)
                         {
-                            SelectCategoryDialog categoryDlg = new SelectCategoryDialog(newWorkout.Name, GarminWorkoutView.UICulture);
+                            SelectCategoryDialog categoryDlg = new SelectCategoryDialog(newWorkout.Name, GarminFitnessView.UICulture);
 
                             categoryDlg.ShowDialog();
                             newWorkout.Category = categoryDlg.SelectedCategory;

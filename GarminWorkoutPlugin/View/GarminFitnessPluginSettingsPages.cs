@@ -1,15 +1,15 @@
 using ZoneFiveSoftware.Common.Visuals;
 using ZoneFiveSoftware.Common.Visuals.Fitness;
 
-namespace GarminWorkoutPlugin.View
+namespace GarminFitnessPlugin.View
 {
-    class GarminWorkoutPluginSettingsPages : IExtendSettingsPages
+    class GarminFitnessPluginSettingsPages : IExtendSettingsPages
     {
         #region IExtendSettingsPages Members
 
         public System.Collections.Generic.IList<ISettingsPage> SettingsPages
         {
-            get { return new ISettingsPage[] { new GarminWorkoutSettings() }; }
+            get { return new ISettingsPage[] { new GarminFitnessSettings() }; }
         }
 
         #endregion

@@ -1,6 +1,6 @@
-namespace GarminWorkoutPlugin.View
+namespace GarminFitnessPlugin.View
 {
-    partial class GarminWorkoutSettingsControl
+    partial class GarminFitnessSettingsControl
     {
         /// <summary> 
         /// Required designer variable.
@@ -57,7 +57,7 @@ namespace GarminWorkoutPlugin.View
             this.RunningRadioButton = new System.Windows.Forms.RadioButton();
             this.CustomCategoryRadioButton = new System.Windows.Forms.RadioButton();
             this.ParentCategoryRadioButton = new System.Windows.Forms.RadioButton();
-            this.ActivityCategoryList = new GarminWorkoutPlugin.View.AutoExpandTreeList();
+            this.ActivityCategoryList = new GarminFitnessPlugin.View.AutoExpandTreeList();
             this.HRSettingsGroupBox.SuspendLayout();
             this.SpeedSettingsGroupBox.SuspendLayout();
             this.CadenceSettingsGroupBox.SuspendLayout();
@@ -429,7 +429,7 @@ namespace GarminWorkoutPlugin.View
             this.ActivityCategoryList.TabStop = false;
             this.ActivityCategoryList.SelectedChanged += new System.EventHandler(this.ActivityCategoryList_SelectedChanged);
             // 
-            // GarminWorkoutSettingsControl
+            // GarminFitnessSettingsControl
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -439,9 +439,9 @@ namespace GarminWorkoutPlugin.View
             this.Controls.Add(this.SpeedSettingsGroupBox);
             this.Controls.Add(this.HRSettingsGroupBox);
             this.Controls.Add(this.PowerSettingsGroupBox);
-            this.Name = "GarminWorkoutSettingsControl";
+            this.Name = "GarminFitnessSettingsControl";
             this.Size = new System.Drawing.Size(396, 425);
-            this.Load += new System.EventHandler(this.GarminWorkoutSettingsControl_Load);
+            this.Load += new System.EventHandler(this.GarminFitnessSettingsControl_Load);
             this.HRSettingsGroupBox.ResumeLayout(false);
             this.HRSettingsGroupBox.PerformLayout();
             this.SpeedSettingsGroupBox.ResumeLayout(false);
@@ -488,7 +488,7 @@ namespace GarminWorkoutPlugin.View
         private System.Windows.Forms.TextBox ExportDirectoryTextBox;
         private System.Windows.Forms.GroupBox CategoriesGroupBox;
         private System.Windows.Forms.SplitContainer splitContainer1;
-        private GarminWorkoutPlugin.View.AutoExpandTreeList ActivityCategoryList;
+        private GarminFitnessPlugin.View.AutoExpandTreeList ActivityCategoryList;
         private System.Windows.Forms.Panel CategorySelectionPanel;
         private System.Windows.Forms.Panel GarminCategoriesPanel;
         private System.Windows.Forms.RadioButton RunningRadioButton;

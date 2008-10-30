@@ -1,11 +1,11 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
-using GarminWorkoutPlugin.Data;
+using GarminFitnessPlugin.Data;
 using ZoneFiveSoftware.Common.Visuals;
-using GarminWorkoutPlugin.Controller;
+using GarminFitnessPlugin.Controller;
 
-namespace GarminWorkoutPlugin.View
+namespace GarminFitnessPlugin.View
 {
     class StepWrapper : TreeList.TreeListNode
     {

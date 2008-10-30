@@ -11,11 +11,11 @@ using System.Windows.Forms;
 using ZoneFiveSoftware.Common.Data.Fitness;
 using ZoneFiveSoftware.Common.Visuals.Fitness;
 using ZoneFiveSoftware.Common.Visuals;
-using GarminWorkoutPlugin.Data;
+using GarminFitnessPlugin.Data;
 
-namespace GarminWorkoutPlugin.View
+namespace GarminFitnessPlugin.View
 {
-    class GarminWorkoutView : IView
+    class GarminFitnessView : IView
     {
         #region IView Members
 
@@ -42,7 +42,7 @@ namespace GarminWorkoutPlugin.View
 
         public System.Guid Id
         {
-            get { return GarminWorkoutPlugin.GUIDs.GarminWorkoutView; }
+            get { return GarminFitnessPlugin.GUIDs.GarminFitnessView; }
         }
 
         public string SubTitle
@@ -53,11 +53,11 @@ namespace GarminWorkoutPlugin.View
                 {
                     case PluginViews.Workouts:
                         {
-                            return m_ResourceManager.GetString("WorkoutsText", m_CurrentCulture);
+                            return GarminFitnessView.ResourceManager.GetString("WorkoutsText", GarminFitnessView.UICulture);
                         }
                     case PluginViews.Profile:
                         {
-                            return m_ResourceManager.GetString("ProfileText", m_CurrentCulture);
+                            return GarminFitnessView.ResourceManager.GetString("ProfileText", GarminFitnessView.UICulture);
                         }
                     default:
                         {
@@ -70,15 +70,15 @@ namespace GarminWorkoutPlugin.View
 
         public void SubTitleClicked(System.Drawing.Rectangle subTitleRect)
         {
-            GarminWorkoutView currentView = (GarminWorkoutView)PluginMain.GetApplication().ActiveView;
+            GarminFitnessView currentView = (GarminFitnessView)PluginMain.GetApplication().ActiveView;
             Control control = currentView.CreatePageControl();
             ContextMenu menu = new ContextMenu();
             MenuItem menuItem;
 
-            menuItem = new MenuItem(m_ResourceManager.GetString("WorkoutsText", m_CurrentCulture),
+            menuItem = new MenuItem(GarminFitnessView.ResourceManager.GetString("WorkoutsText", GarminFitnessView.UICulture),
                                     new EventHandler(WorkoutsViewEventHandler));
             menu.MenuItems.Add(menuItem);
-            menuItem = new MenuItem(m_ResourceManager.GetString("ProfileText", m_CurrentCulture),
+            menuItem = new MenuItem(GarminFitnessView.ResourceManager.GetString("ProfileText", GarminFitnessView.UICulture),
                                     new EventHandler(ProfileViewEventHandler));
             menu.MenuItems.Add(menuItem);
 
@@ -92,7 +92,7 @@ namespace GarminWorkoutPlugin.View
 
         public string TasksHeading
         {
-            get { return m_ResourceManager.GetString("GarminFitnessText", m_CurrentCulture); }
+            get { return GarminFitnessView.ResourceManager.GetString("GarminFitnessText", GarminFitnessView.UICulture); }
         }
 
         #endregion
@@ -132,7 +132,7 @@ namespace GarminWorkoutPlugin.View
 
         public string PageName
         {
-            get { return m_ResourceManager.GetString("GarminFitnessText", m_CurrentCulture); }
+            get { return GarminFitnessView.ResourceManager.GetString("GarminFitnessText", GarminFitnessView.UICulture); }
         }
 
         public void ShowPage(string bookmark)
@@ -150,6 +150,8 @@ namespace GarminWorkoutPlugin.View
 
         public void ThemeChanged(ITheme visualTheme)
         {
+            m_CurrentTheme = visualTheme;
+
             CreatePageControl();
 
             m_ViewControls[(int)m_CurrentView].ThemeChanged(visualTheme);
@@ -157,7 +159,7 @@ namespace GarminWorkoutPlugin.View
 
         public string Title
         {
-            get { return m_ResourceManager.GetString("GarminFitnessText", m_CurrentCulture); }
+            get { return GarminFitnessView.ResourceManager.GetString("GarminFitnessText", GarminFitnessView.UICulture); }
         }
 
         public void UICultureChanged(System.Globalization.CultureInfo culture)
@@ -174,12 +176,12 @@ namespace GarminWorkoutPlugin.View
 
         #endregion
 
-        public GarminWorkoutView()
+        public GarminFitnessView()
         {
             PropertyChanged += new PropertyChangedEventHandler(OnPropertyChanged);
             PluginMain.LogbookChanged += new PluginMain.LogbookChangedEventHandler(OnLogbookChanged);
 
-            m_ViewControls = new IGarminPluginControl[]
+            m_ViewControls = new IGarminFitnessPluginControl[]
                     {
                         null,
                         null,
@@ -243,12 +245,22 @@ namespace GarminWorkoutPlugin.View
 
             // Refresh the lsit of actions also, inelegant, but working
             PluginMain.GetApplication().ShowView(GUIDs.DailyActivityView, "");
-            PluginMain.GetApplication().ShowView(GUIDs.GarminWorkoutView, "");
+            PluginMain.GetApplication().ShowView(GUIDs.GarminFitnessView, "");
+        }
+
+        public static ResourceManager ResourceManager
+        {
+            get { return m_ResourceManager; }
         }
 
         public static CultureInfo UICulture
         {
             get { return m_CurrentCulture; }
+        }
+
+        public static ITheme UITheme
+        {
+            get { return m_CurrentTheme; }
         }
 
         private IAction[] m_WorkoutsViewActions = new IAction[]
@@ -263,11 +275,12 @@ namespace GarminWorkoutPlugin.View
                 new WorkoutImportAction()
             };
 
-        private IGarminPluginControl[] m_ViewControls = null;
+        private IGarminFitnessPluginControl[] m_ViewControls = null;
         private PluginViews m_CurrentView = PluginViews.Workouts;
 
-        private ResourceManager m_ResourceManager = new ResourceManager("GarminWorkoutPlugin.Resources.StringResources",
-                                                                        Assembly.GetExecutingAssembly());
+        private static ResourceManager m_ResourceManager = new ResourceManager("GarminFitnessPlugin.Resources.StringResources",
+                                                                               Assembly.GetExecutingAssembly());
         private static CultureInfo m_CurrentCulture;
+        private static ITheme m_CurrentTheme;
     }
 }

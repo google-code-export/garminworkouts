@@ -5,10 +5,10 @@ using System.Reflection;
 using System.Text;
 using System.Xml;
 using ZoneFiveSoftware.Common.Data.Fitness;
-using GarminWorkoutPlugin.View;
-using GarminWorkoutPlugin.Controller;
+using GarminFitnessPlugin.View;
+using GarminFitnessPlugin.Controller;
 
-namespace GarminWorkoutPlugin.Data
+namespace GarminFitnessPlugin.Data
 {
     class RegularStep : IStep
     {
