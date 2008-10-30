@@ -653,155 +653,158 @@ namespace GarminFitnessPlugin.View
         {
             Trace.Assert(SelectedStep != null && SelectedStep.Type == IStep.StepType.Regular);
             RegularStep concreteStep = (RegularStep)SelectedStep;
-            Trace.Assert(concreteStep.Target != null && concreteStep.Target.Type != ITarget.TargetType.Null);
+            Trace.Assert(concreteStep.Target != null);
 
-            UInt16 intMin = 0;
-            UInt16 intMax = 0;
-            double doubleMin = 0;
-            double doubleMax = 0;
-            string oldValue = "";
-            RangeValidationInputType inputType = RangeValidationInputType.Integer;
-
-            switch(concreteStep.Target.Type)
+            if (concreteStep.Target.Type != ITarget.TargetType.Null)
             {
-                case ITarget.TargetType.HeartRate:
-                    {
-                        BaseHeartRateTarget baseTarget = (BaseHeartRateTarget)concreteStep.Target;
-                        Trace.Assert(baseTarget.ConcreteTarget != null && baseTarget.ConcreteTarget.Type == IConcreteHeartRateTarget.HeartRateTargetType.Range);
-                        HeartRateRangeTarget concreteTarget = (HeartRateRangeTarget)baseTarget.ConcreteTarget;
+                UInt16 intMin = 0;
+                UInt16 intMax = 0;
+                double doubleMin = 0;
+                double doubleMax = 0;
+                string oldValue = "";
+                RangeValidationInputType inputType = RangeValidationInputType.Integer;
 
-                        oldValue = concreteTarget.MinHeartRate.ToString();
-                        inputType = RangeValidationInputType.Integer;
-
-                        if (concreteTarget.IsPercentageMaxHeartRate)
+                switch (concreteStep.Target.Type)
+                {
+                    case ITarget.TargetType.HeartRate:
                         {
-                            intMin = 1;
-                            intMax = 100;
-                        }
-                        else
-                        {
-                            intMin = 30;
-                            intMax = 240;
-                        }
-                        break;
-                    }
-                case ITarget.TargetType.Cadence:
-                    {
-                        BaseCadenceTarget baseTarget = (BaseCadenceTarget)concreteStep.Target;
-                        Trace.Assert(baseTarget.ConcreteTarget != null && baseTarget.ConcreteTarget.Type == IConcreteCadenceTarget.CadenceTargetType.Range);
-                        CadenceRangeTarget concreteTarget = (CadenceRangeTarget)baseTarget.ConcreteTarget;
+                            BaseHeartRateTarget baseTarget = (BaseHeartRateTarget)concreteStep.Target;
+                            Trace.Assert(baseTarget.ConcreteTarget != null && baseTarget.ConcreteTarget.Type == IConcreteHeartRateTarget.HeartRateTargetType.Range);
+                            HeartRateRangeTarget concreteTarget = (HeartRateRangeTarget)baseTarget.ConcreteTarget;
 
-                        oldValue = concreteTarget.MinCadence.ToString();
-                        intMin = 0;
-                        intMax = 254;
-                        inputType = RangeValidationInputType.Integer;
+                            oldValue = concreteTarget.MinHeartRate.ToString();
+                            inputType = RangeValidationInputType.Integer;
 
-                        break;
-                    }
-                case ITarget.TargetType.Speed:
-                    {
-                        BaseSpeedTarget baseTarget = (BaseSpeedTarget)concreteStep.Target;
-                        Trace.Assert(baseTarget.ConcreteTarget != null && baseTarget.ConcreteTarget.Type == IConcreteSpeedTarget.SpeedTargetType.Range);
-                        SpeedRangeTarget concreteTarget = (SpeedRangeTarget)baseTarget.ConcreteTarget;
+                            if (concreteTarget.IsPercentageMaxHeartRate)
+                            {
+                                intMin = 1;
+                                intMax = 100;
+                            }
+                            else
+                            {
+                                intMin = 30;
+                                intMax = 240;
+                            }
+                            break;
+                        }
+                    case ITarget.TargetType.Cadence:
+                        {
+                            BaseCadenceTarget baseTarget = (BaseCadenceTarget)concreteStep.Target;
+                            Trace.Assert(baseTarget.ConcreteTarget != null && baseTarget.ConcreteTarget.Type == IConcreteCadenceTarget.CadenceTargetType.Range);
+                            CadenceRangeTarget concreteTarget = (CadenceRangeTarget)baseTarget.ConcreteTarget;
 
-                        if (concreteTarget.ViewAsPace)
-                        {
-                            double paceTime = concreteTarget.GetMaxSpeedInMinutesPerUnit(SelectedWorkout.Category.DistanceUnits);
-                            UInt16 minutes, seconds;
+                            oldValue = concreteTarget.MinCadence.ToString();
+                            intMin = 0;
+                            intMax = 254;
+                            inputType = RangeValidationInputType.Integer;
 
-                            Utils.FloatToTime(paceTime, out minutes, out seconds);
-                            oldValue = String.Format("{0:00}:{1:00}", minutes, seconds);
-                            doubleMin = 1.0 / (Length.Convert(60, Length.Units.Mile, SelectedWorkout.Category.DistanceUnits) / Constants.MinutesPerHour);
-                            doubleMax = 1.0 / (Length.Convert(1.0002, Length.Units.Mile, SelectedWorkout.Category.DistanceUnits) / Constants.MinutesPerHour);
-                            inputType = RangeValidationInputType.Time;
+                            break;
                         }
-                        else
+                    case ITarget.TargetType.Speed:
                         {
-                            oldValue = String.Format("{0:0.00}", concreteTarget.GetMinSpeedInUnitsPerHour(SelectedWorkout.Category.DistanceUnits));
-                            doubleMin = Length.Convert(1, Length.Units.Mile, SelectedWorkout.Category.DistanceUnits);
-                            doubleMax = Length.Convert(60, Length.Units.Mile, SelectedWorkout.Category.DistanceUnits);
-                            inputType = RangeValidationInputType.Float;
-                        }
+                            BaseSpeedTarget baseTarget = (BaseSpeedTarget)concreteStep.Target;
+                            Trace.Assert(baseTarget.ConcreteTarget != null && baseTarget.ConcreteTarget.Type == IConcreteSpeedTarget.SpeedTargetType.Range);
+                            SpeedRangeTarget concreteTarget = (SpeedRangeTarget)baseTarget.ConcreteTarget;
 
-                        break;
-                    }
-                case ITarget.TargetType.Power:
-                    {
-                        BasePowerTarget baseTarget = (BasePowerTarget)concreteStep.Target;
-                        Trace.Assert(baseTarget.ConcreteTarget != null && baseTarget.ConcreteTarget.Type == IConcretePowerTarget.PowerTargetType.Range);
-                        PowerRangeTarget concreteTarget = (PowerRangeTarget)baseTarget.ConcreteTarget;
+                            if (concreteTarget.ViewAsPace)
+                            {
+                                double paceTime = concreteTarget.GetMaxSpeedInMinutesPerUnit(SelectedWorkout.Category.DistanceUnits);
+                                UInt16 minutes, seconds;
 
-                        oldValue = concreteTarget.MinPower.ToString();
-                        intMin = 20;
-                        intMax = 999;
-                        inputType = RangeValidationInputType.Integer;
+                                Utils.FloatToTime(paceTime, out minutes, out seconds);
+                                oldValue = String.Format("{0:00}:{1:00}", minutes, seconds);
+                                doubleMin = 1.0 / (Length.Convert(60, Length.Units.Mile, SelectedWorkout.Category.DistanceUnits) / Constants.MinutesPerHour);
+                                doubleMax = 1.0 / (Length.Convert(1.0002, Length.Units.Mile, SelectedWorkout.Category.DistanceUnits) / Constants.MinutesPerHour);
+                                inputType = RangeValidationInputType.Time;
+                            }
+                            else
+                            {
+                                oldValue = String.Format("{0:0.00}", concreteTarget.GetMinSpeedInUnitsPerHour(SelectedWorkout.Category.DistanceUnits));
+                                doubleMin = Length.Convert(1, Length.Units.Mile, SelectedWorkout.Category.DistanceUnits);
+                                doubleMax = Length.Convert(60, Length.Units.Mile, SelectedWorkout.Category.DistanceUnits);
+                                inputType = RangeValidationInputType.Float;
+                            }
 
-                        break;
-                    }
-                default:
-                    {
-                        Trace.Assert(false);
-                        break;
-                    }
-            }
+                            break;
+                        }
+                    case ITarget.TargetType.Power:
+                        {
+                            BasePowerTarget baseTarget = (BasePowerTarget)concreteStep.Target;
+                            Trace.Assert(baseTarget.ConcreteTarget != null && baseTarget.ConcreteTarget.Type == IConcretePowerTarget.PowerTargetType.Range);
+                            PowerRangeTarget concreteTarget = (PowerRangeTarget)baseTarget.ConcreteTarget;
 
-            switch(inputType)
-            {
-                case RangeValidationInputType.Integer:
-                    {
-                        if (Utils.IsTextIntegerInRange(LowRangeTargetText.Text, intMin, intMax))
-                        {
-                            e.Cancel = false;
-                        }
-                        else
-                        {
-                            MessageBox.Show(String.Format(GarminFitnessView.ResourceManager.GetString("IntegerRangeValidationText"), intMin, intMax),
-                                            GarminFitnessView.ResourceManager.GetString("ValueValidationTitleText"), MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                            System.Media.SystemSounds.Asterisk.Play();
-                            LowRangeTargetText.Text = oldValue;
-                            e.Cancel = true;
-                        }
-                        break;
-                    }
-                case RangeValidationInputType.Float:
-                    {
-                        if (Utils.IsTextFloatInRange(LowRangeTargetText.Text, doubleMin, doubleMax))
-                        {
-                            e.Cancel = false;
-                        }
-                        else
-                        {
-                            MessageBox.Show(String.Format(GarminFitnessView.ResourceManager.GetString("DoubleRangeValidationText"), doubleMin, doubleMax),
-                                            GarminFitnessView.ResourceManager.GetString("ValueValidationTitleText"), MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                            System.Media.SystemSounds.Asterisk.Play();
-                            LowRangeTargetText.Text = oldValue;
-                            e.Cancel = true;
-                        }
-                        break;
-                    }
-                case RangeValidationInputType.Time:
-                    {
-                        if (Utils.IsTextTimeInRange(LowRangeTargetText.Text, doubleMin, doubleMax))
-                        {
-                            e.Cancel = false;
-                        }
-                        else
-                        {
-                            UInt16 minMinutes, minSeconds;
-                            UInt16 maxMinutes, maxSeconds;
+                            oldValue = concreteTarget.MinPower.ToString();
+                            intMin = 20;
+                            intMax = 999;
+                            inputType = RangeValidationInputType.Integer;
 
-                            Utils.FloatToTime(doubleMin, out minMinutes, out minSeconds);
-                            Utils.FloatToTime(doubleMax, out maxMinutes, out maxSeconds);
-                            MessageBox.Show(String.Format(GarminFitnessView.ResourceManager.GetString("TimeRangeValidationText"),
-                                                          minMinutes, minSeconds,
-                                                          maxMinutes, maxSeconds),
-                                            GarminFitnessView.ResourceManager.GetString("ValueValidationTitleText"), MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                            System.Media.SystemSounds.Asterisk.Play();
-                            LowRangeTargetText.Text = oldValue;
-                            e.Cancel = true;
+                            break;
                         }
-                        break;
-                    }
+                    default:
+                        {
+                            Trace.Assert(false);
+                            break;
+                        }
+                }
+
+                switch (inputType)
+                {
+                    case RangeValidationInputType.Integer:
+                        {
+                            if (Utils.IsTextIntegerInRange(LowRangeTargetText.Text, intMin, intMax))
+                            {
+                                e.Cancel = false;
+                            }
+                            else
+                            {
+                                MessageBox.Show(String.Format(GarminFitnessView.ResourceManager.GetString("IntegerRangeValidationText"), intMin, intMax),
+                                                GarminFitnessView.ResourceManager.GetString("ValueValidationTitleText"), MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                                System.Media.SystemSounds.Asterisk.Play();
+                                LowRangeTargetText.Text = oldValue;
+                                e.Cancel = true;
+                            }
+                            break;
+                        }
+                    case RangeValidationInputType.Float:
+                        {
+                            if (Utils.IsTextFloatInRange(LowRangeTargetText.Text, doubleMin, doubleMax))
+                            {
+                                e.Cancel = false;
+                            }
+                            else
+                            {
+                                MessageBox.Show(String.Format(GarminFitnessView.ResourceManager.GetString("DoubleRangeValidationText"), doubleMin, doubleMax),
+                                                GarminFitnessView.ResourceManager.GetString("ValueValidationTitleText"), MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                                System.Media.SystemSounds.Asterisk.Play();
+                                LowRangeTargetText.Text = oldValue;
+                                e.Cancel = true;
+                            }
+                            break;
+                        }
+                    case RangeValidationInputType.Time:
+                        {
+                            if (Utils.IsTextTimeInRange(LowRangeTargetText.Text, doubleMin, doubleMax))
+                            {
+                                e.Cancel = false;
+                            }
+                            else
+                            {
+                                UInt16 minMinutes, minSeconds;
+                                UInt16 maxMinutes, maxSeconds;
+
+                                Utils.FloatToTime(doubleMin, out minMinutes, out minSeconds);
+                                Utils.FloatToTime(doubleMax, out maxMinutes, out maxSeconds);
+                                MessageBox.Show(String.Format(GarminFitnessView.ResourceManager.GetString("TimeRangeValidationText"),
+                                                              minMinutes, minSeconds,
+                                                              maxMinutes, maxSeconds),
+                                                GarminFitnessView.ResourceManager.GetString("ValueValidationTitleText"), MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                                System.Media.SystemSounds.Asterisk.Play();
+                                LowRangeTargetText.Text = oldValue;
+                                e.Cancel = true;
+                            }
+                            break;
+                        }
+                }
             }
         }
 
@@ -809,116 +812,119 @@ namespace GarminFitnessPlugin.View
         {
             Trace.Assert(SelectedStep != null && SelectedStep.Type == IStep.StepType.Regular);
             RegularStep concreteStep = (RegularStep)SelectedStep;
-            Trace.Assert(concreteStep.Target != null && concreteStep.Target.Type != ITarget.TargetType.Null);
+            Trace.Assert(concreteStep.Target != null);
             bool forceSelectHighTargetText = false;
 
-            switch (concreteStep.Target.Type)
+            if (concreteStep.Target.Type != ITarget.TargetType.Null)
             {
-                case ITarget.TargetType.HeartRate:
-                    {
-                        BaseHeartRateTarget baseTarget = (BaseHeartRateTarget)concreteStep.Target;
-                        Trace.Assert(baseTarget.ConcreteTarget != null && baseTarget.ConcreteTarget.Type == IConcreteHeartRateTarget.HeartRateTargetType.Range);
-                        HeartRateRangeTarget concreteTarget = (HeartRateRangeTarget)baseTarget.ConcreteTarget;
-                        Byte newValue = Byte.Parse(LowRangeTargetText.Text);
+                switch (concreteStep.Target.Type)
+                {
+                    case ITarget.TargetType.HeartRate:
+                        {
+                            BaseHeartRateTarget baseTarget = (BaseHeartRateTarget)concreteStep.Target;
+                            Trace.Assert(baseTarget.ConcreteTarget != null && baseTarget.ConcreteTarget.Type == IConcreteHeartRateTarget.HeartRateTargetType.Range);
+                            HeartRateRangeTarget concreteTarget = (HeartRateRangeTarget)baseTarget.ConcreteTarget;
+                            Byte newValue = Byte.Parse(LowRangeTargetText.Text);
 
-                        if (newValue <= concreteTarget.MaxHeartRate)
-                        {
-                            concreteTarget.MinHeartRate = newValue;
-                        }
-                        else
-                        {
-                            concreteTarget.SetValues(newValue, newValue, concreteTarget.IsPercentageMaxHeartRate);
-                            forceSelectHighTargetText = true;
-                        }
-                        break;
-                    }
-                case ITarget.TargetType.Cadence:
-                    {
-                        BaseCadenceTarget baseTarget = (BaseCadenceTarget)concreteStep.Target;
-                        Trace.Assert(baseTarget.ConcreteTarget != null && baseTarget.ConcreteTarget.Type == IConcreteCadenceTarget.CadenceTargetType.Range);
-                        CadenceRangeTarget concreteTarget = (CadenceRangeTarget)baseTarget.ConcreteTarget;
-                        Byte newValue = Byte.Parse(LowRangeTargetText.Text);
-
-                        if (newValue < concreteTarget.MaxCadence)
-                        {
-                            concreteTarget.MinCadence = newValue;
-                        }
-                        else
-                        {
-                            concreteTarget.SetValues(newValue, newValue);
-                            forceSelectHighTargetText = true;
-                        }
-                        break;
-                    }
-                case ITarget.TargetType.Speed:
-                    {
-                        BaseSpeedTarget baseTarget = (BaseSpeedTarget)concreteStep.Target;
-                        Trace.Assert(baseTarget.ConcreteTarget != null && baseTarget.ConcreteTarget.Type == IConcreteSpeedTarget.SpeedTargetType.Range);
-                        SpeedRangeTarget concreteTarget = (SpeedRangeTarget)baseTarget.ConcreteTarget;
-
-                        if (concreteTarget.ViewAsPace)
-                        {
-                            double time = Utils.TimeToFloat(LowRangeTargetText.Text);
-
-                            if (time <= concreteTarget.GetMinSpeedInMinutesPerUnit(SelectedWorkout.Category.DistanceUnits))
+                            if (newValue <= concreteTarget.MaxHeartRate)
                             {
-                                concreteTarget.SetMaxSpeedInMinutesPerUnit(time, SelectedWorkout.Category.DistanceUnits);
+                                concreteTarget.MinHeartRate = newValue;
                             }
                             else
                             {
-                                concreteTarget.SetRangeInMinutesPerUnit(time, time, SelectedWorkout.Category.DistanceUnits);
+                                concreteTarget.SetValues(newValue, newValue, concreteTarget.IsPercentageMaxHeartRate);
                                 forceSelectHighTargetText = true;
                             }
+                            break;
                         }
-                        else
+                    case ITarget.TargetType.Cadence:
                         {
-                            double newValue = double.Parse(LowRangeTargetText.Text);
+                            BaseCadenceTarget baseTarget = (BaseCadenceTarget)concreteStep.Target;
+                            Trace.Assert(baseTarget.ConcreteTarget != null && baseTarget.ConcreteTarget.Type == IConcreteCadenceTarget.CadenceTargetType.Range);
+                            CadenceRangeTarget concreteTarget = (CadenceRangeTarget)baseTarget.ConcreteTarget;
+                            Byte newValue = Byte.Parse(LowRangeTargetText.Text);
 
-                            if (newValue <= concreteTarget.GetMaxSpeedInUnitsPerHour(SelectedWorkout.Category.DistanceUnits))
+                            if (newValue < concreteTarget.MaxCadence)
                             {
-                                concreteTarget.SetMinSpeedInUnitsPerHour(newValue, SelectedWorkout.Category.DistanceUnits);
+                                concreteTarget.MinCadence = newValue;
                             }
                             else
                             {
-                                concreteTarget.SetRangeInUnitsPerHour(newValue, newValue, SelectedWorkout.Category.DistanceUnits);
+                                concreteTarget.SetValues(newValue, newValue);
                                 forceSelectHighTargetText = true;
                             }
+                            break;
                         }
-                        break;
-                    }
-                case ITarget.TargetType.Power:
-                    {
-                        BasePowerTarget baseTarget = (BasePowerTarget)concreteStep.Target;
-                        Trace.Assert(baseTarget.ConcreteTarget != null && baseTarget.ConcreteTarget.Type == IConcretePowerTarget.PowerTargetType.Range);
-                        PowerRangeTarget concreteTarget = (PowerRangeTarget)baseTarget.ConcreteTarget;
-                        UInt16 newValue = UInt16.Parse(LowRangeTargetText.Text);
-
-                        if (newValue < concreteTarget.MaxPower)
+                    case ITarget.TargetType.Speed:
                         {
-                            concreteTarget.MinPower = newValue;
+                            BaseSpeedTarget baseTarget = (BaseSpeedTarget)concreteStep.Target;
+                            Trace.Assert(baseTarget.ConcreteTarget != null && baseTarget.ConcreteTarget.Type == IConcreteSpeedTarget.SpeedTargetType.Range);
+                            SpeedRangeTarget concreteTarget = (SpeedRangeTarget)baseTarget.ConcreteTarget;
+
+                            if (concreteTarget.ViewAsPace)
+                            {
+                                double time = Utils.TimeToFloat(LowRangeTargetText.Text);
+
+                                if (time <= concreteTarget.GetMinSpeedInMinutesPerUnit(SelectedWorkout.Category.DistanceUnits))
+                                {
+                                    concreteTarget.SetMaxSpeedInMinutesPerUnit(time, SelectedWorkout.Category.DistanceUnits);
+                                }
+                                else
+                                {
+                                    concreteTarget.SetRangeInMinutesPerUnit(time, time, SelectedWorkout.Category.DistanceUnits);
+                                    forceSelectHighTargetText = true;
+                                }
+                            }
+                            else
+                            {
+                                double newValue = double.Parse(LowRangeTargetText.Text);
+
+                                if (newValue <= concreteTarget.GetMaxSpeedInUnitsPerHour(SelectedWorkout.Category.DistanceUnits))
+                                {
+                                    concreteTarget.SetMinSpeedInUnitsPerHour(newValue, SelectedWorkout.Category.DistanceUnits);
+                                }
+                                else
+                                {
+                                    concreteTarget.SetRangeInUnitsPerHour(newValue, newValue, SelectedWorkout.Category.DistanceUnits);
+                                    forceSelectHighTargetText = true;
+                                }
+                            }
+                            break;
                         }
-                        else
+                    case ITarget.TargetType.Power:
                         {
-                            concreteTarget.SetValues(newValue, newValue);
-                            forceSelectHighTargetText = true;
+                            BasePowerTarget baseTarget = (BasePowerTarget)concreteStep.Target;
+                            Trace.Assert(baseTarget.ConcreteTarget != null && baseTarget.ConcreteTarget.Type == IConcretePowerTarget.PowerTargetType.Range);
+                            PowerRangeTarget concreteTarget = (PowerRangeTarget)baseTarget.ConcreteTarget;
+                            UInt16 newValue = UInt16.Parse(LowRangeTargetText.Text);
+
+                            if (newValue < concreteTarget.MaxPower)
+                            {
+                                concreteTarget.MinPower = newValue;
+                            }
+                            else
+                            {
+                                concreteTarget.SetValues(newValue, newValue);
+                                forceSelectHighTargetText = true;
+                            }
+                            break;
                         }
-                        break;
-                    }
-                default:
-                    {
-                        Trace.Assert(false);
-                        break;
-                    }
-            }
+                    default:
+                        {
+                            Trace.Assert(false);
+                            break;
+                        }
+                }
 
-            StepsList.Invalidate();
-            UpdateUIFromStep(SelectedStep);
-            Utils.SaveWorkoutsToLogbook();
+                StepsList.Invalidate();
+                UpdateUIFromStep(SelectedStep);
+                Utils.SaveWorkoutsToLogbook();
 
-            if (forceSelectHighTargetText)
-            {
-                HighRangeTargetText.Focus();
-                HighRangeTargetText.SelectAll();
+                if (forceSelectHighTargetText)
+                {
+                    HighRangeTargetText.Focus();
+                    HighRangeTargetText.SelectAll();
+                }
             }
         }
 
@@ -934,155 +940,158 @@ namespace GarminFitnessPlugin.View
         {
             Trace.Assert(SelectedStep != null && SelectedStep.Type == IStep.StepType.Regular);
             RegularStep concreteStep = (RegularStep)SelectedStep;
-            Trace.Assert(concreteStep.Target != null && concreteStep.Target.Type != ITarget.TargetType.Null);
+            Trace.Assert(concreteStep.Target != null);
 
-            UInt16 intMin = 0;
-            UInt16 intMax = 0;
-            double doubleMin = 0;
-            double doubleMax = 0;
-            string oldValue = "";
-            RangeValidationInputType inputType = RangeValidationInputType.Integer;
-
-            switch (concreteStep.Target.Type)
+            if(concreteStep.Target.Type != ITarget.TargetType.Null)
             {
-                case ITarget.TargetType.HeartRate:
-                    {
-                        BaseHeartRateTarget baseTarget = (BaseHeartRateTarget)concreteStep.Target;
-                        Trace.Assert(baseTarget.ConcreteTarget != null && baseTarget.ConcreteTarget.Type == IConcreteHeartRateTarget.HeartRateTargetType.Range);
-                        HeartRateRangeTarget concreteTarget = (HeartRateRangeTarget)baseTarget.ConcreteTarget;
+                UInt16 intMin = 0;
+                UInt16 intMax = 0;
+                double doubleMin = 0;
+                double doubleMax = 0;
+                string oldValue = "";
+                RangeValidationInputType inputType = RangeValidationInputType.Integer;
 
-                        oldValue = concreteTarget.MaxHeartRate.ToString();
-                        inputType = RangeValidationInputType.Integer;
-
-                        if (concreteTarget.IsPercentageMaxHeartRate)
+                switch (concreteStep.Target.Type)
+                {
+                    case ITarget.TargetType.HeartRate:
                         {
-                            intMin = 1;
-                            intMax = 100;
-                        }
-                        else
-                        {
-                            intMin = 30;
-                            intMax = 240;
-                        }
-                        break;
-                    }
-                case ITarget.TargetType.Cadence:
-                    {
-                        BaseCadenceTarget baseTarget = (BaseCadenceTarget)concreteStep.Target;
-                        Trace.Assert(baseTarget.ConcreteTarget != null && baseTarget.ConcreteTarget.Type == IConcreteCadenceTarget.CadenceTargetType.Range);
-                        CadenceRangeTarget concreteTarget = (CadenceRangeTarget)baseTarget.ConcreteTarget;
+                            BaseHeartRateTarget baseTarget = (BaseHeartRateTarget)concreteStep.Target;
+                            Trace.Assert(baseTarget.ConcreteTarget != null && baseTarget.ConcreteTarget.Type == IConcreteHeartRateTarget.HeartRateTargetType.Range);
+                            HeartRateRangeTarget concreteTarget = (HeartRateRangeTarget)baseTarget.ConcreteTarget;
 
-                        oldValue = concreteTarget.MaxCadence.ToString();
-                        intMin = 0;
-                        intMax = 254;
-                        inputType = RangeValidationInputType.Integer;
+                            oldValue = concreteTarget.MaxHeartRate.ToString();
+                            inputType = RangeValidationInputType.Integer;
 
-                        break;
-                    }
-                case ITarget.TargetType.Speed:
-                    {
-                        BaseSpeedTarget baseTarget = (BaseSpeedTarget)concreteStep.Target;
-                        Trace.Assert(baseTarget.ConcreteTarget != null && baseTarget.ConcreteTarget.Type == IConcreteSpeedTarget.SpeedTargetType.Range);
-                        SpeedRangeTarget concreteTarget = (SpeedRangeTarget)baseTarget.ConcreteTarget;
+                            if (concreteTarget.IsPercentageMaxHeartRate)
+                            {
+                                intMin = 1;
+                                intMax = 100;
+                            }
+                            else
+                            {
+                                intMin = 30;
+                                intMax = 240;
+                            }
+                            break;
+                        }
+                    case ITarget.TargetType.Cadence:
+                        {
+                            BaseCadenceTarget baseTarget = (BaseCadenceTarget)concreteStep.Target;
+                            Trace.Assert(baseTarget.ConcreteTarget != null && baseTarget.ConcreteTarget.Type == IConcreteCadenceTarget.CadenceTargetType.Range);
+                            CadenceRangeTarget concreteTarget = (CadenceRangeTarget)baseTarget.ConcreteTarget;
 
-                        if (concreteTarget.ViewAsPace)
-                        {
-                            double paceTime = concreteTarget.GetMinSpeedInMinutesPerUnit(SelectedWorkout.Category.DistanceUnits);
-                            UInt16 minutes, seconds;
+                            oldValue = concreteTarget.MaxCadence.ToString();
+                            intMin = 0;
+                            intMax = 254;
+                            inputType = RangeValidationInputType.Integer;
 
-                            Utils.FloatToTime(paceTime, out minutes, out seconds);
-                            oldValue = String.Format("{0:00}:{1:00}", minutes, seconds);
-                            doubleMin = 1.0 / (Length.Convert(60, Length.Units.Mile, SelectedWorkout.Category.DistanceUnits) / Constants.MinutesPerHour);
-                            doubleMax = 1.0 / (Length.Convert(1.0002, Length.Units.Mile, SelectedWorkout.Category.DistanceUnits) / Constants.MinutesPerHour);
-                            inputType = RangeValidationInputType.Time;
+                            break;
                         }
-                        else
+                    case ITarget.TargetType.Speed:
                         {
-                            oldValue = String.Format("{0:0.00}", concreteTarget.GetMaxSpeedInUnitsPerHour(SelectedWorkout.Category.DistanceUnits));
-                            doubleMin = Length.Convert(1, Length.Units.Mile, SelectedWorkout.Category.DistanceUnits);
-                            doubleMax = Length.Convert(60, Length.Units.Mile, SelectedWorkout.Category.DistanceUnits);
-                            inputType = RangeValidationInputType.Float;
-                        }
+                            BaseSpeedTarget baseTarget = (BaseSpeedTarget)concreteStep.Target;
+                            Trace.Assert(baseTarget.ConcreteTarget != null && baseTarget.ConcreteTarget.Type == IConcreteSpeedTarget.SpeedTargetType.Range);
+                            SpeedRangeTarget concreteTarget = (SpeedRangeTarget)baseTarget.ConcreteTarget;
 
-                        break;
-                    }
-                case ITarget.TargetType.Power:
-                    {
-                        BasePowerTarget baseTarget = (BasePowerTarget)concreteStep.Target;
-                        Trace.Assert(baseTarget.ConcreteTarget != null && baseTarget.ConcreteTarget.Type == IConcretePowerTarget.PowerTargetType.Range);
-                        PowerRangeTarget concreteTarget = (PowerRangeTarget)baseTarget.ConcreteTarget;
+                            if (concreteTarget.ViewAsPace)
+                            {
+                                double paceTime = concreteTarget.GetMinSpeedInMinutesPerUnit(SelectedWorkout.Category.DistanceUnits);
+                                UInt16 minutes, seconds;
 
-                        oldValue = concreteTarget.MaxPower.ToString();
-                        intMin = 20;
-                        intMax = 999;
-                        inputType = RangeValidationInputType.Integer;
+                                Utils.FloatToTime(paceTime, out minutes, out seconds);
+                                oldValue = String.Format("{0:00}:{1:00}", minutes, seconds);
+                                doubleMin = 1.0 / (Length.Convert(60, Length.Units.Mile, SelectedWorkout.Category.DistanceUnits) / Constants.MinutesPerHour);
+                                doubleMax = 1.0 / (Length.Convert(1.0002, Length.Units.Mile, SelectedWorkout.Category.DistanceUnits) / Constants.MinutesPerHour);
+                                inputType = RangeValidationInputType.Time;
+                            }
+                            else
+                            {
+                                oldValue = String.Format("{0:0.00}", concreteTarget.GetMaxSpeedInUnitsPerHour(SelectedWorkout.Category.DistanceUnits));
+                                doubleMin = Length.Convert(1, Length.Units.Mile, SelectedWorkout.Category.DistanceUnits);
+                                doubleMax = Length.Convert(60, Length.Units.Mile, SelectedWorkout.Category.DistanceUnits);
+                                inputType = RangeValidationInputType.Float;
+                            }
 
-                        break;
-                    }
-                default:
-                    {
-                        Trace.Assert(false);
-                        break;
-                    }
-            }
+                            break;
+                        }
+                    case ITarget.TargetType.Power:
+                        {
+                            BasePowerTarget baseTarget = (BasePowerTarget)concreteStep.Target;
+                            Trace.Assert(baseTarget.ConcreteTarget != null && baseTarget.ConcreteTarget.Type == IConcretePowerTarget.PowerTargetType.Range);
+                            PowerRangeTarget concreteTarget = (PowerRangeTarget)baseTarget.ConcreteTarget;
 
-            switch(inputType)
-            {
-                case RangeValidationInputType.Integer:
-                    {
-                        if (Utils.IsTextIntegerInRange(HighRangeTargetText.Text, intMin, intMax))
-                        {
-                            e.Cancel = false;
-                        }
-                        else
-                        {
-                            MessageBox.Show(String.Format(GarminFitnessView.ResourceManager.GetString("IntegerRangeValidationText"), intMin, intMax),
-                                            GarminFitnessView.ResourceManager.GetString("ValueValidationTitleText"), MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                            System.Media.SystemSounds.Asterisk.Play();
-                            HighRangeTargetText.Text = oldValue;
-                            e.Cancel = true;
-                        }
-                        break;
-                    }
-                case RangeValidationInputType.Float:
-                    {
-                        if (Utils.IsTextFloatInRange(HighRangeTargetText.Text, doubleMin, doubleMax))
-                        {
-                            e.Cancel = false;
-                        }
-                        else
-                        {
-                            MessageBox.Show(String.Format(GarminFitnessView.ResourceManager.GetString("DoubleRangeValidationText"), doubleMin, doubleMax),
-                                            GarminFitnessView.ResourceManager.GetString("ValueValidationTitleText"), MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                            System.Media.SystemSounds.Asterisk.Play();
-                            HighRangeTargetText.Text = oldValue;
-                            e.Cancel = true;
-                        }
-                        break;
-                    }
-                case RangeValidationInputType.Time:
-                    {
-                        if (Utils.IsTextTimeInRange(HighRangeTargetText.Text, doubleMin, doubleMax))
-                        {
-                            e.Cancel = false;
-                        }
-                        else
-                        {
-                            UInt16 minMinutes, minSeconds;
-                            UInt16 maxMinutes, maxSeconds;
+                            oldValue = concreteTarget.MaxPower.ToString();
+                            intMin = 20;
+                            intMax = 999;
+                            inputType = RangeValidationInputType.Integer;
 
-                            Utils.FloatToTime(doubleMin, out minMinutes, out minSeconds);
-                            Utils.FloatToTime(doubleMax, out maxMinutes, out maxSeconds);
-                            MessageBox.Show(String.Format(GarminFitnessView.ResourceManager.GetString("TimeRangeValidationText"),
-                                                          minMinutes, minSeconds,
-                                                          maxMinutes, maxSeconds),
-                                            GarminFitnessView.ResourceManager.GetString("ValueValidationTitleText"), MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                            System.Media.SystemSounds.Asterisk.Play();
-                            HighRangeTargetText.Text = oldValue;
-                            e.Cancel = true;
+                            break;
                         }
-                        break;
-                    }
+                    default:
+                        {
+                            Trace.Assert(false);
+                            break;
+                        }
+                }
+
+                switch(inputType)
+                {
+                    case RangeValidationInputType.Integer:
+                        {
+                            if (Utils.IsTextIntegerInRange(HighRangeTargetText.Text, intMin, intMax))
+                            {
+                                e.Cancel = false;
+                            }
+                            else
+                            {
+                                MessageBox.Show(String.Format(GarminFitnessView.ResourceManager.GetString("IntegerRangeValidationText"), intMin, intMax),
+                                                GarminFitnessView.ResourceManager.GetString("ValueValidationTitleText"), MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                                System.Media.SystemSounds.Asterisk.Play();
+                                HighRangeTargetText.Text = oldValue;
+                                e.Cancel = true;
+                            }
+                            break;
+                        }
+                    case RangeValidationInputType.Float:
+                        {
+                            if (Utils.IsTextFloatInRange(HighRangeTargetText.Text, doubleMin, doubleMax))
+                            {
+                                e.Cancel = false;
+                            }
+                            else
+                            {
+                                MessageBox.Show(String.Format(GarminFitnessView.ResourceManager.GetString("DoubleRangeValidationText"), doubleMin, doubleMax),
+                                                GarminFitnessView.ResourceManager.GetString("ValueValidationTitleText"), MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                                System.Media.SystemSounds.Asterisk.Play();
+                                HighRangeTargetText.Text = oldValue;
+                                e.Cancel = true;
+                            }
+                            break;
+                        }
+                    case RangeValidationInputType.Time:
+                        {
+                            if (Utils.IsTextTimeInRange(HighRangeTargetText.Text, doubleMin, doubleMax))
+                            {
+                                e.Cancel = false;
+                            }
+                            else
+                            {
+                                UInt16 minMinutes, minSeconds;
+                                UInt16 maxMinutes, maxSeconds;
+
+                                Utils.FloatToTime(doubleMin, out minMinutes, out minSeconds);
+                                Utils.FloatToTime(doubleMax, out maxMinutes, out maxSeconds);
+                                MessageBox.Show(String.Format(GarminFitnessView.ResourceManager.GetString("TimeRangeValidationText"),
+                                                              minMinutes, minSeconds,
+                                                              maxMinutes, maxSeconds),
+                                                GarminFitnessView.ResourceManager.GetString("ValueValidationTitleText"), MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                                System.Media.SystemSounds.Asterisk.Play();
+                                HighRangeTargetText.Text = oldValue;
+                                e.Cancel = true;
+                            }
+                            break;
+                        }
+                }
             }
         }
 
@@ -1090,116 +1099,119 @@ namespace GarminFitnessPlugin.View
         {
             Trace.Assert(SelectedStep != null && SelectedStep.Type == IStep.StepType.Regular);
             RegularStep concreteStep = (RegularStep)SelectedStep;
-            Trace.Assert(concreteStep.Target != null && concreteStep.Target.Type != ITarget.TargetType.Null);
+            Trace.Assert(concreteStep.Target != null);
             bool forceSelectLowTargetText = false;
 
-            switch (concreteStep.Target.Type)
+            if (concreteStep.Target.Type != ITarget.TargetType.Null)
             {
-                case ITarget.TargetType.HeartRate:
-                    {
-                        BaseHeartRateTarget baseTarget = (BaseHeartRateTarget)concreteStep.Target;
-                        Trace.Assert(baseTarget.ConcreteTarget != null && baseTarget.ConcreteTarget.Type == IConcreteHeartRateTarget.HeartRateTargetType.Range);
-                        HeartRateRangeTarget concreteTarget = (HeartRateRangeTarget)baseTarget.ConcreteTarget;
-                        Byte newValue = Byte.Parse(HighRangeTargetText.Text);
+                switch (concreteStep.Target.Type)
+                {
+                    case ITarget.TargetType.HeartRate:
+                        {
+                            BaseHeartRateTarget baseTarget = (BaseHeartRateTarget)concreteStep.Target;
+                            Trace.Assert(baseTarget.ConcreteTarget != null && baseTarget.ConcreteTarget.Type == IConcreteHeartRateTarget.HeartRateTargetType.Range);
+                            HeartRateRangeTarget concreteTarget = (HeartRateRangeTarget)baseTarget.ConcreteTarget;
+                            Byte newValue = Byte.Parse(HighRangeTargetText.Text);
 
-                        if (newValue >= concreteTarget.MinHeartRate)
-                        {
-                            concreteTarget.MaxHeartRate = newValue;
-                        }
-                        else
-                        {
-                            concreteTarget.SetValues(newValue, newValue, concreteTarget.IsPercentageMaxHeartRate);
-                            forceSelectLowTargetText = true;
-                        }
-                        break;
-                    }
-                case ITarget.TargetType.Cadence:
-                    {
-                        BaseCadenceTarget baseTarget = (BaseCadenceTarget)concreteStep.Target;
-                        Trace.Assert(baseTarget.ConcreteTarget != null && baseTarget.ConcreteTarget.Type == IConcreteCadenceTarget.CadenceTargetType.Range);
-                        CadenceRangeTarget concreteTarget = (CadenceRangeTarget)baseTarget.ConcreteTarget;
-                        Byte newValue = Byte.Parse(HighRangeTargetText.Text);
-
-                        if (newValue >= concreteTarget.MinCadence)
-                        {
-                            concreteTarget.MaxCadence = newValue;
-                        }
-                        else
-                        {
-                            concreteTarget.SetValues(newValue, newValue);
-                            forceSelectLowTargetText = true;
-                        }
-                        break;
-                    }
-                case ITarget.TargetType.Speed:
-                    {
-                        BaseSpeedTarget baseTarget = (BaseSpeedTarget)concreteStep.Target;
-                        Trace.Assert(baseTarget.ConcreteTarget != null && baseTarget.ConcreteTarget.Type == IConcreteSpeedTarget.SpeedTargetType.Range);
-                        SpeedRangeTarget concreteTarget = (SpeedRangeTarget)baseTarget.ConcreteTarget;
-
-                        if (concreteTarget.ViewAsPace)
-                        {
-                            float time = Utils.TimeToFloat(HighRangeTargetText.Text);
-
-                            if (time >= concreteTarget.GetMaxSpeedInMinutesPerUnit(SelectedWorkout.Category.DistanceUnits))
+                            if (newValue >= concreteTarget.MinHeartRate)
                             {
-                                concreteTarget.SetMinSpeedInMinutesPerUnit(time, SelectedWorkout.Category.DistanceUnits);
+                                concreteTarget.MaxHeartRate = newValue;
                             }
                             else
                             {
-                                concreteTarget.SetRangeInMinutesPerUnit(time, time, SelectedWorkout.Category.DistanceUnits);
+                                concreteTarget.SetValues(newValue, newValue, concreteTarget.IsPercentageMaxHeartRate);
                                 forceSelectLowTargetText = true;
                             }
+                            break;
                         }
-                        else
+                    case ITarget.TargetType.Cadence:
                         {
-                            double newValue = double.Parse(HighRangeTargetText.Text);
+                            BaseCadenceTarget baseTarget = (BaseCadenceTarget)concreteStep.Target;
+                            Trace.Assert(baseTarget.ConcreteTarget != null && baseTarget.ConcreteTarget.Type == IConcreteCadenceTarget.CadenceTargetType.Range);
+                            CadenceRangeTarget concreteTarget = (CadenceRangeTarget)baseTarget.ConcreteTarget;
+                            Byte newValue = Byte.Parse(HighRangeTargetText.Text);
 
-                            if (newValue >= concreteTarget.GetMinSpeedInUnitsPerHour(SelectedWorkout.Category.DistanceUnits))
+                            if (newValue >= concreteTarget.MinCadence)
                             {
-                                concreteTarget.SetMaxSpeedInUnitsPerHour(newValue, SelectedWorkout.Category.DistanceUnits);
+                                concreteTarget.MaxCadence = newValue;
                             }
                             else
                             {
-                                concreteTarget.SetRangeInUnitsPerHour(newValue, newValue, SelectedWorkout.Category.DistanceUnits);
+                                concreteTarget.SetValues(newValue, newValue);
                                 forceSelectLowTargetText = true;
                             }
+                            break;
                         }
-                        break;
-                    }
-                case ITarget.TargetType.Power:
-                    {
-                        BasePowerTarget baseTarget = (BasePowerTarget)concreteStep.Target;
-                        Trace.Assert(baseTarget.ConcreteTarget != null && baseTarget.ConcreteTarget.Type == IConcretePowerTarget.PowerTargetType.Range);
-                        PowerRangeTarget concreteTarget = (PowerRangeTarget)baseTarget.ConcreteTarget;
-                        UInt16 newValue = UInt16.Parse(HighRangeTargetText.Text);
-
-                        if (newValue > concreteTarget.MinPower)
+                    case ITarget.TargetType.Speed:
                         {
-                            concreteTarget.MaxPower = newValue;
+                            BaseSpeedTarget baseTarget = (BaseSpeedTarget)concreteStep.Target;
+                            Trace.Assert(baseTarget.ConcreteTarget != null && baseTarget.ConcreteTarget.Type == IConcreteSpeedTarget.SpeedTargetType.Range);
+                            SpeedRangeTarget concreteTarget = (SpeedRangeTarget)baseTarget.ConcreteTarget;
+
+                            if (concreteTarget.ViewAsPace)
+                            {
+                                float time = Utils.TimeToFloat(HighRangeTargetText.Text);
+
+                                if (time >= concreteTarget.GetMaxSpeedInMinutesPerUnit(SelectedWorkout.Category.DistanceUnits))
+                                {
+                                    concreteTarget.SetMinSpeedInMinutesPerUnit(time, SelectedWorkout.Category.DistanceUnits);
+                                }
+                                else
+                                {
+                                    concreteTarget.SetRangeInMinutesPerUnit(time, time, SelectedWorkout.Category.DistanceUnits);
+                                    forceSelectLowTargetText = true;
+                                }
+                            }
+                            else
+                            {
+                                double newValue = double.Parse(HighRangeTargetText.Text);
+
+                                if (newValue >= concreteTarget.GetMinSpeedInUnitsPerHour(SelectedWorkout.Category.DistanceUnits))
+                                {
+                                    concreteTarget.SetMaxSpeedInUnitsPerHour(newValue, SelectedWorkout.Category.DistanceUnits);
+                                }
+                                else
+                                {
+                                    concreteTarget.SetRangeInUnitsPerHour(newValue, newValue, SelectedWorkout.Category.DistanceUnits);
+                                    forceSelectLowTargetText = true;
+                                }
+                            }
+                            break;
                         }
-                        else
+                    case ITarget.TargetType.Power:
                         {
-                            concreteTarget.SetValues(newValue, newValue);
-                            forceSelectLowTargetText = true;
+                            BasePowerTarget baseTarget = (BasePowerTarget)concreteStep.Target;
+                            Trace.Assert(baseTarget.ConcreteTarget != null && baseTarget.ConcreteTarget.Type == IConcretePowerTarget.PowerTargetType.Range);
+                            PowerRangeTarget concreteTarget = (PowerRangeTarget)baseTarget.ConcreteTarget;
+                            UInt16 newValue = UInt16.Parse(HighRangeTargetText.Text);
+
+                            if (newValue > concreteTarget.MinPower)
+                            {
+                                concreteTarget.MaxPower = newValue;
+                            }
+                            else
+                            {
+                                concreteTarget.SetValues(newValue, newValue);
+                                forceSelectLowTargetText = true;
+                            }
+                            break;
                         }
-                        break;
-                    }
-                default:
-                    {
-                        Trace.Assert(false);
-                        break;
-                    }
-            }
+                    default:
+                        {
+                            Trace.Assert(false);
+                            break;
+                        }
+                }
 
-            StepsList.Invalidate();
-            UpdateUIFromStep(SelectedStep);
-            Utils.SaveWorkoutsToLogbook();
+                StepsList.Invalidate();
+                UpdateUIFromStep(SelectedStep);
+                Utils.SaveWorkoutsToLogbook();
 
-            if (forceSelectLowTargetText)
-            {
-                LowRangeTargetText.Focus();
-                LowRangeTargetText.SelectAll();
+                if (forceSelectLowTargetText)
+                {
+                    LowRangeTargetText.Focus();
+                    LowRangeTargetText.SelectAll();
+                }
             }
         }
 
