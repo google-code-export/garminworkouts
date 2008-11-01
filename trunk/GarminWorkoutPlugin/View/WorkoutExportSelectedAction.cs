@@ -204,14 +204,7 @@ namespace GarminFitnessPlugin.View
 
             if (manager.AreAllTasksFinished)
             {
-                Control viewControl = PluginMain.GetApplication().ActiveView.CreatePageControl();
-                Control mainWindow = viewControl.Parent.Parent.Parent.Parent;
-
-                for (int i = 0; i < mainWindow.Controls.Count; ++i)
-                {
-                    mainWindow.Controls[i].Enabled = true;
-                }
-                mainWindow.Cursor = Cursors.Default;
+                Utils.ReleaseMainWindow();
 
                 manager.TaskCompleted -= new GarminDeviceManager.TaskCompletedEventHandler(OnDeviceManagerTaskCompleted);
 
