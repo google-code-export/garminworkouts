@@ -1,3 +1,5 @@
+<wiki:toc max_depth="3" />
+
 = Introduction =
 So you've mastered the basic operations?  It wasn't so hard, was it?  You are now ready for the advanced operations.  These different operations will help you become faster when you create or manage your workouts.  Let's see in what it consists.
 
