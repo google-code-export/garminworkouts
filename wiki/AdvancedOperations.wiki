@@ -23,7 +23,7 @@ In the following examples, I'll always work with a single item selected for the 
 The first way to move or copy workouts is by using drap and dropping.  Drag & dropping is a common technique in many software.  It consists in clicking an item and, while holding the left mouse button, moving the mouse until you release the button.  It's as if you were grabbing on an object, moving it and then releasing it at it's destination.
 
 === Changing a workout's category ===
-Using the above techinque, you can change a workout's category.  It's very simple to do, simply click the item you want to move, when dragging you willl see you mouse icon change to the following :
+Using the above technique, you can change a workout's category.  It's very simple to do, simply click the item you want to move, when dragging you willl see you mouse icon change to the following :
 
 http://garminworkouts.googlecode.com/files/Drag%20workout.gif
 
@@ -37,7 +37,7 @@ Basically, copying a workout is done in the same manner.  The only difference is
 http://garminworkouts.googlecode.com/files/Drag%20copy%20workout.gif
 
 == Copy-Pasting ==
-As mentionned previously, drag & dropping is the mouse equivalent of copy pasting.  In fact this is not 100% true.  Truth is that copy pasting is more versatile because it allows you to paste in a different logbook.  That means you can have a workout duplicated in two logbooks.  This can be usefull when starting a new logbook and wanting to transfer your workouts to the it.
+As mentionned previously, drag & dropping is the mouse equivalent of copy pasting.  In fact this is not 100% true.  Truth is that copy pasting is more versatile because it allows you to paste in a different logbook.  That means you can have a workout duplicated in two logbooks.  This can be useful when starting a new logbook and wanting to transfer your workouts to it.
 
 With copy-pasting, you must remember three following keyboard shortcuts :
 
@@ -61,7 +61,7 @@ If you want to plan your workout on the 31st of October, start by selecting that
 
 http://garminworkouts.googlecode.com/files/Workout%20scheduling%20operation.gif
 
-Then you click on the "schedule workout" button.  Yoou get the following result.  Notice that the 31st now has a small red triangle in the upper left, which means your workout has been planned.
+Then you click on the "schedule workout" button.  You get the following result.  Notice that the 31st now has a small red triangle in the upper left, which means your workout has been planned.
 
 http://garminworkouts.googlecode.com/files/Workout%20scheduling%20result.gif
 
@@ -87,7 +87,7 @@ You can see that "!NewWorkout 3" and "!NewWorkout 5" were planned on the 31st.
 The advanced step operations are basically the same as the advanced workout steps, namely drag and dropping and copy-pasting.  Of course multiple selection is also possible.
 
 == Multiple selection ==
-Just like with the workouts, multiple step selection is acheived with the CTRL and SHIFt keys.  For more detail, read the above "Multiple selection" section.  One thing that is worth of mention though is repeat steps.  When selecting a repeat step, it will automatically select all of it's children.  So if you move or copy a repeat step, all it's children will also be moved or copied.  That means that when you select a repeat step and one of it's children, the second selection (the child) won't be double selected.  This means that the following two selections are considered the same and therefore all actions made with these selections will have the same result.
+Just like with the workouts, multiple step selection is acheived with the CTRL and SHIFT keys.  For more detail, read the above "Multiple selection" section.  One thing that is worth of mention though is repeat steps.  When selecting a repeat step, it will automatically select all of it's children.  So if you move or copy a repeat step, all it's children will also be moved or copied.  That means that when you select a repeat step and one of it's children, the second selection (the child) won't be double selected.  This means that the following two selections are considered the same and therefore all actions made with these selections will have the same result.
 
 http://garminworkouts.googlecode.com/files/Repeat%20selection.gif
 
