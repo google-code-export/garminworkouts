@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Windows.Forms;
 using System.IO;
 using ZoneFiveSoftware.Common.Data.Fitness;
 using GarminFitnessPlugin.Data;
@@ -9,6 +10,30 @@ namespace GarminFitnessPlugin.Controller
 {
     class Utils
     {
+        public static void HijackMainWindow()
+        {
+            Control viewControl = PluginMain.GetApplication().ActiveView.CreatePageControl();
+            Control mainWindow = viewControl.Parent.Parent.Parent.Parent;
+
+            for (int i = 0; i < mainWindow.Controls.Count; ++i)
+            {
+                mainWindow.Controls[i].Enabled = false;
+            }
+            mainWindow.Cursor = Cursors.WaitCursor;
+        }
+
+        public static void ReleaseMainWindow()
+        {
+            Control viewControl = PluginMain.GetApplication().ActiveView.CreatePageControl();
+            Control mainWindow = viewControl.Parent.Parent.Parent.Parent;
+
+            for (int i = 0; i < mainWindow.Controls.Count; ++i)
+            {
+                mainWindow.Controls[i].Enabled = true;
+            }
+            mainWindow.Cursor = Cursors.Default;
+        }
+
         public static IActivityCategory FindCategoryByID(string categoryID)
         {
             return FindCategoryByIDInList(categoryID, PluginMain.GetApplication().Logbook.ActivityCategories);

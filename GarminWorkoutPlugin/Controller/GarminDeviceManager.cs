@@ -41,13 +41,15 @@ namespace GarminFitnessPlugin.Controller
 
         public void RefreshDevices()
         {
+            // refresh devices is an optional sub-step of SetOperatingDevice, so insert it
+            //  first and trigger it manually.
             m_TaskQueue.Insert(0, new BasicTask(BasicTask.TaskTypes.TaskType_RefreshDevices));
             m_Controller.FindDevices();
         }
 
         public void SetOperatingDevice()
         {
-            AddTask(new BasicTask(BasicTask.TaskTypes.TaskType_SetOperatingDevice));
+            AddTask(new SetOperationDeviceTask());
         }
 
         public void ExportWorkout(List<Workout> workouts)
@@ -79,58 +81,9 @@ namespace GarminFitnessPlugin.Controller
         private void StartNextTask()
         {
             Trace.Assert(m_TaskQueue.Count > 0);
+            Trace.Assert(m_TaskQueue[0].Type == BasicTask.TaskTypes.TaskType_Initialize || IsInitialized);
 
-            switch(m_TaskQueue[0].Type)
-            {
-                case BasicTask.TaskTypes.TaskType_Initialize:
-                    {
-                        break;
-                    }
-                case BasicTask.TaskTypes.TaskType_RefreshDevices:
-                    {
-                        ValidateManagerState();
-                        break;
-                    }
-                case BasicTask.TaskTypes.TaskType_SetOperatingDevice:
-                    {
-                        m_Controller.FindDevices();
-                        break;
-                    }
-                case BasicTask.TaskTypes.TaskType_ExportWorkout:
-                    {
-                        ValidateManagerState();
-
-                        ExportWorkoutTask task = (ExportWorkoutTask)m_TaskQueue[0];
-                        
-                        string fileName;
-
-                        if (task.Workouts.Count == 1)
-                        {
-                            fileName = Utils.GetWorkoutFilename(task.Workouts[0]);
-                        }
-                        else
-                        {
-                            fileName = "Workouts.tcx";
-                        }
-                        MemoryStream textStream = new MemoryStream();
-
-                        WorkoutExporter.ExportWorkout(task.Workouts, textStream);
-                        string xmlCode = Encoding.UTF8.GetString(textStream.GetBuffer());
-                        m_Controller.WriteWorkouts(m_OperatingDevice,
-                                                   xmlCode,
-                                                   fileName);
- 
-                        break;
-                    }
-                case BasicTask.TaskTypes.TaskType_ImportWorkouts:
-                    {
-                        ValidateManagerState();
-
-                        m_Controller.ReadWktWorkouts(m_OperatingDevice);
-                        break;
-                    }
-            }
-
+            m_TaskQueue[0].ExecuteTask(m_Controller, m_OperatingDevice);
             m_TimeoutTimer.Start();
         }
 
@@ -150,11 +103,6 @@ namespace GarminFitnessPlugin.Controller
             {
                 StartNextTask();
             }
-        }
-
-        private void ValidateManagerState()
-        {
-            Trace.Assert(IsInitialized);
         }
 
         private void OnControllerReadyChanged(object sender, EventArgs e)
@@ -259,7 +207,33 @@ namespace GarminFitnessPlugin.Controller
                 get { return m_Type; }
             }
 
+            public virtual void ExecuteTask(GarminDeviceControl controller, Device device)
+            {
+
+            }
+
             private TaskTypes m_Type;
+        }
+
+        public class SetOperationDeviceTask : BasicTask
+        {
+            public SetOperationDeviceTask() :
+                base(TaskTypes.TaskType_SetOperatingDevice)
+            {
+            }
+
+            public string WorkoutsXML
+            {
+                get { return m_WorkoutsXML; }
+                set { m_WorkoutsXML = value; }
+            }
+
+            public override void ExecuteTask(GarminDeviceControl controller, Device device)
+            {
+                controller.FindDevices();
+            }
+
+            private string m_WorkoutsXML;
         }
 
         public class ExportWorkoutTask : BasicTask
@@ -273,6 +247,27 @@ namespace GarminFitnessPlugin.Controller
             public List<Workout> Workouts
             {
                 get { return m_Workouts; }
+            }
+
+            public override void ExecuteTask(GarminDeviceControl controller, Device device)
+            {
+                string fileName;
+
+                if (Workouts.Count == 1)
+                {
+                    fileName = Utils.GetWorkoutFilename(Workouts[0]);
+                }
+                else
+                {
+                    fileName = "Workouts.tcx";
+                }
+                MemoryStream textStream = new MemoryStream();
+
+                WorkoutExporter.ExportWorkout(Workouts, textStream);
+                string xmlCode = Encoding.UTF8.GetString(textStream.GetBuffer());
+                controller.WriteWorkouts(device,
+                                         xmlCode,
+                                         fileName);
             }
 
             private List<Workout> m_Workouts;
@@ -289,6 +284,11 @@ namespace GarminFitnessPlugin.Controller
             {
                 get { return m_WorkoutsXML; }
                 set { m_WorkoutsXML = value; }
+            }
+
+            public override void ExecuteTask(GarminDeviceControl controller, Device device)
+            {
+                controller.ReadWktWorkouts(device);
             }
 
             private string m_WorkoutsXML;
