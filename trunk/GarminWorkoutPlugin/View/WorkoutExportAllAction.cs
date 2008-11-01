@@ -90,15 +90,9 @@ namespace GarminFitnessPlugin.View
             {
                 GarminDeviceManager.GetInstance().TaskCompleted += new GarminDeviceManager.TaskCompletedEventHandler(OnDeviceManagerTaskCompleted);
 
-                Control viewControl = PluginMain.GetApplication().ActiveView.CreatePageControl();
-                Control mainWindow = viewControl.Parent.Parent.Parent.Parent;
+                Utils.HijackMainWindow();
 
-                for (int i = 0; i < mainWindow.Controls.Count; ++i)
-                {
-                    mainWindow.Controls[i].Enabled = false;
-                }
-                mainWindow.Cursor = Cursors.WaitCursor;
-
+                // Export using Communicator Plugin
                 GarminDeviceManager.GetInstance().SetOperatingDevice();
                 GarminDeviceManager.GetInstance().ExportWorkout(GarminWorkoutManager.Instance.Workouts);
             }
@@ -192,14 +186,7 @@ namespace GarminFitnessPlugin.View
 
             if (manager.AreAllTasksFinished)
             {
-                Control viewControl = PluginMain.GetApplication().ActiveView.CreatePageControl();
-                Control mainWindow = viewControl.Parent.Parent.Parent.Parent;
-
-                for (int i = 0; i < mainWindow.Controls.Count; ++i)
-                {
-                    mainWindow.Controls[i].Enabled = true;
-                }
-                mainWindow.Cursor = Cursors.Default;
+                Utils.ReleaseMainWindow();
 
                 manager.TaskCompleted -= new GarminDeviceManager.TaskCompletedEventHandler(OnDeviceManagerTaskCompleted);
 
