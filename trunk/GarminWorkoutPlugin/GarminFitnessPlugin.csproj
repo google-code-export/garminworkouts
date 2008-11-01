@@ -150,12 +150,6 @@
       <DependentUpon>ReplaceRenameDialog.cs</DependentUpon>
     </Compile>
     <Compile Include="View\WorkoutExportSelectedAction.cs" />
-    <Compile Include="View\DateSelectorDialog.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="View\DateSelectorDialog.Designer.cs">
-      <DependentUpon>DateSelectorDialog.cs</DependentUpon>
-    </Compile>
     <Compile Include="View\SelectDeviceDialog.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -266,10 +260,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Resources\StringResources.sv.resx">
       <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="View\DateSelectorDialog.resx">
-      <SubType>Designer</SubType>
-      <DependentUpon>DateSelectorDialog.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="View\GarminProfileControl.resx">
       <SubType>Designer</SubType>
