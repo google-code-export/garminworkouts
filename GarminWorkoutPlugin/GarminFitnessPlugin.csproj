@@ -74,7 +74,7 @@
     <Compile Include="Controller\GarminProfileManager.cs" />
     <Compile Include="Data\DataTooRecentException.cs" />
     <Compile Include="Data\DataVersion.cs" />
-    <Compile Include="Data\Durations\DurationFactory.cs" />
+    <Compile Include="Controller\DurationFactory.cs" />
     <Compile Include="Controller\GarminDeviceManager.cs" />
     <Compile Include="Data\GarminActivityProfile.cs" />
     <Compile Include="Data\GarminCategories.cs" />
@@ -100,7 +100,7 @@
     <Compile Include="Data\Targets\Speed\SpeedZoneGTCTarget.cs" />
     <Compile Include="Data\Targets\Speed\SpeedZoneSTTarget.cs" />
     <Compile Include="Data\Targets\Speed\IConcreteSpeedTarget.cs" />
-    <Compile Include="Data\Targets\TargetFactory.cs" />
+    <Compile Include="Controller\TargetFactory.cs" />
     <Compile Include="Controller\Utils.cs" />
     <Compile Include="Data\WorkoutElements\RegularStep.cs" />
     <Compile Include="Data\WorkoutElements\RepeatStep.cs" />

@@ -89,7 +89,7 @@ namespace GarminFitnessPlugin.Data
 
             // Duration
             stream.Read(intBuffer, 0, sizeof(Int32));
-            Duration = DurationFactory.Create((IDuration.DurationType)BitConverter.ToInt32(intBuffer, 0), stream, version, this);
+            DurationFactory.Create((IDuration.DurationType)BitConverter.ToInt32(intBuffer, 0), stream, version, this);
 
             // Target
             stream.Read(intBuffer, 0, sizeof(Int32));
@@ -111,7 +111,7 @@ namespace GarminFitnessPlugin.Data
                 }
             }
 
-            Target = TargetFactory.Create((ITarget.TargetType)type, stream, version, this);
+            TargetFactory.Create((ITarget.TargetType)type, stream, version, this);
         }
 
         public override void Serialize(XmlNode parentNode, XmlDocument document)
@@ -124,7 +124,7 @@ namespace GarminFitnessPlugin.Data
                 ITarget realTarget = Target;
 
                 // Create the fake target
-                Target = TargetFactory.Create(ITarget.TargetType.Null, this);
+                TargetFactory.Create(ITarget.TargetType.Null, this);
                 Serialize(parentNode, document);
 
                 // Restore old target
@@ -189,7 +189,7 @@ namespace GarminFitnessPlugin.Data
                             {
                                 if (stepTypeString == Constants.DurationTypeTCXString[j])
                                 {
-                                    Duration = DurationFactory.Create((IDuration.DurationType)j, child, this);
+                                    DurationFactory.Create((IDuration.DurationType)j, child, this);
 
                                     if (Duration != null)
                                     {
@@ -218,7 +218,7 @@ namespace GarminFitnessPlugin.Data
                             {
                                 if (stepTypeString == Constants.TargetTypeTCXString[j])
                                 {
-                                    Target = TargetFactory.Create((ITarget.TargetType)j, child, this);
+                                    TargetFactory.Create((ITarget.TargetType)j, child, this);
 
                                     if (Target != null)
                                     {

@@ -549,7 +549,7 @@ namespace GarminFitnessPlugin.Data
                             Trace.Assert(step != null && step.Type == IStep.StepType.Regular);
                             RegularStep concreteStep = (RegularStep)step;
 
-                            concreteStep.Target = TargetFactory.Create(ITarget.TargetType.Power, childNode, step);
+                            TargetFactory.Create(ITarget.TargetType.Power, childNode, concreteStep);
                         }
                     }
                 }
