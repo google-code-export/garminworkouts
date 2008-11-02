@@ -2,12 +2,13 @@ using System;
 using System.Diagnostics;
 using System.IO;
 using System.Xml;
+using GarminFitnessPlugin.Data;
 
-namespace GarminFitnessPlugin.Data
+namespace GarminFitnessPlugin.Controller
 {
     class TargetFactory
     {
-        static public ITarget Create(ITarget.TargetType type, IStep parent)
+        static public ITarget Create(ITarget.TargetType type, RegularStep parent)
         {
             ITarget newTarget;
 
@@ -46,10 +47,12 @@ namespace GarminFitnessPlugin.Data
                     }
             }
 
+            parent.Target = newTarget;
+
             return newTarget;
         }
 
-        static public ITarget Create(ITarget.TargetType type, Stream stream, DataVersion version, IStep parent)
+        static public ITarget Create(ITarget.TargetType type, Stream stream, DataVersion version, RegularStep parent)
         {
             ITarget newTarget;
 
@@ -88,12 +91,14 @@ namespace GarminFitnessPlugin.Data
                     }
             }
 
+            parent.Target = newTarget;
+
             return newTarget;
         }
 
-        static public ITarget Create(ITarget.TargetType type, XmlNode parentNode, IStep parent)
+        static public ITarget Create(ITarget.TargetType type, XmlNode parentNode, RegularStep parent)
         {
-            ITarget newTarget = null;
+            ITarget newTarget;
 
             switch (type)
             {
@@ -122,14 +127,21 @@ namespace GarminFitnessPlugin.Data
                         newTarget = new BasePowerTarget(parent);
                         break;
                     }
+                default:
+                    {
+                        Trace.Assert(false);
+                        newTarget = null;
+                        break;
+                    }
             }
 
-            if(newTarget != null && newTarget.Deserialize(parentNode))
+            if(newTarget.Deserialize(parentNode))
             {
+                parent.Target = newTarget;
                 return newTarget;
             }
             
-            return null;
+            return newTarget;
         }
     }
 }

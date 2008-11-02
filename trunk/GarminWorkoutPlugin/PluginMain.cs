@@ -279,7 +279,7 @@ namespace GarminFitnessPlugin
             }
             else
             {
-                GarminWorkoutManager.Instance.Workouts.Clear();
+                GarminWorkoutManager.Instance.RemoveAllWorkouts();
             }
 
             stream.Close();

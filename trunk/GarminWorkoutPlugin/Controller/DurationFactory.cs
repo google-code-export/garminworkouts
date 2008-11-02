@@ -2,12 +2,13 @@ using System;
 using System.Diagnostics;
 using System.IO;
 using System.Xml;
+using GarminFitnessPlugin.Data;
 
-namespace GarminFitnessPlugin.Data
+namespace GarminFitnessPlugin.Controller
 {
     class DurationFactory
     {
-        static public IDuration Create(IDuration.DurationType type, IStep parent)
+        static public IDuration Create(IDuration.DurationType type, RegularStep parent)
         {
             IDuration newDuration;
 
@@ -49,13 +50,15 @@ namespace GarminFitnessPlugin.Data
                         newDuration = null;
                         break;
                     }
-
             }
+
+
+            parent.Duration = newDuration;
 
             return newDuration;
         }
 
-        static public IDuration Create(IDuration.DurationType type, Stream stream, DataVersion version, IStep parent)
+        static public IDuration Create(IDuration.DurationType type, Stream stream, DataVersion version, RegularStep parent)
         {
             IDuration newDuration;
 
@@ -99,13 +102,15 @@ namespace GarminFitnessPlugin.Data
                     }
             }
 
+            parent.Duration = newDuration;
+
             return newDuration;
         }
 
 
-        static public IDuration Create(IDuration.DurationType type, XmlNode parentNode, IStep parent)
+        static public IDuration Create(IDuration.DurationType type, XmlNode parentNode, RegularStep parent)
         {
-            IDuration newDuration = null;
+            IDuration newDuration;
 
             switch (type)
             {
@@ -139,14 +144,20 @@ namespace GarminFitnessPlugin.Data
                         newDuration = new CaloriesDuration(parent);
                         break;
                     }
+                default:
+                    {
+                        Trace.Assert(false);
+                        newDuration = null;
+                        break;
+                    }
             }
 
-            if (newDuration != null && newDuration.Deserialize(parentNode))
+            if (newDuration.Deserialize(parentNode))
             {
-                return newDuration;
+                parent.Duration = newDuration;
             }
 
-            return null;
+            return newDuration;
         }
     }
 }

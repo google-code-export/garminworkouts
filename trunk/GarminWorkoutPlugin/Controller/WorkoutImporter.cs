@@ -84,7 +84,7 @@ namespace GarminFitnessPlugin.Controller
                             Workout oldWorkout = GarminWorkoutManager.Instance.GetWorkoutWithName(name);
 
                             category = oldWorkout.Category;
-                            GarminWorkoutManager.Instance.Workouts.Remove(oldWorkout);
+                            GarminWorkoutManager.Instance.RemoveWorkout(oldWorkout);
                         }
                         else
                         {
