@@ -7,6 +7,7 @@ using System.Xml;
 using ZoneFiveSoftware.Common.Data.Fitness;
 using System.Runtime.Serialization.Formatters.Binary;
 using GarminFitnessPlugin.Data;
+using System.ComponentModel;
 
 namespace GarminFitnessPlugin.Controller
 {
@@ -15,6 +16,16 @@ namespace GarminFitnessPlugin.Controller
         private GarminWorkoutManager()
         {
             PluginMain.ZoneCategoryChanged += new PluginMain.ZoneCategoryChangedEventHandler(OnZoneCategoryChanged);
+        }
+
+        void OnWorkoutChanged(Workout modifiedWorkout, PropertyChangedEventArgs changedProperty)
+        {
+            Utils.SaveWorkoutsToLogbook();
+
+            if (m_EventTriggerActive && WorkoutChanged != null)
+            {
+                WorkoutChanged(modifiedWorkout, changedProperty);
+            }
         }
 
         public override void Serialize(Stream stream)
@@ -264,13 +275,26 @@ namespace GarminFitnessPlugin.Controller
             return CreateWorkout("NewWorkout 1", category, null);
         }
 
-        public Workout CreateWorkout(Stream stream, DataVersion version)
+        public Workout CreateWorkout(Stream stream, DataVersion version, IActivityCategory newCategory)
         {
             Workout result = new Workout(stream, version);
+
+            // We must update the name to avoid duplicates
+            result.Name = GarminWorkoutManager.Instance.GetUniqueName(result.Name);
+
+            if (newCategory != null)
+            {
+                result.Category = newCategory;
+            }
 
             RegisterWorkout(result);
 
             return result;
+        }
+
+        public Workout CreateWorkout(Stream stream, DataVersion version)
+        {
+            return CreateWorkout(stream, version, null);
         }
 
         public Workout CreateWorkout(XmlNode workoutNode)
@@ -307,19 +331,79 @@ namespace GarminFitnessPlugin.Controller
             return result;
         }
 
-        public void RemoveWorkout(Workout workoutToRemove)
+        public List<Workout> CopyWorkouts(List<Workout> workoutsToMove, IActivityCategory newCategory)
         {
-            if (m_Workouts.Contains(workoutToRemove))
-            {
-                UnregisterWorkout(workoutToRemove);
+            List<Workout> newList;
 
-                m_Workouts.Remove(workoutToRemove);
+            m_EventTriggerActive = false;
+            {
+                newList = new List<Workout>();
+
+                for (int i = 0; i < workoutsToMove.Count; ++i)
+                {
+                    newList.Add(workoutsToMove[i].Clone(newCategory));
+                }
 
                 // Trigger event
-                if (m_EventTriggerActive && WorkoutListChanged != null)
+                if (WorkoutListChanged != null)
                 {
                     WorkoutListChanged();
                 }
+
+                m_EventTriggerActive = true;
+            }
+
+            return newList;
+        }
+ 
+        public void MoveWorkouts(List<Workout> workoutsToMove, IActivityCategory newCategory)
+        {
+            m_EventTriggerActive = false;
+            {
+                for (int i = 0; i < workoutsToMove.Count; ++i)
+                {
+                    workoutsToMove[i].Category = newCategory;
+                }
+
+                // Trigger event
+                if (WorkoutListChanged != null)
+                {
+                    WorkoutListChanged();
+                }
+
+                m_EventTriggerActive = true;
+            }
+        }
+
+        public void RemoveWorkout(Workout workoutToRemove)
+        {
+            List<Workout> workoutsToRemove = new List<Workout>();
+
+            workoutsToRemove.Add(workoutToRemove);
+
+            RemoveWorkouts(workoutsToRemove);
+        }
+
+        public void RemoveWorkouts(List<Workout> workoutsToRemove)
+        {
+            bool workoutRemoved = false;
+
+            for (int i = 0; i < workoutsToRemove.Count; ++i)
+            {
+                if (m_Workouts.Contains(workoutsToRemove[i]))
+                {
+                    UnregisterWorkout(workoutsToRemove[i]);
+
+                    m_Workouts.Remove(workoutsToRemove[i]);
+
+                    workoutRemoved = true;
+                }
+            }
+
+            // Trigger event
+            if (workoutRemoved && m_EventTriggerActive && WorkoutListChanged != null)
+            {
+                WorkoutListChanged();
             }
         }
 
@@ -348,6 +432,9 @@ namespace GarminFitnessPlugin.Controller
             m_Workouts.Sort(new WorkoutComparer());
 
             // Register on workout events
+            workoutToRegister.WorkoutChanged += new Workout.WorkoutChangedEventHandler(OnWorkoutChanged);
+
+            Utils.SaveWorkoutsToLogbook();
 
             // Trigger event
             if (m_EventTriggerActive && WorkoutListChanged != null)
@@ -359,12 +446,16 @@ namespace GarminFitnessPlugin.Controller
         private void UnregisterWorkout(Workout workoutToUnregister)
         {
             // Unregister on workout events
+            workoutToUnregister.WorkoutChanged -= new Workout.WorkoutChangedEventHandler(OnWorkoutChanged);
+
+            Utils.SaveWorkoutsToLogbook();
         }
 
         public Workout GetWorkoutWithName(string name)
         {
             for (int i = 0; i < m_Workouts.Count; ++i)
             {
+                // Not case-sensitive
                 if (m_Workouts[i].Name.ToLower().Equals(name.ToLower()))
                 {
                     return m_Workouts[i];
@@ -394,6 +485,15 @@ namespace GarminFitnessPlugin.Controller
             }
             else
             {
+                if (!Utils.IsTextInteger(baseName))
+                {
+                    // Remove all trailing numbers
+                    while (baseName.LastIndexOfAny("0123456789".ToCharArray()) == baseName.Length - 1)
+                    {
+                        baseName = baseName.Substring(0, baseName.Length - 1);
+                    }
+                }
+
                 int workoutNumber = 1;
 
                 if ((baseName + workoutNumber.ToString()).Length > 15)
@@ -486,9 +586,10 @@ namespace GarminFitnessPlugin.Controller
         public delegate void WorkoutListChangedEventHandler();
         public event WorkoutListChangedEventHandler WorkoutListChanged;
 
-/*        public delegate void WorkoutChangedEventHandler(Workout modifiedWorkout);
+        public delegate void WorkoutChangedEventHandler(Workout modifiedWorkout, PropertyChangedEventArgs changedProperty);
         public event WorkoutChangedEventHandler WorkoutChanged;
 
+/*
         public delegate void WorkoutStepChangedEventHandler(Workout modifiedWorkout, IStep modifiedStep);
         public event WorkoutStepChangedEventHandler WorkoutStepChanged;
 
@@ -496,7 +597,8 @@ namespace GarminFitnessPlugin.Controller
         public event WorkoutStepDurationChangedEventHandler WorkoutStepDurationChanged;
 
         public delegate void WorkoutStepTargetChangedEventHandler(Workout modifiedWorkout, RegularStep modifiedStep);
-        public event WorkoutStepTargetChangedEventHandler WorkoutStepTargetChanged;*/
+        public event WorkoutStepTargetChangedEventHandler WorkoutStepTargetChanged;
+ */
 
         private static GarminWorkoutManager m_Instance = new GarminWorkoutManager();
 
