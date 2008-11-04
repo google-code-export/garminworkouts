@@ -18,13 +18,41 @@ namespace GarminFitnessPlugin.Controller
             PluginMain.ZoneCategoryChanged += new PluginMain.ZoneCategoryChangedEventHandler(OnZoneCategoryChanged);
         }
 
-        void OnWorkoutChanged(Workout modifiedWorkout, PropertyChangedEventArgs changedProperty)
+        private void OnZoneCategoryChanged(object sender, IZoneCategory changedCategory)
+        {
+            bool valueChanged = false;
+
+            for (int i = 0; i < m_Workouts.Count; ++i)
+            {
+                if (m_Workouts[i].ValidateAfterZoneCategoryChanged(changedCategory))
+                {
+                    valueChanged = true;
+                }
+            }
+
+            if (valueChanged)
+            {
+                Utils.SaveWorkoutsToLogbook();
+            }
+        }
+
+        private void OnWorkoutChanged(Workout modifiedWorkout, PropertyChangedEventArgs changedProperty)
         {
             Utils.SaveWorkoutsToLogbook();
 
             if (m_EventTriggerActive && WorkoutChanged != null)
             {
                 WorkoutChanged(modifiedWorkout, changedProperty);
+            }
+        }
+
+        void OnWorkoutStepChanged(Workout modifiedWorkout, IStep modifiedStep, PropertyChangedEventArgs changedProperty)
+        {
+            Utils.SaveWorkoutsToLogbook();
+
+            if (m_EventTriggerActive && WorkoutStepChanged != null)
+            {
+                WorkoutStepChanged(modifiedWorkout, modifiedStep, changedProperty);
             }
         }
 
@@ -308,6 +336,9 @@ namespace GarminFitnessPlugin.Controller
                 return null;
             }
 
+            // We must update the name to avoid duplicates
+            result.Name = GarminWorkoutManager.Instance.GetUniqueName(result.Name);
+
             RegisterWorkout(result);
 
             return result;
@@ -426,6 +457,33 @@ namespace GarminFitnessPlugin.Controller
             }
         }
 
+        public List<Workout> DeserializeWorkouts(Stream stream, IActivityCategory category)
+        {
+            List<Workout> deserializedWorkouts = new List<Workout>();
+            byte[] intBuffer = new byte[sizeof(Int32)];
+            Byte workoutCount = (Byte)stream.ReadByte();
+
+            m_EventTriggerActive = false;
+            {
+                for (int i = 0; i < workoutCount; i++)
+                {
+                    Workout newWorkout = GarminWorkoutManager.Instance.CreateWorkout(stream, Constants.CurrentVersion, category);
+
+                    deserializedWorkouts.Add(newWorkout);
+                }
+
+                // Trigger event
+                if (WorkoutListChanged != null)
+                {
+                    WorkoutListChanged();
+                }
+
+                m_EventTriggerActive = true;
+            }
+
+            return deserializedWorkouts;
+        }
+
         private void RegisterWorkout(Workout workoutToRegister)
         {
             m_Workouts.Add(workoutToRegister);
@@ -433,6 +491,7 @@ namespace GarminFitnessPlugin.Controller
 
             // Register on workout events
             workoutToRegister.WorkoutChanged += new Workout.WorkoutChangedEventHandler(OnWorkoutChanged);
+            workoutToRegister.WorkoutStepChanged += new Workout.WorkoutStepChangedEventHandler(OnWorkoutStepChanged);
 
             Utils.SaveWorkoutsToLogbook();
 
@@ -447,6 +506,7 @@ namespace GarminFitnessPlugin.Controller
         {
             // Unregister on workout events
             workoutToUnregister.WorkoutChanged -= new Workout.WorkoutChangedEventHandler(OnWorkoutChanged);
+            workoutToUnregister.WorkoutStepChanged -= new Workout.WorkoutStepChangedEventHandler(OnWorkoutStepChanged);
 
             Utils.SaveWorkoutsToLogbook();
         }
@@ -537,24 +597,6 @@ namespace GarminFitnessPlugin.Controller
             }
         }
 
-        private void OnZoneCategoryChanged(object sender, IZoneCategory changedCategory)
-        {
-            bool valueChanged = false;
-
-            for (int i = 0; i < m_Workouts.Count; ++i)
-            {
-                if (m_Workouts[i].ValidateAfterZoneCategoryChanged(changedCategory))
-                {
-                    valueChanged = true;
-                }
-            }
-
-            if (valueChanged)
-            {
-                Utils.SaveWorkoutsToLogbook();
-            }
-        }
-
         public void MarkAllCadenceSTZoneTargetsAsDirty()
         {
             for (int i = 0; i < m_Workouts.Count; ++i)
@@ -589,10 +631,10 @@ namespace GarminFitnessPlugin.Controller
         public delegate void WorkoutChangedEventHandler(Workout modifiedWorkout, PropertyChangedEventArgs changedProperty);
         public event WorkoutChangedEventHandler WorkoutChanged;
 
-/*
-        public delegate void WorkoutStepChangedEventHandler(Workout modifiedWorkout, IStep modifiedStep);
-        public event WorkoutStepChangedEventHandler WorkoutStepChanged;
 
+        public delegate void WorkoutStepChangedEventHandler(Workout modifiedWorkout, IStep modifiedStep, PropertyChangedEventArgs changedProperty);
+        public event WorkoutStepChangedEventHandler WorkoutStepChanged;
+/*
         public delegate void WorkoutStepDurationChangedEventHandler(Workout modifiedWorkout, RegularStep modifiedStep);
         public event WorkoutStepDurationChangedEventHandler WorkoutStepDurationChanged;
 

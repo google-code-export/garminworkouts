@@ -18,7 +18,7 @@ namespace GarminFitnessPlugin.Data
         {
             Name = name;
 
-            m_Steps.Add(new RegularStep(this));
+            AddNewStep(new RegularStep(this));
             Category = category;
         }
 
@@ -115,11 +115,11 @@ namespace GarminFitnessPlugin.Data
 
                 if (type == IStep.StepType.Regular)
                 {
-                    Steps.Add(new RegularStep(stream, version, this));
+                    AddNewStep(new RegularStep(stream, version, this));
                 }
                 else
                 {
-                    Steps.Add(new RepeatStep(stream, version, this));
+                    AddNewStep(new RepeatStep(stream, version, this));
                 }
             }
         }
@@ -175,11 +175,11 @@ namespace GarminFitnessPlugin.Data
 
                 if (type == IStep.StepType.Regular)
                 {
-                    Steps.Add(new RegularStep(stream, version, this));
+                    AddNewStep(new RegularStep(stream, version, this));
                 }
                 else
                 {
-                    Steps.Add(new RepeatStep(stream, version, this));
+                    AddNewStep(new RepeatStep(stream, version, this));
                 }
             }
 
@@ -252,11 +252,11 @@ namespace GarminFitnessPlugin.Data
 
                 if (type == IStep.StepType.Regular)
                 {
-                    Steps.Add(new RegularStep(stream, version, this));
+                    AddNewStep(new RegularStep(stream, version, this));
                 }
                 else
                 {
-                    Steps.Add(new RepeatStep(stream, version, this));
+                    AddNewStep(new RepeatStep(stream, version, this));
                 }
             }
 
@@ -484,7 +484,11 @@ namespace GarminFitnessPlugin.Data
 
                 Name = finalName;
                 Steps.Clear();
-                Steps.AddRange(steps);
+
+                for (int i = 0; i < steps.Count; ++i)
+                {
+                    AddNewStep(steps[i]);
+                }
                 Category = category;
 
                 if (StepsExtensionsNode != null)
@@ -655,6 +659,14 @@ namespace GarminFitnessPlugin.Data
                         step.Notes = notesNode.FirstChild.Value;
                     }
                 }
+            }
+        }
+
+        void OnStepChanged(IStep modifiedStep, PropertyChangedEventArgs changedProperty)
+        {
+            if (WorkoutStepChanged != null)
+            {
+                WorkoutStepChanged(this, modifiedStep, changedProperty);
             }
         }
 
@@ -865,6 +877,8 @@ namespace GarminFitnessPlugin.Data
                     // Make sure we don't duplicate the step in the list
                     if (!Utils.GetStepInfo(stepsToAdd[i], Steps, out tempList, out tempPosition))
                     {
+                        RegisterStep(stepsToAdd[i]);
+
                         parentList.Insert(++previousPosition, stepsToAdd[i]);
                         stepAdded = true;
                     }
@@ -900,6 +914,8 @@ namespace GarminFitnessPlugin.Data
                     // Make sure we don't duplicate the step in the list
                     if (!Utils.GetStepInfo(stepsToAdd[i], Steps, out tempList, out tempPosition))
                     {
+                        RegisterStep(stepsToAdd[i]);
+
                         parentList.Insert(previousPosition++, stepsToAdd[i]);
                         stepAdded = true;
                     }
@@ -928,21 +944,11 @@ namespace GarminFitnessPlugin.Data
 
         public void RemoveSteps(List<IStep> stepsToRemove)
         {
-            List<IStep> selectedList = null;
-            UInt16 selectedPosition = 0;
-            bool stepRemoved = false;
-
             for(int i = 0; i < stepsToRemove.Count; ++i)
             {
-                if (Utils.GetStepInfo(stepsToRemove[i], Steps, out selectedList, out selectedPosition))
-                {
-                    selectedList.RemoveAt(selectedPosition);
-                    stepRemoved = true;
-                }
+                UnregisterStep(stepsToRemove[i]);
             }
 
-            if(stepRemoved)
-            {
                 CleanUpAfterDelete();
 
                 if (WorkoutChanged != null)
@@ -950,7 +956,6 @@ namespace GarminFitnessPlugin.Data
                     WorkoutChanged(this, new PropertyChangedEventArgs("Steps"));
                 }
             }
-        }
 
         private void CleanUpAfterDelete()
         {
@@ -972,7 +977,7 @@ namespace GarminFitnessPlugin.Data
 
                         if (concreteStep.StepsToRepeat.Count == 0)
                         {
-                            Steps.RemoveAt(i);
+                            UnregisterStep(currentStep);
                             i--;
                         }
                     }
@@ -982,7 +987,7 @@ namespace GarminFitnessPlugin.Data
             if (Steps.Count == 0)
             {
                 // Cannot have an empty workout, recreate a base step
-                Steps.Add(new RegularStep(this));
+                AddNewStep(new RegularStep(this));
             }
         }
 
@@ -999,7 +1004,7 @@ namespace GarminFitnessPlugin.Data
 
                     if (concreteStep.StepsToRepeat.Count == 0)
                     {
-                        step.StepsToRepeat.RemoveAt(i);
+                        UnregisterStep(currentStep);
                         i--;
                     }
                     else
@@ -1007,6 +1012,43 @@ namespace GarminFitnessPlugin.Data
                         CleanUpAfterDelete(concreteStep);
                     }
                 }
+            }
+        }
+
+        public void AddNewStep(IStep stepToRegister)
+        {
+            AddNewStep(stepToRegister, null);
+        }
+
+        public void AddNewStep(IStep stepToRegister, RepeatStep parent)
+        {
+            if (parent == null)
+            {
+                m_Steps.Add(stepToRegister);
+            }
+            else
+            {
+                parent.StepsToRepeat.Add(stepToRegister);
+            }
+
+            RegisterStep(stepToRegister);
+        }
+
+        private void RegisterStep(IStep stepToRegister)
+        {
+            stepToRegister.StepChanged += new IStep.StepChangedEventHandler(OnStepChanged);
+        }
+
+        private void UnregisterStep(IStep stepToUnregister)
+        {
+            List<IStep> selectedList = null;
+            UInt16 selectedPosition = 0;
+
+            if (Utils.GetStepInfo(stepToUnregister, Steps, out selectedList, out selectedPosition))
+            {
+                stepToUnregister.StepChanged -= new IStep.StepChangedEventHandler(OnStepChanged);
+
+                selectedList.RemoveAt(selectedPosition);
             }
         }
 
@@ -1032,6 +1074,42 @@ namespace GarminFitnessPlugin.Data
                 if (WorkoutChanged != null)
                 {
                     WorkoutChanged(this, new PropertyChangedEventArgs("Schedule"));
+                }
+            }
+        }
+
+        public void MoveStepUp(IStep step)
+        {
+            UInt16 selectedPosition = 0;
+            List<IStep> selectedList = null;
+
+            if (Utils.GetStepInfo(step, Steps, out selectedList, out selectedPosition))
+            {
+                Trace.Assert(selectedPosition > 0);
+
+                selectedList.Reverse(selectedPosition - 1, 2);
+
+                if (WorkoutChanged != null)
+                {
+                    WorkoutChanged(this, new PropertyChangedEventArgs("Steps"));
+                }
+            }
+        }
+
+        public void MoveStepDown(IStep step)
+        {
+            UInt16 selectedPosition = 0;
+            List<IStep> selectedList = null;
+
+            if (Utils.GetStepInfo(step, Steps, out selectedList, out selectedPosition))
+            {
+                Trace.Assert(selectedPosition < selectedList.Count - 1);
+
+                selectedList.Reverse(selectedPosition, 2);
+
+                if (WorkoutChanged != null)
+                {
+                    WorkoutChanged(this, new PropertyChangedEventArgs("Steps"));
                 }
             }
         }
@@ -1136,6 +1214,9 @@ namespace GarminFitnessPlugin.Data
 
         public delegate void WorkoutChangedEventHandler(Workout modifiedWorkout, PropertyChangedEventArgs changedProperty);
         public event WorkoutChangedEventHandler WorkoutChanged;
+
+        public delegate void WorkoutStepChangedEventHandler(Workout modifiedWorkout, IStep modifiedStep, PropertyChangedEventArgs changedProperty);
+        public event WorkoutStepChangedEventHandler WorkoutStepChanged;
 
         private DateTime m_LastExportDate = new DateTime(0);
         private List<DateTime> m_ScheduledDates = new List<DateTime>();
