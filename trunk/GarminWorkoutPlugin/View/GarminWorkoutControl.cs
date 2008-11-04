@@ -16,6 +16,7 @@ using ZoneFiveSoftware.Common.Visuals;
 using ZoneFiveSoftware.Common.Visuals.Fitness;
 using GarminFitnessPlugin.Data;
 using GarminFitnessPlugin.Controller;
+using System.Collections;
 
 namespace GarminFitnessPlugin.View
 {
@@ -43,6 +44,7 @@ namespace GarminFitnessPlugin.View
 
             // Register on controller events
             GarminWorkoutManager.Instance.WorkoutListChanged += new GarminWorkoutManager.WorkoutListChangedEventHandler(OnGarminWorkoutManagerWorkoutListChanged);
+            GarminWorkoutManager.Instance.WorkoutChanged += new GarminWorkoutManager.WorkoutChangedEventHandler(OnWorkoutChanged);
         }
 
 #region UI Callbacks
@@ -57,7 +59,22 @@ namespace GarminFitnessPlugin.View
 
         private void OnGarminWorkoutManagerWorkoutListChanged()
         {
+            // This callback handles creation & deletion of workouts
             BuildWorkoutsList();
+        }
+
+        private void OnWorkoutChanged(Workout modifiedWorkout, PropertyChangedEventArgs changedProperty)
+        {
+            if (changedProperty.PropertyName == "Name" ||
+                changedProperty.PropertyName == "Category")
+            {
+                BuildWorkoutsList();
+            }
+
+            if (SelectedWorkout == modifiedWorkout)
+            {
+                UpdateUIFromWorkout(SelectedWorkout);
+            }
         }
 
         private void GarminWorkoutControl_Load(object sender, EventArgs e)
@@ -80,14 +97,12 @@ namespace GarminFitnessPlugin.View
             }
 
             // Select them
-            SelectWorkoutsInList(m_SelectedWorkouts);
+            RefreshWorkoutSelection();
             WorkoutCalendar.SelectedDate = PluginMain.GetApplication().Calendar.Selected;
         }
 
         private void GarminWorkoutControl_SizeChanged(object sender, EventArgs e)
         {
-            UpdateUIFromWorkout(SelectedWorkout);
-
             // Reset splitter distances
             CategoriesSplit.SplitterDistance = Options.CategoriesPanelSplitSize;
             WorkoutSplit.SplitterDistance = Options.WorkoutPanelSplitSize;
@@ -128,8 +143,6 @@ namespace GarminFitnessPlugin.View
 
                 UpdateUIFromStep(SelectedStep);
                 StepsList.Invalidate();
-
-                Utils.SaveWorkoutsToLogbook();
             }
         }
 
@@ -145,8 +158,6 @@ namespace GarminFitnessPlugin.View
 
                 UpdateUIFromStep(SelectedStep);
                 StepsList.Invalidate();
-
-                Utils.SaveWorkoutsToLogbook();
             }
         }
 
@@ -160,13 +171,14 @@ namespace GarminFitnessPlugin.View
 
         private void NewWorkoutButton_Click(object sender, EventArgs e)
         {
-            AddNewWorkout();
-            Utils.SaveWorkoutsToLogbook();
+            Trace.Assert(SelectedCategory != null);
+
+            SelectedWorkout = GarminWorkoutManager.Instance.CreateWorkout(SelectedCategory);
         }
 
         private void RemoveWorkoutButton_Click(object sender, EventArgs e)
         {
-            DeleteSelectedWorkouts();
+            GarminWorkoutManager.Instance.RemoveWorkouts(m_SelectedWorkouts);
         }
 
         private void ScheduleWorkoutButton_Click(object sender, EventArgs e)
@@ -175,25 +187,21 @@ namespace GarminFitnessPlugin.View
             {
                 if(!m_SelectedWorkouts[i].ScheduledDates.Contains(WorkoutCalendar.SelectedDate))
                 {
-                    m_SelectedWorkouts[i].ScheduledDates.Add(WorkoutCalendar.SelectedDate);
+                    m_SelectedWorkouts[i].ScheduleWorkout(WorkoutCalendar.SelectedDate);
                 }
             }
 
             RefreshCalendarView();
-            UpdateUIFromWorkouts(SelectedWorkouts);
-            Utils.SaveWorkoutsToLogbook();
         }
 
         private void RemoveScheduledDateButton_Click(object sender, EventArgs e)
         {
             for (int i = 0; i < m_SelectedWorkouts.Count; ++i)
             {
-                m_SelectedWorkouts[i].ScheduledDates.Remove(WorkoutCalendar.SelectedDate);
+                m_SelectedWorkouts[i].RemoveScheduledDate(WorkoutCalendar.SelectedDate);
             }
 
             RefreshCalendarView();
-            UpdateUIFromWorkouts(SelectedWorkouts);
-            Utils.SaveWorkoutsToLogbook();
         }
 
         private void WorkoutCalendar_SelectionChanged(object sender, DateTime newSelection)
@@ -293,7 +301,7 @@ namespace GarminFitnessPlugin.View
                         }
                         else
                         {
-                            SelectWorkoutsInList(m_SelectedWorkouts);
+                            RefreshWorkoutSelection();
 
                             m_CancelledWorkoutSelection = true;
                             m_SelectedWorkoutCancelled = selectedWorkout;
@@ -336,8 +344,6 @@ namespace GarminFitnessPlugin.View
 
             concreteStep.Name = StepNameText.Text;
             StepsList.Invalidate();
-
-            Utils.SaveWorkoutsToLogbook();
         }
 
         private void RestingCheckBox_CheckedChanged(object sender, EventArgs e)
@@ -346,8 +352,6 @@ namespace GarminFitnessPlugin.View
             RegularStep concreteStep = (RegularStep)SelectedStep;
 
             concreteStep.IsRestingStep = RestingCheckBox.Checked;
-
-            Utils.SaveWorkoutsToLogbook();
         }
 
         private void CaloriesDurationText_Validating(object sender, CancelEventArgs e)
@@ -380,8 +384,6 @@ namespace GarminFitnessPlugin.View
 
             concreteDuration.CaloriesToSpend = UInt16.Parse(CaloriesDurationText.Text);
             StepsList.Invalidate();
-
-            Utils.SaveWorkoutsToLogbook();
         }
 
         private void CaloriesDurationText_KeyDown(object sender, KeyEventArgs e)
@@ -521,8 +523,6 @@ namespace GarminFitnessPlugin.View
             }
 
             StepsList.Invalidate();
-
-            Utils.SaveWorkoutsToLogbook();
         }
 
         private void HeartRateDurationText_KeyDown(object sender, KeyEventArgs e)
@@ -581,8 +581,6 @@ namespace GarminFitnessPlugin.View
             concreteDuration.SetDistanceInUnits(float.Parse(DistanceDurationText.Text), SelectedWorkout.Category.DistanceUnits);
             DistanceDurationText.Text = String.Format("{0:0.00}", concreteDuration.GetDistanceInUnits(SelectedWorkout.Category.DistanceUnits));
             StepsList.Invalidate();
-
-            Utils.SaveWorkoutsToLogbook();
         }
 
         private void DistanceDurationText_KeyDown(object sender, KeyEventArgs e)
@@ -602,8 +600,6 @@ namespace GarminFitnessPlugin.View
 
             concreteDuration.TimeInSeconds = TimeDurationUpDown.Duration;
             StepsList.Invalidate();
-
-            Utils.SaveWorkoutsToLogbook();
         }
 
         private void TimeDurationUpDown_KeyDown(object sender, KeyEventArgs e)
@@ -652,8 +648,6 @@ namespace GarminFitnessPlugin.View
             TargetDirtyPictureBox.Visible = concreteStep.Target.IsDirty;
             StepsList.Invalidate();
             WorkoutsList.Invalidate();
-
-            Utils.SaveWorkoutsToLogbook();
         }
 
         private void LowRangeTargetText_Validating(object sender, CancelEventArgs e)
@@ -925,7 +919,6 @@ namespace GarminFitnessPlugin.View
 
                 StepsList.Invalidate();
                 UpdateUIFromStep(SelectedStep);
-                Utils.SaveWorkoutsToLogbook();
 
                 if (forceSelectHighTargetText)
                 {
@@ -1212,7 +1205,6 @@ namespace GarminFitnessPlugin.View
 
                 StepsList.Invalidate();
                 UpdateUIFromStep(SelectedStep);
-                Utils.SaveWorkoutsToLogbook();
 
                 if (forceSelectLowTargetText)
                 {
@@ -1234,7 +1226,7 @@ namespace GarminFitnessPlugin.View
         {
             if (e.KeyCode == Keys.Delete && m_SelectedWorkouts.Count > 0)
             {
-                DeleteSelectedWorkouts();
+                GarminWorkoutManager.Instance.RemoveWorkouts(m_SelectedWorkouts);
             }
             else if (e.Control)
             {
@@ -1255,7 +1247,7 @@ namespace GarminFitnessPlugin.View
                     if (e.KeyCode == Keys.X)
                     {
                         // Cut, so remove from workout
-                        DeleteSelectedWorkouts();
+                        GarminWorkoutManager.Instance.RemoveWorkouts(m_SelectedWorkouts);
                     }
                 }
                 else if (e.KeyCode == Keys.V)
@@ -1302,8 +1294,6 @@ namespace GarminFitnessPlugin.View
                             }
 
                             m_SelectedWorkouts = workoutsPasted;
-                            UpdateUIFromWorkouts(SelectedWorkouts);
-                            Utils.SaveWorkoutsToLogbook();
                         }
                     }
                 }
@@ -1319,6 +1309,8 @@ namespace GarminFitnessPlugin.View
 
             if (item != null && workoutsToMove != null)
             {
+                PaintEnabled = false;
+
                 IActivityCategory category = null;
 
                 if (item.GetType() == typeof(WorkoutWrapper))
@@ -1341,41 +1333,22 @@ namespace GarminFitnessPlugin.View
 
                 if (e.Effect == DragDropEffects.Copy)
                 {
-                    for (int i = 0; i < workoutsToMove.Count; ++i)
-                    {
-                        workoutsToMove[i] = workoutsToMove[i].Clone();
+                    WorkoutsList.Selected = null;
 
-                        // We must update the name to avoid duplicates
-                        string tempName = workoutsToMove[i].Name;
+                    // Make a copy of workouts
+                    workoutsToMove = GarminWorkoutManager.Instance.CopyWorkouts(workoutsToMove, category);
 
-                        if (!Utils.IsTextInteger(tempName))
-                        {
-                            // Remove all trailing numbers
-                            while (tempName.LastIndexOfAny("0123456789".ToCharArray()) == tempName.Length - 1)
-                            {
-                                tempName = tempName.Substring(0, tempName.Length - 1);
-                            }
-                        }
-
-                        workoutsToMove[i].Name = GarminWorkoutManager.Instance.GetUniqueName(tempName);
-                    }
-
+                    // Update selection
+                    m_SelectedWorkouts = workoutsToMove;
+                    SelectedSteps.Clear();
+                    RefreshWorkoutSelection();
                 }
-
-                for (int i = 0; i < workoutsToMove.Count; ++i)
+                else
                 {
-                    Workout workoutToMove = workoutsToMove[i];
-
-                    if (e.Effect == DragDropEffects.Copy || workoutToMove.Category != category)
-                    {
-                         workoutToMove.Category = category;
-                    }
+                    GarminWorkoutManager.Instance.MoveWorkouts(workoutsToMove, category);
                 }
 
-                m_SelectedWorkouts = workoutsToMove;
-                Utils.SaveWorkoutsToLogbook();
-                SelectedSteps.Clear();
-                UpdateUIFromWorkouts(SelectedWorkouts);
+                PaintEnabled = true;
             }
 
             m_IsMouseDownInWorkoutsList = false;
@@ -1430,7 +1403,7 @@ namespace GarminFitnessPlugin.View
                 m_SelectedWorkouts.Clear();
                 m_SelectedWorkouts.Add(m_SelectedWorkoutCancelled);
 
-                SelectWorkoutsInList(m_SelectedWorkouts);
+                RefreshWorkoutSelection();
             }
         }
 
@@ -1443,8 +1416,14 @@ namespace GarminFitnessPlugin.View
 
                 if (m_MouseMovedPixels >= 5)
                 {
+                    // Make a copy, because it might change because of selection
+                    //  callbacks
+                    List<Workout> currentSelection = new List<Workout>();
+
+                    currentSelection.AddRange(m_SelectedWorkouts);
+
                     // Start drag & drop operation
-                    DoDragDrop(m_SelectedWorkouts, DragDropEffects.Move | DragDropEffects.Copy);
+                    DoDragDrop(currentSelection, DragDropEffects.Move | DragDropEffects.Copy);
                 }
             }
         }
@@ -1512,10 +1491,7 @@ namespace GarminFitnessPlugin.View
                             }
 
                             // Now that we deserialized, paste in the current workout
-                            SelectedWorkout.Steps.AddRange(stepsPasted);
-
-                            UpdateUIFromWorkout(SelectedWorkout, stepsPasted);
-                            Utils.SaveWorkoutsToLogbook();
+                            SelectedWorkout.AddStepsToRoot(stepsPasted);
                         }
                     }
                 }
@@ -1527,63 +1503,46 @@ namespace GarminFitnessPlugin.View
             int rowNumber;
             bool isInUpperHalf;
             object destination;
-            UInt16 index;
             Point clientPoint = StepsList.PointToClient(new Point(e.X, e.Y));
             IStep destinationStep;
-            List<IStep> parentList;
             List<IStep> newSelection = new List<IStep>();
             List<IStep> stepsToMove = (List<IStep>)e.Data.GetData(typeof(List<IStep>));
             StepRowDataRenderer renderer = (StepRowDataRenderer)StepsList.RowDataRenderer;
 
             destination = renderer.RowHitTest(clientPoint, out rowNumber, out isInUpperHalf);
-
             if (destination == null)
             {
                 // Insert as the last item in the workout
                 destinationStep = SelectedWorkout.Steps[SelectedWorkout.Steps.Count - 1];
-                isInUpperHalf = false;
             }
             else
             {
                 destinationStep = (IStep)((StepWrapper)destination).Element;
             }
-            Utils.GetStepInfo(destinationStep, SelectedWorkout.Steps, out parentList, out index);
 
-            if (!isInUpperHalf)
+            // Make a copy
+            List<IStep> newSteps = new List<IStep>();
+
+            for(int i = 0; i < stepsToMove.Count; ++i)
             {
-                index++;
+                newSteps.Add(stepsToMove[i].Clone());
             }
 
             // Add new items
-            for (int i = 0; i < stepsToMove.Count; ++i)
+            if (isInUpperHalf)
             {
-                IStep stepToMove = stepsToMove[i];
-                IStep movedStep = stepToMove.Clone();
-
-                parentList.Insert(index, movedStep);
-                newSelection.Add(movedStep);
-
-                // This causes the subsequent steps to be appended to this one
-                //  This way they keep their original order
-                index++;
+                SelectedWorkout.InsertStepsBeforeStep(destinationStep, newSteps);
+            }
+            else
+            {
+                SelectedWorkout.InsertStepsAfterStep(destinationStep, newSteps);
             }
 
             // Remove the old ones
             if (e.Effect == DragDropEffects.Move)
             {
-                for (int i = 0; i < stepsToMove.Count; ++i)
-                {
-                    IStep stepToMove = stepsToMove[i];
-                    UInt16 srcIndex;
-                    Utils.GetStepInfo(stepToMove, SelectedWorkout.Steps, out parentList, out srcIndex);
-
-                    parentList.RemoveAt(srcIndex);
-                }
+                SelectedWorkout.RemoveSteps(stepsToMove);
             }
-
-            CleanUpWorkoutAfterDelete(SelectedWorkout);
-            Utils.SaveWorkoutsToLogbook();
-            UpdateUIFromWorkout(SelectedWorkout, newSelection);
 
             m_IsMouseDownInStepsList = false;
             renderer.IsInDrag = false;
@@ -1621,7 +1580,7 @@ namespace GarminFitnessPlugin.View
                 }
 
                 if (!isCtrlKeyDown ||
-                    (isCtrlKeyDown && SelectedWorkout.GetStepCount() + stepsDragged <= 20))
+                    (isCtrlKeyDown && SelectedWorkout.GetStepCount() + stepsDragged <= Constants.MaxStepsPerWorkout))
                 {
                     // Make sure we are not moving a repeat inside itself
                     if (!isCtrlKeyDown)
@@ -1737,8 +1696,6 @@ namespace GarminFitnessPlugin.View
 
             concreteStep.RepetitionCount = Byte.Parse(RepetitionCountText.Text);
             StepsList.Invalidate();
-
-            Utils.SaveWorkoutsToLogbook();
         }
 
         private void RepetitionCountText_KeyDown(object sender, KeyEventArgs e)
@@ -1754,8 +1711,6 @@ namespace GarminFitnessPlugin.View
             Trace.Assert(SelectedWorkout != null);
 
             SelectedWorkout.Notes = WorkoutNotesText.Text;
-
-            Utils.SaveWorkoutsToLogbook();
         }
 
 
@@ -1764,8 +1719,6 @@ namespace GarminFitnessPlugin.View
             Trace.Assert(SelectedStep != null);
 
             SelectedStep.Notes = StepNotesText.Text;
-
-            Utils.SaveWorkoutsToLogbook();
         }
 
         private void WorkoutNameText_Validating(object sender, CancelEventArgs e)
@@ -1788,8 +1741,6 @@ namespace GarminFitnessPlugin.View
 
             SelectedWorkout.Name = WorkoutNameText.Text;
             WorkoutsList.Invalidate();
-
-            Utils.SaveWorkoutsToLogbook();
         }
 
         private void WorkoutNameText_KeyDown(object sender, KeyEventArgs e)
@@ -1835,22 +1786,16 @@ namespace GarminFitnessPlugin.View
 
             concreteTarget.SetValues(newMin, newMax, isPercentMax);
             StepsList.Invalidate();
-
-            Utils.SaveWorkoutsToLogbook();
         }
 
         private void AddStepButton_Click(object sender, EventArgs e)
         {
             AddNewStep(new RegularStep(SelectedWorkout));
-
-            Utils.SaveWorkoutsToLogbook();
         }
 
         private void AddRepeatButton_Click(object sender, EventArgs e)
         {
             AddNewStep(new RepeatStep(SelectedWorkout));
-
-            Utils.SaveWorkoutsToLogbook();
         }
 
         private void RemoveItemButton_Click(object sender, EventArgs e)
@@ -1869,9 +1814,6 @@ namespace GarminFitnessPlugin.View
                 Trace.Assert(selectedPosition > 0);
 
                 selectedList.Reverse(selectedPosition - 1, 2);
-                UpdateUIFromWorkout(SelectedWorkout, selectedList[selectedPosition - 1]);
-
-                Utils.SaveWorkoutsToLogbook();
             }
         }
 
@@ -1886,9 +1828,6 @@ namespace GarminFitnessPlugin.View
                 Trace.Assert(selectedPosition < selectedList.Count - 1);
 
                 selectedList.Reverse(selectedPosition, 2);
-                UpdateUIFromWorkout(SelectedWorkout, selectedList[selectedPosition + 1]);
-
-                Utils.SaveWorkoutsToLogbook();
             }
         }
 
@@ -1927,8 +1866,31 @@ namespace GarminFitnessPlugin.View
             SelectedWorkout = null;
             SelectedSteps.Clear();
 
-            UpdateUIFromWorkout(SelectedWorkout);
             RefreshCalendarView();
+        }
+
+        private ActivityCategoryWrapper AddCategoryNode(IActivityCategory category)
+        {
+            ActivityCategoryWrapper wrapper;
+
+            // If we already have a wrapper for this workout, use it
+            if (m_CategoryWrapperMap.ContainsKey(category))
+            {
+                wrapper = m_CategoryWrapperMap[category];
+
+                wrapper.Children.Clear();
+            }
+            else
+            {
+                // Create a new wrapper
+                wrapper = new ActivityCategoryWrapper(null, category);
+
+                m_CategoryWrapperMap[category] = wrapper;
+            }
+
+            AddCategoryNode(wrapper, null);
+
+            return wrapper;
         }
 
         private void AddCategoryNode(ActivityCategoryWrapper categoryNode, ActivityCategoryWrapper parent)
@@ -1943,9 +1905,24 @@ namespace GarminFitnessPlugin.View
             for (int i = 0; i < category.SubCategories.Count; ++i)
             {
                 IActivityCategory currentCategory = category.SubCategories[i];
-                ActivityCategoryWrapper newNode = new ActivityCategoryWrapper(categoryNode, currentCategory);
+                ActivityCategoryWrapper wrapper;
+                
+                // If we already have a wrapper for this category, use it
+                if (m_CategoryWrapperMap.ContainsKey(currentCategory))
+                {
+                    wrapper = m_CategoryWrapperMap[currentCategory];
 
-                AddCategoryNode(newNode, categoryNode);
+                    wrapper.Children.Clear();
+                }
+                else
+                {
+                    // Create a new wrapper
+                    wrapper = new ActivityCategoryWrapper(categoryNode, currentCategory);
+
+                    m_CategoryWrapperMap[currentCategory] = wrapper;
+                }
+
+                AddCategoryNode(wrapper, categoryNode);
             }
         }
 
@@ -2407,8 +2384,8 @@ namespace GarminFitnessPlugin.View
         {
             if (SelectedWorkout != null && steps != null && steps.Count <= 1)
             {
-                AddStepButton.Enabled = SelectedWorkout.GetStepCount() < 20;
-                AddRepeatButton.Enabled = SelectedWorkout.GetStepCount() < 19;
+                AddStepButton.Enabled = SelectedWorkout.GetStepCount() < Constants.MaxStepsPerWorkout;
+                AddRepeatButton.Enabled = SelectedWorkout.GetStepCount() < Constants.MaxStepsPerWorkout - 1;
                 StepsNotesSplitter.Enabled = true;
 
                 if (steps.Count == 1)
@@ -2884,38 +2861,22 @@ namespace GarminFitnessPlugin.View
         private void AddNewStep(IStep newStep)
         {
             Trace.Assert(SelectedWorkout != null);
-            UInt16 selectedPosition = 0;
-            List<IStep> selectedList = null;
-            bool selectionFound;
 
-            selectionFound = Utils.GetStepInfo(SelectedStep, SelectedWorkout.Steps, out selectedList, out selectedPosition);
-            SelectedStep = newStep;
-
-            if (selectionFound)
+            if (SelectedStep != null)
             {
                 // Insert after selected
-                selectedList.Insert(selectedPosition + 1, SelectedStep);
+                SelectedWorkout.InsertStepAfterStep(SelectedStep, newStep);
             }
             else
             {
                 // Insert as 1st element
-                SelectedWorkout.Steps.Insert(0, SelectedStep);
+                SelectedWorkout.InsertStepInRoot(0, newStep);
             }
+            SelectedStep = newStep;
 
             Trace.Assert(StepsList.Selected != null);
             StepsList.Selected.Clear();
             StepsList.Selected.Add(SelectedStep);
-
-            UpdateUIFromWorkout(SelectedWorkout, SelectedStep);
-        }
-
-        private void AddNewWorkout()
-        {
-            Trace.Assert(SelectedCategory != null);
-
-            SelectedWorkout = GarminWorkoutManager.Instance.CreateWorkout(SelectedCategory);
-
-            RefreshWorkoutSelection();
         }
 
         private StepWrapper GetStepWrapper(List<TreeList.TreeListNode> list, IStep step)
@@ -2973,76 +2934,23 @@ namespace GarminFitnessPlugin.View
             return null;
         }
 
-        private void CleanUpWorkoutAfterDelete(Workout workout)
-        {
-            if (workout.Steps.Count > 0)
-            {
-                // Go through repeat steps and delete the ones which have 0 substeps
-                for (int i = 0; i < workout.Steps.Count; ++i)
-                {
-                    IStep currentStep = workout.Steps[i];
-
-                    if (currentStep.Type == IStep.StepType.Repeat)
-                    {
-                        RepeatStep concreteStep = (RepeatStep)currentStep;
-
-                        if (concreteStep.StepsToRepeat.Count > 0)
-                        {
-                            CleanUpWorkoutAfterDelete(concreteStep);
-                        }
-
-                        if (concreteStep.StepsToRepeat.Count == 0)
-                        {
-                            workout.Steps.RemoveAt(i);
-                            i--;
-                        }
-                    }
-                }
-            }
-
-            if (workout.Steps.Count == 0)
-            {
-                // Cannot have an empty workout, recreate a base step
-                workout.Steps.Add(new RegularStep(SelectedWorkout));
-            }
-        }
-
-        private void CleanUpWorkoutAfterDelete(RepeatStep step)
-        {
-            // Go through repeat steps and delete the ones which have 0 substeps
-            for (int i = 0; i < step.StepsToRepeat.Count; ++i)
-            {
-                IStep currentStep = step.StepsToRepeat[i];
-
-                if (currentStep.Type == IStep.StepType.Repeat)
-                {
-                    RepeatStep concreteStep = (RepeatStep)currentStep;
-
-                    if (concreteStep.StepsToRepeat.Count == 0)
-                    {
-                        step.StepsToRepeat.RemoveAt(i);
-                        i--;
-                    }
-                    else
-                    {
-                        CleanUpWorkoutAfterDelete(concreteStep);
-                    }
-                }
-            }
-        }
-
         public void BuildWorkoutsList()
         {
             IApplication app = PluginMain.GetApplication();
             List<TreeList.TreeListNode> categories = new List<TreeList.TreeListNode>();
+            List<Workout> oldSelection = new List<Workout>();
+
+            if (WorkoutsList.Selected != null)
+            {
+                oldSelection.AddRange(m_SelectedWorkouts);
+            }
 
             for (int i = 0; i < app.Logbook.ActivityCategories.Count; ++i)
             {
-                IActivityCategory currentCategory = app.Logbook.ActivityCategories[i];
-                ActivityCategoryWrapper newNode = new ActivityCategoryWrapper(null, currentCategory);
+                ActivityCategoryWrapper newNode;
 
+                newNode = AddCategoryNode(app.Logbook.ActivityCategories[i]);
                 categories.Add(newNode);
-                AddCategoryNode(newNode, null);
             }
 
             for (int i = 0; i < GarminWorkoutManager.Instance.Workouts.Count; ++i)
@@ -3056,12 +2964,14 @@ namespace GarminFitnessPlugin.View
                                                          150, StringAlignment.Near));
             WorkoutsList.SetExpanded(WorkoutsList.RowData, true, true);
 
+            // Force old selection
+            m_SelectedWorkouts = oldSelection;
             RefreshWorkoutSelection();
         }
 
         private WorkoutWrapper AddWorkoutToList(List<TreeList.TreeListNode> list, Workout workout)
         {
-            // Go throough category list
+            // Go through category list
             for (int i = 0; i < list.Count; ++i)
             {
                 if (list[i].GetType() == typeof(ActivityCategoryWrapper))
@@ -3070,7 +2980,20 @@ namespace GarminFitnessPlugin.View
 
                     if (currentCategory.Element == workout.Category)
                     {
-                        WorkoutWrapper wrapper = new WorkoutWrapper(currentCategory, workout);
+                        WorkoutWrapper wrapper;
+
+                        // If we already have a wrapper for this workout, use it
+                        if (m_WorkoutWrapperMap.ContainsKey(workout))
+                        {
+                            wrapper = m_WorkoutWrapperMap[workout];
+                        }
+                        else
+                        {
+                            // Create a new wrapper
+                            wrapper = new WorkoutWrapper(currentCategory, workout);
+
+                            m_WorkoutWrapperMap[workout] = wrapper;
+                        }
 
                         int index = 0;
                         while (index < currentCategory.Children.Count &&
@@ -3275,20 +3198,6 @@ namespace GarminFitnessPlugin.View
             }
         }
 
-        private void SelectWorkoutsInList(List<Workout> workouts)
-        {
-            List<TreeList.TreeListNode> selection = new List<TreeList.TreeListNode>();
-
-            for (int i = 0; i < workouts.Count; ++i)
-            {
-                Workout currentWorkout = workouts[i];
-
-                selection.Add(GetWorkoutWrapper((List<TreeList.TreeListNode>)WorkoutsList.RowData, currentWorkout));
-            }
-
-            WorkoutsList.Selected = selection;
-        }
-
         private void SelectStepsInList(List<IStep> steps)
         {
             List<TreeList.TreeListNode> selection = new List<TreeList.TreeListNode>();
@@ -3314,16 +3223,6 @@ namespace GarminFitnessPlugin.View
             }
         }
 
-        private void DeleteSelectedWorkouts()
-        {
-            for (int i = 0; i < m_SelectedWorkouts.Count; ++i)
-            {
-                GarminWorkoutManager.Instance.RemoveWorkout(m_SelectedWorkouts[i]);
-            }
-
-            Utils.SaveWorkoutsToLogbook();
-        }
-
         private void DeleteSelectedSteps()
         {
             for (int i = 0; i < m_SelectedSteps.Count; ++i)
@@ -3332,32 +3231,18 @@ namespace GarminFitnessPlugin.View
             }
 
             m_SelectedSteps.Clear();
-            UpdateUIFromWorkout(SelectedWorkout);
-            Utils.SaveWorkoutsToLogbook();
         }
 
         private void DeleteSelectedStep()
         {
             DeleteStep(SelectedStep);
-
-            UpdateUIFromWorkout(SelectedWorkout);
-            Utils.SaveWorkoutsToLogbook();
         }
 
         private void DeleteStep(IStep step)
         {
-            Trace.Assert(SelectedWorkout != null && step != null);
-            UInt16 selectedPosition = 0;
-            List<IStep> selectedList = null;
-
-            if (Utils.GetStepInfo(step, SelectedWorkout.Steps, out selectedList, out selectedPosition))
-            {
-                selectedList.RemoveAt(selectedPosition);
-
-                CleanUpWorkoutAfterDelete(SelectedWorkout);
-            }
+            SelectedWorkout.RemoveStep(step);
         }
-
+        
         private List<IStep> GetMinimalStepsBase(List<IStep> steps)
         {
             List<IStep> result = new List<IStep>();
@@ -3573,6 +3458,9 @@ namespace GarminFitnessPlugin.View
         private List<IStep> m_SelectedSteps = new List<IStep>();
         private IActivityCategory m_SelectedCategory;
         private int m_PaintDisableCount = 0;
+
+        private Dictionary<Workout, WorkoutWrapper> m_WorkoutWrapperMap = new Dictionary<Workout, WorkoutWrapper>();
+        private Dictionary<IActivityCategory, ActivityCategoryWrapper> m_CategoryWrapperMap = new Dictionary<IActivityCategory, ActivityCategoryWrapper>();
 
         private bool m_IsMouseDownInWorkoutsList = false;
         private bool m_IsMouseDownInStepsList = false;

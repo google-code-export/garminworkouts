@@ -8,6 +8,7 @@ using System.Text;
 using System.Xml;
 using ZoneFiveSoftware.Common.Data.Fitness;
 using GarminFitnessPlugin.Controller;
+using System.ComponentModel;
 
 namespace GarminFitnessPlugin.Data
 {
@@ -510,8 +511,24 @@ namespace GarminFitnessPlugin.Data
             // Put back at start but skip the first 4 bytes which are the step type
             stream.Seek(0, SeekOrigin.Begin);
 
-            result = GarminWorkoutManager.Instance.CreateWorkout(Category);
-            result.Deserialize(stream, Constants.CurrentVersion);
+            result = GarminWorkoutManager.Instance.CreateWorkout(stream, Constants.CurrentVersion);
+
+            return result;
+        }
+
+        public Workout Clone(IActivityCategory newCategory)
+        {
+            Workout result;
+            MemoryStream stream = new MemoryStream();
+
+            Serialize(stream);
+
+            // Put back at start but skip the first 4 bytes which are the step type
+            stream.Seek(0, SeekOrigin.Begin);
+
+            result = GarminWorkoutManager.Instance.CreateWorkout(stream, Constants.CurrentVersion, newCategory);
+
+            stream.Close();
 
             return result;
         }
@@ -768,10 +785,272 @@ namespace GarminFitnessPlugin.Data
             }
         }
 
+        public IStep GetNextStep(IStep previousStep)
+        {
+            UInt16 index;
+            List<IStep> parentList;
+
+            if (Utils.GetStepInfo(previousStep, Steps, out parentList, out index))
+            {
+                if (index != parentList.Count - 1)
+                {
+                    index++;
+                }
+
+                return parentList[index];
+            }
+
+            return null;
+        }
+
+        public IStep GetPreviousStep(IStep nextStep)
+        {
+            UInt16 index;
+            List<IStep> parentList;
+
+            if (Utils.GetStepInfo(nextStep, Steps, out parentList, out index))
+            {
+                if (index != 0)
+                {
+                    return parentList[index - 1];
+                }
+            }
+
+            return null;
+        }
+
+        public void AddStepsToRoot(List<IStep> stepsToAdd)
+        {
+            InsertStepsAfterStep(Steps[Steps.Count - 1], stepsToAdd);
+        }
+
+        public void InsertStepInRoot(int index, IStep stepToAdd)
+        {
+            List<IStep> stepsToAdd = new List<IStep>();
+
+            stepsToAdd.Add(stepToAdd);
+
+            InsertStepsBeforeStep(Steps[index], stepsToAdd);
+        }
+
+        public void InsertStepsInRoot(int index, List<IStep> stepsToAdd)
+        {
+            InsertStepsBeforeStep(Steps[index], stepsToAdd);
+        }
+
+        public void InsertStepAfterStep(IStep previousStep, IStep stepToAdd)
+        {
+            List<IStep> stepsToAdd = new List<IStep>();
+
+            stepsToAdd.Add(stepToAdd);
+
+            InsertStepsAfterStep(previousStep, stepsToAdd);
+        }
+
+        public void InsertStepsAfterStep(IStep previousStep, List<IStep> stepsToAdd)
+        {
+            Trace.Assert(previousStep != null);
+
+            UInt16 previousPosition = 0;
+            List<IStep> parentList = null;
+
+            if (Utils.GetStepInfo(previousStep, Steps, out parentList, out previousPosition))
+            {
+                List<IStep> tempList;
+                UInt16 tempPosition = 0;
+                bool stepAdded = false;
+
+                for (int i = 0; i < stepsToAdd.Count; ++i)
+                {
+                    // Make sure we don't duplicate the step in the list
+                    if (!Utils.GetStepInfo(stepsToAdd[i], Steps, out tempList, out tempPosition))
+                    {
+                        parentList.Insert(++previousPosition, stepsToAdd[i]);
+                        stepAdded = true;
+                    }
+                }
+
+                if (stepAdded && WorkoutChanged != null)
+                {
+                    WorkoutChanged(this, new PropertyChangedEventArgs("Steps"));
+                }
+            }
+            else
+            {
+                // We haven't found the right step, this shouldn't happen
+                Trace.Assert(false);
+            }
+        }
+
+        public void InsertStepsBeforeStep(IStep nextStep, List<IStep> stepsToAdd)
+        {
+            Trace.Assert(nextStep != null);
+
+            UInt16 previousPosition = 0;
+            List<IStep> parentList = null;
+
+            if (Utils.GetStepInfo(nextStep, Steps, out parentList, out previousPosition))
+            {
+                List<IStep> tempList;
+                UInt16 tempPosition = 0;
+                bool stepAdded = false;
+
+                for (int i = 0; i < stepsToAdd.Count; ++i)
+                {
+                    // Make sure we don't duplicate the step in the list
+                    if (!Utils.GetStepInfo(stepsToAdd[i], Steps, out tempList, out tempPosition))
+                    {
+                        parentList.Insert(previousPosition++, stepsToAdd[i]);
+                        stepAdded = true;
+                    }
+                }
+
+                if (stepAdded && WorkoutChanged != null)
+                {
+                    WorkoutChanged(this, new PropertyChangedEventArgs("Steps"));
+                }
+            }
+            else
+            {
+                // We haven't found the right step, this shouldn't happen
+                Trace.Assert(false);
+            }
+        }
+
+        public void RemoveStep(IStep stepToRemove)
+        {
+            List<IStep> stepsToRemove = new List<IStep>(); ;
+
+            stepsToRemove.Add(stepToRemove);
+
+            RemoveSteps(stepsToRemove);
+        }
+
+        public void RemoveSteps(List<IStep> stepsToRemove)
+        {
+            List<IStep> selectedList = null;
+            UInt16 selectedPosition = 0;
+            bool stepRemoved = false;
+
+            for(int i = 0; i < stepsToRemove.Count; ++i)
+            {
+                if (Utils.GetStepInfo(stepsToRemove[i], Steps, out selectedList, out selectedPosition))
+                {
+                    selectedList.RemoveAt(selectedPosition);
+                    stepRemoved = true;
+                }
+            }
+
+            if(stepRemoved)
+            {
+                CleanUpAfterDelete();
+
+                if (WorkoutChanged != null)
+                {
+                    WorkoutChanged(this, new PropertyChangedEventArgs("Steps"));
+                }
+            }
+        }
+
+        private void CleanUpAfterDelete()
+        {
+            if (Steps.Count > 0)
+            {
+                // Go through repeat steps and delete the ones which have 0 substeps
+                for (int i = 0; i < Steps.Count; ++i)
+                {
+                    IStep currentStep = Steps[i];
+
+                    if (currentStep.Type == IStep.StepType.Repeat)
+                    {
+                        RepeatStep concreteStep = (RepeatStep)currentStep;
+
+                        if (concreteStep.StepsToRepeat.Count > 0)
+                        {
+                            CleanUpAfterDelete(concreteStep);
+                        }
+
+                        if (concreteStep.StepsToRepeat.Count == 0)
+                        {
+                            Steps.RemoveAt(i);
+                            i--;
+                        }
+                    }
+                }
+            }
+
+            if (Steps.Count == 0)
+            {
+                // Cannot have an empty workout, recreate a base step
+                Steps.Add(new RegularStep(this));
+            }
+        }
+
+        private void CleanUpAfterDelete(RepeatStep step)
+        {
+            // Go through repeat steps and delete the ones which have 0 substeps
+            for (int i = 0; i < step.StepsToRepeat.Count; ++i)
+            {
+                IStep currentStep = step.StepsToRepeat[i];
+
+                if (currentStep.Type == IStep.StepType.Repeat)
+                {
+                    RepeatStep concreteStep = (RepeatStep)currentStep;
+
+                    if (concreteStep.StepsToRepeat.Count == 0)
+                    {
+                        step.StepsToRepeat.RemoveAt(i);
+                        i--;
+                    }
+                    else
+                    {
+                        CleanUpAfterDelete(concreteStep);
+                    }
+                }
+            }
+        }
+
+        public void ScheduleWorkout(DateTime date)
+        {
+            if(!m_ScheduledDates.Contains(date))
+            {
+                m_ScheduledDates.Add(date);
+
+                if (WorkoutChanged != null)
+                {
+                    WorkoutChanged(this, new PropertyChangedEventArgs("Schedule"));
+                }
+            }
+        }
+
+        public void RemoveScheduledDate(DateTime date)
+        {
+            if (m_ScheduledDates.Contains(date))
+            {
+                m_ScheduledDates.Remove(date);
+
+                if (WorkoutChanged != null)
+                {
+                    WorkoutChanged(this, new PropertyChangedEventArgs("Schedule"));
+                }
+            }
+        }
+
         public DateTime LastExportDate
         {
             get { return m_LastExportDate; }
-            set { m_LastExportDate = value; }
+            set
+            {
+                if (m_LastExportDate != value)
+                {
+                    m_LastExportDate = value;
+
+                    if (WorkoutChanged != null)
+                    {
+                        WorkoutChanged(this, new PropertyChangedEventArgs("ExportDate"));
+                    }
+                }
+            }
         }
 
         public List<DateTime> ScheduledDates
@@ -789,8 +1068,16 @@ namespace GarminFitnessPlugin.Data
             get { return m_Category; }
             set
             {
-                Trace.Assert(value != null);
-                m_Category = value;
+                if (m_Category != value)
+                {
+                    Trace.Assert(value != null);
+                    m_Category = value;
+
+                    if (WorkoutChanged != null)
+                    {
+                        WorkoutChanged(this, new PropertyChangedEventArgs("Category"));
+                    }
+                }
             }
         }
 
@@ -799,8 +1086,16 @@ namespace GarminFitnessPlugin.Data
             get { return m_Name; }
             set
             {
-                Trace.Assert(value.Length > 0 && value.Length <= 15);
-                m_Name = value;
+                if (m_Name != value)
+                {
+                    Trace.Assert(value.Length > 0 && value.Length <= 15);
+                    m_Name = value;
+
+                    if (WorkoutChanged != null)
+                    {
+                        WorkoutChanged(this, new PropertyChangedEventArgs("Name"));
+                    }
+                }
             }
         }
 
@@ -809,8 +1104,16 @@ namespace GarminFitnessPlugin.Data
             get { return m_Notes; }
             set
             {
-                Trace.Assert(value.Length <= 30000);
-                m_Notes = value;
+                if (m_Notes != value)
+                {
+                    Trace.Assert(value.Length <= 30000);
+                    m_Notes = value;
+
+                    if (WorkoutChanged != null)
+                    {
+                        WorkoutChanged(this, new PropertyChangedEventArgs("Notes"));
+                    }
+                }
             }
         }
 
@@ -831,9 +1134,12 @@ namespace GarminFitnessPlugin.Data
             set { Trace.Assert(false); }
         }
 
+        public delegate void WorkoutChangedEventHandler(Workout modifiedWorkout, PropertyChangedEventArgs changedProperty);
+        public event WorkoutChangedEventHandler WorkoutChanged;
+
         private DateTime m_LastExportDate = new DateTime(0);
         private List<DateTime> m_ScheduledDates = new List<DateTime>();
-        private List<IStep> m_Steps = new List<IStep>(20);
+        private List<IStep> m_Steps = new List<IStep>(Constants.MaxStepsPerWorkout);
         private List<XmlNode> m_STExtensions = new List<XmlNode>();
         private List<XmlNode> m_StepsExtensions = new List<XmlNode>();
         private IActivityCategory m_Category;
