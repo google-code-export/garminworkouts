@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Xml;
@@ -21,13 +22,7 @@ namespace GarminFitnessPlugin.Data
             Trace.Assert(numRepeats <= 99);
             m_RepetitionCount = numRepeats;
 
-            m_StepsToRepeat.Add(new RegularStep(parent));
-        }
-
-        public Byte RepetitionCount
-        {
-            get { return m_RepetitionCount; }
-            set { m_RepetitionCount = value; }
+            ParentWorkout.AddNewStep(new RegularStep(parent), this);
         }
 
         public RepeatStep(Stream stream, DataVersion version, Workout parent)
@@ -73,11 +68,11 @@ namespace GarminFitnessPlugin.Data
 
                 if (type == IStep.StepType.Regular)
                 {
-                    StepsToRepeat.Add(new RegularStep(stream, version, ParentWorkout));
+                    ParentWorkout.AddNewStep(new RegularStep(stream, version, ParentWorkout), this);
                 }
                 else
                 {
-                    StepsToRepeat.Add(new RepeatStep(stream, version, ParentWorkout));
+                    ParentWorkout.AddNewStep(new RepeatStep(stream, version, ParentWorkout), this);
                 }
             }
         }
@@ -134,7 +129,7 @@ namespace GarminFitnessPlugin.Data
 
                         if (newStep != null && newStep.Deserialize(child))
                         {
-                            StepsToRepeat.Add(newStep);
+                            ParentWorkout.AddNewStep(newStep, this);
                         }
                         else
                         {
@@ -178,33 +173,6 @@ namespace GarminFitnessPlugin.Data
             }
 
             return valueChanged;
-        }
-
-        public List<IStep> StepsToRepeat
-        {
-            get { return m_StepsToRepeat; }
-        }
-
-        public bool IsEmpty
-        {
-            get { return m_StepsToRepeat.Count == 0; }
-        }
-
-        public override bool IsDirty
-        {
-            get
-            {
-                for (int i = 0; i < m_StepsToRepeat.Count; ++i)
-                {
-                    if (m_StepsToRepeat[i].IsDirty)
-                    {
-                        return true;
-                    }
-                }
-
-                return false;
-            }
-            set { Trace.Assert(false); }
         }
 
         public override byte GetStepCount()
@@ -301,6 +269,47 @@ namespace GarminFitnessPlugin.Data
                     concreteStep.MarkAllPowerSTZoneTargetsAsDirty();
                 }
             }
+        }
+
+        public Byte RepetitionCount
+        {
+            get { return m_RepetitionCount; }
+            set
+            {
+                if (m_RepetitionCount != value)
+                {
+                    m_RepetitionCount = value;
+
+                    TriggerStepChanged(new PropertyChangedEventArgs("RepetitionCount"));
+                }
+            }
+        }
+
+        public List<IStep> StepsToRepeat
+        {
+            get { return m_StepsToRepeat; }
+        }
+
+        public bool IsEmpty
+        {
+            get { return m_StepsToRepeat.Count == 0; }
+        }
+
+        public override bool IsDirty
+        {
+            get
+            {
+                for (int i = 0; i < m_StepsToRepeat.Count; ++i)
+                {
+                    if (m_StepsToRepeat[i].IsDirty)
+                    {
+                        return true;
+                    }
+                }
+
+                return false;
+            }
+            set { Trace.Assert(false); }
         }
 
         private Byte m_RepetitionCount;

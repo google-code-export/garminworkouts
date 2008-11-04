@@ -1,4 +1,5 @@
 using System;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Reflection;
@@ -366,13 +367,29 @@ namespace GarminFitnessPlugin.Data
         public IDuration Duration
         {
             get { return m_Duration; }
-            set { m_Duration = value; }
+            set
+            {
+                if (m_Duration != value)
+                {
+                    m_Duration = value;
+
+                    TriggerStepChanged( new PropertyChangedEventArgs("Duration"));
+                }
+            }
         }
 
         public ITarget Target
         {
             get { return m_Target; }
-            set { m_Target = value; }
+            set
+            {
+                if (m_Target != value)
+                {
+                    m_Target = value;
+
+                    TriggerStepChanged(new PropertyChangedEventArgs("Target"));
+                }
+            }
         }
 
         public string Name
@@ -380,8 +397,14 @@ namespace GarminFitnessPlugin.Data
             get { return m_Name; }
             set
             {
-                Trace.Assert(value.Length <= 15);
-                m_Name = value;
+                if (m_Name != value)
+                {
+                    Trace.Assert(value.Length <= 15);
+
+                    m_Name = value;
+
+                    TriggerStepChanged( new PropertyChangedEventArgs("Name"));
+                }
             }
         }
 
@@ -394,7 +417,15 @@ namespace GarminFitnessPlugin.Data
         public bool IsRestingStep
         {
             get { return m_IsRestingStep; }
-            set { m_IsRestingStep = value; }
+            set
+            {
+                if (m_IsRestingStep != value)
+                {
+                    m_IsRestingStep = value;
+                    
+                    TriggerStepChanged( new PropertyChangedEventArgs("IsRestingStep"));
+                }
+            }
         }
 
         private IDuration m_Duration;

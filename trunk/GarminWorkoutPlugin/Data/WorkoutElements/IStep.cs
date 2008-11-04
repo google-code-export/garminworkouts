@@ -1,4 +1,5 @@
 using System;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Text;
@@ -105,6 +106,14 @@ namespace GarminFitnessPlugin.Data
         public abstract IStep Clone();
         public abstract bool ValidateAfterZoneCategoryChanged(IZoneCategory changedCategory);
 
+        protected void TriggerStepChanged(PropertyChangedEventArgs arg)
+        {
+            if (StepChanged != null)
+            {
+                StepChanged(this, arg);
+            }
+        }
+
         public StepType Type
         {
             get { return m_StepType; }
@@ -118,7 +127,18 @@ namespace GarminFitnessPlugin.Data
         public string Notes
         {
             get { return m_Notes; }
-            set { m_Notes = value; }
+            set
+            {
+                if(m_Notes != value)
+                {
+                    m_Notes = value;
+                
+                    if (StepChanged != null)
+                    {
+                        StepChanged(this, new PropertyChangedEventArgs("Notes"));
+                    }
+                }
+            }
         }
 
         public abstract bool IsDirty
@@ -126,6 +146,9 @@ namespace GarminFitnessPlugin.Data
             get;
             set;
         }
+
+        public delegate void StepChangedEventHandler(IStep modifiedStep, PropertyChangedEventArgs changedProperty);
+        public event StepChangedEventHandler StepChanged;
 
         private StepType m_StepType;
         private Workout m_ParentWorkout;

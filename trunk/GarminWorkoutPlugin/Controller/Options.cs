@@ -149,8 +149,8 @@ namespace GarminFitnessPlugin.Controller
 
         private static int m_CategoriesPanelSplitSize = 200;
         private static int m_WorkoutPanelSplitSize = 180;
-        private static int m_StepPanelSplitSize = 150;
-        private static int m_CalendarPanelSplitSize = 350;
+        private static int m_StepPanelSplitSize = 500;
+        private static int m_CalendarPanelSplitSize = 325;
         private static int m_StepNotesSplitSize = 250;
 
         private static bool m_UseSportTracksHeartRateZones = true;

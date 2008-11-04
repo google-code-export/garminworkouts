@@ -60,8 +60,6 @@ namespace GarminFitnessPlugin.Controller
             }
 
             document.Save(new StreamWriter(exportStream));
-
-            Utils.SaveWorkoutsToLogbook();
         }
 
         private static void ExportWorkoutInternal(Workout workout, XmlDocument document, XmlNode parentNode, bool skipExtensions)

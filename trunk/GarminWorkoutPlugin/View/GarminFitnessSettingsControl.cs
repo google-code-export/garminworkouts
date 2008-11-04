@@ -57,13 +57,11 @@ namespace GarminFitnessPlugin.View
             Trace.Assert(PluginMain.GetApplication().Logbook.CadenceZones.Count > CadenceZoneComboBox.SelectedIndex);
 
             Options.CadenceZoneCategory = PluginMain.GetApplication().Logbook.CadenceZones[CadenceZoneComboBox.SelectedIndex];
-            Utils.SaveWorkoutsToLogbook();
         }
 
         private void PowerGarminRadioButton_CheckedChanged(object sender, System.EventArgs e)
         {
             Options.UseSportTracksPowerZones = !PowerGarminRadioButton.Checked;
-            Utils.SaveWorkoutsToLogbook();
         }
 
         private void PowerSportTracksRadioButton_CheckedChanged(object sender, System.EventArgs e)
@@ -91,7 +89,6 @@ namespace GarminFitnessPlugin.View
                     Options.STToGarminCategoryMap.Remove(selectedCategory);
 
                     ActivityCategoryList.Invalidate();
-                    Utils.SaveWorkoutsToLogbook();
                 }
             }
         }
@@ -120,8 +117,6 @@ namespace GarminFitnessPlugin.View
                         OtherRadioButton.Checked = true;
                         break;
                 }
-
-                Utils.SaveWorkoutsToLogbook();
             }
         }
 
@@ -138,7 +133,6 @@ namespace GarminFitnessPlugin.View
                 OtherRadioButton.Checked = false;
 
                 ActivityCategoryList.Invalidate();
-                Utils.SaveWorkoutsToLogbook();
             }
         }
 
@@ -155,7 +149,6 @@ namespace GarminFitnessPlugin.View
                 OtherRadioButton.Checked = false;
 
                 ActivityCategoryList.Invalidate();
-                Utils.SaveWorkoutsToLogbook();
             }
         }
 
@@ -172,7 +165,6 @@ namespace GarminFitnessPlugin.View
                 CyclingRadioButton.Checked = false;
 
                 ActivityCategoryList.Invalidate();
-                Utils.SaveWorkoutsToLogbook();
             }
         }
 
