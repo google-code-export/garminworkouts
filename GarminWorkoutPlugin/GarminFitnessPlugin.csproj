@@ -316,6 +316,7 @@
     <None Include="Resources\NewWorkoutButton.png" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="ClassDiagram1.cd" />
     <None Include="Resources\CategoryIcon.png" />
     <Content Include="Resources\Arrow.png" />
     <Content Include="Resources\DirtyWarning.png" />
