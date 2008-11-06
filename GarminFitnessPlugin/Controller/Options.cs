@@ -103,7 +103,7 @@ namespace GarminFitnessPlugin.Controller
                     m_PowerZoneCategory = value;
                     IsPowerZoneDirty = false;
 
-                    if (m_CadenceZoneCategory != null)
+                    if (m_PowerZoneCategory != null)
                     {
                         GarminWorkoutManager.Instance.MarkAllPowerSTZoneTargetsAsDirty();
                     }
