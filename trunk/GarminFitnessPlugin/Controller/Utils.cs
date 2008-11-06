@@ -124,8 +124,6 @@ namespace GarminFitnessPlugin.Controller
 
         public static void SaveWorkoutsToLogbook()
         {
-            MessageBox.Show("Saved");
-
             // Save Workouts to logbook
             MemoryStream stream = new MemoryStream();
 
