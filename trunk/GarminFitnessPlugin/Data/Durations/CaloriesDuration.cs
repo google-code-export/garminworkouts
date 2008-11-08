@@ -64,7 +64,7 @@ namespace GarminFitnessPlugin.Data
                 {
                     XmlNode child = parentNode.FirstChild;
 
-                    if (child.ChildNodes.Count == 1 && child.FirstChild.GetType() == typeof(XmlText) && Utils.IsTextIntegerInRange(child.FirstChild.Value, 1, 65535))
+                    if (child.ChildNodes.Count == 1 && child.FirstChild.GetType() == typeof(XmlText) && Utils.IsTextIntegerInRange(child.FirstChild.Value, Constants.MinCalories, Constants.MaxCalories))
                     {
                         CaloriesToSpend = UInt16.Parse(child.FirstChild.Value);
                         return true;

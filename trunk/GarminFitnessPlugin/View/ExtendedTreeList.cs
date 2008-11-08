@@ -89,7 +89,7 @@ namespace GarminFitnessPlugin.View
                     m_CancelledSelection = null;
 
                     // Notify of drag start
-                    if (DragStart != null)
+                    if (Selected.Count > 0 && DragStart != null)
                     {
                         DragStart(this, new EventArgs());
                     }

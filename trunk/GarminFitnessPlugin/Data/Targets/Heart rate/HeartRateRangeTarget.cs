@@ -130,8 +130,8 @@ namespace GarminFitnessPlugin.Data
 
                         if (valueNode.ChildNodes.Count == 1 && valueNode.FirstChild.GetType() == typeof(XmlText))
                         {
-                            if ((isPercentMax && Utils.IsTextIntegerInRange(valueNode.FirstChild.Value, 0, 100)) ||
-                                (!isPercentMax && Utils.IsTextIntegerInRange(valueNode.FirstChild.Value, 30, 240)))
+                            if ((isPercentMax && Utils.IsTextIntegerInRange(valueNode.FirstChild.Value, Constants.MinHRInPercentMax, Constants.MaxHRInPercentMax)) ||
+                                (!isPercentMax && Utils.IsTextIntegerInRange(valueNode.FirstChild.Value, Constants.MinHRInBPM, Constants.MaxHRInBPM)))
                             {
                                 min = Byte.Parse(valueNode.FirstChild.Value);
                             }
@@ -159,8 +159,8 @@ namespace GarminFitnessPlugin.Data
 
                         if (valueNode.ChildNodes.Count == 1 && valueNode.FirstChild.GetType() == typeof(XmlText))
                         {
-                            if ((isPercentMax && Utils.IsTextIntegerInRange(valueNode.FirstChild.Value, 0, 100)) ||
-                                (!isPercentMax && Utils.IsTextIntegerInRange(valueNode.FirstChild.Value, 30, 240)))
+                            if ((isPercentMax && Utils.IsTextIntegerInRange(valueNode.FirstChild.Value, Constants.MinHRInPercentMax, Constants.MaxHRInPercentMax)) ||
+                                (!isPercentMax && Utils.IsTextIntegerInRange(valueNode.FirstChild.Value, Constants.MinHRInBPM, Constants.MaxHRInBPM)))
                             {
                                 max = Byte.Parse(valueNode.FirstChild.Value);
                             }
@@ -214,13 +214,13 @@ namespace GarminFitnessPlugin.Data
         {
             if (isPercentageMaxHeartRate)
             {
-                Trace.Assert(minHeartRate >= 0 && minHeartRate <= 100);
-                Trace.Assert(maxHeartRate >= 0 && maxHeartRate <= 100);
+                Trace.Assert(minHeartRate >= Constants.MinHRInPercentMax && minHeartRate <= Constants.MaxHRInPercentMax);
+                Trace.Assert(maxHeartRate >= Constants.MinHRInPercentMax && maxHeartRate <= Constants.MaxHRInPercentMax);
             }
             else
             {
-                Trace.Assert(minHeartRate >= 30 && minHeartRate <= 240);
-                Trace.Assert(maxHeartRate >= 30 && maxHeartRate <= 240);
+                Trace.Assert(minHeartRate >= Constants.MinHRInBPM && minHeartRate <= Constants.MaxHRInBPM);
+                Trace.Assert(maxHeartRate >= Constants.MinHRInBPM && maxHeartRate <= Constants.MaxHRInBPM);
             }
 
             Trace.Assert(minHeartRate <= maxHeartRate);

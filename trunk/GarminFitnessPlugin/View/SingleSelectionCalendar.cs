@@ -31,14 +31,17 @@ namespace GarminFitnessPlugin.View
             get { return m_SelectedDate; }
             set
             {
-                if (SelectionChanged != null && m_SelectedDate != value)
+                if(m_SelectedDate != value)
                 {
-                    SelectionChanged(this, value);
-                }
+                    RemoveMarkedDateStyle(m_SelectedDate, Calendar.MarkerStyle.Normal);
+                    m_SelectedDate = value;
+                    AddMarkedDateStyle(m_SelectedDate, Calendar.MarkerStyle.Normal);
 
-                RemoveMarkedDateStyle(m_SelectedDate, Calendar.MarkerStyle.Normal);
-                m_SelectedDate = value;
-                AddMarkedDateStyle(m_SelectedDate, Calendar.MarkerStyle.Normal);
+                    if (SelectionChanged != null)
+                    {
+                        SelectionChanged(this, value);
+                    }
+                }
             }
         }
         

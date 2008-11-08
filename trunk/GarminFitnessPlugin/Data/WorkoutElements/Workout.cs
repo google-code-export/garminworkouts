@@ -662,6 +662,35 @@ namespace GarminFitnessPlugin.Data
             }
         }
 
+        public List<IStep> DeserializeSteps(Stream stream)
+        {
+            List<IStep> deserializedSteps = new List<IStep>();
+            byte[] intBuffer = new byte[sizeof(Int32)];
+            Byte stepCount = (Byte)stream.ReadByte();
+
+            for (int i = 0; i < stepCount; i++)
+            {
+                IStep.StepType type;
+
+                stream.Read(intBuffer, 0, sizeof(Int32));
+                type = (IStep.StepType)BitConverter.ToInt32(intBuffer, 0);
+
+                if (type == IStep.StepType.Regular)
+                {
+                    deserializedSteps.Add(new RegularStep(stream, Constants.CurrentVersion, this));
+                }
+                else
+                {
+                    deserializedSteps.Add(new RepeatStep(stream, Constants.CurrentVersion, this));
+                }
+            }
+
+            // Now that we deserialized, paste in the current workout
+            AddStepsToRoot(deserializedSteps);
+
+            return deserializedSteps;
+        }
+
         void OnStepChanged(IStep modifiedStep, PropertyChangedEventArgs changedProperty)
         {
             if (StepChanged != null)

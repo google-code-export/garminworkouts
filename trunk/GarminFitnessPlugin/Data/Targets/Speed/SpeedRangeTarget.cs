@@ -14,16 +14,7 @@ namespace GarminFitnessPlugin.Data
         public SpeedRangeTarget(BaseSpeedTarget baseTarget)
             : base(SpeedTargetType.Range, baseTarget)
         {
-            Length.Units baseUnits = baseTarget.ParentStep.ParentWorkout.Category.DistanceUnits;
-
-            if (baseUnits == Length.Units.Meter)
-            {
-                SetRangeInUnitsPerHour(15000, 25000, baseUnits);
-            }
-            else
-            {
-                SetRangeInUnitsPerHour(15, 25, baseUnits);
-            }
+            SetRangeInBaseUnitsPerHour(15, 25);
         }
 
         public SpeedRangeTarget(double minUnitsPerHour, double maxUnitsPerHour, Length.Units speedUnit, Speed.Units speedPace, BaseSpeedTarget baseTarget)
@@ -197,43 +188,83 @@ namespace GarminFitnessPlugin.Data
             return false;
         }
 
-        public double MinMetersPerSecond
+        public double GetMinSpeedInBaseUnitsPerHour()
         {
-            get { return Length.Convert(MinUnitsPerSecond, SpeedUnit, Length.Units.Meter); }
+            return GetMinSpeedInUnitsPerHour(BaseUnit);
         }
 
-        public double MaxMetersPerSecond
+        public double GetMaxSpeedInBaseUnitsPerHour()
         {
-            get { return Length.Convert(MaxUnitsPerSecond, SpeedUnit, Length.Units.Meter); }
+            return GetMaxSpeedInUnitsPerHour(BaseUnit);
         }
 
-        public double GetMinSpeedInUnitsPerHour(Length.Units speedUnit)
+        public double GetMinSpeedInMinutesPerBaseUnit()
+        {
+            return GetMinSpeedInMinutesPerUnit(BaseUnit);
+        }
+
+        public double GetMaxSpeedInMinutesPerBaseUnit()
+        {
+            return GetMaxSpeedInMinutesPerUnit(BaseUnit);
+        }
+
+        public void SetMinSpeedInBaseUnitsPerHour(double minUnitsPerHour)
+        {
+            SetMinSpeedInUnitsPerHour(minUnitsPerHour, BaseUnit);
+        }
+
+        public void SetMaxSpeedInBaseUnitsPerHour(double maxUnitsPerHour)
+        {
+            SetMaxSpeedInUnitsPerHour(maxUnitsPerHour, BaseUnit);
+        }
+
+        public void SetMinSpeedInMinutesPerBaseUnit(double minMinutesPerUnit)
+        {
+            SetMinSpeedInMinutesPerUnit(minMinutesPerUnit, BaseUnit);
+        }
+
+        public void SetMaxSpeedInMinutesPerBaseUnit(double maxMinutesPerUnit)
+        {
+            SetMaxSpeedInMinutesPerUnit(maxMinutesPerUnit, BaseUnit);
+        }
+
+        public void SetRangeInBaseUnitsPerHour(double minUnitsPerHour, double maxUnitsPerHour)
+        {
+            SetRangeInUnitsPerHour(minUnitsPerHour, maxUnitsPerHour, BaseUnit);
+        }
+
+        public void SetRangeInMinutesPerBaseUnit(double minMinutesPerUnit, double maxMinutesPerUnit)
+        {
+            SetRangeInMinutesPerUnit(minMinutesPerUnit, maxMinutesPerUnit, BaseUnit);
+        }
+
+        private double GetMinSpeedInUnitsPerHour(Length.Units speedUnit)
         {
             return Length.Convert(MinUnitsPerSecond, SpeedUnit, speedUnit) * Constants.SecondsPerHour;
         }
 
-        public double GetMaxSpeedInUnitsPerHour(Length.Units speedUnit)
+        private double GetMaxSpeedInUnitsPerHour(Length.Units speedUnit)
         {
             return Length.Convert(MaxUnitsPerSecond, SpeedUnit, speedUnit) * Constants.SecondsPerHour;
         }
 
-        public double GetMinSpeedInMinutesPerUnit(Length.Units speedUnit)
+        private double GetMinSpeedInMinutesPerUnit(Length.Units speedUnit)
         {
             double unitsPerMinute = Length.Convert(MinUnitsPerSecond, SpeedUnit, speedUnit) * Constants.SecondsPerMinute;
             return 1.0 / unitsPerMinute;
         }
 
-        public double GetMaxSpeedInMinutesPerUnit(Length.Units speedUnit)
+        private double GetMaxSpeedInMinutesPerUnit(Length.Units speedUnit)
         {
             double unitsPerMinute = Length.Convert(MaxUnitsPerSecond, SpeedUnit, speedUnit) * Constants.SecondsPerMinute;
             return 1.0 / unitsPerMinute;
         }
 
-        public void SetMinSpeedInUnitsPerHour(double minUnitsPerHour, Length.Units speedUnit)
+        private void SetMinSpeedInUnitsPerHour(double minUnitsPerHour, Length.Units speedUnit)
         {
             double minInMiles = Length.Convert(minUnitsPerHour, speedUnit, Length.Units.Mile);
 
-            Utils.Clamp(minInMiles, 1, 60);
+            Utils.Clamp(minInMiles, Constants.MinSpeedStatute, Constants.MaxSpeedStatute);
 
             minUnitsPerHour = Length.Convert(minInMiles, Length.Units.Mile, speedUnit);
             MinUnitsPerSecond = minUnitsPerHour / Constants.SecondsPerHour;
@@ -247,11 +278,11 @@ namespace GarminFitnessPlugin.Data
             SpeedUnit = speedUnit;
         }
 
-        public void SetMaxSpeedInUnitsPerHour(double maxUnitsPerHour, Length.Units speedUnit)
+        private void SetMaxSpeedInUnitsPerHour(double maxUnitsPerHour, Length.Units speedUnit)
         {
             double maxInMiles = Length.Convert(maxUnitsPerHour, speedUnit, Length.Units.Mile);
 
-            Utils.Clamp(maxInMiles, 1, 60);
+            Utils.Clamp(maxInMiles, Constants.MinSpeedStatute, Constants.MaxSpeedStatute);
 
             maxUnitsPerHour = Length.Convert(maxInMiles, Length.Units.Mile, speedUnit);
             MaxUnitsPerSecond = maxUnitsPerHour / Constants.SecondsPerHour;
@@ -265,25 +296,25 @@ namespace GarminFitnessPlugin.Data
             SpeedUnit = speedUnit;
         }
 
-        public void SetMinSpeedInMinutesPerUnit(double minMinutesPerUnit, Length.Units speedUnit)
+        private void SetMinSpeedInMinutesPerUnit(double minMinutesPerUnit, Length.Units speedUnit)
         {
             // Convert to speed (units/hr)
-            SetMinSpeedInUnitsPerHour(60.0 / minMinutesPerUnit, speedUnit);
+            SetMinSpeedInUnitsPerHour(Constants.MinutesPerHour / minMinutesPerUnit, speedUnit);
         }
 
-        public void SetMaxSpeedInMinutesPerUnit(double maxMinutesPerUnit, Length.Units speedUnit)
+        private void SetMaxSpeedInMinutesPerUnit(double maxMinutesPerUnit, Length.Units speedUnit)
         {
             // Convert to speed (units/hr)
-            SetMaxSpeedInUnitsPerHour(60.0 / maxMinutesPerUnit, speedUnit);
+            SetMaxSpeedInUnitsPerHour(Constants.MinutesPerHour / maxMinutesPerUnit, speedUnit);
         }
 
-        public void SetRangeInUnitsPerHour(double minUnitsPerHour, double maxUnitsPerHour, Length.Units speedUnit)
+        private void SetRangeInUnitsPerHour(double minUnitsPerHour, double maxUnitsPerHour, Length.Units speedUnit)
         {
             double minInMiles = Length.Convert(minUnitsPerHour, speedUnit, Length.Units.Mile);
             double maxInMiles = Length.Convert(maxUnitsPerHour, speedUnit, Length.Units.Mile);
 
-            Utils.Clamp(minInMiles, 1, 60);
-            Utils.Clamp(maxInMiles, 1, 60);
+            Utils.Clamp(minInMiles, Constants.MinSpeedStatute, Constants.MaxSpeedStatute);
+            Utils.Clamp(maxInMiles, Constants.MinSpeedStatute, Constants.MaxSpeedStatute);
 
             minUnitsPerHour = Length.Convert(minInMiles, Length.Units.Mile, speedUnit);
             maxUnitsPerHour = Length.Convert(maxInMiles, Length.Units.Mile, speedUnit);
@@ -293,10 +324,12 @@ namespace GarminFitnessPlugin.Data
             SpeedUnit = speedUnit;
         }
 
-        public void SetRangeInMinutesPerUnit(double minMinutesPerUnit, double maxMinutesPerUnit, Length.Units speedUnit)
+        private void SetRangeInMinutesPerUnit(double minMinutesPerUnit, double maxMinutesPerUnit, Length.Units speedUnit)
         {
             // Convert to speed (units/hr)
-            SetRangeInUnitsPerHour(60.0 / minMinutesPerUnit, 60.0 / maxMinutesPerUnit, speedUnit);
+            SetRangeInUnitsPerHour(Constants.MinutesPerHour / minMinutesPerUnit,
+                                   Constants.MinutesPerHour / maxMinutesPerUnit,
+                                   speedUnit);
         }
 
         private double MinUnitsPerSecond
@@ -337,6 +370,31 @@ namespace GarminFitnessPlugin.Data
                     m_SpeedUnit = value;
 
                     TriggerTargetChangedEvent(this, new PropertyChangedEventArgs("SpeedUnits"));
+                }
+            }
+        }
+
+        private double MinMetersPerSecond
+        {
+            get { return Length.Convert(MinUnitsPerSecond, SpeedUnit, Length.Units.Meter); }
+        }
+
+        private double MaxMetersPerSecond
+        {
+            get { return Length.Convert(MaxUnitsPerSecond, SpeedUnit, Length.Units.Meter); }
+        }
+
+        public Length.Units BaseUnit
+        {
+            get
+            {
+                if (Utils.IsStatute(BaseTarget.ParentStep.ParentWorkout.Category.DistanceUnits))
+                {
+                    return Length.Units.Mile;
+                }
+                else
+                {
+                    return Length.Units.Kilometer;
                 }
             }
         }

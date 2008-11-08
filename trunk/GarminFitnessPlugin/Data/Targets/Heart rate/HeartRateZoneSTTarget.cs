@@ -126,7 +126,7 @@ namespace GarminFitnessPlugin.Data
         public override void Serialize(XmlNode parentNode, XmlDocument document)
         {
             float lastMaxHR = PluginMain.GetApplication().Logbook.Athlete.InfoEntries.LastEntryAsOfDate(DateTime.Now).MaximumHeartRatePerMinute;
-            float baseMultiplier = 100.0f / lastMaxHR;
+            float baseMultiplier = ((float)Constants.MaxHRInPercentMax) / lastMaxHR;
             base.Serialize(parentNode, document);
 
             XmlAttribute attribute;
@@ -149,7 +149,7 @@ namespace GarminFitnessPlugin.Data
             }
             else
             {
-                lowValue = (Byte)Math.Min(240, Math.Max(30, Zone.Low));
+                lowValue = (Byte)Utils.Clamp(Zone.Low, Constants.MinHRInBPM, Constants.MaxHRInBPM);
                 attribute.Value = Constants.HeartRateReferenceTCXString[0];
             }
             childNode.Attributes.Append(attribute);
@@ -164,12 +164,12 @@ namespace GarminFitnessPlugin.Data
             attribute = document.CreateAttribute("xsi", "type", Constants.xsins);
             if (!baseMultiplier.Equals(float.NaN))
             {
-                highValue = (Byte)Math.Min(100, Math.Round(Zone.High * baseMultiplier, 0, MidpointRounding.AwayFromZero));
+                highValue = (Byte)Math.Min(Constants.MaxHRInPercentMax, Math.Round(Zone.High * baseMultiplier, 0, MidpointRounding.AwayFromZero));
                 attribute.Value = Constants.HeartRateReferenceTCXString[1];
             }
             else
             {
-                highValue = (Byte)Math.Min(240, Math.Max(30, Zone.High));
+                highValue = (Byte)Utils.Clamp(Zone.High, Constants.MinHRInBPM, Constants.MaxHRInBPM);
                 attribute.Value = Constants.HeartRateReferenceTCXString[0];
             }
             childNode.Attributes.Append(attribute);

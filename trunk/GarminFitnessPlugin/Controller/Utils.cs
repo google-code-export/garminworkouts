@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Windows.Forms;
 using System.IO;
 using ZoneFiveSoftware.Common.Data.Fitness;
+using ZoneFiveSoftware.Common.Data.Measurement;
 using GarminFitnessPlugin.Data;
 
 namespace GarminFitnessPlugin.Controller
@@ -214,7 +215,7 @@ namespace GarminFitnessPlugin.Controller
                 string seconds = time.Substring(time.IndexOf(':') + 1);
 
                 float value = float.Parse(minutes);
-                value += float.Parse(seconds) / 60.0f;
+                value += float.Parse(seconds) / Constants.SecondsPerMinute;
 
                 return value;
             }
@@ -225,12 +226,12 @@ namespace GarminFitnessPlugin.Controller
             }
         }
 
-        public static void FloatToTime(double time, out UInt16 minutes, out UInt16 seconds)
+        public static void DoubleToTime(double time, out UInt16 minutes, out UInt16 seconds)
         {
             minutes = (UInt16)(time);
             seconds = (UInt16)Math.Round((time - (UInt16)time) * Constants.SecondsPerMinute, MidpointRounding.AwayFromZero);
 
-            if(seconds == 60)
+            if(seconds == Constants.SecondsPerMinute)
             {
                 minutes++;
                 seconds = 0;
@@ -352,6 +353,16 @@ namespace GarminFitnessPlugin.Controller
         public static double Clamp(double value, double min, double max)
         {
             return Math.Max(Math.Min(value, max), min);
+        }
+
+        public static bool IsMetric(Length.Units unit)
+        {
+            return (int)unit <= (int)Length.Units.Kilometer;
+        }
+
+        public static bool IsStatute(Length.Units unit)
+        {
+            return !IsMetric(unit);
         }
     }
 }
