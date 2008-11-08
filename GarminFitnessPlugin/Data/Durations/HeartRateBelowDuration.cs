@@ -111,13 +111,13 @@ namespace GarminFitnessPlugin.Data
 
                                 if (IsPercentageMaxHeartRate)
                                 {
-                                    minValue = 1;
-                                    maxValue = 100;
+                                    minValue = Constants.MinHRInPercentMax;
+                                    maxValue = Constants.MaxHRInPercentMax;
                                 }
                                 else
                                 {
-                                    minValue = 30;
-                                    maxValue = 240;
+                                    minValue = Constants.MinHRInBPM;
+                                    maxValue = Constants.MaxHRInBPM;
                                 }
 
                                 if (Utils.IsTextIntegerInRange(valueNode.FirstChild.Value, minValue, maxValue))
@@ -168,11 +168,11 @@ namespace GarminFitnessPlugin.Data
         {
             if (isPercentageMaxHeartRate)
             {
-                Trace.Assert(minHeartRate <= 100);
+                Trace.Assert(minHeartRate <= Constants.MaxHRInPercentMax);
             }
             else
             {
-                Trace.Assert(minHeartRate <= 240);
+                Trace.Assert(minHeartRate <= Constants.MaxHRInBPM);
             }
         }
 

@@ -61,7 +61,6 @@ namespace GarminFitnessPlugin.Controller
         {
             string result;
             string baseString;
-            Length.Units systemUnit = duration.ParentStep.ParentWorkout.Category.DistanceUnits;
             IDuration.DurationType type = duration.Type;
             FieldInfo fieldInfo = type.GetType().GetField(Enum.GetName(type.GetType(), type));
             StepDescriptionStringProviderAttribute providerAttribute = (StepDescriptionStringProviderAttribute)Attribute.GetCustomAttribute(fieldInfo, typeof(StepDescriptionStringProviderAttribute));
@@ -78,8 +77,7 @@ namespace GarminFitnessPlugin.Controller
                 case IDuration.DurationType.Distance:
                     {
                         DistanceDuration concreteDuration = (DistanceDuration)duration;
-                        double distance = Length.Convert(concreteDuration.DistanceInMeters, Length.Units.Meter, systemUnit);
-                        result = String.Format(baseString, distance, Length.LabelAbbr(systemUnit));
+                        result = String.Format(baseString, concreteDuration.GetDistanceInBaseUnit(), Length.LabelAbbr(concreteDuration.BaseUnit));
                         break;
                     }
                 case IDuration.DurationType.Time:
@@ -299,27 +297,26 @@ namespace GarminFitnessPlugin.Controller
                 case BaseSpeedTarget.IConcreteSpeedTarget.SpeedTargetType.Range:
                     {
                         SpeedRangeTarget concreteTarget = (SpeedRangeTarget)target;
-                        Length.Units systemUnit = target.BaseTarget.ParentStep.ParentWorkout.Category.DistanceUnits;
 
                         if (concreteTarget.BaseTarget.ParentStep.ParentWorkout.Category.SpeedUnits == Speed.Units.Pace)
                         {
                             baseString = resManager.GetString("PaceRangeTargetDescriptionText");
 
-                            double min = concreteTarget.GetMinSpeedInMinutesPerUnit(systemUnit);
-                            double max = concreteTarget.GetMaxSpeedInMinutesPerUnit(systemUnit);
+                            double min = concreteTarget.GetMinSpeedInMinutesPerBaseUnit();
+                            double max = concreteTarget.GetMaxSpeedInMinutesPerBaseUnit();
                             UInt16 minMinutes, minSeconds;
                             UInt16 maxMinutes, maxSeconds;
 
-                            Utils.FloatToTime(min, out minMinutes, out minSeconds);
-                            Utils.FloatToTime(max, out maxMinutes, out maxSeconds);
+                            Utils.DoubleToTime(min, out minMinutes, out minSeconds);
+                            Utils.DoubleToTime(max, out maxMinutes, out maxSeconds);
                             result = String.Format(baseString,
                                                    maxMinutes, maxSeconds, 
                                                    minMinutes, minSeconds,
-                                                   Length.LabelAbbr(systemUnit));
+                                                   Length.LabelAbbr(concreteTarget.BaseUnit));
                         }
                         else
                         {
-                            result = String.Format(baseString, concreteTarget.GetMinSpeedInUnitsPerHour(systemUnit), concreteTarget.GetMaxSpeedInUnitsPerHour(systemUnit), Length.LabelAbbr(systemUnit));
+                            result = String.Format(baseString, concreteTarget.GetMinSpeedInBaseUnitsPerHour(), concreteTarget.GetMaxSpeedInBaseUnitsPerHour(), Length.LabelAbbr(concreteTarget.BaseUnit));
                         }
                         break;
                     }

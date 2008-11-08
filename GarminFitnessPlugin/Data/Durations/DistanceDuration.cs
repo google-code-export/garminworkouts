@@ -14,7 +14,7 @@ namespace GarminFitnessPlugin.Data
             : base(DurationType.Distance, parent)
         {
             Distance = 1;
-            DistanceUnit = parent.ParentWorkout.Category.DistanceUnits;
+            DistanceUnit = BaseUnit;
         }
 
         public DistanceDuration(double distanceToGo, Length.Units distanceUnit, IStep parent)
@@ -72,7 +72,7 @@ namespace GarminFitnessPlugin.Data
                 {
                     XmlNode child = parentNode.FirstChild;
 
-                    if (child.ChildNodes.Count == 1 && child.FirstChild.GetType() == typeof(XmlText) && Utils.IsTextFloatInRange(child.FirstChild.Value, 1, 65000))
+                    if (child.ChildNodes.Count == 1 && child.FirstChild.GetType() == typeof(XmlText) && Utils.IsTextFloatInRange(child.FirstChild.Value, Constants.MinDistanceMeters, Constants.MaxDistanceMeters))
                     {
                         SetDistanceInUnits(UInt16.Parse(child.FirstChild.Value), Length.Units.Meter);
                         return true;
@@ -83,7 +83,37 @@ namespace GarminFitnessPlugin.Data
             return false;
         }
 
-        public UInt16 DistanceInMeters
+        public double GetDistanceInBaseUnit()
+        {
+            return GetDistanceInUnits(BaseUnit);
+        }
+
+        public void SetDistanceInBaseUnit(double distanceToGo)
+        {
+            SetDistanceInUnits(distanceToGo, BaseUnit);
+        }
+
+        private double GetDistanceInUnits(Length.Units distanceUnit)
+        {
+            return Length.Convert(Distance, DistanceUnit, distanceUnit);
+        }
+
+        private void SetDistanceInUnits(double distanceToGo, Length.Units distanceUnit)
+        {
+            if (Utils.IsStatute(distanceUnit))
+            {
+                Trace.Assert(distanceToGo >= Constants.MinDistance && distanceToGo <= Constants.MaxDistanceStatute);
+            }
+            else
+            {
+                Trace.Assert(distanceToGo >= Constants.MinDistance && distanceToGo <= Constants.MaxDistanceMetric);
+            }
+
+            DistanceUnit = distanceUnit;
+            Distance = distanceToGo;
+        }
+
+        private UInt16 DistanceInMeters
         {
             get { return (UInt16)Length.Convert(Distance, DistanceUnit, Length.Units.Meter); }
         }
@@ -93,6 +123,8 @@ namespace GarminFitnessPlugin.Data
             get { return m_DistanceUnit; }
             set
             {
+                Trace.Assert(value == Length.Units.Kilometer || value == Length.Units.Mile);
+
                 if (DistanceUnit != value)
                 {
                     m_DistanceUnit = value;
@@ -116,28 +148,19 @@ namespace GarminFitnessPlugin.Data
             }
         }
 
-        public double GetDistanceInUnits(Length.Units distanceUnit)
+        public Length.Units BaseUnit
         {
-            return Length.Convert(Distance, DistanceUnit, distanceUnit);
-        }
-
-        public void SetDistanceInUnits(double distanceToGo, Length.Units distanceUnit)
-        {
-            if (distanceUnit == Length.Units.Mile)
+            get
             {
-                Trace.Assert(distanceToGo >= 0.01 && distanceToGo <= 40.0);
+                if (Utils.IsStatute(ParentStep.ParentWorkout.Category.DistanceUnits))
+                {
+                    return Length.Units.Mile;
+                }
+                else
+                {
+                    return Length.Units.Kilometer;
+                }
             }
-            else if (distanceUnit == Length.Units.Kilometer)
-            {
-                Trace.Assert(distanceToGo >= 0.01 && distanceToGo <= 65.0);
-            }
-            else
-            {
-                Trace.Assert(distanceToGo >= 1 && distanceToGo <= 65000);
-            }
-
-            DistanceUnit = distanceUnit;
-            Distance = distanceToGo;
         }
 
         private double m_Distance;

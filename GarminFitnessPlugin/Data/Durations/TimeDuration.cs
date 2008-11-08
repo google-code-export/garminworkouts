@@ -65,9 +65,9 @@ namespace GarminFitnessPlugin.Data
                 {
                     XmlNode child = parentNode.FirstChild;
 
-                    if (child.ChildNodes.Count == 1 && child.FirstChild.GetType() == typeof(XmlText) && Utils.IsTextIntegerInRange(child.FirstChild.Value, 1, 65535))
+                    if (child.ChildNodes.Count == 1 && child.FirstChild.GetType() == typeof(XmlText) && Utils.IsTextIntegerInRange(child.FirstChild.Value, Constants.MinTime, UInt16.MaxValue))
                     {
-                        TimeInSeconds = Math.Min(UInt16.Parse(child.FirstChild.Value), (UInt16)64799);
+                        TimeInSeconds = Math.Min(UInt16.Parse(child.FirstChild.Value), Constants.MaxTime);
                         return true;
                     }
                 }
@@ -83,7 +83,7 @@ namespace GarminFitnessPlugin.Data
             {
                 if (TimeInSeconds != value)
                 {
-                    Trace.Assert(value <= 64799);
+                    Trace.Assert(value <= Constants.MaxTime);
                     m_TimeInSeconds = value;
 
                     TriggerDurationChangedEvent(new PropertyChangedEventArgs("TimeInSeconds"));

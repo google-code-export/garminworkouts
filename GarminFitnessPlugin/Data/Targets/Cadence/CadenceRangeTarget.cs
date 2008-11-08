@@ -65,8 +65,8 @@ namespace GarminFitnessPlugin.Data
         {
             if (base.Deserialize(parentNode))
             {
-                double minCadence = 0;
-                double maxCadence = 0;
+                double minCadence = Constants.MinCadence;
+                double maxCadence = Constants.MinCadence;
 
                 for (int i = 0; i < parentNode.ChildNodes.Count; ++i)
                 {
@@ -89,7 +89,8 @@ namespace GarminFitnessPlugin.Data
                     }
                 }
 
-                if (minCadence > 0 && minCadence <= 254 && maxCadence > 0 && maxCadence <= 254)
+                if (minCadence > Constants.MinCadence && minCadence <= Constants.MaxCadence &&
+                    maxCadence > Constants.MinCadence && maxCadence <= Constants.MaxCadence)
                 {
                     Byte min = (Byte)minCadence;
                     Byte max = (Byte)maxCadence;
@@ -118,7 +119,7 @@ namespace GarminFitnessPlugin.Data
         public void ValidateValues(Byte min, Byte max)
         {
             Trace.Assert(min <= max);
-            Trace.Assert(max <= 254);
+            Trace.Assert(max <= Constants.MaxCadence);
         }
 
         public void SetMinCadence(Byte min)
