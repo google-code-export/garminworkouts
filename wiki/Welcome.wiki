@@ -23,6 +23,3 @@ If you have a version already installed in [http://www.zonefivesoftware.com/Spor
 [BasicOperations Basic operations]
 
 [AdvancedOperations Advanced operations]
-
------
-*^This page is currently under construction, please come back later for an updated version.^*
