@@ -48,6 +48,8 @@ namespace GarminFitnessPlugin.View
             GarminWorkoutManager.Instance.WorkoutStepChanged += new GarminWorkoutManager.WorkoutStepChangedEventHandler(OnWorkoutStepChanged);
             GarminWorkoutManager.Instance.WorkoutStepDurationChanged += new GarminWorkoutManager.WorkoutStepDurationChangedEventHandler(OnWorkoutStepDurationChanged);
             GarminWorkoutManager.Instance.WorkoutStepTargetChanged += new GarminWorkoutManager.WorkoutStepTargetChangedEventHandler(OnWorkoutStepTargetChanged);
+
+            WorkoutsList.Focus();
         }
 
         private void OnGarminWorkoutManagerWorkoutListChanged()
@@ -76,6 +78,9 @@ namespace GarminFitnessPlugin.View
                 if (changedProperty.PropertyName == "Steps")
                 {
                     BuildStepsList();
+
+                    // Update the new step buttons
+                    RefreshWorkoutSelectionControls();
                 }
                 else
                 {
@@ -300,6 +305,14 @@ namespace GarminFitnessPlugin.View
             UpdateUIFromWorkouts();
         }
 
+        private void ChildControl_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Enter)
+            {
+                SendKeys.Send("{TAB}");
+            }
+        }
+
         private void StepNameText_Validated(object sender, EventArgs e)
         {
             Trace.Assert(SelectedStep != null && SelectedStep.Type == IStep.StepType.Regular);
@@ -430,14 +443,6 @@ namespace GarminFitnessPlugin.View
             }
         }
 
-        private void HeartRateDurationText_KeyDown(object sender, KeyEventArgs e)
-        {
-            if (e.KeyCode == Keys.Enter)
-            {
-                SendKeys.Send("{TAB}");
-            }
-        }
-
         private void DistanceDurationText_Validating(object sender, CancelEventArgs e)
         {
             Trace.Assert(SelectedStep != null && SelectedStep.Type == IStep.StepType.Regular);
@@ -477,14 +482,6 @@ namespace GarminFitnessPlugin.View
             concreteDuration.SetDistanceInBaseUnit(double.Parse(DistanceDurationText.Text));
         }
 
-        private void DistanceDurationText_KeyDown(object sender, KeyEventArgs e)
-        {
-            if (e.KeyCode == Keys.Enter)
-            {
-                SendKeys.Send("{TAB}");
-            }
-        }
-
         private void TimeDurationUpDown_Validated(object sender, EventArgs e)
         {
             Trace.Assert(SelectedStep != null && SelectedStep.Type == IStep.StepType.Regular);
@@ -493,14 +490,6 @@ namespace GarminFitnessPlugin.View
             TimeDuration concreteDuration = (TimeDuration)concreteStep.Duration;
 
             concreteDuration.TimeInSeconds = TimeDurationUpDown.Duration;
-        }
-
-        private void TimeDurationUpDown_KeyDown(object sender, KeyEventArgs e)
-        {
-            if (e.KeyCode == Keys.Enter)
-            {
-                SendKeys.Send("{TAB}");
-            }
         }
 
         private void CaloriesDurationText_Validating(object sender, CancelEventArgs e)
@@ -530,14 +519,6 @@ namespace GarminFitnessPlugin.View
             CaloriesDuration concreteDuration = (CaloriesDuration)concreteStep.Duration;
 
             concreteDuration.CaloriesToSpend = UInt16.Parse(CaloriesDurationText.Text);
-        }
-
-        private void CaloriesDurationText_KeyDown(object sender, KeyEventArgs e)
-        {
-            if (e.KeyCode == Keys.Enter)
-            {
-                SendKeys.Send("{TAB}");
-            }
         }
 
         private void ZoneComboBox_SelectionChangedCommited(object sender, EventArgs e)
@@ -863,14 +844,6 @@ namespace GarminFitnessPlugin.View
             }
         }
 
-        private void LowRangeTargetText_KeyDown(object sender, KeyEventArgs e)
-        {
-            if (e.KeyCode == Keys.Enter)
-            {
-                SendKeys.Send("{TAB}");
-            }
-        }
-
         private void HighRangeTargetText_Validating(object sender, CancelEventArgs e)
         {
             Trace.Assert(SelectedStep != null && SelectedStep.Type == IStep.StepType.Regular);
@@ -1156,14 +1129,6 @@ namespace GarminFitnessPlugin.View
             }
         }
 
-        private void HighRangeTargetText_KeyDown(object sender, KeyEventArgs e)
-        {
-            if (e.KeyCode == Keys.Enter)
-            {
-                SendKeys.Send("{TAB}");
-            }
-        }
-
         private void RepetitionCountText_Validating(object sender, CancelEventArgs e)
         {
             Trace.Assert(SelectedStep != null && SelectedStep.Type == IStep.StepType.Repeat);
@@ -1190,15 +1155,7 @@ namespace GarminFitnessPlugin.View
             concreteStep.RepetitionCount = Byte.Parse(RepetitionCountText.Text);
         }
 
-        private void RepetitionCountText_KeyDown(object sender, KeyEventArgs e)
-        {
-            if (e.KeyCode == Keys.Enter)
-            {
-                SendKeys.Send("{TAB}");
-            }
-        }
-
-        private void NotesText_Validated(object sender, EventArgs e)
+        private void WorkoutNotesText_Validated(object sender, EventArgs e)
         {
             Trace.Assert(SelectedWorkout != null);
 
@@ -1231,14 +1188,6 @@ namespace GarminFitnessPlugin.View
             Trace.Assert(SelectedWorkout != null);
 
             SelectedWorkout.Name = WorkoutNameText.Text;
-        }
-
-        private void WorkoutNameText_KeyDown(object sender, KeyEventArgs e)
-        {
-            if (e.KeyCode == Keys.Enter)
-            {
-                SendKeys.Send("{TAB}");
-            }
         }
 
         private void HRRangeReferenceComboBox_SelectionChangedCommited(object sender, EventArgs e)
@@ -1591,7 +1540,7 @@ namespace GarminFitnessPlugin.View
             }
         }
 
-        private void StepsList_DragEnter(object sender, EventArgs e)
+        private void StepsList_DragEnter(object sender, DragEventArgs e)
         {
             StepRowDataRenderer renderer = (StepRowDataRenderer)StepsList.RowDataRenderer;
 
@@ -1617,7 +1566,7 @@ namespace GarminFitnessPlugin.View
             AddNewStep(new RepeatStep(SelectedWorkout));
         }
 
-        private void RemoveItemButton_Click(object sender, EventArgs e)
+        private void RemoveStepButton_Click(object sender, EventArgs e)
         {
             DeleteSelectedSteps();
         }
@@ -2316,40 +2265,7 @@ namespace GarminFitnessPlugin.View
                 NewWorkoutButton.Enabled = true;
             }
 
-            // None or multiple selection
-            if (SelectedWorkout == null)
-            {
-                StepSplit.Enabled = false;
-                ExportDateTextLabel.Enabled = false;
-                ExportDateLabel.Enabled = false;
-
-                if (SelectedWorkouts.Count == 0)
-                {
-                    RemoveWorkoutButton.Enabled = false;
-                    CalendarSplit.Panel2.Enabled = false;
-                }
-                else
-                {
-                    RemoveWorkoutButton.Enabled = true;
-                    CalendarSplit.Panel2.Enabled = true;
-                }
-
-                RefreshWorkoutCalendar();
-            }
-            else
-            {
-                StepSplit.Enabled = true;
-                AddStepButton.Enabled = SelectedWorkout.GetStepCount() < Constants.MaxStepsPerWorkout;
-                AddRepeatButton.Enabled = SelectedWorkout.GetStepCount() < Constants.MaxStepsPerWorkout - 1;
-                CalendarSplit.Panel2.Enabled = true;
-                ExportDateTextLabel.Enabled = true;
-                ExportDateLabel.Enabled = true;
-                RemoveWorkoutButton.Enabled = true;
-                ScheduleWorkoutButton.Enabled = true;
-
-                ScheduleWorkoutButton.Enabled = WorkoutCalendar.SelectedDate >= DateTime.Today && !SelectedWorkout.ScheduledDates.Contains(WorkoutCalendar.SelectedDate);
-                RemoveScheduledDateButton.Enabled = SelectedWorkout.ScheduledDates.Contains(WorkoutCalendar.SelectedDate);
-            }
+            RefreshWorkoutSelectionControls();
         }
 
         private void RefreshStepSelection()
@@ -2369,7 +2285,7 @@ namespace GarminFitnessPlugin.View
             UInt16 selectedPosition = 0;
             List<IStep> selectedList = null;
 
-            RemoveItemButton.Enabled = SelectedSteps.Count > 0;
+            RemoveStepButton.Enabled = SelectedSteps.Count > 0;
             StepsNotesSplitter.Enabled = SelectedStep != null;
             if (SelectedStep != null && Utils.GetStepInfo(SelectedStep, SelectedWorkout.Steps, out selectedList, out selectedPosition))
             {
@@ -2417,6 +2333,44 @@ namespace GarminFitnessPlugin.View
 
             ScheduleWorkoutButton.Enabled = WorkoutCalendar.SelectedDate >= DateTime.Today && !areAllWorkoutsScheduledOnDate;
             RemoveScheduledDateButton.Enabled = hasScheduledDate;
+        }
+
+        private void RefreshWorkoutSelectionControls()
+        {
+            // None or multiple selection
+            if (SelectedWorkout == null)
+            {
+                StepSplit.Enabled = false;
+                ExportDateTextLabel.Enabled = false;
+                ExportDateLabel.Enabled = false;
+
+                if (SelectedWorkouts.Count == 0)
+                {
+                    RemoveWorkoutButton.Enabled = false;
+                    CalendarSplit.Panel2.Enabled = false;
+                }
+                else
+                {
+                    RemoveWorkoutButton.Enabled = true;
+                    CalendarSplit.Panel2.Enabled = true;
+                }
+
+                RefreshWorkoutCalendar();
+            }
+            else
+            {
+                StepSplit.Enabled = true;
+                AddStepButton.Enabled = SelectedWorkout.GetStepCount() < Constants.MaxStepsPerWorkout;
+                AddRepeatButton.Enabled = SelectedWorkout.GetStepCount() < Constants.MaxStepsPerWorkout - 1;
+                CalendarSplit.Panel2.Enabled = true;
+                ExportDateTextLabel.Enabled = true;
+                ExportDateLabel.Enabled = true;
+                RemoveWorkoutButton.Enabled = true;
+                ScheduleWorkoutButton.Enabled = true;
+
+                ScheduleWorkoutButton.Enabled = WorkoutCalendar.SelectedDate >= DateTime.Today && !SelectedWorkout.ScheduledDates.Contains(WorkoutCalendar.SelectedDate);
+                RemoveScheduledDateButton.Enabled = SelectedWorkout.ScheduledDates.Contains(WorkoutCalendar.SelectedDate);
+            }
         }
 
         private void AddNewStep(IStep newStep)
@@ -2613,6 +2567,9 @@ namespace GarminFitnessPlugin.View
             {
                 IStep currentStep = steps[i];
                 StepWrapper wrapper = GetStepWrapper(currentStep, parent);
+
+                // Reset hierarchy
+                wrapper.Parent = null;
                 wrapper.Children.Clear();
 
                 if (parent != null)
