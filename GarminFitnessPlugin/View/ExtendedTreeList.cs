@@ -1,10 +1,11 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
 using System.Windows.Forms;
 using ZoneFiveSoftware.Common.Visuals;
-using System.Diagnostics;
+using GarminFitnessPlugin.Controller;
 
 namespace GarminFitnessPlugin.View
 {
@@ -17,6 +18,8 @@ namespace GarminFitnessPlugin.View
             base.MouseUp += new System.Windows.Forms.MouseEventHandler(OnBaseMouseUp);
             base.MouseMove += new System.Windows.Forms.MouseEventHandler(OnBaseMouseMove);
             base.EnabledChanged += new EventHandler(OnBaseEnabledChanged);
+            base.DragOver += new DragEventHandler(OnBaseDragOver);
+            base.DragDrop += new DragEventHandler(OnBaseDragDrop);
 
             RowDataRenderer = new ExtendedRowDataRenderer(this);
         }
@@ -109,6 +112,25 @@ namespace GarminFitnessPlugin.View
             }
         }
 
+        void OnBaseDragOver(object sender, DragEventArgs e)
+        {
+            Point clientPosition = PointToClient(new Point(e.X, e.Y));
+
+            if (clientPosition.Y < DragAutoScrollSize && VScrollBar.Value > VScrollBar.Minimum)
+            {
+                VScrollBar.Value--;
+            }
+            else if(clientPosition.Y > Size.Height - DragAutoScrollSize && VScrollBar.Value < VScrollBar.Maximum)
+            {
+                VScrollBar.Value++;
+            }
+        }
+
+        void OnBaseDragDrop(object sender, DragEventArgs e)
+        {
+            m_LastVScrollValue = VScrollBar.Value;
+        }
+
         public object RowHitTest(Point position, RowHitState state)
         {
             state = RowHitState.Row;
@@ -127,7 +149,7 @@ namespace GarminFitnessPlugin.View
         {
             IList rows = ((ExtendedRowDataRenderer)RowDataRenderer).GetRows();
             int rowY = position.Y;
-            int i = -1;
+            int i = VScrollBar.Value - 1;
             object currentRowElement = null;
 
             do
@@ -170,14 +192,38 @@ namespace GarminFitnessPlugin.View
             }
         }
 
+        public new object RowData
+        {
+            get { return base.RowData; }
+            set
+            {
+                base.RowData = value;
+
+                if (m_LastVScrollValue != -1 && m_LastVScrollValue != VScrollBar.Value)
+                {
+                    VScrollBar.Value = (int)Utils.Clamp(m_LastVScrollValue, VScrollBar.Minimum, VScrollBar.Maximum);
+                    m_LastVScrollValue = -1;
+                }
+            }
+        }
+
+        public Byte DragAutoScrollSize
+        {
+            get { return m_DragAutoScrollSize; }
+            set { m_DragAutoScrollSize = value; }
+        }
+
         public new event EventHandler SelectedChanged;
         public event EventHandler DragStart;
 
-        private bool m_IsMouseDownInList = false;
-        private Point m_LastMouseDownLocation;
-        private int m_MouseMovedPixels = 0;
-        private bool m_SelectionCancelled = false;
+        private Byte m_DragAutoScrollSize = 20;
+
         private IList m_LastSelection = null;
         private IList m_CancelledSelection = null;
+        private Point m_LastMouseDownLocation;
+        private int m_MouseMovedPixels = 0;
+        private int m_LastVScrollValue = -1;
+        private bool m_IsMouseDownInList = false;
+        private bool m_SelectionCancelled = false;
     }
 }

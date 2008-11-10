@@ -18,15 +18,20 @@ namespace GarminFitnessPlugin.View
 
         protected override RowDecoration GetRowDecoration(object element)
         {
-            if (m_IsInDrag && GetRows()[m_DragResultPosition] == element)
+            if (m_IsInDrag)
             {
-                if (m_IsInUpperHalf)
+                IList rows = GetRows();
+
+                if (m_DragResultPosition < rows.Count && rows[m_DragResultPosition] == element)
                 {
-                    return RowDecoration.TopLineSingle;
-                }
-                else
-                {
-                    return RowDecoration.BottomLineSingle;
+                    if (m_IsInUpperHalf)
+                    {
+                        return RowDecoration.TopLineSingle;
+                    }
+                    else
+                    {
+                        return RowDecoration.BottomLineSingle;
+                    }
                 }
             }
 

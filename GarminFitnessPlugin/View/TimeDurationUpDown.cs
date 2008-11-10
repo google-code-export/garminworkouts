@@ -52,24 +52,24 @@ namespace GarminFitnessPlugin.View
         {
             m_SelectedElement = SelectableElements.Hours;
 
-            UpDownArrows.Value = Hours;
             UpDownArrows.Maximum = 17;
+            UpDownArrows.Value = Hours;
         }
 
         private void MinutesText_Enter(object sender, EventArgs e)
         {
             m_SelectedElement = SelectableElements.Minutes;
 
-            UpDownArrows.Value = Minutes;
             UpDownArrows.Maximum = Constants.MinutesPerHour - 1;
+            UpDownArrows.Value = Minutes;
         }
 
         private void SecondsText_Enter(object sender, EventArgs e)
         {
             m_SelectedElement = SelectableElements.Seconds;
 
-            UpDownArrows.Value = Seconds;
             UpDownArrows.Maximum = Constants.SecondsPerMinute - 1;
+            UpDownArrows.Value = Seconds;
         }
 
         private void UpDownArrows_ValueChanged(object sender, EventArgs e)
@@ -113,7 +113,7 @@ namespace GarminFitnessPlugin.View
             }
             catch (Exception)
             {
-                HoursText.Text = UpDownArrows.Value.ToString();
+                HoursText.Text = UpDownArrows.Value.ToString("00");
                 System.Media.SystemSounds.Asterisk.Play();
             }
             e.Cancel = false;
@@ -127,7 +127,7 @@ namespace GarminFitnessPlugin.View
             }
             catch (Exception)
             {
-                MinutesText.Text = UpDownArrows.Value.ToString();
+                MinutesText.Text = UpDownArrows.Value.ToString("00");
                 System.Media.SystemSounds.Asterisk.Play();
             }
             e.Cancel = false;
@@ -141,7 +141,7 @@ namespace GarminFitnessPlugin.View
             }
             catch (Exception)
             {
-                SecondsText.Text = UpDownArrows.Value.ToString();
+                SecondsText.Text = UpDownArrows.Value.ToString("00");
                 System.Media.SystemSounds.Asterisk.Play();
             }
             e.Cancel = false;
