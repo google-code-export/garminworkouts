@@ -101,6 +101,19 @@ namespace GarminFitnessPlugin.View
 
         public System.Windows.Forms.Control CreatePageControl()
         {
+            if (m_MainControl == null)
+            {
+                m_MainControl = new GarminFitnessMainControl();
+
+                SetupCurrentView();
+                GetCurrentView().RefreshUIFromLogbook();
+            }
+
+            return m_MainControl;
+        }
+
+        public IGarminFitnessPluginControl GetCurrentView()
+        {
             if (m_ViewControls[(int)m_CurrentView] == null)
             {
                 switch (m_CurrentView)
@@ -116,9 +129,11 @@ namespace GarminFitnessPlugin.View
                             break;
                         }
                 }
+
+                m_ViewControls[(int)m_CurrentView].RefreshUIFromLogbook();
             }
 
-            return (UserControl)m_ViewControls[(int)m_CurrentView];
+            return m_ViewControls[(int)m_CurrentView];
         }
 
         void OnPropertyChanged(object sender, PropertyChangedEventArgs e)
@@ -137,10 +152,6 @@ namespace GarminFitnessPlugin.View
 
         public void ShowPage(string bookmark)
         {
-            CreatePageControl();
-
-            // This is to make sure that the categories are up to date
-            m_ViewControls[(int)m_CurrentView].RefreshUIFromLogbook();
         }
 
         public IPageStatus Status
@@ -152,9 +163,7 @@ namespace GarminFitnessPlugin.View
         {
             m_CurrentTheme = visualTheme;
 
-            CreatePageControl();
-
-            m_ViewControls[(int)m_CurrentView].ThemeChanged(visualTheme);
+            GetCurrentView().ThemeChanged(visualTheme);
         }
 
         public string Title
@@ -165,7 +174,7 @@ namespace GarminFitnessPlugin.View
         public void UICultureChanged(System.Globalization.CultureInfo culture)
         {
             m_CurrentCulture = culture;
-            m_ViewControls[(int)m_CurrentView].UICultureChanged(culture);
+            GetCurrentView().UICultureChanged(culture);
         }
 
         #endregion
@@ -190,9 +199,7 @@ namespace GarminFitnessPlugin.View
 
         private void OnLogbookChanged(object sender, ILogbook oldLogbook, ILogbook newLogbook)
         {
-            CreatePageControl();
-
-            m_ViewControls[(int)m_CurrentView].RefreshUIFromLogbook();
+            GetCurrentView().RefreshUIFromLogbook();
         }
 
         public void WorkoutsViewEventHandler(object sender, EventArgs args)
@@ -213,8 +220,7 @@ namespace GarminFitnessPlugin.View
 
         private void SwapViews()
         {
-            Control oldControl = CreatePageControl();
-            Control currentControl;
+            ((UserControl)GetCurrentView()).Visible = false;
 
             // Swap them
             switch(m_CurrentView)
@@ -230,22 +236,25 @@ namespace GarminFitnessPlugin.View
                     break;
             }
 
-            // Make sure the other control is created
-            currentControl = CreatePageControl();
-            // Modify UI hierarchy
-            if (currentControl.Parent == null)
-            {
-                currentControl.Parent = oldControl.Parent;
-                oldControl.Parent = null;
-            }
+            SetupCurrentView();
 
-            // Refresh UI
-            currentControl.Parent.Invalidate();
-            PropertyChanged(this, new PropertyChangedEventArgs("SubTitle"));
-
-            // Refresh the lsit of actions also, inelegant, but working
+            // Refresh the list of actions, ugly but working
             PluginMain.GetApplication().ShowView(GUIDs.DailyActivityView, "");
             PluginMain.GetApplication().ShowView(GUIDs.GarminFitnessView, "");
+        }
+
+        private void SetupCurrentView()
+        {
+            // Update UI to view
+            UserControl currentControl = (UserControl)GetCurrentView();
+
+            if (currentControl.Parent == null)
+            {
+                currentControl.Parent = CreatePageControl();
+                currentControl.Dock = DockStyle.Fill;
+            }
+
+            currentControl.Visible = true;
         }
 
         public static ResourceManager ResourceManager
@@ -275,6 +284,7 @@ namespace GarminFitnessPlugin.View
                 new WorkoutImportAction()
             };
 
+        private UserControl m_MainControl = null;
         private IGarminFitnessPluginControl[] m_ViewControls = null;
         private PluginViews m_CurrentView = PluginViews.Workouts;
 

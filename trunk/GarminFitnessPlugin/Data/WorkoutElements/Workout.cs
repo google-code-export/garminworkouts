@@ -686,9 +686,12 @@ namespace GarminFitnessPlugin.Data
             }
 
             // Now that we deserialized, paste in the current workout
-            AddStepsToRoot(deserializedSteps);
+            if (AddStepsToRoot(deserializedSteps))
+            {
+                return deserializedSteps;
+            }
 
-            return deserializedSteps;
+            return null;
         }
 
         void OnStepChanged(IStep modifiedStep, PropertyChangedEventArgs changedProperty)
@@ -880,113 +883,141 @@ namespace GarminFitnessPlugin.Data
             return null;
         }
 
-        public void AddStepsToRoot(List<IStep> stepsToAdd)
+        public bool AddStepsToRoot(List<IStep> stepsToAdd)
         {
-            InsertStepsAfterStep(stepsToAdd, Steps[Steps.Count - 1]);
+            return InsertStepsAfterStep(stepsToAdd, Steps[Steps.Count - 1]);
         }
 
-        public void InsertStepInRoot(int index, IStep stepToAdd)
-        {
-            List<IStep> stepsToAdd = new List<IStep>();
-
-            stepsToAdd.Add(stepToAdd);
-
-            InsertStepsBeforeStep(stepsToAdd, Steps[index]);
-        }
-
-        public void InsertStepsInRoot(List<IStep> stepsToAdd, int index)
-        {
-            InsertStepsBeforeStep(stepsToAdd, Steps[index]);
-        }
-
-        public void InsertStepAfterStep(IStep stepToAdd, IStep previousStep)
+        public bool InsertStepInRoot(int index, IStep stepToAdd)
         {
             List<IStep> stepsToAdd = new List<IStep>();
 
             stepsToAdd.Add(stepToAdd);
 
-            InsertStepsAfterStep(stepsToAdd, previousStep);
+            return InsertStepsBeforeStep(stepsToAdd, Steps[index]);
         }
 
-        public void InsertStepsAfterStep(List<IStep> stepsToAdd, IStep previousStep)
+        public bool InsertStepsInRoot(List<IStep> stepsToAdd, int index)
+        {
+            return InsertStepsBeforeStep(stepsToAdd, Steps[index]);
+        }
+
+        public bool InsertStepAfterStep(IStep stepToAdd, IStep previousStep)
+        {
+            List<IStep> stepsToAdd = new List<IStep>();
+
+            stepsToAdd.Add(stepToAdd);
+
+            return InsertStepsAfterStep(stepsToAdd, previousStep);
+        }
+
+        public bool InsertStepsAfterStep(List<IStep> stepsToAdd, IStep previousStep)
         {
             Trace.Assert(previousStep != null);
 
             UInt16 previousPosition = 0;
             List<IStep> parentList = null;
+            int insertStepsCount = 0;
 
-            if (Utils.GetStepInfo(previousStep, Steps, out parentList, out previousPosition))
+            // We need to count the number of items being moved
+            for (int i = 0; i < stepsToAdd.Count; ++i)
             {
-                List<IStep> tempList;
-                UInt16 tempPosition = 0;
-                bool stepAdded = false;
+                insertStepsCount += stepsToAdd[i].GetStepCount();
+            }
 
-                for (int i = 0; i < stepsToAdd.Count; ++i)
+            if (GetStepCount() + insertStepsCount <= Constants.MaxStepsPerWorkout)
+            {
+                if (Utils.GetStepInfo(previousStep, Steps, out parentList, out previousPosition))
                 {
-                    // Make sure we don't duplicate the step in the list
-                    Trace.Assert(!Utils.GetStepInfo(stepsToAdd[i], Steps, out tempList, out tempPosition));
+                    List<IStep> tempList;
+                    UInt16 tempPosition = 0;
+                    bool stepAdded = false;
 
-                    RegisterStep(stepsToAdd[i]);
+                    for (int i = 0; i < stepsToAdd.Count; ++i)
+                    {
+                        // Make sure we don't duplicate the step in the list
+                        Trace.Assert(!Utils.GetStepInfo(stepsToAdd[i], Steps, out tempList, out tempPosition));
 
-                    parentList.Insert(++previousPosition, stepsToAdd[i]);
-                    stepAdded = true;
+                        RegisterStep(stepsToAdd[i]);
+
+                        parentList.Insert(++previousPosition, stepsToAdd[i]);
+                        stepAdded = true;
+                    }
+
+                    if (stepAdded)
+                    {
+                        TriggerWorkoutChangedEvent(new PropertyChangedEventArgs("Steps"));
+                    }
+
+                    return true;
                 }
-
-                if (stepAdded)
+                else
                 {
-                    TriggerWorkoutChangedEvent(new PropertyChangedEventArgs("Steps"));
+                    // We haven't found the right step, this shouldn't happen
+                    Trace.Assert(false);
                 }
             }
-            else
-            {
-                // We haven't found the right step, this shouldn't happen
-                Trace.Assert(false);
-            }
+
+            return false;
         }
 
-        public void InsertStepBeforeStep(IStep stepToAdd, IStep previousStep)
+        public bool InsertStepBeforeStep(IStep stepToAdd, IStep previousStep)
         {
             List<IStep> stepsToAdd = new List<IStep>();
 
             stepsToAdd.Add(stepToAdd);
 
-            InsertStepsBeforeStep(stepsToAdd, previousStep);
+            return InsertStepsBeforeStep(stepsToAdd, previousStep);
         }
 
-        public void InsertStepsBeforeStep(List<IStep> stepsToAdd, IStep nextStep)
+        public bool InsertStepsBeforeStep(List<IStep> stepsToAdd, IStep nextStep)
         {
             Trace.Assert(nextStep != null);
 
             UInt16 previousPosition = 0;
             List<IStep> parentList = null;
+            int insertStepsCount = 0;
 
-            if (Utils.GetStepInfo(nextStep, Steps, out parentList, out previousPosition))
+            // We need to count the number of items being moved
+            for (int i = 0; i < stepsToAdd.Count; ++i)
             {
-                List<IStep> tempList;
-                UInt16 tempPosition = 0;
-                bool stepAdded = false;
+                insertStepsCount += stepsToAdd[i].GetStepCount();
+            }
 
-                for (int i = 0; i < stepsToAdd.Count; ++i)
+            if (GetStepCount() + insertStepsCount <= Constants.MaxStepsPerWorkout)
+            {
+                if (Utils.GetStepInfo(nextStep, Steps, out parentList, out previousPosition))
                 {
-                    // Make sure we don't duplicate the step in the list
-                    Trace.Assert(!Utils.GetStepInfo(stepsToAdd[i], Steps, out tempList, out tempPosition));
+                    List<IStep> tempList;
+                    UInt16 tempPosition = 0;
+                    bool stepAdded = false;
 
-                    RegisterStep(stepsToAdd[i]);
+                    for (int i = 0; i < stepsToAdd.Count; ++i)
+                    {
+                        // Make sure we don't duplicate the step in the list
+                        Trace.Assert(!Utils.GetStepInfo(stepsToAdd[i], Steps, out tempList, out tempPosition));
 
-                    parentList.Insert(previousPosition++, stepsToAdd[i]);
-                    stepAdded = true;
+                        RegisterStep(stepsToAdd[i]);
+
+                        parentList.Insert(previousPosition++, stepsToAdd[i]);
+                        stepAdded = true;
+                    }
+
+                    if (stepAdded)
+                    {
+                        TriggerWorkoutChangedEvent(new PropertyChangedEventArgs("Steps"));
+                    }
+
+                    return true;
                 }
-
-                if (stepAdded)
+                else
                 {
-                    TriggerWorkoutChangedEvent(new PropertyChangedEventArgs("Steps"));
+                    // We haven't found the right step, this shouldn't happen
+                    Trace.Assert(false);
                 }
             }
-            else
-            {
-                // We haven't found the right step, this shouldn't happen
-                Trace.Assert(false);
-            }
+
+            return false;
         }
 
         public void MoveStepsAfterStep(List<IStep> stepsToMove, IStep previousStep)
@@ -1126,23 +1157,30 @@ namespace GarminFitnessPlugin.Data
             }
         }
 
-        public void AddNewStep(IStep stepToRegister)
+        public bool AddNewStep(IStep stepToRegister)
         {
-            AddNewStep(stepToRegister, null);
+            return AddNewStep(stepToRegister, null);
         }
 
-        public void AddNewStep(IStep stepToRegister, RepeatStep parent)
+        public bool AddNewStep(IStep stepToRegister, RepeatStep parent)
         {
-            if (parent == null)
+            if (GetStepCount() < Constants.MaxStepsPerWorkout)
             {
-                m_Steps.Add(stepToRegister);
-            }
-            else
-            {
-                parent.StepsToRepeat.Add(stepToRegister);
+                if (parent == null)
+                {
+                    m_Steps.Add(stepToRegister);
+                }
+                else
+                {
+                    parent.StepsToRepeat.Add(stepToRegister);
+                }
+
+                RegisterStep(stepToRegister);
+
+                return true;
             }
 
-            RegisterStep(stepToRegister);
+            return false;
         }
 
         private void RegisterStep(IStep stepToRegister)

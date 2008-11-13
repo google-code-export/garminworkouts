@@ -116,42 +116,15 @@ namespace GarminFitnessPlugin.Controller
             }
         }
 
-        public void Deserialize(Stream stream)
+        public new void Deserialize(Stream stream, DataVersion version)
         {
             IsDeserializing = true;
-
-            byte[] headerBuffer = new byte[Constants.DataHeaderIdString.Length];
-            String headerIdString;
-            DataVersion version = null;
-
-            stream.Read(headerBuffer, 0, Constants.DataHeaderIdString.Length);
-            headerIdString = Encoding.UTF8.GetString(headerBuffer);
-
-            if (headerIdString != Constants.DataHeaderIdString)
-            {
-                // Deserialize using version 0
-                version = new DataVersion(0);
-                stream.Position = 0;
-            }
-            else
-            {
-                Byte versionNumber = (Byte)stream.ReadByte();
-
-                if (versionNumber <= Constants.CurrentVersion.VersionNumber)
-                {
-                    version = new DataVersion(versionNumber);
-                }
-                else
-                {
-                    throw new DataTooRecentException(versionNumber);
-                }
-            }
 
             m_EventTriggerActive = false;
             {
                 RemoveAllWorkouts();
 
-                Deserialize(stream, version);
+                base.Deserialize(stream, version);
 
                 m_EventTriggerActive = true;
             }

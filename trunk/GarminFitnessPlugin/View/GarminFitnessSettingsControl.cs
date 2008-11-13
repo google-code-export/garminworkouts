@@ -110,7 +110,7 @@ namespace GarminFitnessPlugin.View
                     case GarminCategories.Running:
                         RunningRadioButton.Checked = true;
                         break;
-                    case GarminCategories.Cycling:
+                    case GarminCategories.Biking:
                         CyclingRadioButton.Checked = true;
                         break;
                     case GarminCategories.Other:
@@ -129,9 +129,6 @@ namespace GarminFitnessPlugin.View
             {
                 Options.STToGarminCategoryMap[selectedCategory] = GarminCategories.Running;
 
-                CyclingRadioButton.Checked = false;
-                OtherRadioButton.Checked = false;
-
                 ActivityCategoryList.Invalidate();
             }
         }
@@ -141,12 +138,9 @@ namespace GarminFitnessPlugin.View
             IActivityCategory selectedCategory = (IActivityCategory)((STToGarminActivityCategoryWrapper)ActivityCategoryList.Selected[0]).Element;
 
             if (CyclingRadioButton.Checked &&
-                Options.STToGarminCategoryMap[selectedCategory] != GarminCategories.Cycling)
+                Options.STToGarminCategoryMap[selectedCategory] != GarminCategories.Biking)
             {
-                Options.STToGarminCategoryMap[selectedCategory] = GarminCategories.Cycling;
-
-                RunningRadioButton.Checked = false;
-                OtherRadioButton.Checked = false;
+                Options.STToGarminCategoryMap[selectedCategory] = GarminCategories.Biking;
 
                 ActivityCategoryList.Invalidate();
             }
@@ -160,9 +154,6 @@ namespace GarminFitnessPlugin.View
                 Options.STToGarminCategoryMap[selectedCategory] != GarminCategories.Other)
             {
                 Options.STToGarminCategoryMap[selectedCategory] = GarminCategories.Other;
-
-                RunningRadioButton.Checked = false;
-                CyclingRadioButton.Checked = false;
 
                 ActivityCategoryList.Invalidate();
             }
@@ -197,7 +188,7 @@ namespace GarminFitnessPlugin.View
                         case GarminCategories.Running:
                             RunningRadioButton.Checked = true;
                             break;
-                        case GarminCategories.Cycling:
+                        case GarminCategories.Biking:
                             CyclingRadioButton.Checked = true;
                             break;
                         case GarminCategories.Other:

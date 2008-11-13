@@ -166,7 +166,7 @@ namespace GarminFitnessPlugin.View
             {
                 if (task.Type == GarminDeviceManager.BasicTask.TaskTypes.TaskType_Initialize)
                 {
-                    manager.CancelAllPendingTasks();
+                    exportCancelled = true;
 
                     MessageBox.Show(GarminFitnessView.ResourceManager.GetString("DeviceCommunicationErrorText", GarminFitnessView.UICulture),
                                     GarminFitnessView.ResourceManager.GetString("ErrorText", GarminFitnessView.UICulture),
@@ -183,7 +183,7 @@ namespace GarminFitnessPlugin.View
                     m_FailedExportList.AddRange(concreteTask.Workouts);
                 }
             }
-
+            
             if (manager.AreAllTasksFinished)
             {
                 Utils.ReleaseMainWindow();

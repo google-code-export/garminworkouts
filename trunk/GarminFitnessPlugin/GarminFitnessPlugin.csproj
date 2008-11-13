@@ -52,15 +52,15 @@
   <ItemGroup>
     <Reference Include="Common.Data, Version=2.0.3088.30779, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>D:\Zone Five Software\SportTracks 2.0\Common.Data.dll</HintPath>
+      <HintPath>..\..\..\..\..\Program Files\Zone Five Software\SportTracks 2.0\Common.Data.dll</HintPath>
     </Reference>
     <Reference Include="Common.Visuals, Version=2.0.3088.30782, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>D:\Zone Five Software\SportTracks 2.0\Common.Visuals.dll</HintPath>
+      <HintPath>..\..\..\..\..\Program Files\Zone Five Software\SportTracks 2.0\Common.Visuals.dll</HintPath>
     </Reference>
     <Reference Include="GarminGPS, Version=2.0.3164.41516, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>C:\ProgramData\ZoneFiveSoftware\SportTracks\2.0\Plugins\Installed\64c67771-aec3-4434-9ef1-ad6cabc1479e\GarminGPS\GarminGPS.dll</HintPath>
+      <HintPath>..\..\..\..\All Users\Application Data\ZoneFiveSoftware\SportTracks\2.0\Plugins\Installed\64c67771-aec3-4434-9ef1-ad6cabc1479e\GarminGPS\GarminGPS.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
@@ -130,9 +130,17 @@
     <Compile Include="View\AutoExpandTreeList.cs">
       <SubType>UserControl</SubType>
     </Compile>
+    <Compile Include="View\GarminSpeedZoneWrapper.cs" />
+    <Compile Include="View\IGarminZoneWrapper.cs" />
     <Compile Include="View\ExtendedRowDataRenderer.cs" />
     <Compile Include="View\ExtendedTreeList.cs">
       <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="View\GarminFitnessMainControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="View\GarminFitnessMainControl.Designer.cs">
+      <DependentUpon>GarminFitnessMainControl.cs</DependentUpon>
     </Compile>
     <Compile Include="View\GarminProfileControl.cs">
       <SubType>UserControl</SubType>
@@ -141,6 +149,7 @@
       <DependentUpon>GarminProfileControl.cs</DependentUpon>
     </Compile>
     <Compile Include="View\IGarminFitnessPluginControl.cs" />
+    <Compile Include="View\GarminHeartRateZoneWrapper.cs" />
     <Compile Include="View\PluginViews.cs" />
     <Compile Include="View\STToGarminActivityCategoryWrapper.cs" />
     <Compile Include="View\ReplaceRenameDialog.cs">
@@ -261,6 +270,10 @@
     <EmbeddedResource Include="Resources\StringResources.sv.resx">
       <SubType>Designer</SubType>
     </EmbeddedResource>
+    <EmbeddedResource Include="View\GarminFitnessMainControl.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>GarminFitnessMainControl.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="View\GarminProfileControl.resx">
       <SubType>Designer</SubType>
       <DependentUpon>GarminProfileControl.cs</DependentUpon>
@@ -294,7 +307,7 @@
     <None Include="app.config" />
   </ItemGroup>
   <PropertyGroup>
-    <PostBuildEvent>xcopy "$(TargetDir)GarminFitnessPlugin*.*" "C:\ProgramData\ZoneFiveSoftware\SportTracks\2.0\Plugins\Installed\ba218e6e-01a1-4a63-9fda-1fa937e56fe9\GarminFitnessPlugin" /S /Y
+    <PostBuildEvent>xcopy "$(TargetDir)GarminFitnessPlugin*.*" "C:\Documents and Settings\All Users\Application Data\ZoneFiveSoftware\SportTracks\2.0\Plugins\Installed\ba218e6e-01a1-4a63-9fda-1fa937e56fe9\GarminFitnessPlugin" /S /Y
 </PostBuildEvent>
   </PropertyGroup>
   <ItemGroup>

@@ -60,6 +60,10 @@ namespace GarminFitnessPlugin
         public static readonly Byte MinRepeats = 2;
         public static readonly Byte MaxRepeats = 99;
 
+        // Profile limits
+        public static readonly double MinWeightLimit = 0;
+        public static readonly double MaxWeightLimit = 65535;
+
         public static readonly Byte GarminHRZoneCount = 5;
         public static readonly Byte GarminSpeedZoneCount = 10;
         public static readonly Byte GarminPowerZoneCount = 7;

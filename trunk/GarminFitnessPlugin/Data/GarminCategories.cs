@@ -7,7 +7,7 @@ namespace GarminFitnessPlugin.Data
         [GarminCategoryStringProviderAttribute("RunningText")]
         Running = 0,
         [GarminCategoryStringProviderAttribute("BikingText")]
-        Cycling,
+        Biking,
         [GarminCategoryStringProviderAttribute("OtherText")]
         Other,
         GarminCategoriesCount

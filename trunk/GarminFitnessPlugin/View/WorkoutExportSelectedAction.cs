@@ -27,7 +27,7 @@ namespace GarminFitnessPlugin.View
             get
             {
                 GarminFitnessView currentView = (GarminFitnessView)PluginMain.GetApplication().ActiveView;
-                GarminWorkoutControl viewControl = (GarminWorkoutControl)currentView.CreatePageControl();
+                GarminWorkoutControl viewControl = (GarminWorkoutControl)currentView.GetCurrentView();
 
                 return viewControl.SelectedWorkouts.Count > 0;
             }
@@ -105,7 +105,7 @@ namespace GarminFitnessPlugin.View
             {
                 GarminDeviceManager.GetInstance().TaskCompleted += new GarminDeviceManager.TaskCompletedEventHandler(OnDeviceManagerTaskCompleted);
 
-                GarminWorkoutControl viewControl = (GarminWorkoutControl)currentView.CreatePageControl();
+                GarminWorkoutControl viewControl = (GarminWorkoutControl)currentView.GetCurrentView();
                 Utils.HijackMainWindow();
 
                 // Export using Communicator Plugin
@@ -138,7 +138,7 @@ namespace GarminFitnessPlugin.View
             {
                 try
                 {
-                    GarminWorkoutControl viewControl = (GarminWorkoutControl)PluginMain.GetApplication().ActiveView.CreatePageControl();
+                    GarminWorkoutControl viewControl = (GarminWorkoutControl)((GarminFitnessView)PluginMain.GetApplication().ActiveView).GetCurrentView();
 
                     for (int i = 0; i < viewControl.SelectedWorkouts.Count; ++i)
                     {
@@ -184,7 +184,7 @@ namespace GarminFitnessPlugin.View
             {
                 if (task.Type == GarminDeviceManager.BasicTask.TaskTypes.TaskType_Initialize)
                 {
-                    manager.CancelAllPendingTasks();
+                    exportCancelled = true;
 
                     MessageBox.Show(GarminFitnessView.ResourceManager.GetString("DeviceCommunicationErrorText", GarminFitnessView.UICulture),
                                     GarminFitnessView.ResourceManager.GetString("ErrorText", GarminFitnessView.UICulture),

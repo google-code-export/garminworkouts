@@ -42,7 +42,7 @@ namespace GarminFitnessPlugin.Data
 
             stream.Write(BitConverter.GetBytes(MinUnitsPerSecond), 0, sizeof(double));
             stream.Write(BitConverter.GetBytes(MaxUnitsPerSecond), 0, sizeof(double));
-            stream.Write(BitConverter.GetBytes((Int32)SpeedUnit), 0, sizeof(Int32));
+            stream.Write(BitConverter.GetBytes((Int32)LastSpeedUnit), 0, sizeof(Int32));
         }
 
         public new void Deserialize_V0(Stream stream, DataVersion version)
@@ -240,23 +240,23 @@ namespace GarminFitnessPlugin.Data
 
         private double GetMinSpeedInUnitsPerHour(Length.Units speedUnit)
         {
-            return Length.Convert(MinUnitsPerSecond, SpeedUnit, speedUnit) * Constants.SecondsPerHour;
+            return Length.Convert(MinUnitsPerSecond, LastSpeedUnit, speedUnit) * Constants.SecondsPerHour;
         }
 
         private double GetMaxSpeedInUnitsPerHour(Length.Units speedUnit)
         {
-            return Length.Convert(MaxUnitsPerSecond, SpeedUnit, speedUnit) * Constants.SecondsPerHour;
+            return Length.Convert(MaxUnitsPerSecond, LastSpeedUnit, speedUnit) * Constants.SecondsPerHour;
         }
 
         private double GetMinSpeedInMinutesPerUnit(Length.Units speedUnit)
         {
-            double unitsPerMinute = Length.Convert(MinUnitsPerSecond, SpeedUnit, speedUnit) * Constants.SecondsPerMinute;
+            double unitsPerMinute = Length.Convert(MinUnitsPerSecond, LastSpeedUnit, speedUnit) * Constants.SecondsPerMinute;
             return 1.0 / unitsPerMinute;
         }
 
         private double GetMaxSpeedInMinutesPerUnit(Length.Units speedUnit)
         {
-            double unitsPerMinute = Length.Convert(MaxUnitsPerSecond, SpeedUnit, speedUnit) * Constants.SecondsPerMinute;
+            double unitsPerMinute = Length.Convert(MaxUnitsPerSecond, LastSpeedUnit, speedUnit) * Constants.SecondsPerMinute;
             return 1.0 / unitsPerMinute;
         }
 
@@ -269,13 +269,13 @@ namespace GarminFitnessPlugin.Data
             minUnitsPerHour = Length.Convert(minInMiles, Length.Units.Mile, speedUnit);
             MinUnitsPerSecond = minUnitsPerHour / Constants.SecondsPerHour;
 
-            if (speedUnit != SpeedUnit)
+            if (speedUnit != LastSpeedUnit)
             {
                 // Convert the old max
-                MaxUnitsPerSecond = Length.Convert(MaxUnitsPerSecond, SpeedUnit, speedUnit);
+                MaxUnitsPerSecond = Length.Convert(MaxUnitsPerSecond, LastSpeedUnit, speedUnit);
             }
 
-            SpeedUnit = speedUnit;
+            LastSpeedUnit = speedUnit;
         }
 
         private void SetMaxSpeedInUnitsPerHour(double maxUnitsPerHour, Length.Units speedUnit)
@@ -287,25 +287,23 @@ namespace GarminFitnessPlugin.Data
             maxUnitsPerHour = Length.Convert(maxInMiles, Length.Units.Mile, speedUnit);
             MaxUnitsPerSecond = maxUnitsPerHour / Constants.SecondsPerHour;
 
-            if (speedUnit != SpeedUnit)
+            if (speedUnit != LastSpeedUnit)
             {
                 // Convert the old max
-                MinUnitsPerSecond = Length.Convert(MinUnitsPerSecond, SpeedUnit, speedUnit);
+                MinUnitsPerSecond = Length.Convert(MinUnitsPerSecond, LastSpeedUnit, speedUnit);
             }
 
-            SpeedUnit = speedUnit;
+            LastSpeedUnit = speedUnit;
         }
 
         private void SetMinSpeedInMinutesPerUnit(double minMinutesPerUnit, Length.Units speedUnit)
         {
-            // Convert to speed (units/hr)
-            SetMinSpeedInUnitsPerHour(Constants.MinutesPerHour / minMinutesPerUnit, speedUnit);
+            SetMinSpeedInUnitsPerHour(Utils.PaceToSpeed(minMinutesPerUnit), speedUnit);
         }
 
         private void SetMaxSpeedInMinutesPerUnit(double maxMinutesPerUnit, Length.Units speedUnit)
         {
-            // Convert to speed (units/hr)
-            SetMaxSpeedInUnitsPerHour(Constants.MinutesPerHour / maxMinutesPerUnit, speedUnit);
+            SetMaxSpeedInUnitsPerHour(Utils.PaceToSpeed(maxMinutesPerUnit), speedUnit);
         }
 
         private void SetRangeInUnitsPerHour(double minUnitsPerHour, double maxUnitsPerHour, Length.Units speedUnit)
@@ -321,14 +319,14 @@ namespace GarminFitnessPlugin.Data
 
             MinUnitsPerSecond = minUnitsPerHour / Constants.SecondsPerHour;
             MaxUnitsPerSecond = maxUnitsPerHour / Constants.SecondsPerHour;
-            SpeedUnit = speedUnit;
+            LastSpeedUnit = speedUnit;
         }
 
         private void SetRangeInMinutesPerUnit(double minMinutesPerUnit, double maxMinutesPerUnit, Length.Units speedUnit)
         {
             // Convert to speed (units/hr)
-            SetRangeInUnitsPerHour(Constants.MinutesPerHour / minMinutesPerUnit,
-                                   Constants.MinutesPerHour / maxMinutesPerUnit,
+            SetRangeInUnitsPerHour(Utils.PaceToSpeed(minMinutesPerUnit),
+                                   Utils.PaceToSpeed(maxMinutesPerUnit),
                                    speedUnit);
         }
 
@@ -360,14 +358,14 @@ namespace GarminFitnessPlugin.Data
             }
         }
 
-        private Length.Units SpeedUnit
+        private Length.Units LastSpeedUnit
         {
-            get { return m_SpeedUnit; }
+            get { return m_LastSpeedUnit; }
             set
             {
-                if (m_SpeedUnit != value)
+                if (m_LastSpeedUnit != value)
                 {
-                    m_SpeedUnit = value;
+                    m_LastSpeedUnit = value;
 
                     TriggerTargetChangedEvent(this, new PropertyChangedEventArgs("SpeedUnits"));
                 }
@@ -376,12 +374,12 @@ namespace GarminFitnessPlugin.Data
 
         private double MinMetersPerSecond
         {
-            get { return Length.Convert(MinUnitsPerSecond, SpeedUnit, Length.Units.Meter); }
+            get { return Length.Convert(MinUnitsPerSecond, LastSpeedUnit, Length.Units.Meter); }
         }
 
         private double MaxMetersPerSecond
         {
-            get { return Length.Convert(MaxUnitsPerSecond, SpeedUnit, Length.Units.Meter); }
+            get { return Length.Convert(MaxUnitsPerSecond, LastSpeedUnit, Length.Units.Meter); }
         }
 
         public Length.Units BaseUnit
@@ -407,6 +405,6 @@ namespace GarminFitnessPlugin.Data
 
         private double m_MinUnitsPerSecond;
         private double m_MaxUnitsPerSecond;
-        private Length.Units m_SpeedUnit;
+        private Length.Units m_LastSpeedUnit;
     }
 }
