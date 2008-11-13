@@ -14,7 +14,7 @@ namespace GarminFitnessPlugin.Controller
         public static void HijackMainWindow()
         {
             Control viewControl = PluginMain.GetApplication().ActiveView.CreatePageControl();
-            Control mainWindow = viewControl.Parent.Parent.Parent.Parent;
+            Control mainWindow = viewControl.TopLevelControl;
 
             for (int i = 0; i < mainWindow.Controls.Count; ++i)
             {
@@ -26,7 +26,7 @@ namespace GarminFitnessPlugin.Controller
         public static void ReleaseMainWindow()
         {
             Control viewControl = PluginMain.GetApplication().ActiveView.CreatePageControl();
-            Control mainWindow = viewControl.Parent.Parent.Parent.Parent;
+            Control mainWindow = viewControl.TopLevelControl;
 
             for (int i = 0; i < mainWindow.Controls.Count; ++i)
             {
@@ -214,7 +214,12 @@ namespace GarminFitnessPlugin.Controller
                 string minutes = time.Substring(0, time.IndexOf(':'));
                 string seconds = time.Substring(time.IndexOf(':') + 1);
 
-                float value = float.Parse(minutes);
+                float value = 0;
+
+                if (minutes != String.Empty)
+                {
+                    value += float.Parse(minutes);
+                }
                 value += float.Parse(seconds) / Constants.SecondsPerMinute;
 
                 return value;
@@ -236,6 +241,16 @@ namespace GarminFitnessPlugin.Controller
                 minutes++;
                 seconds = 0;
             }
+        }
+
+        public static double SpeedToPace(double speed)
+        {
+            return Constants.MinutesPerHour / speed;
+        }
+
+        public static double PaceToSpeed(double pace)
+        {
+            return Constants.MinutesPerHour / pace;
         }
 
         public static int FindIndexForZone(IList<INamedLowHighZone> list, INamedLowHighZone zone)

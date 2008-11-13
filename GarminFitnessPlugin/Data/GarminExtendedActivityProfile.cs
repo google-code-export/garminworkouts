@@ -1,5 +1,9 @@
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
 using System.IO;
 using System.Xml;
+using ZoneFiveSoftware.Common.Data.Fitness;
 
 namespace GarminFitnessPlugin.Data
 {
@@ -8,6 +12,14 @@ namespace GarminFitnessPlugin.Data
         public GarminExtendedActivityProfile(GarminCategories category) :
             base(category)
         {
+            // Power Zones
+            UInt16 startPower = 100;
+            for (int i = 0; i < Constants.GarminSpeedZoneCount; ++i)
+            {
+                m_PowerZonesMaximum.Add(startPower);
+
+                startPower += 50;
+            }
         }
 
         public override void Serialize(Stream stream)
@@ -31,5 +43,12 @@ namespace GarminFitnessPlugin.Data
         {
             return false;
         }
+
+        void OnPowerZonePropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            TriggerChangedEvent(new PropertyChangedEventArgs("HeartRateZones"));
+        }
+
+        private List<UInt16> m_PowerZonesMaximum = new List<UInt16>();
     }
 }

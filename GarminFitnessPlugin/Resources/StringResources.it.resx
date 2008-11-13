@@ -126,6 +126,9 @@
   <data name="BikingText" xml:space="preserve">
     <value>Biking</value>
   </data>
+  <data name="BirthDateLabelText" xml:space="preserve">
+    <value>Birth Date :</value>
+  </data>
   <data name="BrowseButtonText" xml:space="preserve">
     <value>Browse...</value>
   </data>
@@ -213,6 +216,9 @@
   <data name="ExportSuccessText" xml:space="preserve">
     <value>Workouts have been successfully exported to {0}</value>
   </data>
+  <data name="FemaleText" xml:space="preserve">
+    <value>Female</value>
+  </data>
   <data name="FileDescriptionText" xml:space="preserve">
     <value>Workout Files</value>
   </data>
@@ -227,6 +233,12 @@
   </data>
   <data name="GarminText" xml:space="preserve">
     <value>Garmin</value>
+  </data>
+  <data name="GearWeightLabelText" xml:space="preserve">
+    <value>Gear Weight :</value>
+  </data>
+  <data name="GenderLabelText" xml:space="preserve">
+    <value>Gender :</value>
   </data>
   <data name="GTCSpeedZone10Text" xml:space="preserve">
     <value>10 - Max Speed</value>
@@ -282,8 +294,14 @@
   <data name="HeartRateZoneTargetDescriptionText" xml:space="preserve">
     <value>Try to keep my heart rate in zone {0}.</value>
   </data>
+  <data name="HighLabelText" xml:space="preserve">
+    <value>High :</value>
+  </data>
   <data name="HRSettingsGroupBoxText" xml:space="preserve">
     <value>Heart Rate Settings</value>
+  </data>
+  <data name="HRZonesGroupBoxText" xml:space="preserve">
+    <value>Heart Rate Zones</value>
   </data>
   <data name="ImportErrorText" xml:space="preserve">
     <value>There was an error while importing the workout</value>
@@ -302,6 +320,15 @@
   </data>
   <data name="LastExportDateText" xml:space="preserve">
     <value>Last export date :</value>
+  </data>
+  <data name="LowLabelText" xml:space="preserve">
+    <value>Low :</value>
+  </data>
+  <data name="MaleText" xml:space="preserve">
+    <value>Male</value>
+  </data>
+  <data name="MaxHRLabelText" xml:space="preserve">
+    <value>Maximum Heart Rate :</value>
   </data>
   <data name="MinuteAbbrText" xml:space="preserve">
     <value>min</value>
@@ -330,6 +357,9 @@
   <data name="PaceRangeTargetDescriptionText" xml:space="preserve">
     <value>Try to keep my pace between {0:00}:{1:00} and {2:00}:{3:00} min/{4}.</value>
   </data>
+  <data name="PasteStepErrorText" xml:space="preserve">
+    <value>Unable to paste the steps, your workout cannot contain that many steps.  The maximum number of steps in a workout is 20.</value>
+  </data>
   <data name="PerHourText" xml:space="preserve">
     <value>/h</value>
   </data>
@@ -344,6 +374,9 @@
   </data>
   <data name="PowerZoneSelectionLabelText" xml:space="preserve">
     <value>Use this power zone for my workouts :</value>
+  </data>
+  <data name="PowerZonesGroupBoxText" xml:space="preserve">
+    <value>Power Zones</value>
   </data>
   <data name="PowerZoneTargetDescriptionText" xml:space="preserve">
     <value>Try to keep my power in zone {0}.</value>
@@ -371,6 +404,9 @@
   </data>
   <data name="RestingCheckBoxText" xml:space="preserve">
     <value>Resting step</value>
+  </data>
+  <data name="RestingHeartRateLabelText" xml:space="preserve">
+    <value>Resting Heart Rate :</value>
   </data>
   <data name="RestText" xml:space="preserve">
     <value>Rest</value>
@@ -404,6 +440,9 @@
   </data>
   <data name="SpeedTargetComboBoxText" xml:space="preserve">
     <value>Try to keep my speed in a certain zone</value>
+  </data>
+  <data name="SpeedZonesGroupBoxText" xml:space="preserve">
+    <value>Speed Zones</value>
   </data>
   <data name="SpeedZoneTargetDescriptionText" xml:space="preserve">
     <value>Try to keep my speed in zone {0}</value>
@@ -464,6 +503,9 @@
   </data>
   <data name="ValueValidationTitleText" xml:space="preserve">
     <value>Invalid value</value>
+  </data>
+  <data name="WeightLabelText" xml:space="preserve">
+    <value>Weight :</value>
   </data>
   <data name="WhichZoneText" xml:space="preserve">
     <value>Which zone?</value>

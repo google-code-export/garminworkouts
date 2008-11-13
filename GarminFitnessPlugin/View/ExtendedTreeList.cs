@@ -20,8 +20,35 @@ namespace GarminFitnessPlugin.View
             base.EnabledChanged += new EventHandler(OnBaseEnabledChanged);
             base.DragOver += new DragEventHandler(OnBaseDragOver);
             base.DragDrop += new DragEventHandler(OnBaseDragDrop);
-
+            VScrollBar.ValueChanged += new EventHandler(OnVScrollBarValueChanged);
+            
             RowDataRenderer = new ExtendedRowDataRenderer(this);
+        }
+
+        protected override void OnKeyDown(KeyEventArgs e)
+        {
+            if (e.Control && (e.KeyCode == Keys.Up || e.KeyCode == Keys.Down))
+            {
+                e.SuppressKeyPress = true;
+            }
+
+            base.OnKeyDown(e);
+        }
+
+        void OnBaseDragDrop(object sender, DragEventArgs e)
+        {
+            m_RefocusOnItem = true;
+        }
+
+        void OnVScrollBarValueChanged(object sender, EventArgs e)
+        {
+            if (m_RefocusOnItem)
+            {
+                // Force focus to selection after drop
+                Selected = Selected;
+
+                m_RefocusOnItem = false;
+            }
         }
 
         void OnBaseSelectedChanged(object sender, EventArgs e)
@@ -126,11 +153,6 @@ namespace GarminFitnessPlugin.View
             }
         }
 
-        void OnBaseDragDrop(object sender, DragEventArgs e)
-        {
-            m_LastVScrollValue = VScrollBar.Value;
-        }
-
         public object RowHitTest(Point position, RowHitState state)
         {
             state = RowHitState.Row;
@@ -192,21 +214,6 @@ namespace GarminFitnessPlugin.View
             }
         }
 
-        public new object RowData
-        {
-            get { return base.RowData; }
-            set
-            {
-                base.RowData = value;
-
-                if (m_LastVScrollValue != -1 && m_LastVScrollValue != VScrollBar.Value)
-                {
-                    VScrollBar.Value = (int)Utils.Clamp(m_LastVScrollValue, VScrollBar.Minimum, VScrollBar.Maximum);
-                    m_LastVScrollValue = -1;
-                }
-            }
-        }
-
         public Byte DragAutoScrollSize
         {
             get { return m_DragAutoScrollSize; }
@@ -222,7 +229,7 @@ namespace GarminFitnessPlugin.View
         private IList m_CancelledSelection = null;
         private Point m_LastMouseDownLocation;
         private int m_MouseMovedPixels = 0;
-        private int m_LastVScrollValue = -1;
+        private bool m_RefocusOnItem = false;
         private bool m_IsMouseDownInList = false;
         private bool m_SelectionCancelled = false;
     }

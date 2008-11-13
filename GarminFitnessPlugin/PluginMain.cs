@@ -6,8 +6,9 @@ using System.IO;
 using System.Reflection;
 using System.Resources;
 using System.Runtime.Serialization.Formatters.Binary;
-using System.Xml;
+using System.Text;
 using System.Windows.Forms;
+using System.Xml;
 using ZoneFiveSoftware.Common.Data.Fitness;
 using ZoneFiveSoftware.Common.Visuals.Fitness;
 using GarminFitnessPlugin.Data;
@@ -264,7 +265,35 @@ namespace GarminFitnessPlugin
             {
                 try
                 {
-                    GarminWorkoutManager.Instance.Deserialize(stream);
+                    byte[] headerBuffer = new byte[Constants.DataHeaderIdString.Length];
+                    String headerIdString;
+                    DataVersion version = null;
+
+                    stream.Read(headerBuffer, 0, Constants.DataHeaderIdString.Length);
+                    headerIdString = Encoding.UTF8.GetString(headerBuffer);
+
+                    if (headerIdString != Constants.DataHeaderIdString)
+                    {
+                        // Deserialize using version 0
+                        version = new DataVersion(0);
+                        stream.Position = 0;
+                    }
+                    else
+                    {
+                        Byte versionNumber = (Byte)stream.ReadByte();
+
+                        if (versionNumber <= Constants.CurrentVersion.VersionNumber)
+                        {
+                            version = new DataVersion(versionNumber);
+                        }
+                        else
+                        {
+                            throw new DataTooRecentException(versionNumber);
+                        }
+                    }
+
+                    GarminWorkoutManager.Instance.Deserialize(stream, version);
+                    GarminProfileManager.Instance.Deserialize(stream, version);
                 }
                 catch (Data.DataTooRecentException)
                 {
@@ -280,6 +309,7 @@ namespace GarminFitnessPlugin
             else
             {
                 GarminWorkoutManager.Instance.RemoveAllWorkouts();
+                GarminProfileManager.Instance.Cleanup();
             }
 
             stream.Close();

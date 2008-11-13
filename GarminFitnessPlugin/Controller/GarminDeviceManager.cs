@@ -36,6 +36,11 @@ namespace GarminFitnessPlugin.Controller
 
         public static GarminDeviceManager GetInstance()
         {
+            if (m_Instance == null)
+            {
+                m_Instance = new GarminDeviceManager();
+            }
+
             return m_Instance;
         }
 
@@ -62,7 +67,12 @@ namespace GarminFitnessPlugin.Controller
             AddTask(new ImportWorkoutsTask());
         }
 
-        public void CancelAllPendingTasks()
+        public void CancelAllTasks()
+        {
+            m_TaskQueue.Clear();
+        }
+
+        private void CancelPendingTasks()
         {
             m_TaskQueue.RemoveRange(1, m_TaskQueue.Count - 1);
         }
@@ -99,9 +109,12 @@ namespace GarminFitnessPlugin.Controller
                 TaskCompleted(this, task, success);
             }
 
-            if (m_TaskQueue.Count > 0 && task.Type != BasicTask.TaskTypes.TaskType_RefreshDevices)
+            if (success)
             {
-                StartNextTask();
+                if (m_TaskQueue.Count > 0 && task.Type != BasicTask.TaskTypes.TaskType_RefreshDevices)
+                {
+                    StartNextTask();
+                }
             }
         }
 
@@ -113,6 +126,8 @@ namespace GarminFitnessPlugin.Controller
             }
             else
             {
+                CancelPendingTasks();
+
                 CompleteCurrentTask(false);
             }
         }
@@ -149,7 +164,7 @@ namespace GarminFitnessPlugin.Controller
                     }
                     else
                     {
-                        CancelAllPendingTasks();
+                        CancelPendingTasks();
                         succeeded = false;
                     }
                 }
@@ -323,6 +338,6 @@ namespace GarminFitnessPlugin.Controller
         private Device m_OperatingDevice = null;
         private Timer m_TimeoutTimer = new Timer();
 
-        private static GarminDeviceManager m_Instance = new GarminDeviceManager();
+        private static GarminDeviceManager m_Instance = null;
     }
 }
