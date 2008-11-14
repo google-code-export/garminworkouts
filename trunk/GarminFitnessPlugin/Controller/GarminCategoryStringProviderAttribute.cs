@@ -15,7 +15,6 @@ namespace GarminFitnessPlugin.Controller
         {
             get { return m_StringName; }
             set { m_StringName = value; }
-		}
-
+	}
     }
 }
