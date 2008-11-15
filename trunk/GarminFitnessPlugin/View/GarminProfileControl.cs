@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Globalization;
 using System.Reflection;
 using System.Resources;
@@ -23,6 +24,8 @@ namespace GarminFitnessPlugin.View
 
             GarminProfileManager.Instance.ProfileChanged += new GarminProfileManager.ProfileChangedEventHandler(OnProfileChanged);
             GarminProfileManager.Instance.ActivityProfileChanged += new GarminProfileManager.ActivityProfileChangedEventHandler(OnActivityProfileChanged);
+
+            BuildTreeLists();
         }
 
         public void ThemeChanged(ITheme visualTheme)
@@ -184,9 +187,6 @@ namespace GarminFitnessPlugin.View
                 m_SelectedSpeedZone = null;
             }
 
-            LowSpeedTextBox.Enabled = m_SelectedSpeedZone != null && m_SelectedSpeedZone.Index != 0;
-            HighSpeedTextBox.Enabled = m_SelectedSpeedZone != null && m_SelectedSpeedZone.Index != Constants.GarminSpeedZoneCount - 1;
-
             RefreshUIFromProfile();
         }
 
@@ -194,15 +194,12 @@ namespace GarminFitnessPlugin.View
         {
             if (PowerZonesTreeList.Selected.Count == 1)
             {
-                m_SelectedPowerZone = (GarminHeartRateZoneWrapper)PowerZonesTreeList.Selected[0];
+                m_SelectedPowerZone = (GarminPowerZoneWrapper)PowerZonesTreeList.Selected[0];
             }
             else
             {
                 m_SelectedPowerZone = null;
             }
-
-            LowPowerTextBox.Enabled = m_SelectedPowerZone != null && m_SelectedPowerZone.Index != 0;
-            HighPowerTextBox.Enabled = m_SelectedPowerZone != null && m_SelectedPowerZone.Index != Constants.GarminPowerZoneCount - 1;
 
             RefreshUIFromProfile();
         }
@@ -267,10 +264,10 @@ namespace GarminFitnessPlugin.View
             }
             else
             {
-                e.Cancel = !Utils.IsTextIntegerInRange(HighHRTextBox.Text, Constants.MinHRInBPM, Constants.MaxHRInBPM);
+                e.Cancel = !Utils.IsTextIntegerInRange(HighHRTextBox.Text, Constants.MinHRInBPM, profile.MaximumHeartRate);
                 if (e.Cancel)
                 {
-                    MessageBox.Show(String.Format(GarminFitnessView.ResourceManager.GetString("IntegerRangeValidationText"), Constants.MinHRInBPM, Constants.MaxHRInBPM),
+                    MessageBox.Show(String.Format(GarminFitnessView.ResourceManager.GetString("IntegerRangeValidationText"), Constants.MinHRInBPM, profile.MaximumHeartRate),
                                     GarminFitnessView.ResourceManager.GetString("ValueValidationTitleText"), MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 }
             }
@@ -278,62 +275,202 @@ namespace GarminFitnessPlugin.View
 
         private void HighHRTextBox_Validated(object sender, EventArgs e)
         {
-            m_CurrentProfile.SetHeartRateHighLimit(m_SelectedHRZone.Index, Byte.Parse(LowHRTextBox.Text));
+            m_CurrentProfile.SetHeartRateHighLimit(m_SelectedHRZone.Index, Byte.Parse(HighHRTextBox.Text));
         }
 
         private void SpeedRadioButton_CheckedChanged(object sender, EventArgs e)
         {
-
+            if (SpeedRadioButton.Checked)
+            {
+                m_CurrentProfile.SpeedIsInPace = false;
+            }
         }
 
         private void PaceRadioButton_CheckedChanged(object sender, EventArgs e)
         {
-
+            if (PaceRadioButton.Checked)
+            {
+                m_CurrentProfile.SpeedIsInPace = true;
+            }
         }
 
         private void LowSpeedTextBox_Validating(object sender, System.ComponentModel.CancelEventArgs e)
         {
+            double min, max;
 
+            if (m_CurrentProfile.SpeedIsInPace)
+            {
+                if (Utils.IsStatute(PluginMain.GetApplication().SystemPreferences.DistanceUnits))
+                {
+                    min = Constants.MinPaceStatute;
+                    max = Constants.MaxPaceStatute;
+                }
+                else
+                {
+                    min = Constants.MinPaceMetric;
+                    max = Constants.MaxPaceMetric;
+                }
+
+                e.Cancel = !Utils.IsTextTimeInRange(LowSpeedTextBox.Text, min, max);
+                if (e.Cancel)
+                {
+                    UInt16 minMinutes, minSeconds;
+                    UInt16 maxMinutes, maxSeconds;
+
+                    Utils.DoubleToTime(min, out minMinutes, out minSeconds);
+                    Utils.DoubleToTime(max, out maxMinutes, out maxSeconds);
+                    MessageBox.Show(String.Format(GarminFitnessView.ResourceManager.GetString("TimeRangeValidationText"),
+                                                  minMinutes, minSeconds,
+                                                  maxMinutes, maxSeconds),
+                                    GarminFitnessView.ResourceManager.GetString("ValueValidationTitleText"),
+                                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                }
+            }
+            else
+            {
+                if (Utils.IsStatute(PluginMain.GetApplication().SystemPreferences.DistanceUnits))
+                {
+                    min = Constants.MinSpeedStatute;
+                    max = Constants.MaxSpeedStatute;
+                }
+                else
+                {
+                    min = Constants.MinSpeedMetric;
+                    max = Constants.MaxSpeedMetric;
+                }
+
+                e.Cancel = !Utils.IsTextFloatInRange(LowSpeedTextBox.Text, min, max);
+                if (e.Cancel)
+                {
+                    MessageBox.Show(String.Format(GarminFitnessView.ResourceManager.GetString("DoubleRangeValidationText"), min, max),
+                                    GarminFitnessView.ResourceManager.GetString("ValueValidationTitleText"),
+                                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                }
+            }
         }
 
         private void LowSpeedTextBox_Validated(object sender, EventArgs e)
         {
-
+            if (m_CurrentProfile.SpeedIsInPace)
+            {
+                m_CurrentProfile.SetSpeedHighLimit(m_SelectedSpeedZone.Index, Utils.TimeToFloat(LowSpeedTextBox.Text));
+            }
+            else
+            {
+                m_CurrentProfile.SetSpeedLowLimit(m_SelectedSpeedZone.Index, double.Parse(LowSpeedTextBox.Text));
+            }
         }
 
         private void HighSpeedTextBox_Validating(object sender, System.ComponentModel.CancelEventArgs e)
         {
+            double min, max;
 
+            if (m_CurrentProfile.SpeedIsInPace)
+            {
+                if (Utils.IsStatute(m_CurrentProfile.BaseSpeedUnit))
+                {
+                    min = Constants.MinPaceStatute;
+                    max = Constants.MaxPaceStatute;
+                }
+                else
+                {
+                    min = Constants.MinPaceMetric;
+                    max = Constants.MaxPaceMetric;
+                }
+
+                e.Cancel = !Utils.IsTextTimeInRange(LowSpeedTextBox.Text, min, max);
+                if (e.Cancel)
+                {
+                    UInt16 minMinutes, minSeconds;
+                    UInt16 maxMinutes, maxSeconds;
+
+                    Utils.DoubleToTime(min, out minMinutes, out minSeconds);
+                    Utils.DoubleToTime(max, out maxMinutes, out maxSeconds);
+                    MessageBox.Show(String.Format(GarminFitnessView.ResourceManager.GetString("TimeRangeValidationText"),
+                                                  minMinutes, minSeconds,
+                                                  maxMinutes, maxSeconds),
+                                    GarminFitnessView.ResourceManager.GetString("ValueValidationTitleText"),
+                                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                }
+            }
+            else
+            {
+                if (Utils.IsStatute(PluginMain.GetApplication().SystemPreferences.DistanceUnits))
+                {
+                    min = Constants.MinSpeedStatute;
+                    max = Constants.MaxSpeedStatute;
+                }
+                else
+                {
+                    min = Constants.MinSpeedMetric;
+                    max = Constants.MaxSpeedMetric;
+                }
+
+                e.Cancel = !Utils.IsTextFloatInRange(HighSpeedTextBox.Text, min, max);
+                if (e.Cancel)
+                {
+                    MessageBox.Show(String.Format(GarminFitnessView.ResourceManager.GetString("DoubleRangeValidationText"), min, max),
+                                    GarminFitnessView.ResourceManager.GetString("ValueValidationTitleText"),
+                                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                }
+            }
         }
 
         private void HighSpeedTextBox_Validated(object sender, EventArgs e)
         {
-
+            if (m_CurrentProfile.SpeedIsInPace)
+            {
+                m_CurrentProfile.SetSpeedLowLimit(m_SelectedSpeedZone.Index, Utils.TimeToFloat(HighSpeedTextBox.Text));
+            }
+            else
+            {
+                m_CurrentProfile.SetSpeedHighLimit(m_SelectedSpeedZone.Index, double.Parse(HighSpeedTextBox.Text));
+            }
         }
 
         private void SpeedNameTextBox_Validated(object sender, EventArgs e)
         {
-
+            m_CurrentProfile.SetSpeedName(m_SelectedSpeedZone.Index, SpeedNameTextBox.Text);
         }
 
         private void LowPowerTextBox_Validating(object sender, System.ComponentModel.CancelEventArgs e)
         {
-
+            e.Cancel = !Utils.IsTextIntegerInRange(HighPowerTextBox.Text, Constants.MinPower, Constants.MaxPower);
+            if (e.Cancel)
+            {
+                MessageBox.Show(String.Format(GarminFitnessView.ResourceManager.GetString("IntegerRangeValidationText"), Constants.MinPower, Constants.MaxPower),
+                                GarminFitnessView.ResourceManager.GetString("ValueValidationTitleText"),
+                                MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            }
         }
 
         private void LowPowerTextBox_Validated(object sender, EventArgs e)
         {
+            Trace.Assert(m_CurrentProfile.GetType() == typeof(GarminExtendedActivityProfile));
 
+            GarminExtendedActivityProfile concreteProfile = (GarminExtendedActivityProfile)m_CurrentProfile;
+
+            concreteProfile.SetPowerLowLimit(m_SelectedPowerZone.Index, UInt16.Parse(LowPowerTextBox.Text));
         }
 
         private void HighPowerTextBox_Validating(object sender, System.ComponentModel.CancelEventArgs e)
         {
-
+            e.Cancel = !Utils.IsTextIntegerInRange(HighPowerTextBox.Text, Constants.MinPower, Constants.MaxPower);
+            if (e.Cancel)
+            {
+                MessageBox.Show(String.Format(GarminFitnessView.ResourceManager.GetString("IntegerRangeValidationText"), Constants.MinPower, Constants.MaxPower),
+                                GarminFitnessView.ResourceManager.GetString("ValueValidationTitleText"),
+                                MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            }
         }
 
         private void HighPowerTextBox_Validated(object sender, EventArgs e)
         {
+            Trace.Assert(m_CurrentProfile.GetType() == typeof(GarminExtendedActivityProfile));
 
+            GarminExtendedActivityProfile concreteProfile = (GarminExtendedActivityProfile)m_CurrentProfile;
+
+            concreteProfile.SetPowerHighLimit(m_SelectedPowerZone.Index, UInt16.Parse(HighPowerTextBox.Text));
         }
 
 #endregion
@@ -394,11 +531,10 @@ namespace GarminFitnessPlugin.View
                     }
             }
 
-            RebuildTreeLists();
             RefreshUIFromProfile();
         }
 
-        private void RebuildTreeLists()
+        private void BuildTreeLists()
         {
             HRZonesTreeList.RowData = BuildTreeListDataForHeartRateZones();
             HRZonesTreeList.Columns.Clear();
@@ -412,30 +548,47 @@ namespace GarminFitnessPlugin.View
             SpeedZonesTreeList.Columns.Add(new TreeList.Column("Low", "Low", 50, System.Drawing.StringAlignment.Near));
             SpeedZonesTreeList.Columns.Add(new TreeList.Column("High", "High", 50, System.Drawing.StringAlignment.Near));
 
-            PowerZonesGroupBox.Visible = m_CurrentProfile.GetType() == typeof(GarminExtendedActivityProfile);
-            if (m_CurrentProfile.GetType() == typeof(GarminExtendedActivityProfile))
+            PowerZonesTreeList.RowData = BuildTreeListDataForPowerZones();
+            PowerZonesTreeList.Columns.Clear();
+            PowerZonesTreeList.Columns.Add(new TreeList.Column("Name", "Name", 150, System.Drawing.StringAlignment.Near));
+            PowerZonesTreeList.Columns.Add(new TreeList.Column("Low", "Low", 50, System.Drawing.StringAlignment.Near));
+            PowerZonesTreeList.Columns.Add(new TreeList.Column("High", "High", 50, System.Drawing.StringAlignment.Near));
+        }
+
+        private void RefreshTreeLists()
+        {
+            List<IGarminZoneWrapper> HRZones = (List<IGarminZoneWrapper>)HRZonesTreeList.RowData;
+            List<IGarminZoneWrapper> speedZones = (List<IGarminZoneWrapper>)SpeedZonesTreeList.RowData;
+            List<IGarminZoneWrapper> powerZones = (List<IGarminZoneWrapper>)PowerZonesTreeList.RowData;
+
+            for (int i = 0; i < HRZones.Count; ++i)
             {
-                PowerZonesTreeList.RowData = BuildTreeListDataForPowerZones();
-                PowerZonesTreeList.Columns.Clear();
-                PowerZonesTreeList.Columns.Add(new TreeList.Column("Name", "Name", 150, System.Drawing.StringAlignment.Near));
-                PowerZonesTreeList.Columns.Add(new TreeList.Column("Low", "Low", 50, System.Drawing.StringAlignment.Near));
-                PowerZonesTreeList.Columns.Add(new TreeList.Column("High", "High", 50, System.Drawing.StringAlignment.Near));
+                HRZones[i].UpdateProfile(m_CurrentCategory);
+            }
+
+            for (int i = 0; i < speedZones.Count; ++i)
+            {
+                speedZones[i].UpdateProfile(m_CurrentCategory);
+            }
+
+            for (int i = 0; i < powerZones.Count; ++i)
+            {
+                powerZones[i].UpdateProfile(m_CurrentCategory);
             }
         }
 
         private void RefreshUIFromProfile()
         {
+            RefreshTreeLists();
+
             MaxHRTextBox.Text = m_CurrentProfile.MaximumHeartRate.ToString();
             GearWeightTextBox.Text = m_CurrentProfile.GearWeight.ToString("0.0");
-            PercentMaxRadioButton.Checked = m_CurrentProfile.HRIsInPercentMax;
-            BPMRadioButton.Checked = !m_CurrentProfile.HRIsInPercentMax;
-            SpeedRadioButton.Checked = !m_CurrentProfile.SpeedIsInPace;
-            PaceRadioButton.Checked = m_CurrentProfile.SpeedIsInPace;
 
             // HR Zones
-            HRZonesTreeList.Invalidate();
-            LowHRTextBox.Enabled = m_SelectedHRZone != null && m_SelectedHRZone.Index != 0;
-            HighHRTextBox.Enabled = m_SelectedHRZone != null && m_SelectedHRZone.Index != Constants.GarminHRZoneCount - 1;
+            PercentMaxRadioButton.Checked = m_CurrentProfile.HRIsInPercentMax;
+            BPMRadioButton.Checked = !m_CurrentProfile.HRIsInPercentMax;
+            LowHRTextBox.Enabled = m_SelectedHRZone != null;
+            HighHRTextBox.Enabled = m_SelectedHRZone != null;
             if (m_SelectedHRZone != null)
             {
                 LowHRTextBox.Text = m_SelectedHRZone.Low;
@@ -443,9 +596,11 @@ namespace GarminFitnessPlugin.View
             }
 
             // Speed Zones
+            PaceRadioButton.Checked = m_CurrentProfile.SpeedIsInPace;
+            SpeedRadioButton.Checked = !m_CurrentProfile.SpeedIsInPace;
             SpeedZonesTreeList.Invalidate();
-            LowSpeedTextBox.Enabled = m_SelectedSpeedZone != null && m_SelectedSpeedZone.Index != 0;
-            HighSpeedTextBox.Enabled = m_SelectedSpeedZone != null && m_SelectedSpeedZone.Index != Constants.GarminSpeedZoneCount - 1;
+            LowSpeedTextBox.Enabled = m_SelectedSpeedZone != null;
+            HighSpeedTextBox.Enabled = m_SelectedSpeedZone != null;
             SpeedNameTextBox.Enabled = m_SelectedSpeedZone != null;
             if (m_SelectedSpeedZone != null)
             {
@@ -455,9 +610,10 @@ namespace GarminFitnessPlugin.View
             }
 
             // Power Zones
+            PowerZonesGroupBox.Visible = m_CurrentProfile.GetType() == typeof(GarminExtendedActivityProfile);
             PowerZonesTreeList.Invalidate();
-            LowPowerTextBox.Enabled = m_SelectedPowerZone != null && m_SelectedPowerZone.Index != 0;
-            HighPowerTextBox.Enabled = m_SelectedPowerZone != null && m_SelectedPowerZone.Index != Constants.GarminPowerZoneCount - 1;
+            LowPowerTextBox.Enabled = m_SelectedPowerZone != null;
+            HighPowerTextBox.Enabled = m_SelectedPowerZone != null;
             if (m_CurrentProfile.GetType() == typeof(GarminExtendedActivityProfile) &&
                 m_SelectedPowerZone != null)
             {
@@ -494,9 +650,9 @@ namespace GarminFitnessPlugin.View
         {
             List<IGarminZoneWrapper> result = new List<IGarminZoneWrapper>();
 
-            for (int i = 0; i < Constants.GarminHRZoneCount; ++i)
+            for (int i = 0; i < Constants.GarminPowerZoneCount; ++i)
             {
-                result.Add(new GarminSpeedZoneWrapper(m_CurrentCategory, i));
+                result.Add(new GarminPowerZoneWrapper(m_CurrentCategory, i));
             }
 
             return result;
@@ -532,10 +688,10 @@ namespace GarminFitnessPlugin.View
 
             // Speed zones
             SpeedZonesGroupBox.Text = GarminFitnessView.ResourceManager.GetString("SpeedZonesGroupBoxText", GarminFitnessView.UICulture);
-            SpeedRadioButton.Text = Length.LabelAbbr(PluginMain.GetApplication().SystemPreferences.DistanceUnits) +
+            SpeedRadioButton.Text = Length.LabelAbbr(m_CurrentProfile.BaseSpeedUnit) +
                                     GarminFitnessView.ResourceManager.GetString("PerHourText", GarminFitnessView.UICulture);
             PaceRadioButton.Text = GarminFitnessView.ResourceManager.GetString("MinuteAbbrText", GarminFitnessView.UICulture) + "/" +
-                                   Length.LabelAbbr(PluginMain.GetApplication().SystemPreferences.DistanceUnits);
+                                   Length.LabelAbbr(m_CurrentProfile.BaseSpeedUnit);
             LowSpeedLabel.Text = GarminFitnessView.ResourceManager.GetString("LowLabelText", GarminFitnessView.UICulture);
             HighSpeedLabel.Text = GarminFitnessView.ResourceManager.GetString("HighLabelText", GarminFitnessView.UICulture);
             NameSpeedLabel.Text = GarminFitnessView.ResourceManager.GetString("NameLabelText", GarminFitnessView.UICulture);
