@@ -1878,8 +1878,10 @@ namespace GarminFitnessPlugin.View
                 }
                 else
                 {
-                    ExportDateLabel.Text = SelectedWorkout.LastExportDate.ToString(CultureInfo.CreateSpecificCulture(GarminFitnessView.UICulture.Name).DateTimeFormat.ShortDatePattern) +
-                                            " " + SelectedWorkout.LastExportDate.ToString(CultureInfo.CreateSpecificCulture(GarminFitnessView.UICulture.Name).DateTimeFormat.ShortTimePattern);
+                    CultureInfo culture = CultureInfo.CreateSpecificCulture(GarminFitnessView.UICulture.Name);
+
+                    ExportDateLabel.Text = SelectedWorkout.LastExportDate.ToString(culture.DateTimeFormat.ShortDatePattern) +
+                                            " " + SelectedWorkout.LastExportDate.ToString(culture.DateTimeFormat.ShortTimePattern);
                 }
 
                 // Update control with workout data
