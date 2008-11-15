@@ -81,7 +81,7 @@ namespace GarminFitnessPlugin.Controller
             Cleanup();
             base.Deserialize(stream, version);
 
-            IsDeserializing = true;
+            IsDeserializing = false;
         }
 
         public void Deserialize_V0(Stream stream, DataVersion version)

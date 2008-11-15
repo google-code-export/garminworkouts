@@ -76,14 +76,16 @@
     <Compile Include="Data\DataVersion.cs" />
     <Compile Include="Controller\DurationFactory.cs" />
     <Compile Include="Controller\GarminDeviceManager.cs" />
-    <Compile Include="Data\GarminActivityProfile.cs" />
-    <Compile Include="Data\GarminCategories.cs" />
-    <Compile Include="Data\GarminExtendedActivityProfile.cs" />
+    <Compile Include="Data\ProfileElements\GarminActivityProfile.cs" />
+    <Compile Include="Data\ProfileElements\GarminCategories.cs" />
+    <Compile Include="Data\ProfileElements\GarminExtendedActivityProfile.cs" />
     <Compile Include="Data\IDirty.cs" />
     <Compile Include="Data\IPluginSerializable.cs" />
     <Compile Include="Data\IXMLSerializable.cs" />
     <Compile Include="Controller\StepDescriptionStringFormatter.cs" />
     <Compile Include="Controller\StepDescriptionStringProviderAttribute.cs" />
+    <Compile Include="Data\ProfileElements\GarminFitnessNamedLowHighZone.cs" />
+    <Compile Include="Data\ProfileElements\GarminFitnessValueRange.cs" />
     <Compile Include="Data\Targets\Cadence\BaseCadenceTarget.cs" />
     <Compile Include="Data\Targets\Cadence\CadenceZoneSTTarget.cs" />
     <Compile Include="Data\Targets\Heart rate\HeartRateZoneSTTarget.cs" />
@@ -130,6 +132,7 @@
     <Compile Include="View\AutoExpandTreeList.cs">
       <SubType>UserControl</SubType>
     </Compile>
+    <Compile Include="View\GarminPowerZoneWrapper.cs" />
     <Compile Include="View\GarminSpeedZoneWrapper.cs" />
     <Compile Include="View\IGarminZoneWrapper.cs" />
     <Compile Include="View\ExtendedRowDataRenderer.cs" />
