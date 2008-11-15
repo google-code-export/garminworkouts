@@ -504,6 +504,8 @@ namespace GarminFitnessPlugin.View
 
         private void UpdateUIStrings()
         {
+            BirthDateTimePicker.CustomFormat = CultureInfo.CreateSpecificCulture(GarminFitnessView.UICulture.Name).DateTimeFormat.ShortDatePattern;
+
             // User data
             ProfileNameLabel.Text = GarminFitnessView.ResourceManager.GetString("NameLabelText", GarminFitnessView.UICulture);
             GenderLabel.Text = GarminFitnessView.ResourceManager.GetString("GenderLabelText", GarminFitnessView.UICulture);

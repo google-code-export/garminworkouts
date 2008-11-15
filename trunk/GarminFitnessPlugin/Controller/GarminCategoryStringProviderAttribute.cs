@@ -7,7 +7,7 @@ namespace GarminFitnessPlugin.Controller
         public GarminCategoryStringProviderAttribute(string name)
         {
             m_StringName = name;
-		}
+        }
 
         protected string m_StringName;
 
@@ -15,6 +15,6 @@ namespace GarminFitnessPlugin.Controller
         {
             get { return m_StringName; }
             set { m_StringName = value; }
-	}
+        }
     }
 }

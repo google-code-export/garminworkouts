@@ -14,16 +14,23 @@ namespace GarminFitnessPlugin.Controller
     {
         private GarminDeviceManager()
         {
-            m_TimeoutTimer.Tick += new EventHandler(OnTimeoutTimerTick);
-            m_TimeoutTimer.Interval = 30000;
+            try
+            {
+                m_TimeoutTimer.Tick += new EventHandler(OnTimeoutTimerTick);
+                m_TimeoutTimer.Interval = 30000;
 
-            m_Controller = new GarminDeviceControl();
-            m_Controller.ReadyChanged += new EventHandler(OnControllerReadyChanged);
-            m_Controller.FinishFindDevices += new GarminDeviceControl.FinishFindDevicesEventHandler(OnControllerFinishFindDevices);
-            m_Controller.FinishWriteToDevice += new GarminDeviceControl.TransferCompleteEventHandler(OnControllerFinishWriteToDevice);
-            m_Controller.FinishReadFromDevice += new GarminDeviceControl.TransferCompleteEventHandler(OnControllerFinishReadFromDevice);
+                m_Controller = new GarminDeviceControl();
+                m_Controller.ReadyChanged += new EventHandler(OnControllerReadyChanged);
+                m_Controller.FinishFindDevices += new GarminDeviceControl.FinishFindDevicesEventHandler(OnControllerFinishFindDevices);
+                m_Controller.FinishWriteToDevice += new GarminDeviceControl.TransferCompleteEventHandler(OnControllerFinishWriteToDevice);
+                m_Controller.FinishReadFromDevice += new GarminDeviceControl.TransferCompleteEventHandler(OnControllerFinishReadFromDevice);
 
-            AddTask(new BasicTask(BasicTask.TaskTypes.TaskType_Initialize));
+                AddTask(new BasicTask(BasicTask.TaskTypes.TaskType_Initialize));
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show(e.Message + "\n\n" + e.StackTrace);
+            }
         }
 
         ~GarminDeviceManager()
