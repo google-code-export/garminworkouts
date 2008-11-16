@@ -27,6 +27,16 @@ namespace GarminFitnessPlugin.Data
         public override void Serialize(Stream stream)
         {
             base.Serialize(stream);
+
+            // Power zones
+            for (int i = 0; i < m_PowerZones.Count; ++i)
+            {
+                // Low bound
+                stream.Write(BitConverter.GetBytes(m_PowerZones[i].Lower), 0, sizeof(UInt16));
+
+                // High bound
+                stream.Write(BitConverter.GetBytes(m_PowerZones[i].Upper), 0, sizeof(UInt16));
+            }
         }
 
         public new void Deserialize_V8(Stream stream, DataVersion version)
@@ -34,7 +44,18 @@ namespace GarminFitnessPlugin.Data
             // Call base deserialization
             Deserialize(typeof(GarminActivityProfile), stream, version);
 
+            byte[] intBuffer = new byte[sizeof(UInt16)];
 
+            for (int i = 0; i < m_PowerZones.Count; ++i)
+            {
+                // Lower limit
+                stream.Read(intBuffer, 0, sizeof(UInt16));
+                m_PowerZones[i].Lower = BitConverter.ToUInt16(intBuffer, 0);
+
+                // Upper limit
+                stream.Read(intBuffer, 0, sizeof(UInt16));
+                m_PowerZones[i].Upper = BitConverter.ToUInt16(intBuffer, 0);
+            }
         }
 
         public override void Serialize(XmlNode parentNode, XmlDocument document)

@@ -159,7 +159,7 @@ namespace GarminFitnessPlugin.View
 
         private void GearWeightTextBox_Validated(object sender, EventArgs e)
         {
-            GarminProfileManager.Instance.GetProfileForActivity(m_CurrentCategory).GearWeight = double.Parse(GearWeightTextBox.Text);
+            GarminProfileManager.Instance.GetProfileForActivity(m_CurrentCategory).SetGearWeightInUnits(double.Parse(GearWeightTextBox.Text), PluginMain.GetApplication().SystemPreferences.WeightUnits);
         }
 
         private void HRZonesTreeList_SelectedChanged(object sender, EventArgs e)
@@ -435,7 +435,7 @@ namespace GarminFitnessPlugin.View
 
         private void LowPowerTextBox_Validating(object sender, System.ComponentModel.CancelEventArgs e)
         {
-            e.Cancel = !Utils.IsTextIntegerInRange(HighPowerTextBox.Text, Constants.MinPower, Constants.MaxPower);
+            e.Cancel = !Utils.IsTextIntegerInRange(LowPowerTextBox.Text, Constants.MinPower, Constants.MaxPower);
             if (e.Cancel)
             {
                 MessageBox.Show(String.Format(GarminFitnessView.ResourceManager.GetString("IntegerRangeValidationText"), Constants.MinPower, Constants.MaxPower),
@@ -587,6 +587,7 @@ namespace GarminFitnessPlugin.View
             // HR Zones
             PercentMaxRadioButton.Checked = m_CurrentProfile.HRIsInPercentMax;
             BPMRadioButton.Checked = !m_CurrentProfile.HRIsInPercentMax;
+            HRZonesTreeList.Invalidate();
             LowHRTextBox.Enabled = m_SelectedHRZone != null;
             HighHRTextBox.Enabled = m_SelectedHRZone != null;
             if (m_SelectedHRZone != null)

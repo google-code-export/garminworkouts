@@ -911,12 +911,19 @@ namespace GarminFitnessPlugin.Data
             return InsertStepsAfterStep(stepsToAdd, previousStep);
         }
 
+        private bool InsertStepAfterStepInternal(IStep stepToAdd, IStep previousStep)
+        {
+            List<IStep> stepsToAdd = new List<IStep>();
+
+            stepsToAdd.Add(stepToAdd);
+
+            return InsertStepsAfterStepInternal(stepsToAdd, previousStep);
+        }
+
         public bool InsertStepsAfterStep(List<IStep> stepsToAdd, IStep previousStep)
         {
             Trace.Assert(previousStep != null);
 
-            UInt16 previousPosition = 0;
-            List<IStep> parentList = null;
             int insertStepsCount = 0;
 
             // We need to count the number of items being moved
@@ -927,35 +934,45 @@ namespace GarminFitnessPlugin.Data
 
             if (GetStepCount() + insertStepsCount <= Constants.MaxStepsPerWorkout)
             {
-                if (Utils.GetStepInfo(previousStep, Steps, out parentList, out previousPosition))
+                return InsertStepsAfterStepInternal(stepsToAdd, previousStep);
+            }
+
+            return false;
+        }
+
+        private bool InsertStepsAfterStepInternal(List<IStep> stepsToAdd, IStep previousStep)
+        {
+            UInt16 previousPosition = 0;
+            List<IStep> parentList = null;
+
+            if (Utils.GetStepInfo(previousStep, Steps, out parentList, out previousPosition))
+            {
+                List<IStep> tempList;
+                UInt16 tempPosition = 0;
+                bool stepAdded = false;
+
+                for (int i = 0; i < stepsToAdd.Count; ++i)
                 {
-                    List<IStep> tempList;
-                    UInt16 tempPosition = 0;
-                    bool stepAdded = false;
+                    // Make sure we don't duplicate the step in the list
+                    Trace.Assert(!Utils.GetStepInfo(stepsToAdd[i], Steps, out tempList, out tempPosition));
 
-                    for (int i = 0; i < stepsToAdd.Count; ++i)
-                    {
-                        // Make sure we don't duplicate the step in the list
-                        Trace.Assert(!Utils.GetStepInfo(stepsToAdd[i], Steps, out tempList, out tempPosition));
+                    RegisterStep(stepsToAdd[i]);
 
-                        RegisterStep(stepsToAdd[i]);
-
-                        parentList.Insert(++previousPosition, stepsToAdd[i]);
-                        stepAdded = true;
-                    }
-
-                    if (stepAdded)
-                    {
-                        TriggerWorkoutChangedEvent(new PropertyChangedEventArgs("Steps"));
-                    }
-
-                    return true;
+                    parentList.Insert(++previousPosition, stepsToAdd[i]);
+                    stepAdded = true;
                 }
-                else
+
+                if (stepAdded)
                 {
-                    // We haven't found the right step, this shouldn't happen
-                    Trace.Assert(false);
+                    TriggerWorkoutChangedEvent(new PropertyChangedEventArgs("Steps"));
                 }
+
+                return true;
+            }
+            else
+            {
+                // We haven't found the right step, this shouldn't happen
+                Trace.Assert(false);
             }
 
             return false;
@@ -970,12 +987,19 @@ namespace GarminFitnessPlugin.Data
             return InsertStepsBeforeStep(stepsToAdd, previousStep);
         }
 
+        private bool InsertStepBeforeStepInternal(IStep stepToAdd, IStep previousStep)
+        {
+            List<IStep> stepsToAdd = new List<IStep>();
+
+            stepsToAdd.Add(stepToAdd);
+
+            return InsertStepsBeforeStepInternal(stepsToAdd, previousStep);
+        }
+
         public bool InsertStepsBeforeStep(List<IStep> stepsToAdd, IStep nextStep)
         {
             Trace.Assert(nextStep != null);
 
-            UInt16 previousPosition = 0;
-            List<IStep> parentList = null;
             int insertStepsCount = 0;
 
             // We need to count the number of items being moved
@@ -986,35 +1010,45 @@ namespace GarminFitnessPlugin.Data
 
             if (GetStepCount() + insertStepsCount <= Constants.MaxStepsPerWorkout)
             {
-                if (Utils.GetStepInfo(nextStep, Steps, out parentList, out previousPosition))
+                return InsertStepsBeforeStepInternal(stepsToAdd, nextStep);
+            }
+
+            return false;
+        }
+
+        private bool InsertStepsBeforeStepInternal(List<IStep> stepsToAdd, IStep nextStep)
+        {
+            UInt16 previousPosition = 0;
+            List<IStep> parentList = null;
+
+            if (Utils.GetStepInfo(nextStep, Steps, out parentList, out previousPosition))
+            {
+                List<IStep> tempList;
+                UInt16 tempPosition = 0;
+                bool stepAdded = false;
+
+                for (int i = 0; i < stepsToAdd.Count; ++i)
                 {
-                    List<IStep> tempList;
-                    UInt16 tempPosition = 0;
-                    bool stepAdded = false;
+                    // Make sure we don't duplicate the step in the list
+                    Trace.Assert(!Utils.GetStepInfo(stepsToAdd[i], Steps, out tempList, out tempPosition));
 
-                    for (int i = 0; i < stepsToAdd.Count; ++i)
-                    {
-                        // Make sure we don't duplicate the step in the list
-                        Trace.Assert(!Utils.GetStepInfo(stepsToAdd[i], Steps, out tempList, out tempPosition));
+                    RegisterStep(stepsToAdd[i]);
 
-                        RegisterStep(stepsToAdd[i]);
-
-                        parentList.Insert(previousPosition++, stepsToAdd[i]);
-                        stepAdded = true;
-                    }
-
-                    if (stepAdded)
-                    {
-                        TriggerWorkoutChangedEvent(new PropertyChangedEventArgs("Steps"));
-                    }
-
-                    return true;
+                    parentList.Insert(previousPosition++, stepsToAdd[i]);
+                    stepAdded = true;
                 }
-                else
+
+                if (stepAdded)
                 {
-                    // We haven't found the right step, this shouldn't happen
-                    Trace.Assert(false);
+                    TriggerWorkoutChangedEvent(new PropertyChangedEventArgs("Steps"));
                 }
+
+                return true;
+            }
+            else
+            {
+                // We haven't found the right step, this shouldn't happen
+                Trace.Assert(false);
             }
 
             return false;
@@ -1030,13 +1064,13 @@ namespace GarminFitnessPlugin.Data
                     IStep positionMarker = previousStep.Clone();
 
                     // Mark position
-                    InsertStepAfterStep(positionMarker, previousStep);
+                    InsertStepAfterStepInternal(positionMarker, previousStep);
 
                     // Remove items from their original position
                     RemoveSteps(stepsToMove);
 
                     // Add at new position
-                    InsertStepsAfterStep(stepsToMove, positionMarker);
+                    InsertStepsAfterStepInternal(stepsToMove, positionMarker);
 
                     // Remove our position marker
                     RemoveStep(positionMarker);
@@ -1059,13 +1093,13 @@ namespace GarminFitnessPlugin.Data
                     IStep positionMarker = nextStep.Clone();
 
                     // Mark position
-                    InsertStepBeforeStep(positionMarker, nextStep);
+                    InsertStepBeforeStepInternal(positionMarker, nextStep);
 
                     // Remove items from their original position
                     RemoveSteps(stepsToMove);
 
                     // Add at new position
-                    InsertStepsBeforeStep(stepsToMove, positionMarker);
+                    InsertStepsAfterStepInternal(stepsToMove, positionMarker);
 
                     // Remove our position marker
                     RemoveStep(positionMarker);
@@ -1363,7 +1397,7 @@ namespace GarminFitnessPlugin.Data
 
         private DateTime m_LastExportDate = new DateTime(0);
         private List<DateTime> m_ScheduledDates = new List<DateTime>();
-        private List<IStep> m_Steps = new List<IStep>(Constants.MaxStepsPerWorkout);
+        private List<IStep> m_Steps = new List<IStep>();
         private List<XmlNode> m_STExtensions = new List<XmlNode>();
         private List<XmlNode> m_StepsExtensions = new List<XmlNode>();
         private IActivityCategory m_Category;
