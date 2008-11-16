@@ -102,10 +102,16 @@ namespace GarminFitnessPlugin.Data
         {
             if (Utils.IsStatute(distanceUnit))
             {
+                distanceToGo = Length.Convert(distanceToGo, distanceUnit, Length.Units.Mile);
+                distanceUnit = Length.Units.Mile;
+
                 Trace.Assert(distanceToGo >= Constants.MinDistance && distanceToGo <= Constants.MaxDistanceStatute);
             }
             else
             {
+                distanceToGo = Length.Convert(distanceToGo, distanceUnit, Length.Units.Kilometer);
+                distanceUnit = Length.Units.Kilometer;
+
                 Trace.Assert(distanceToGo >= Constants.MinDistance && distanceToGo <= Constants.MaxDistanceMetric);
             }
 

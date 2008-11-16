@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
+using System.Text;
 using System.Xml;
 using ZoneFiveSoftware.Common.Data.Fitness;
 using ZoneFiveSoftware.Common.Data.Measurement;
@@ -47,6 +48,39 @@ namespace GarminFitnessPlugin.Data
 
         public override void Serialize(Stream stream)
         {
+            // Max HR
+            stream.WriteByte(MaximumHeartRate);
+            
+            // Gear weight in pounds
+            stream.Write(BitConverter.GetBytes(GearWeight), 0, sizeof(double));
+
+            // HR as max?
+            stream.Write(BitConverter.GetBytes(HRIsInPercentMax), 0, sizeof(bool));
+            // HR zones
+            for (int i = 0; i < m_HeartRateZones.Count; ++i)
+            {
+                // Low bound
+                stream.Write(BitConverter.GetBytes((double)m_HeartRateZones[i].Lower), 0, sizeof(double));
+
+                // High bound
+                stream.Write(BitConverter.GetBytes((double)m_HeartRateZones[i].Upper), 0, sizeof(double));
+            }
+
+            // Speed as pace?
+            stream.Write(BitConverter.GetBytes(SpeedIsInPace), 0, sizeof(bool));
+            // Speed Zones
+            for (int i = 0; i < m_SpeedZones.Count; ++i)
+            {
+                // Low bound
+                stream.Write(BitConverter.GetBytes((double)m_SpeedZones[i].Low), 0, sizeof(double));
+
+                // High bound
+                stream.Write(BitConverter.GetBytes((double)m_SpeedZones[i].High), 0, sizeof(double));
+
+                // Name
+                stream.Write(BitConverter.GetBytes(Encoding.UTF8.GetByteCount(m_SpeedZones[i].Name)), 0, sizeof(Int32));
+                stream.Write(Encoding.UTF8.GetBytes(m_SpeedZones[i].Name), 0, Encoding.UTF8.GetByteCount(m_SpeedZones[i].Name));
+            }
         }
 
         public void Deserialize_V0(Stream stream, DataVersion version)
@@ -55,6 +89,55 @@ namespace GarminFitnessPlugin.Data
 
         public void Deserialize_V8(Stream stream, DataVersion version)
         {
+            byte[] intBuffer = new byte[sizeof(Int32)];
+            byte[] boolBuffer = new byte[sizeof(bool)];
+            byte[] doubleBuffer = new byte[sizeof(double)];
+            byte[] stringBuffer;
+            Int32 stringLength;
+
+            // Max HR
+            MaximumHeartRate = (Byte)stream.ReadByte();
+
+            // Gear weight
+            stream.Read(doubleBuffer, 0, sizeof(double));
+            GearWeight = BitConverter.ToDouble(doubleBuffer, 0);
+
+            // HR as % max
+            stream.Read(boolBuffer, 0, sizeof(bool));
+            HRIsInPercentMax = BitConverter.ToBoolean(boolBuffer, 0);
+
+            for (int i = 0; i < m_HeartRateZones.Count; ++i)
+            {
+                // Lower limit
+                stream.Read(doubleBuffer, 0, sizeof(double));
+                m_HeartRateZones[i].Lower = (float)BitConverter.ToDouble(doubleBuffer, 0);
+
+                // Upper limit
+                stream.Read(doubleBuffer, 0, sizeof(double));
+                m_HeartRateZones[i].Upper = (float)BitConverter.ToDouble(doubleBuffer, 0);
+            }
+
+            // Speed as pace
+            stream.Read(boolBuffer, 0, sizeof(bool));
+            SpeedIsInPace = BitConverter.ToBoolean(boolBuffer, 0);
+
+            for (int i = 0; i < m_SpeedZones.Count; ++i)
+            {
+                // Lower limit
+                stream.Read(doubleBuffer, 0, sizeof(double));
+                m_SpeedZones[i].Low = (float)BitConverter.ToDouble(doubleBuffer, 0);
+
+                // Upper limit
+                stream.Read(doubleBuffer, 0, sizeof(double));
+                m_SpeedZones[i].High = (float)BitConverter.ToDouble(doubleBuffer, 0);
+
+                // Speed zone name
+                stream.Read(intBuffer, 0, sizeof(Int32));
+                stringLength = BitConverter.ToInt32(intBuffer, 0);
+                stringBuffer = new byte[stringLength];
+                stream.Read(stringBuffer, 0, stringLength);
+                m_SpeedZones[i].Name = Encoding.UTF8.GetString(stringBuffer);
+            }
         }
 
         public virtual void Serialize(XmlNode parentNode, XmlDocument document)
@@ -240,6 +323,12 @@ namespace GarminFitnessPlugin.Data
             }
         }
 
+        public void SetGearWeightInUnits(double weight, Weight.Units unit)
+        {
+            // Convert to pounds
+            GearWeight = Weight.Convert(weight, unit, Weight.Units.Pound);
+        }
+
         public GarminCategories Category
         {
             get { return m_Category; }
@@ -275,7 +364,7 @@ namespace GarminFitnessPlugin.Data
         public double GearWeight
         {
             get { return m_GearWeight; }
-            set
+            private set
             {
                 if (m_GearWeight != value)
                 {
