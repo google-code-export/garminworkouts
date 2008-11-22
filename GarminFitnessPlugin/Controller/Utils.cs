@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Windows.Forms;
 using System.IO;
+using System.Text;
 using ZoneFiveSoftware.Common.Data.Fitness;
 using ZoneFiveSoftware.Common.Data.Measurement;
 using GarminFitnessPlugin.Data;
@@ -128,6 +129,10 @@ namespace GarminFitnessPlugin.Controller
             // Save Workouts to logbook
             MemoryStream stream = new MemoryStream();
 
+            // Data version number
+            stream.Write(Encoding.UTF8.GetBytes(Constants.DataHeaderIdString), 0, Encoding.UTF8.GetByteCount(Constants.DataHeaderIdString));
+            stream.WriteByte(Constants.CurrentVersion.VersionNumber);
+
             GarminWorkoutManager.Instance.Serialize(stream);
             GarminProfileManager.Instance.Serialize(stream);
 
@@ -229,6 +234,15 @@ namespace GarminFitnessPlugin.Controller
                 // We only have minutes
                 return float.Parse(time);
             }
+        }
+
+        public static string DoubleToTimeString(double time)
+        {
+            UInt16 min, sec;
+
+            DoubleToTime(time, out min, out sec);
+
+            return String.Format("{0:00}:{1:00}", min, sec);
         }
 
         public static void DoubleToTime(double time, out UInt16 minutes, out UInt16 seconds)

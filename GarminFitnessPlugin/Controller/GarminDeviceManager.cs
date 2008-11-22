@@ -74,6 +74,16 @@ namespace GarminFitnessPlugin.Controller
             AddTask(new ImportWorkoutsTask());
         }
 
+        public void ImportProfile()
+        {
+            AddTask(new ImportProfileTask());
+        }
+
+        public void ExportProfile()
+        {
+            AddTask(new ExportProfileTask());
+        }
+
         public void CancelAllTasks()
         {
             m_TaskQueue.Clear();
@@ -221,7 +231,9 @@ namespace GarminFitnessPlugin.Controller
                 TaskType_RefreshDevices,
                 TaskType_SetOperatingDevice,
                 TaskType_ExportWorkout,
-                TaskType_ImportWorkouts
+                TaskType_ImportWorkouts,
+                TaskType_ImportProfile,
+                TaskType_ExportProfile
             };
 
             public TaskTypes Type
@@ -295,6 +307,19 @@ namespace GarminFitnessPlugin.Controller
             private List<Workout> m_Workouts;
         }
 
+        public class ExportProfileTask : BasicTask
+        {
+            public ExportProfileTask()
+                :
+                base(TaskTypes.TaskType_ExportProfile)
+            {
+            }
+
+            public override void ExecuteTask(GarminDeviceControl controller, Device device)
+            {
+            }
+        }
+
         public class ImportWorkoutsTask : BasicTask
         {
             public ImportWorkoutsTask() :
@@ -314,6 +339,27 @@ namespace GarminFitnessPlugin.Controller
             }
 
             private string m_WorkoutsXML;
+        }
+
+        public class ImportProfileTask : BasicTask
+        {
+            public ImportProfileTask() :
+                base(TaskTypes.TaskType_ImportProfile)
+            {
+            }
+
+            public string ProfileXML
+            {
+                get { return m_ProfileXML; }
+                set { m_ProfileXML = value; }
+            }
+
+            public override void ExecuteTask(GarminDeviceControl controller, Device device)
+            {
+                controller.ReadWktWorkouts(device);
+            }
+
+            private string m_ProfileXML;
         }
 
         public int GetPendingTaskCount()

@@ -17,7 +17,7 @@ namespace GarminFitnessPlugin.View
 {
     class GarminFitnessView : IView
     {
-        #region IView Members
+#region IView Members
 
         public System.Collections.Generic.IList<IAction> Actions
         {
@@ -95,9 +95,9 @@ namespace GarminFitnessPlugin.View
             get { return GarminFitnessView.ResourceManager.GetString("GarminFitnessText", GarminFitnessView.UICulture); }
         }
 
-        #endregion
+#endregion
 
-        #region IDialogPage Members
+#region IDialogPage Members
 
         public System.Windows.Forms.Control CreatePageControl()
         {
@@ -161,8 +161,6 @@ namespace GarminFitnessPlugin.View
 
         public void ThemeChanged(ITheme visualTheme)
         {
-            m_CurrentTheme = visualTheme;
-
             GetCurrentView().ThemeChanged(visualTheme);
         }
 
@@ -177,13 +175,13 @@ namespace GarminFitnessPlugin.View
             GetCurrentView().UICultureChanged(culture);
         }
 
-        #endregion
+#endregion
 
-        #region INotifyPropertyChanged Members
+#region INotifyPropertyChanged Members
 
         public event PropertyChangedEventHandler PropertyChanged;
 
-        #endregion
+#endregion
 
         public GarminFitnessView()
         {
@@ -267,21 +265,17 @@ namespace GarminFitnessPlugin.View
             get { return m_CurrentCulture; }
         }
 
-        public static ITheme UITheme
-        {
-            get { return m_CurrentTheme; }
-        }
-
         private IAction[] m_WorkoutsViewActions = new IAction[]
             {
-                new WorkoutExportAllAction(),
-                new WorkoutExportSelectedAction(),
-                new WorkoutImportAction()
+                new WorkoutExportAllWorkoutsAction(),
+                new WorkoutExportSelectedWorkoutsAction(),
+                new WorkoutImportWorkoutsAction()
             };
 
         private IAction[] m_ProfileViewActions = new IAction[]
             {
-                new WorkoutImportAction()
+                new WorkoutExportProfileAction(),
+                new WorkoutImportProfileAction()
             };
 
         private UserControl m_MainControl = null;
@@ -291,6 +285,5 @@ namespace GarminFitnessPlugin.View
         private static ResourceManager m_ResourceManager = new ResourceManager("GarminFitnessPlugin.Resources.StringResources",
                                                                                Assembly.GetExecutingAssembly());
         private static CultureInfo m_CurrentCulture;
-        private static ITheme m_CurrentTheme;
     }
 }

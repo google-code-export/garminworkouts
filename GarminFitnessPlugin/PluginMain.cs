@@ -85,6 +85,9 @@ namespace GarminFitnessPlugin
                         {
                             XmlNode child = m_PluginOptions.ChildNodes[i];
 
+                            ///////////////////////////////////////////////////////////
+                            // These are here for backwards compatibility
+                            ///////////////////////////////////////////////////////////
                             // HR
                             if (child.Name == "UseSTHeartRateZones")
                             {
@@ -109,6 +112,15 @@ namespace GarminFitnessPlugin
                             {
                                 Options.PowerZoneCategory = Utils.FindZoneCategoryByID(m_CurrentLogbook.PowerZones, child.FirstChild.Value);
                             }
+                            ///////////////////////////////////////////////////////////
+                            // End backwards compatibility
+                            ///////////////////////////////////////////////////////////
+
+                            // Default export directory
+                            else if (child.Name == "DefaultExportDirectory")
+                            {
+                                Options.DefaultExportDirectory = child.FirstChild.Value;
+                            }
                             // Split distances
                             else if (child.Name == "CategoriesSplitDistance")
                             {
@@ -129,11 +141,6 @@ namespace GarminFitnessPlugin
                             else if (child.Name == "StepNotesSplitDistance")
                             {
                                 Options.StepNotesSplitSize = int.Parse(child.FirstChild.Value);
-                            }
-                            // Default export directory
-                            else if (child.Name == "DefaultExportDirectory")
-                            {
-                                Options.DefaultExportDirectory = child.FirstChild.Value;
                             }
                         }
                     }
@@ -201,21 +208,6 @@ namespace GarminFitnessPlugin
         {
             XmlNode child;
 
-            // HR
-            child = xmlDoc.CreateElement("UseSTHeartRateZones");
-            child.AppendChild(xmlDoc.CreateTextNode(Options.UseSportTracksHeartRateZones.ToString()));
-            pluginNode.AppendChild(child);
-
-            // Speed
-            child = xmlDoc.CreateElement("UseSTSpeedZones");
-            child.AppendChild(xmlDoc.CreateTextNode(Options.UseSportTracksSpeedZones.ToString()));
-            pluginNode.AppendChild(child);
-
-            // Power
-            child = xmlDoc.CreateElement("UseSTPowerZones");
-            child.AppendChild(xmlDoc.CreateTextNode(Options.UseSportTracksPowerZones.ToString()));
-            pluginNode.AppendChild(child);
-
             // Default export directory
             child = xmlDoc.CreateElement("DefaultExportDirectory");
             child.AppendChild(xmlDoc.CreateTextNode(Options.DefaultExportDirectory));
@@ -240,11 +232,6 @@ namespace GarminFitnessPlugin
 
             child = xmlDoc.CreateElement("StepNotesSplitDistance");
             child.AppendChild(xmlDoc.CreateTextNode(Options.StepNotesSplitSize.ToString()));
-            pluginNode.AppendChild(child);
-
-            // Default export directory
-            child = xmlDoc.CreateElement("DefaultExportDirectory");
-            child.AppendChild(xmlDoc.CreateTextNode(Options.DefaultExportDirectory));
             pluginNode.AppendChild(child);
         }
 
@@ -285,31 +272,33 @@ namespace GarminFitnessPlugin
                         if (versionNumber <= Constants.CurrentVersion.VersionNumber)
                         {
                             version = new DataVersion(versionNumber);
+
+                            GarminWorkoutManager.Instance.Deserialize(stream, version);
+                            GarminProfileManager.Instance.Deserialize(stream, version);
                         }
                         else
                         {
-                            throw new DataTooRecentException(versionNumber);
+                            MessageBox.Show(GarminFitnessView.ResourceManager.GetString("DataTooRecentErrorText", GarminFitnessView.UICulture),
+                                            GarminFitnessView.ResourceManager.GetString("ErrorText", GarminFitnessView.UICulture),
+                                            MessageBoxButtons.OK, MessageBoxIcon.Error);
                         }
                     }
-
-                    GarminWorkoutManager.Instance.Deserialize(stream, version);
-                    GarminProfileManager.Instance.Deserialize(stream, version);
-                }
-                catch (Data.DataTooRecentException)
-                {
-                    MessageBox.Show(GarminFitnessView.ResourceManager.GetString("DataTooRecentErrorText", GarminFitnessView.UICulture),
-                                    GarminFitnessView.ResourceManager.GetString("ErrorText", GarminFitnessView.UICulture),
-                                    MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
                 catch (Exception e)
                 {
-                    throw e;
+                     throw e;
                 }
             }
             else
             {
                 GarminWorkoutManager.Instance.RemoveAllWorkouts();
                 GarminProfileManager.Instance.Cleanup();
+                Options.ResetSettings();
+
+                // Show the wizard on first run
+                GarminFitnessSetupWizard wizard = new GarminFitnessSetupWizard();
+
+                wizard.ShowDialog();
             }
 
             stream.Close();
