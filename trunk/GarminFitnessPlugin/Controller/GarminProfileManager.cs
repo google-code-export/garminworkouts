@@ -1,5 +1,7 @@
 using System;
 using System.ComponentModel;
+using System.Diagnostics;
+using System.Globalization;
 using System.IO;
 using System.Text;
 using System.Xml;
@@ -22,31 +24,30 @@ namespace GarminFitnessPlugin.Controller
 
         public void Cleanup()
         {
-            for (int i = 0; i < m_GarminProfiles.Length; ++i)
+            if (m_ActivityProfiles != null)
             {
-                if (m_GarminProfiles[i] != null)
+                for (int i = 0; i < m_ActivityProfiles.Length; ++i)
                 {
-                    m_GarminProfiles[i].ActivityProfileChanged -= new GarminActivityProfile.ActivityProfileChangedEventHandler(OnProfileManagerActivityProfileChanged);
+                    m_ActivityProfiles[i].ActivityProfileChanged -= new GarminActivityProfile.ActivityProfileChangedEventHandler(OnProfileManagerActivityProfileChanged);
                 }
             }
 
-            m_GarminProfiles = new GarminActivityProfile[]
+            m_ActivityProfiles = new GarminActivityProfile[]
                 {
                     new GarminActivityProfile(GarminCategories.Running),
-                    new GarminExtendedActivityProfile(GarminCategories.Biking),
+                    new GarminBikingActivityProfile(GarminCategories.Biking),
                     new GarminActivityProfile(GarminCategories.Other)
                 };
 
-            for (int i = 0; i < m_GarminProfiles.Length; ++i)
+            for (int i = 0; i < m_ActivityProfiles.Length; ++i)
             {
-                m_GarminProfiles[i].ActivityProfileChanged += new GarminActivityProfile.ActivityProfileChangedEventHandler(OnProfileManagerActivityProfileChanged);
+                m_ActivityProfiles[i].ActivityProfileChanged += new GarminActivityProfile.ActivityProfileChangedEventHandler(OnProfileManagerActivityProfileChanged);
             }
 
             m_ProfileName = "New User";
             m_IsGenderMale = true;
             m_WeightInPounds = 150.0f;
             m_BirthDate = DateTime.Today;
-            m_RestingHeartRate = 60;
         }
 
         public override void Serialize(Stream stream)
@@ -70,7 +71,7 @@ namespace GarminFitnessPlugin.Controller
             // Activity profiles
             for (int i = 0; i < (int)GarminCategories.GarminCategoriesCount; ++i)
             {
-                m_GarminProfiles[i].Serialize(stream);
+                m_ActivityProfiles[i].Serialize(stream);
             }
         }
 
@@ -122,7 +123,7 @@ namespace GarminFitnessPlugin.Controller
 
             for (int i = 0; i < (int)GarminCategories.GarminCategoriesCount; ++i)
             {
-                m_GarminProfiles[i].Deserialize(stream, version);
+                m_ActivityProfiles[i].Deserialize(stream, version);
             }
         }
 
@@ -132,12 +133,121 @@ namespace GarminFitnessPlugin.Controller
 
         public virtual bool Deserialize(XmlNode parentNode)
         {
-            return false;
+            bool birthDateRead = false;
+            bool weightRead = false;
+            bool genderRead = false;
+            int activitiesReadCount = 0;
+            DateTime birthDate = DateTime.Now;
+            double weightInPounds = 0;
+            bool isMale = true;
+            GarminActivityProfile[] profiles;
+
+            profiles = new GarminActivityProfile[]
+                {
+                    new GarminActivityProfile(GarminCategories.Running),
+                    new GarminBikingActivityProfile(GarminCategories.Biking),
+                    new GarminActivityProfile(GarminCategories.Other)
+                };
+
+            for(int i = 0; i < parentNode.ChildNodes.Count; ++i)
+            {
+                XmlNode currentChild = parentNode.ChildNodes[i];
+
+                if (currentChild.Name == Constants.BirthDateTCXString &&
+                    currentChild.ChildNodes.Count == 1 &&
+                    currentChild.FirstChild.GetType() == typeof(XmlText))
+                {
+                    string date = currentChild.FirstChild.Value;
+                    CultureInfo culture = new CultureInfo("en-us");
+
+                    birthDateRead = DateTime.TryParse(date, culture.DateTimeFormat, DateTimeStyles.None, out birthDate);
+                }
+                else if (currentChild.Name == Constants.WeightTCXString &&
+                         currentChild.ChildNodes.Count == 1 &&
+                         currentChild.FirstChild.GetType() == typeof(XmlText))
+                {
+                    double weight;
+
+                    if (!Utils.IsTextFloatInRange(currentChild.FirstChild.Value, Constants.MinWeight, Constants.MaxWeight))
+                    {
+                        return false;
+                    }
+
+                    weight = double.Parse(currentChild.FirstChild.Value);
+                    weightInPounds = Weight.Convert(weight, Weight.Units.Kilogram, Weight.Units.Pound);
+                    weightRead = true;
+                }
+                else if (currentChild.Name == Constants.GenderTCXString &&
+                         currentChild.ChildNodes.Count == 1 &&
+                         currentChild.FirstChild.GetType() == typeof(XmlText))
+                {
+                    isMale = currentChild.FirstChild.Value == Constants.GenderMaleTCXString;
+                    genderRead = true;
+                }
+                else if (currentChild.Name == "Activities")
+                {
+                    string activityType = PeekActivityType(currentChild);
+
+                    for (int j = 0; j < (int)GarminCategories.GarminCategoriesCount; ++j)
+                    {
+                        if(activityType == Constants.GarminCategoryTCXString[j])
+                        {
+                            if (!profiles[j].Deserialize(currentChild))
+                            {
+                                return false;
+                            }
+
+                            activitiesReadCount++;
+
+                            break;
+                        }
+                    }
+                }
+            }
+
+            // Check if all was read successfully
+            if (!birthDateRead || !weightRead || !genderRead || activitiesReadCount != 3)
+            {
+                return false;
+            }
+
+            // Officialize
+            BirthDate = birthDate;
+            WeightInPounds = weightInPounds;
+            IsMale = isMale;
+
+            for (int i = 0; i < m_ActivityProfiles.Length; ++i)
+            {
+                m_ActivityProfiles[i].ActivityProfileChanged -= new GarminActivityProfile.ActivityProfileChangedEventHandler(OnProfileManagerActivityProfileChanged);
+            }
+
+            m_ActivityProfiles = profiles;
+
+            for (int i = 0; i < m_ActivityProfiles.Length; ++i)
+            {
+                m_ActivityProfiles[i].ActivityProfileChanged += new GarminActivityProfile.ActivityProfileChangedEventHandler(OnProfileManagerActivityProfileChanged);
+            }
+
+            TriggerActivityProfileChangedEvent(m_ActivityProfiles[0], new PropertyChangedEventArgs(""));
+            TriggerActivityProfileChangedEvent(m_ActivityProfiles[1], new PropertyChangedEventArgs(""));
+            TriggerActivityProfileChangedEvent(m_ActivityProfiles[2], new PropertyChangedEventArgs(""));
+
+            return true;
         }
 
-        public static GarminProfileManager Instance
+        private string PeekActivityType(XmlNode activityNode)
         {
-            get { return m_Instance; }
+            for (int i = 0; i < activityNode.Attributes.Count; ++i)
+            {
+                XmlAttribute attribute = activityNode.Attributes[i];
+
+                if (attribute.Name == "Sport")
+                {
+                    return attribute.Value;
+                }
+            }
+
+            return String.Empty;
         }
 
         public void SetWeightInUnits(double weight, Weight.Units unit)
@@ -170,6 +280,11 @@ namespace GarminFitnessPlugin.Controller
             {
                 ActivityProfileChanged(profileModified, args);
             }
+        }
+
+        public static GarminProfileManager Instance
+        {
+            get { return m_Instance; }
         }
 
         public String ProfileName
@@ -230,12 +345,21 @@ namespace GarminFitnessPlugin.Controller
 
         public Byte RestingHeartRate
         {
-            get { return m_RestingHeartRate; }
+            get
+            {
+                Trace.Assert(m_ActivityProfiles[2].RestingHeartRate == m_ActivityProfiles[1].RestingHeartRate &&
+                             m_ActivityProfiles[1].RestingHeartRate == m_ActivityProfiles[0].RestingHeartRate);
+
+                return m_ActivityProfiles[0].RestingHeartRate;
+            }
             set
             {
-                if (m_RestingHeartRate != value)
+                if (RestingHeartRate != value)
                 {
-                    m_RestingHeartRate = value;
+                    for (int i = 0; i < (int)GarminCategories.GarminCategoriesCount; ++i)
+                    {
+                        m_ActivityProfiles[i].RestingHeartRate = value;
+                    }
 
                     TriggerChangedEvent(new PropertyChangedEventArgs("RestingHeartRate"));
                 }
@@ -244,9 +368,9 @@ namespace GarminFitnessPlugin.Controller
 
         public GarminActivityProfile GetProfileForActivity(GarminCategories category)
         {
-            if (m_GarminProfiles.Length == (int)GarminCategories.GarminCategoriesCount)
+            if (m_ActivityProfiles.Length == (int)GarminCategories.GarminCategoriesCount)
             {
-                return m_GarminProfiles[(int)category];
+                return m_ActivityProfiles[(int)category];
             }
 
             return null;
@@ -269,8 +393,7 @@ namespace GarminFitnessPlugin.Controller
         private bool m_IsGenderMale;
         private double m_WeightInPounds;
         private DateTime m_BirthDate;
-        private Byte m_RestingHeartRate;
-        private GarminActivityProfile[] m_GarminProfiles = new GarminActivityProfile[] { };
+        private GarminActivityProfile[] m_ActivityProfiles;
 
         private bool m_IsDeserializing = false;
     }

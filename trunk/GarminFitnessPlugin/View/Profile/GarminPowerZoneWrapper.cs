@@ -18,9 +18,9 @@ namespace GarminFitnessPlugin.View
         {
             GarminActivityProfile profile = GarminProfileManager.Instance.GetProfileForActivity(category);
 
-            if (profile.GetType() == typeof(GarminExtendedActivityProfile))
+            if (profile.GetType() == typeof(GarminBikingActivityProfile))
             {
-                m_Profile = (GarminExtendedActivityProfile)profile;
+                m_Profile = (GarminBikingActivityProfile)profile;
             }
             else
             {
@@ -65,6 +65,6 @@ namespace GarminFitnessPlugin.View
         }
 
         private int m_ZoneIndex;
-        private GarminExtendedActivityProfile m_Profile;
+        private GarminBikingActivityProfile m_Profile;
     }
 }

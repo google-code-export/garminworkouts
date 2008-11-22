@@ -71,7 +71,7 @@ namespace GarminFitnessPlugin.Data
             attribute = document.CreateAttribute("xsi", "type", Constants.xsins);
             attribute.Value = "PowerInWatts_t";
             childNode.Attributes.Append(attribute);
-            valueNode = document.CreateElement("Value");
+            valueNode = document.CreateElement(Constants.ValueTCXString);
             valueNode.AppendChild(document.CreateTextNode(MinPower.ToString()));
             childNode.AppendChild(valueNode);
             parentNode.AppendChild(childNode);
@@ -81,7 +81,7 @@ namespace GarminFitnessPlugin.Data
             attribute = document.CreateAttribute("xsi", "type", Constants.xsins);
             attribute.Value = "PowerInWatts_t";
             childNode.Attributes.Append(attribute);
-            valueNode = document.CreateElement("Value");
+            valueNode = document.CreateElement(Constants.ValueTCXString);
             valueNode.AppendChild(document.CreateTextNode(MaxPower.ToString()));
             childNode.AppendChild(valueNode);
             parentNode.AppendChild(childNode);
@@ -99,7 +99,7 @@ namespace GarminFitnessPlugin.Data
                     XmlNode child = parentNode.ChildNodes[i];
 
                     if (child.Name == "Low" && child.ChildNodes.Count == 1 &&
-                        child.FirstChild.Name == "Value")
+                        child.FirstChild.Name == Constants.ValueTCXString)
                     {
                         XmlNode valueNode = child.FirstChild;
 
@@ -112,7 +112,7 @@ namespace GarminFitnessPlugin.Data
                         }
                     }
                     else if (child.Name == "High" && child.ChildNodes.Count == 1 &&
-                        child.FirstChild.Name == "Value")
+                        child.FirstChild.Name == Constants.ValueTCXString)
                     {
                         XmlNode valueNode = child.FirstChild;
 

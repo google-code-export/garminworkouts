@@ -120,7 +120,7 @@ namespace GarminFitnessPlugin.Controller
                          child.Name == "Biking" ||
                          child.Name == "Other")
                 {
-                    // This seems could be a V1 formatting
+                    // This could be a TCX V1 formatting
                     if (child.ChildNodes.Count == 1 &&
                         child.FirstChild.Name == "Folder")
                     {

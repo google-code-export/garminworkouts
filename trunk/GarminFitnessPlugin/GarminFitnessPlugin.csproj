@@ -70,6 +70,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Constants.cs" />
+    <Compile Include="Controller\ProfileImporter.cs" />
     <Compile Include="Controller\GarminCategoryStringProviderAttribute.cs" />
     <Compile Include="Controller\GarminProfileManager.cs" />
     <Compile Include="Data\DataVersion.cs" />
@@ -77,7 +78,7 @@
     <Compile Include="Controller\GarminDeviceManager.cs" />
     <Compile Include="Data\ProfileElements\GarminActivityProfile.cs" />
     <Compile Include="Data\ProfileElements\GarminCategories.cs" />
-    <Compile Include="Data\ProfileElements\GarminExtendedActivityProfile.cs" />
+    <Compile Include="Data\ProfileElements\GarminBikingActivityProfile.cs" />
     <Compile Include="Data\IDirty.cs" />
     <Compile Include="Data\IPluginSerializable.cs" />
     <Compile Include="Data\IXMLSerializable.cs" />
@@ -131,8 +132,8 @@
     <Compile Include="View\Common\AutoExpandTreeList.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="View\Profile\WorkoutExportProfileAction.cs" />
-    <Compile Include="View\Profile\WorkoutImportProfileAction.cs" />
+    <Compile Include="View\Profile\ExportProfileAction.cs" />
+    <Compile Include="View\Profile\ImportProfileAction.cs" />
     <Compile Include="View\Profile\GarminPowerZoneWrapper.cs" />
     <Compile Include="View\Profile\GarminSpeedZoneWrapper.cs" />
     <Compile Include="View\Profile\IGarminZoneWrapper.cs" />
@@ -225,7 +226,7 @@
     <Compile Include="View\Workout\ReplaceRenameDialog.Designer.cs">
       <DependentUpon>ReplaceRenameDialog.cs</DependentUpon>
     </Compile>
-    <Compile Include="View\Workout\WorkoutExportSelectedWorkoutsAction.cs" />
+    <Compile Include="View\Workout\ExportSelectedWorkoutsAction.cs" />
     <Compile Include="View\Common\SelectDeviceDialog.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -257,7 +258,7 @@
     <Compile Include="View\Workout\StepIconLabelProvider.cs">
     </Compile>
     <Compile Include="View\Workout\StepWrapper.cs" />
-    <Compile Include="View\Workout\WorkoutExportAllWorkoutsAction.cs" />
+    <Compile Include="View\Workout\ExportAllWorkoutsAction.cs" />
     <Compile Include="View\Workout\GarminWorkoutControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -267,7 +268,7 @@
     <Compile Include="View\Common\GarminFitnessPluginViews.cs" />
     <Compile Include="View\Common\GarminFitnessView.cs" />
     <Compile Include="View\Workout\WorkoutIconLabelProvider.cs" />
-    <Compile Include="View\Workout\WorkoutImportWorkoutsAction.cs" />
+    <Compile Include="View\Workout\ImportWorkoutsAction.cs" />
     <Compile Include="View\Common\TimeDurationUpDown.cs">
       <SubType>UserControl</SubType>
     </Compile>

@@ -11,9 +11,9 @@ using GarminFitnessPlugin.Controller;
 
 namespace GarminFitnessPlugin.View
 {
-    class WorkoutImportProfileAction : IAction
+    class ImportProfileAction : IAction
     {
-        public WorkoutImportProfileAction()
+        public ImportProfileAction()
         {
             PropertyChanged += new System.ComponentModel.PropertyChangedEventHandler(WorkoutImportProfileAction_PropertyChanged);
         }
@@ -98,9 +98,8 @@ namespace GarminFitnessPlugin.View
                     GarminDeviceManager.ImportProfileTask concreteTask = (GarminDeviceManager.ImportProfileTask)task;
                     MemoryStream stream = new MemoryStream(Encoding.UTF8.GetBytes(concreteTask.ProfileXML));
 
+                    ProfileImporter.ImportProfile(stream);
 
-
-                    PluginMain.GetApplication().ActiveView.ShowPage("");
                     stream.Close();
                 }
             }

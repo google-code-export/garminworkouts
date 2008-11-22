@@ -125,17 +125,17 @@ namespace GarminFitnessPlugin.Data
             parentNode.Attributes.Append(attribute);
 
             // View as
-            valueNode = document.CreateElement("ViewAs");
+            valueNode = document.CreateElement(Constants.ViewAsTCXString);
             valueNode.AppendChild(document.CreateTextNode(Constants.SpeedOrPaceTCXString[ViewAsPace ? 0 : 1]));
             parentNode.AppendChild(valueNode);
 
             // Low
-            valueNode = document.CreateElement("LowInMetersPerSecond");
+            valueNode = document.CreateElement(Constants.LowInMeterPerSecTCXString);
             valueNode.AppendChild(document.CreateTextNode(String.Format(culture.NumberFormat, "{0:0.00000}", MinMetersPerSecond)));
             parentNode.AppendChild(valueNode);
 
             // High
-            valueNode = document.CreateElement("HighInMetersPerSecond");
+            valueNode = document.CreateElement(Constants.HighInMeterPerSecTCXString);
             valueNode.AppendChild(document.CreateTextNode(String.Format(culture.NumberFormat, "{0:0.00000}", MaxMetersPerSecond)));
             parentNode.AppendChild(valueNode);
         }
@@ -154,12 +154,12 @@ namespace GarminFitnessPlugin.Data
 
                     // We purposefully ignore the "View as" tag since we derive this from the category
 
-                    if (valueNode.Name == "LowInMetersPerSecond" &&
+                    if (valueNode.Name == Constants.LowInMeterPerSecTCXString &&
                         valueNode.ChildNodes.Count == 1 && valueNode.FirstChild.GetType() == typeof(XmlText))
                     {
                         minSpeed = double.Parse(valueNode.FirstChild.Value, culture.NumberFormat);
                     }
-                    else if (valueNode.Name == "HighInMetersPerSecond" &&
+                    else if (valueNode.Name == Constants.HighInMeterPerSecTCXString &&
                         valueNode.ChildNodes.Count == 1 && valueNode.FirstChild.GetType() == typeof(XmlText))
                     {
                         maxSpeed = double.Parse(valueNode.FirstChild.Value, culture.NumberFormat);
