@@ -197,11 +197,20 @@ namespace GarminFitnessPlugin.Controller
 
         void OnControllerFinishReadFromDevice(object sender, GarminDeviceControl.TransferCompleteEventArgs e)
         {
-            Trace.Assert(m_TaskQueue[0].Type == BasicTask.TaskTypes.TaskType_ImportWorkouts);
-            ImportWorkoutsTask task = (ImportWorkoutsTask)m_TaskQueue[0];
+            if(m_TaskQueue[0].Type == BasicTask.TaskTypes.TaskType_ImportWorkouts)
+            {
+                ImportWorkoutsTask task = (ImportWorkoutsTask)m_TaskQueue[0];
 
-            task.WorkoutsXML = e.XmlData;
-            CompleteCurrentTask(e.Success);
+                task.WorkoutsXML = e.XmlData;
+                CompleteCurrentTask(e.Success);
+            }
+            else if(m_TaskQueue[0].Type == BasicTask.TaskTypes.TaskType_ImportProfile)
+            {
+                ImportProfileTask task = (ImportProfileTask)m_TaskQueue[0];
+
+                task.ProfileXML = e.XmlData;
+                CompleteCurrentTask(e.Success);
+            }
         }
 
         void OnTimeoutTimerTick(object sender, EventArgs e)
@@ -356,7 +365,7 @@ namespace GarminFitnessPlugin.Controller
 
             public override void ExecuteTask(GarminDeviceControl controller, Device device)
             {
-                controller.ReadWktWorkouts(device);
+                controller.ReadTcxUserProfile(device);
             }
 
             private string m_ProfileXML;

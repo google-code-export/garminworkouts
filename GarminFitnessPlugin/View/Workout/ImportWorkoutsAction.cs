@@ -11,9 +11,9 @@ using GarminFitnessPlugin.Controller;
 
 namespace GarminFitnessPlugin.View
 {
-    class WorkoutImportWorkoutsAction : IAction
+    class ImportWorkoutsAction : IAction
     {
-        public WorkoutImportWorkoutsAction()
+        public ImportWorkoutsAction()
         {
             PropertyChanged += new System.ComponentModel.PropertyChangedEventHandler(WorkoutImportWorkoutsAction_PropertyChanged);
         }
@@ -122,7 +122,6 @@ namespace GarminFitnessPlugin.View
                                     MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
 
-                PluginMain.GetApplication().ActiveView.ShowPage("");
                 workoutStream.Close();
             }
         }

@@ -79,7 +79,7 @@ namespace GarminFitnessPlugin.Data
             attribute = document.CreateAttribute("xsi", "type", Constants.xsins);
             attribute.Value = Constants.HeartRateReferenceTCXString[IsPercentageMaxHeartRate ? 1 : 0];
             childNode.Attributes.Append(attribute);
-            valueNode = document.CreateElement("Value");
+            valueNode = document.CreateElement(Constants.ValueTCXString);
             valueNode.AppendChild(document.CreateTextNode(MinHeartRate.ToString()));
             childNode.AppendChild(valueNode);
             parentNode.AppendChild(childNode);
@@ -89,7 +89,7 @@ namespace GarminFitnessPlugin.Data
             attribute = document.CreateAttribute("xsi", "type", Constants.xsins);
             attribute.Value = Constants.HeartRateReferenceTCXString[IsPercentageMaxHeartRate ? 1 : 0];
             childNode.Attributes.Append(attribute);
-            valueNode = document.CreateElement("Value");
+            valueNode = document.CreateElement(Constants.ValueTCXString);
             valueNode.AppendChild(document.CreateTextNode(MaxHeartRate.ToString()));
             childNode.AppendChild(valueNode);
             parentNode.AppendChild(childNode);
@@ -109,7 +109,7 @@ namespace GarminFitnessPlugin.Data
                     XmlNode child = parentNode.ChildNodes[i];
 
                     if (child.Name == "Low" && child.ChildNodes.Count == 1 &&
-                        child.FirstChild.Name == "Value")
+                        child.FirstChild.Name == Constants.ValueTCXString)
                     {
                         if (child.Attributes.Count == 1 && child.Attributes[0].Name == "xsi:type")
                         {
@@ -138,7 +138,7 @@ namespace GarminFitnessPlugin.Data
                         }
                     }
                     else if (child.Name == "High" && child.ChildNodes.Count == 1 &&
-                        child.FirstChild.Name == "Value")
+                        child.FirstChild.Name == Constants.ValueTCXString)
                     {
                         if (child.Attributes.Count == 1 && child.Attributes[0].Name == "xsi:type")
                         {

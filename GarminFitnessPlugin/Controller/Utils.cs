@@ -143,54 +143,39 @@ namespace GarminFitnessPlugin.Controller
 
         public static bool IsTextIntegerInRange(string text, UInt16 minRange, UInt16 maxRange)
         {
-            try
-            {
-                UInt16 value = UInt16.Parse(text);
+            UInt16 value;
 
-                if (value < minRange || value > maxRange)
+            if (UInt16.TryParse(text, out value))
+            {
+                if (value >= minRange && value <= maxRange)
                 {
-                    return false;
+                    return true;
                 }
+            }
 
-                return true;
-            }
-            catch (Exception)
-            {
-                return false;
-            }
+            return false;
         }
 
         public static bool IsTextInteger(string text)
         {
-            try
-            {
-                UInt64 value = UInt64.Parse(text);
+            UInt64 value;
 
-                return true;
-            }
-            catch (Exception)
-            {
-                return false;
-            }
+            return UInt64.TryParse(text, out value);
         }
 
         public static bool IsTextFloatInRange(string text, double minRange, double maxRange)
         {
-            try
-            {
-                float value = float.Parse(text);
+            double value;
 
-                if (value < minRange || value > maxRange)
+            if (double.TryParse(text, out value))
+            {
+                if (value >= minRange && value <= maxRange)
                 {
-                    return false;
+                    return true;
                 }
+            }
 
-                return true;
-            }
-            catch (Exception)
-            {
-                return false;
-            }
+            return false;
         }
 
         public static bool IsTextTimeInRange(string text, double minRange, double maxRange)

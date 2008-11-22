@@ -8,9 +8,9 @@ using ZoneFiveSoftware.Common.Data.Fitness;
 
 namespace GarminFitnessPlugin.Data
 {
-    class GarminExtendedActivityProfile : GarminActivityProfile
+    class GarminBikingActivityProfile : GarminActivityProfile
     {
-        public GarminExtendedActivityProfile(GarminCategories category) :
+        public GarminBikingActivityProfile(GarminCategories category) :
             base(category)
         {
             // Power Zones
@@ -64,7 +64,7 @@ namespace GarminFitnessPlugin.Data
 
         public override bool Deserialize(XmlNode parentNode)
         {
-            return false;
+            return base.Deserialize(parentNode);
         }
 
         public UInt16 GetPowerLowLimit(int index)

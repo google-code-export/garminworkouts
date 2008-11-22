@@ -61,8 +61,8 @@ namespace GarminFitnessPlugin
         public static readonly Byte MaxRepeats = 99;
 
         // Profile limits
-        public static readonly double MinWeightLimit = 0;
-        public static readonly double MaxWeightLimit = 65535;
+        public static readonly double MinWeight = 0;
+        public static readonly double MaxWeight = 65535;
 
         public static readonly Byte GarminHRZoneCount = 5;
         public static readonly Byte GarminSpeedZoneCount = 10;
@@ -73,6 +73,9 @@ namespace GarminFitnessPlugin
         
         public static readonly string DeserializeMethodNamePrefix = "Deserialize_V";
 
+        public static readonly string ValueTCXString = "Value";
+        public static readonly string LowInMeterPerSecTCXString = "LowInMetersPerSecond";
+        public static readonly string HighInMeterPerSecTCXString = "HighInMetersPerSecond";
         public static readonly string[] StepTypeTCXString =
             {
                 "Step_t",
@@ -126,6 +129,21 @@ namespace GarminFitnessPlugin
                 "Biking",
                 "Other"
             };
+        public static readonly string BirthDateTCXString = "BirthDate";
+        public static readonly string WeightTCXString = "WeightKilograms";
+        public static readonly string GenderTCXString = "Gender";
+        public static readonly string GenderMaleTCXString = "Male";
+        public static readonly string GenderFemaleTCXString = "Female";
+        public static readonly string MaxHRBPMTCXString = "MaximumHeartRateBpm";
+        public static readonly string RestHRBPMTCXString = "RestingHeartRateBpm";
+        public static readonly string GearWeightTCXString = "GearWeightKilograms";
+        public static readonly string HeartRateZonesTCXString = "HeartRateZones";
+        public static readonly string SpeedZonesTCXString = "SpeedZones";
+        public static readonly string ViewAsTCXString = "ViewAs";
+        public static readonly string LowTCXString = "Low";
+        public static readonly string HighTCXString = "High";
+        public static readonly string PercentMaxTCXString = "Percent Max";
+        public static readonly string BPMTCXString = "Beats Per Minute";
 
         public static readonly DataVersion CurrentVersion = new DataVersion(8);
         public static readonly String DataHeaderIdString = "Garmin Workouts Plugin made by S->G";

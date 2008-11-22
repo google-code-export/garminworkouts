@@ -139,19 +139,19 @@ namespace GarminFitnessPlugin.Data
             parentNode.Attributes.Append(attribute);
 
             // View as
-            valueNode = document.CreateElement("ViewAs");
+            valueNode = document.CreateElement(Constants.ViewAsTCXString);
             valueNode.AppendChild(document.CreateTextNode(Constants.SpeedOrPaceTCXString[ViewAsPace ? 0 : 1]));
             parentNode.AppendChild(valueNode);
 
             // Low
             double lowInMetersPerSecond = Utils.Clamp(Zone.Low, Constants.MinSpeedMetersPerSecond, Constants.MaxSpeedMetersPerSecond);
-            valueNode = document.CreateElement("LowInMetersPerSecond");
+            valueNode = document.CreateElement(Constants.LowInMeterPerSecTCXString);
             valueNode.AppendChild(document.CreateTextNode(String.Format(culture.NumberFormat, "{0:0.00000}", lowInMetersPerSecond)));
             parentNode.AppendChild(valueNode);
 
             // High
             double highInMetersPerSecond = Utils.Clamp(Zone.High, Constants.MinSpeedMetersPerSecond, Constants.MaxSpeedMetersPerSecond);
-            valueNode = document.CreateElement("HighInMetersPerSecond");
+            valueNode = document.CreateElement(Constants.HighInMeterPerSecTCXString);
             valueNode.AppendChild(document.CreateTextNode(String.Format(culture.NumberFormat, "{0:0.00000}", highInMetersPerSecond)));
             parentNode.AppendChild(valueNode);
 

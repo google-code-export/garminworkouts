@@ -153,7 +153,7 @@ namespace GarminFitnessPlugin.Data
                 attribute.Value = Constants.HeartRateReferenceTCXString[0];
             }
             childNode.Attributes.Append(attribute);
-            valueNode = document.CreateElement("Value");
+            valueNode = document.CreateElement(Constants.ValueTCXString);
             valueNode.AppendChild(document.CreateTextNode(lowValue.ToString()));
             childNode.AppendChild(valueNode);
             parentNode.AppendChild(childNode);
@@ -173,7 +173,7 @@ namespace GarminFitnessPlugin.Data
                 attribute.Value = Constants.HeartRateReferenceTCXString[0];
             }
             childNode.Attributes.Append(attribute);
-            valueNode = document.CreateElement("Value");
+            valueNode = document.CreateElement(Constants.ValueTCXString);
             valueNode.AppendChild(document.CreateTextNode(highValue.ToString()));
             childNode.AppendChild(valueNode);
             parentNode.AppendChild(childNode);

@@ -142,7 +142,7 @@ namespace GarminFitnessPlugin.Data
             attribute = document.CreateAttribute("xsi", "type", Constants.xsins);
             attribute.Value = "PowerInWatts_t";
             childNode.Attributes.Append(attribute);
-            valueNode = document.CreateElement("Value");
+            valueNode = document.CreateElement(Constants.ValueTCXString);
             valueNode.AppendChild(document.CreateTextNode(zoneLow.ToString()));
             childNode.AppendChild(valueNode);
             parentNode.AppendChild(childNode);
@@ -153,7 +153,7 @@ namespace GarminFitnessPlugin.Data
             attribute = document.CreateAttribute("xsi", "type", Constants.xsins);
             attribute.Value = "PowerInWatts_t";
             childNode.Attributes.Append(attribute);
-            valueNode = document.CreateElement("Value");
+            valueNode = document.CreateElement(Constants.ValueTCXString);
             valueNode.AppendChild(document.CreateTextNode(zoneHigh.ToString()));
             childNode.AppendChild(valueNode);
             parentNode.AppendChild(childNode);

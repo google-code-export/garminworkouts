@@ -70,7 +70,7 @@ namespace GarminFitnessPlugin.Data
             childNode.Attributes.Append(attribute);
 
             // Value
-            valueNode = document.CreateElement("Value");
+            valueNode = document.CreateElement(Constants.ValueTCXString);
             valueNode.AppendChild(document.CreateTextNode(MinHeartRate.ToString()));
             childNode.AppendChild(valueNode);
 
@@ -100,7 +100,7 @@ namespace GarminFitnessPlugin.Data
                             return false;
                         }
 
-                        if (child.ChildNodes.Count == 1 && child.FirstChild.Name == "Value")
+                        if (child.ChildNodes.Count == 1 && child.FirstChild.Name == Constants.ValueTCXString)
                         {
                             XmlNode valueNode = child.FirstChild;
 

@@ -59,6 +59,10 @@ namespace GarminFitnessPlugin.View
         {
             if (profileModified.Category == m_CurrentCategory)
             {
+                // make sure we have the right profile, when deserializing from
+                //  XML, this is not valid
+                m_CurrentProfile = GarminProfileManager.Instance.GetProfileForActivity(m_CurrentCategory);
+
                 RefreshUIFromProfile();
             }
         }
@@ -66,10 +70,10 @@ namespace GarminFitnessPlugin.View
 #region UI callbacks
         private void WeightTextBox_Validating(object sender, System.ComponentModel.CancelEventArgs e)
         {
-            e.Cancel = !Utils.IsTextFloatInRange(WeightTextBox.Text, Constants.MinWeightLimit, Constants.MaxWeightLimit);
+            e.Cancel = !Utils.IsTextFloatInRange(WeightTextBox.Text, Constants.MinWeight, Constants.MaxWeight);
             if (e.Cancel)
             {
-                MessageBox.Show(String.Format(GarminFitnessView.ResourceManager.GetString("DoubleRangeValidationText"), Constants.MinWeightLimit, Constants.MaxWeightLimit),
+                MessageBox.Show(String.Format(GarminFitnessView.ResourceManager.GetString("DoubleRangeValidationText"), Constants.MinWeight, Constants.MaxWeight),
                                 GarminFitnessView.ResourceManager.GetString("ValueValidationTitleText"), MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 System.Media.SystemSounds.Asterisk.Play();
 
@@ -161,10 +165,10 @@ namespace GarminFitnessPlugin.View
 
         private void GearWeightTextBox_Validating(object sender, System.ComponentModel.CancelEventArgs e)
         {
-            e.Cancel = !Utils.IsTextFloatInRange(GearWeightTextBox.Text, Constants.MinWeightLimit, Constants.MaxWeightLimit);
+            e.Cancel = !Utils.IsTextFloatInRange(GearWeightTextBox.Text, Constants.MinWeight, Constants.MaxWeight);
             if (e.Cancel)
             {
-                MessageBox.Show(String.Format(GarminFitnessView.ResourceManager.GetString("DoubleRangeValidationText"), Constants.MinWeightLimit, Constants.MaxWeightLimit),
+                MessageBox.Show(String.Format(GarminFitnessView.ResourceManager.GetString("DoubleRangeValidationText"), Constants.MinWeight, Constants.MaxWeight),
                                 GarminFitnessView.ResourceManager.GetString("ValueValidationTitleText"), MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 System.Media.SystemSounds.Asterisk.Play();
 
@@ -492,16 +496,16 @@ namespace GarminFitnessPlugin.View
                 System.Media.SystemSounds.Asterisk.Play();
 
                 // Reset old valid value
-                GarminExtendedActivityProfile concreteProfile = (GarminExtendedActivityProfile)m_CurrentProfile;
+                GarminBikingActivityProfile concreteProfile = (GarminBikingActivityProfile)m_CurrentProfile;
                 LowPowerTextBox.Text = concreteProfile.GetPowerLowLimit(m_SelectedPowerZone.Index).ToString("0");
             }
         }
 
         private void LowPowerTextBox_Validated(object sender, EventArgs e)
         {
-            Trace.Assert(m_CurrentProfile.GetType() == typeof(GarminExtendedActivityProfile));
+            Trace.Assert(m_CurrentProfile.GetType() == typeof(GarminBikingActivityProfile));
 
-            GarminExtendedActivityProfile concreteProfile = (GarminExtendedActivityProfile)m_CurrentProfile;
+            GarminBikingActivityProfile concreteProfile = (GarminBikingActivityProfile)m_CurrentProfile;
 
             concreteProfile.SetPowerLowLimit(m_SelectedPowerZone.Index, UInt16.Parse(LowPowerTextBox.Text));
         }
@@ -517,16 +521,16 @@ namespace GarminFitnessPlugin.View
                 System.Media.SystemSounds.Asterisk.Play();
 
                 // Reset old valid value
-                GarminExtendedActivityProfile concreteProfile = (GarminExtendedActivityProfile)m_CurrentProfile;
+                GarminBikingActivityProfile concreteProfile = (GarminBikingActivityProfile)m_CurrentProfile;
                 HighPowerTextBox.Text = concreteProfile.GetPowerHighLimit(m_SelectedPowerZone.Index).ToString("0");
             }
         }
 
         private void HighPowerTextBox_Validated(object sender, EventArgs e)
         {
-            Trace.Assert(m_CurrentProfile.GetType() == typeof(GarminExtendedActivityProfile));
+            Trace.Assert(m_CurrentProfile.GetType() == typeof(GarminBikingActivityProfile));
 
-            GarminExtendedActivityProfile concreteProfile = (GarminExtendedActivityProfile)m_CurrentProfile;
+            GarminBikingActivityProfile concreteProfile = (GarminBikingActivityProfile)m_CurrentProfile;
 
             concreteProfile.SetPowerHighLimit(m_SelectedPowerZone.Index, UInt16.Parse(HighPowerTextBox.Text));
         }
@@ -669,11 +673,11 @@ namespace GarminFitnessPlugin.View
             }
 
             // Power Zones
-            PowerZonesGroupBox.Visible = m_CurrentProfile.GetType() == typeof(GarminExtendedActivityProfile);
+            PowerZonesGroupBox.Visible = m_CurrentProfile.GetType() == typeof(GarminBikingActivityProfile);
             PowerZonesTreeList.Invalidate();
             LowPowerTextBox.Enabled = m_SelectedPowerZone != null;
             HighPowerTextBox.Enabled = m_SelectedPowerZone != null;
-            if (m_CurrentProfile.GetType() == typeof(GarminExtendedActivityProfile) &&
+            if (m_CurrentProfile.GetType() == typeof(GarminBikingActivityProfile) &&
                 m_SelectedPowerZone != null)
             {
                 LowPowerTextBox.Text = m_SelectedPowerZone.Low;

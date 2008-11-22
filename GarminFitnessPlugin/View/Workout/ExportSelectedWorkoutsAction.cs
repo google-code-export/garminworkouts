@@ -13,9 +13,9 @@ using GarminFitnessPlugin.Controller;
 
 namespace GarminFitnessPlugin.View
 {
-    class WorkoutExportSelectedWorkoutsAction : IAction
+    class ExportSelectedWorkoutsAction : IAction
     {
-        public WorkoutExportSelectedWorkoutsAction()
+        public ExportSelectedWorkoutsAction()
         {
             PropertyChanged += new System.ComponentModel.PropertyChangedEventHandler(WorkoutExportAction_PropertyChanged);
         }
