@@ -27,6 +27,33 @@ namespace GarminFitnessPlugin.Controller
             }
         }
 
+        public static void ResetSettings()
+        {
+            UseSportTracksHeartRateZones = true;
+            UseSportTracksSpeedZones = true;
+            UseSportTracksPowerZones = true;
+            CadenceZoneCategory = PluginMain.GetApplication().Logbook.CadenceZones[0];
+            PowerZoneCategory = PluginMain.GetApplication().Logbook.PowerZones[0];
+
+            STToGarminCategoryMap = new Dictionary<IActivityCategory, GarminCategories>();
+            DefaultExportDirectory = Assembly.GetCallingAssembly().Location.Substring(0, Assembly.GetCallingAssembly().Location.LastIndexOf('\\'));
+
+            IsPowerZoneDirty = false;
+            IsCadenceZoneDirty = false;
+        }
+
+        public static GarminCategories GetGarminCategory(IActivityCategory STCategory)
+        {
+            if (m_STToGarminCategoryMap.ContainsKey(STCategory))
+            {
+                return m_STToGarminCategoryMap[STCategory];
+            }
+            else
+            {
+                return GetGarminCategory(STCategory.Parent);
+            }
+        }
+
         public static int CategoriesPanelSplitSize
         {
             get { return m_CategoriesPanelSplitSize; }
@@ -133,18 +160,6 @@ namespace GarminFitnessPlugin.Controller
         {
             get { return m_STToGarminCategoryMap; }
             set { m_STToGarminCategoryMap = value; }
-        }
-
-        public static GarminCategories GetGarminCategory(IActivityCategory STCategory)
-        {
-            if(m_STToGarminCategoryMap.ContainsKey(STCategory))
-            {
-                return m_STToGarminCategoryMap[STCategory];
-            }
-            else
-            {
-                return GetGarminCategory(STCategory.Parent);
-            }
         }
 
         private static int m_CategoriesPanelSplitSize = 200;

@@ -11,11 +11,11 @@ using GarminFitnessPlugin.Controller;
 
 namespace GarminFitnessPlugin.View
 {
-    class WorkoutImportAction : IAction
+    class WorkoutImportWorkoutsAction : IAction
     {
-        public WorkoutImportAction()
+        public WorkoutImportWorkoutsAction()
         {
-            PropertyChanged += new System.ComponentModel.PropertyChangedEventHandler(WorkoutImportAction_PropertyChanged);
+            PropertyChanged += new System.ComponentModel.PropertyChangedEventHandler(WorkoutImportWorkoutsAction_PropertyChanged);
         }
 
         #region IAction Members
@@ -74,7 +74,7 @@ namespace GarminFitnessPlugin.View
 
         #region INotifyPropertyChanged Members
 
-        void WorkoutImportAction_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        void WorkoutImportWorkoutsAction_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
         }
 

@@ -72,7 +72,6 @@
     <Compile Include="Constants.cs" />
     <Compile Include="Controller\GarminCategoryStringProviderAttribute.cs" />
     <Compile Include="Controller\GarminProfileManager.cs" />
-    <Compile Include="Data\DataTooRecentException.cs" />
     <Compile Include="Data\DataVersion.cs" />
     <Compile Include="Controller\DurationFactory.cs" />
     <Compile Include="Controller\GarminDeviceManager.cs" />
@@ -128,90 +127,155 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <Compile Include="View\ActivityCategoryWrapper.cs" />
-    <Compile Include="View\AutoExpandTreeList.cs">
+    <Compile Include="View\Common\ActivityCategoryWrapper.cs" />
+    <Compile Include="View\Common\AutoExpandTreeList.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="View\GarminPowerZoneWrapper.cs" />
-    <Compile Include="View\GarminSpeedZoneWrapper.cs" />
-    <Compile Include="View\IGarminZoneWrapper.cs" />
-    <Compile Include="View\ExtendedRowDataRenderer.cs" />
-    <Compile Include="View\ExtendedTreeList.cs">
+    <Compile Include="View\Profile\WorkoutExportProfileAction.cs" />
+    <Compile Include="View\Profile\WorkoutImportProfileAction.cs" />
+    <Compile Include="View\Profile\GarminPowerZoneWrapper.cs" />
+    <Compile Include="View\Profile\GarminSpeedZoneWrapper.cs" />
+    <Compile Include="View\Profile\IGarminZoneWrapper.cs" />
+    <Compile Include="View\Common\ExtendedRowDataRenderer.cs" />
+    <Compile Include="View\Common\ExtendedTreeList.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="View\GarminFitnessMainControl.cs">
+    <Compile Include="View\Common\GarminFitnessMainControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="View\GarminFitnessMainControl.Designer.cs">
+    <Compile Include="View\Common\GarminFitnessMainControl.Designer.cs">
       <DependentUpon>GarminFitnessMainControl.cs</DependentUpon>
     </Compile>
-    <Compile Include="View\GarminProfileControl.cs">
+    <Compile Include="View\Profile\GarminProfileControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="View\GarminProfileControl.Designer.cs">
+    <Compile Include="View\Profile\GarminProfileControl.Designer.cs">
       <DependentUpon>GarminProfileControl.cs</DependentUpon>
     </Compile>
-    <Compile Include="View\IGarminFitnessPluginControl.cs" />
-    <Compile Include="View\GarminHeartRateZoneWrapper.cs" />
-    <Compile Include="View\PluginViews.cs" />
-    <Compile Include="View\STToGarminActivityCategoryWrapper.cs" />
-    <Compile Include="View\ReplaceRenameDialog.cs">
+    <Compile Include="View\Common\IGarminFitnessPluginControl.cs" />
+    <Compile Include="View\Profile\GarminHeartRateZoneWrapper.cs" />
+    <Compile Include="View\Common\PluginViews.cs" />
+    <Compile Include="View\Settings\STToGarminActivityCategoryWrapper.cs" />
+    <Compile Include="View\SetupWizard\SetupWizardGarminCategoryAssociation.cs" />
+    <Compile Include="View\SetupWizard\SetupWizardGarminCategoryAssociationControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="View\SetupWizard\SetupWizardGarminCategoryAssociationControl.Designer.cs">
+      <DependentUpon>SetupWizardGarminCategoryAssociationControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="View\SetupWizard\SetupWizardCompleted.cs" />
+    <Compile Include="View\SetupWizard\SetupWizardCompletedControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="View\SetupWizard\SetupWizardCompletedControl.Designer.cs">
+      <DependentUpon>SetupWizardCompletedControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="View\SetupWizard\SetupWizardImportOrEditProfile.cs" />
+    <Compile Include="View\SetupWizard\SetupWizardImportOrEditProfileControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="View\SetupWizard\SetupWizardImportOrEditProfileControl.Designer.cs">
+      <DependentUpon>SetupWizardImportOrEditProfileControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="View\SetupWizard\SetupWizardSportTracksZones.cs" />
+    <Compile Include="View\SetupWizard\SetupWizardSportTracksZonesControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="View\SetupWizard\SetupWizardSportTracksZonesControl.Designer.cs">
+      <DependentUpon>SetupWizardSportTracksZonesControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="View\SetupWizard\SetupWizardEditProfile.cs" />
+    <Compile Include="View\SetupWizard\SetupWizardEditProfileControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="View\SetupWizard\SetupWizardEditProfileControl.Designer.cs">
+      <DependentUpon>SetupWizardEditProfileControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="View\SetupWizard\ExtendedWizard.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="View\ReplaceRenameDialog.Designer.cs">
+    <Compile Include="View\SetupWizard\GarminFitnessSetupWizard.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="View\SetupWizard\IExtendedWizardPage.cs" />
+    <Compile Include="View\SetupWizard\SetupWizardSetupSTGarminZones.cs" />
+    <Compile Include="View\SetupWizard\SetupWizardSetupSTGarminZonesControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="View\SetupWizard\SetupWizardSetupSTGarminZonesControl.Designer.cs">
+      <DependentUpon>SetupWizardSetupSTGarminZonesControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="View\SetupWizard\SetupWizardUseGarminOrST.cs" />
+    <Compile Include="View\SetupWizard\SetupWizardUseGarminOrSTControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="View\SetupWizard\SetupWizardUseGarminOrSTControl.Designer.cs">
+      <DependentUpon>SetupWizardUseGarminOrSTControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="View\SetupWizard\SetupWizardWelcome.cs" />
+    <Compile Include="View\SetupWizard\SetupWizardWelcomeControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="View\SetupWizard\SetupWizardWelcomeControl.Designer.cs">
+      <DependentUpon>SetupWizardWelcomeControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="View\Workout\ReplaceRenameDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="View\Workout\ReplaceRenameDialog.Designer.cs">
       <DependentUpon>ReplaceRenameDialog.cs</DependentUpon>
     </Compile>
-    <Compile Include="View\WorkoutExportSelectedAction.cs" />
-    <Compile Include="View\SelectDeviceDialog.cs">
+    <Compile Include="View\Workout\WorkoutExportSelectedWorkoutsAction.cs" />
+    <Compile Include="View\Common\SelectDeviceDialog.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="View\SelectDeviceDialog.Designer.cs">
+    <Compile Include="View\Common\SelectDeviceDialog.Designer.cs">
       <DependentUpon>SelectDeviceDialog.cs</DependentUpon>
     </Compile>
-    <Compile Include="View\SingleSelectionCalendar.cs">
+    <Compile Include="View\Common\SingleSelectionCalendar.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="View\SingleSelectionCalendar.Designer.cs">
+    <Compile Include="View\Common\SingleSelectionCalendar.Designer.cs">
       <DependentUpon>SingleSelectionCalendar.cs</DependentUpon>
     </Compile>
-    <Compile Include="View\StepRowDataRenderer.cs" />
-    <Compile Include="View\GarminFitnessSettingsControl.cs">
+    <Compile Include="View\Workout\StepRowDataRenderer.cs" />
+    <Compile Include="View\Settings\GarminFitnessSettingsControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="View\GarminFitnessSettingsControl.Designer.cs">
+    <Compile Include="View\Settings\GarminFitnessSettingsControl.Designer.cs">
       <DependentUpon>GarminFitnessSettingsControl.cs</DependentUpon>
     </Compile>
-    <Compile Include="View\GarminFitnessPluginSettingsPages.cs" />
-    <Compile Include="View\GarminFitnessSettings.cs" />
+    <Compile Include="View\Settings\GarminFitnessPluginSettingsPages.cs" />
+    <Compile Include="View\Settings\GarminFitnessSettings.cs" />
     <Compile Include="Controller\Options.cs" />
-    <Compile Include="View\SelectCategoryDialog.cs">
+    <Compile Include="View\Workout\SelectCategoryDialog.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="View\SelectCategoryDialog.Designer.cs">
+    <Compile Include="View\Workout\SelectCategoryDialog.Designer.cs">
       <DependentUpon>SelectCategoryDialog.cs</DependentUpon>
     </Compile>
-    <Compile Include="View\StepIconLabelProvider.cs">
+    <Compile Include="View\Workout\StepIconLabelProvider.cs">
     </Compile>
-    <Compile Include="View\StepWrapper.cs" />
-    <Compile Include="View\WorkoutExportAllAction.cs" />
-    <Compile Include="View\GarminWorkoutControl.cs">
+    <Compile Include="View\Workout\StepWrapper.cs" />
+    <Compile Include="View\Workout\WorkoutExportAllWorkoutsAction.cs" />
+    <Compile Include="View\Workout\GarminWorkoutControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="View\GarminWorkoutControl.Designer.cs">
+    <Compile Include="View\Workout\GarminWorkoutControl.Designer.cs">
       <DependentUpon>GarminWorkoutControl.cs</DependentUpon>
     </Compile>
-    <Compile Include="View\GarminFitnessPluginViews.cs" />
-    <Compile Include="View\GarminFitnessView.cs" />
-    <Compile Include="View\WorkoutIconLabelProvider.cs" />
-    <Compile Include="View\WorkoutImportAction.cs" />
-    <Compile Include="View\TimeDurationUpDown.cs">
+    <Compile Include="View\Common\GarminFitnessPluginViews.cs" />
+    <Compile Include="View\Common\GarminFitnessView.cs" />
+    <Compile Include="View\Workout\WorkoutIconLabelProvider.cs" />
+    <Compile Include="View\Workout\WorkoutImportWorkoutsAction.cs" />
+    <Compile Include="View\Common\TimeDurationUpDown.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="View\TimeDurationUpDown.Designer.cs">
+    <Compile Include="View\Common\TimeDurationUpDown.Designer.cs">
       <DependentUpon>TimeDurationUpDown.cs</DependentUpon>
     </Compile>
-    <Compile Include="View\WorkoutRowDataRenderer.cs" />
-    <Compile Include="View\WorkoutWrapper.cs" />
+    <Compile Include="View\Workout\WorkoutRowDataRenderer.cs" />
+    <Compile Include="View\Workout\WorkoutWrapper.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Properties\Resources.resx">
@@ -273,35 +337,71 @@
     <EmbeddedResource Include="Resources\StringResources.sv.resx">
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="View\GarminFitnessMainControl.resx">
+    <EmbeddedResource Include="View\Common\GarminFitnessMainControl.resx">
       <SubType>Designer</SubType>
       <DependentUpon>GarminFitnessMainControl.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="View\GarminProfileControl.resx">
+    <EmbeddedResource Include="View\Profile\GarminProfileControl.resx">
       <SubType>Designer</SubType>
       <DependentUpon>GarminProfileControl.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="View\GarminFitnessSettingsControl.resx">
+    <EmbeddedResource Include="View\Settings\GarminFitnessSettingsControl.resx">
       <SubType>Designer</SubType>
       <DependentUpon>GarminFitnessSettingsControl.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="View\GarminWorkoutControl.resx">
+    <EmbeddedResource Include="View\SetupWizard\SetupWizardGarminCategoryAssociationControl.resx">
+      <DependentUpon>SetupWizardGarminCategoryAssociationControl.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="View\SetupWizard\SetupWizardCompletedControl.resx">
+      <DependentUpon>SetupWizardCompletedControl.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="View\SetupWizard\SetupWizardImportOrEditProfileControl.resx">
+      <DependentUpon>SetupWizardImportOrEditProfileControl.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="View\SetupWizard\SetupWizardSportTracksZonesControl.resx">
+      <DependentUpon>SetupWizardSportTracksZonesControl.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="View\SetupWizard\SetupWizardEditProfileControl.resx">
+      <DependentUpon>SetupWizardEditProfileControl.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="View\SetupWizard\GarminFitnessSetupWizard.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>GarminFitnessSetupWizard.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="View\SetupWizard\SetupWizardSetupSTGarminZonesControl.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>SetupWizardSetupSTGarminZonesControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="View\SetupWizard\SetupWizardUseGarminOrSTControl.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>SetupWizardUseGarminOrSTControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="View\SetupWizard\SetupWizardWelcomeControl.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>SetupWizardWelcomeControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="View\Workout\GarminWorkoutControl.resx">
       <SubType>Designer</SubType>
       <DependentUpon>GarminWorkoutControl.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="View\ReplaceRenameDialog.resx">
+    <EmbeddedResource Include="View\Workout\ReplaceRenameDialog.resx">
       <SubType>Designer</SubType>
       <DependentUpon>ReplaceRenameDialog.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="View\SelectCategoryDialog.resx">
+    <EmbeddedResource Include="View\Workout\SelectCategoryDialog.resx">
       <SubType>Designer</SubType>
       <DependentUpon>SelectCategoryDialog.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="View\SelectDeviceDialog.resx">
+    <EmbeddedResource Include="View\Common\SelectDeviceDialog.resx">
       <SubType>Designer</SubType>
       <DependentUpon>SelectDeviceDialog.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="View\TimeDurationUpDown.resx">
+    <EmbeddedResource Include="View\Common\TimeDurationUpDown.resx">
       <SubType>Designer</SubType>
       <DependentUpon>TimeDurationUpDown.cs</DependentUpon>
     </EmbeddedResource>
@@ -336,6 +436,7 @@
     <Content Include="Resources\Arrow.png" />
     <Content Include="Resources\DirtyWarning.png" />
     <Content Include="Resources\Export.png" />
+    <Content Include="Resources\GarminLogo.PNG" />
     <Content Include="Resources\Import.png" />
     <None Include="Resources\WorkoutDirtyIcon.png" />
     <Content Include="Resources\PlanWorkout.png" />

@@ -71,6 +71,10 @@ namespace GarminFitnessPlugin.View
             {
                 MessageBox.Show(String.Format(GarminFitnessView.ResourceManager.GetString("DoubleRangeValidationText"), Constants.MinWeightLimit, Constants.MaxWeightLimit),
                                 GarminFitnessView.ResourceManager.GetString("ValueValidationTitleText"), MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                System.Media.SystemSounds.Asterisk.Play();
+
+                // Reset old valid value
+                WeightTextBox.Text = Weight.Convert(GarminProfileManager.Instance.WeightInPounds, Weight.Units.Pound, PluginMain.GetApplication().SystemPreferences.WeightUnits).ToString("0.0");
             }
         }
 
@@ -106,6 +110,10 @@ namespace GarminFitnessPlugin.View
             {
                 MessageBox.Show(String.Format(GarminFitnessView.ResourceManager.GetString("IntegerRangeValidationText"), Constants.MinHRInBPM, Constants.MaxHRInBPM),
                                 GarminFitnessView.ResourceManager.GetString("ValueValidationTitleText"), MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                System.Media.SystemSounds.Asterisk.Play();
+
+                // Reset old valid value
+                RestHRTextBox.Text = GarminProfileManager.Instance.RestingHeartRate.ToString("0");
             }
         }
 
@@ -139,6 +147,10 @@ namespace GarminFitnessPlugin.View
             {
                 MessageBox.Show(String.Format(GarminFitnessView.ResourceManager.GetString("IntegerRangeValidationText"), Constants.MinHRInBPM, Constants.MaxHRInBPM),
                                 GarminFitnessView.ResourceManager.GetString("ValueValidationTitleText"), MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                System.Media.SystemSounds.Asterisk.Play();
+
+                // Reset old valid value
+                MaxHRTextBox.Text = m_CurrentProfile.MaximumHeartRate.ToString("0");
             }
         }
 
@@ -154,6 +166,10 @@ namespace GarminFitnessPlugin.View
             {
                 MessageBox.Show(String.Format(GarminFitnessView.ResourceManager.GetString("DoubleRangeValidationText"), Constants.MinWeightLimit, Constants.MaxWeightLimit),
                                 GarminFitnessView.ResourceManager.GetString("ValueValidationTitleText"), MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                System.Media.SystemSounds.Asterisk.Play();
+
+                // Reset old valid value
+                GearWeightTextBox.Text = m_CurrentProfile.GearWeight.ToString("0.0");
             }
         }
 
@@ -231,6 +247,10 @@ namespace GarminFitnessPlugin.View
                 {
                     MessageBox.Show(String.Format(GarminFitnessView.ResourceManager.GetString("IntegerRangeValidationText"), Constants.MinHRInPercentMax, Constants.MaxHRInPercentMax),
                                     GarminFitnessView.ResourceManager.GetString("ValueValidationTitleText"), MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    System.Media.SystemSounds.Asterisk.Play();
+
+                    // Reset old valid value
+                    LowHRTextBox.Text = m_CurrentProfile.GetHeartRateLowLimit(m_SelectedHRZone.Index).ToString("0");
                 }
             }
             else
@@ -240,6 +260,10 @@ namespace GarminFitnessPlugin.View
                 {
                     MessageBox.Show(String.Format(GarminFitnessView.ResourceManager.GetString("IntegerRangeValidationText"), Constants.MinHRInBPM, Constants.MaxHRInBPM),
                                     GarminFitnessView.ResourceManager.GetString("ValueValidationTitleText"), MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    System.Media.SystemSounds.Asterisk.Play();
+
+                    // Reset old valid value
+                    LowHRTextBox.Text = m_CurrentProfile.GetHeartRateLowLimit(m_SelectedHRZone.Index).ToString("0");
                 }
             }
         }
@@ -260,6 +284,10 @@ namespace GarminFitnessPlugin.View
                 {
                     MessageBox.Show(String.Format(GarminFitnessView.ResourceManager.GetString("IntegerRangeValidationText"), Constants.MinHRInPercentMax, Constants.MaxHRInPercentMax),
                                     GarminFitnessView.ResourceManager.GetString("ValueValidationTitleText"), MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    System.Media.SystemSounds.Asterisk.Play();
+
+                    // Reset old valid value
+                    HighHRTextBox.Text = m_CurrentProfile.GetHeartRateHighLimit(m_SelectedHRZone.Index).ToString("0");
                 }
             }
             else
@@ -269,6 +297,10 @@ namespace GarminFitnessPlugin.View
                 {
                     MessageBox.Show(String.Format(GarminFitnessView.ResourceManager.GetString("IntegerRangeValidationText"), Constants.MinHRInBPM, profile.MaximumHeartRate),
                                     GarminFitnessView.ResourceManager.GetString("ValueValidationTitleText"), MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    System.Media.SystemSounds.Asterisk.Play();
+
+                    // Reset old valid value
+                    HighHRTextBox.Text = m_CurrentProfile.GetHeartRateHighLimit(m_SelectedHRZone.Index).ToString("0");
                 }
             }
         }
@@ -324,6 +356,10 @@ namespace GarminFitnessPlugin.View
                                                   maxMinutes, maxSeconds),
                                     GarminFitnessView.ResourceManager.GetString("ValueValidationTitleText"),
                                     MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    System.Media.SystemSounds.Asterisk.Play();
+
+                    // Reset old valid value
+                    LowSpeedTextBox.Text = Utils.DoubleToTimeString(m_CurrentProfile.GetSpeedLowLimit(m_SelectedSpeedZone.Index));
                 }
             }
             else
@@ -345,6 +381,10 @@ namespace GarminFitnessPlugin.View
                     MessageBox.Show(String.Format(GarminFitnessView.ResourceManager.GetString("DoubleRangeValidationText"), min, max),
                                     GarminFitnessView.ResourceManager.GetString("ValueValidationTitleText"),
                                     MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    System.Media.SystemSounds.Asterisk.Play();
+
+                    // Reset old valid value
+                    LowSpeedTextBox.Text = m_CurrentProfile.GetSpeedLowLimit(m_SelectedSpeedZone.Index).ToString("0.0");
                 }
             }
         }
@@ -391,6 +431,10 @@ namespace GarminFitnessPlugin.View
                                                   maxMinutes, maxSeconds),
                                     GarminFitnessView.ResourceManager.GetString("ValueValidationTitleText"),
                                     MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    System.Media.SystemSounds.Asterisk.Play();
+
+                    // Reset old valid value
+                    HighSpeedTextBox.Text = Utils.DoubleToTimeString(m_CurrentProfile.GetSpeedHighLimit(m_SelectedSpeedZone.Index));
                 }
             }
             else
@@ -412,6 +456,10 @@ namespace GarminFitnessPlugin.View
                     MessageBox.Show(String.Format(GarminFitnessView.ResourceManager.GetString("DoubleRangeValidationText"), min, max),
                                     GarminFitnessView.ResourceManager.GetString("ValueValidationTitleText"),
                                     MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    System.Media.SystemSounds.Asterisk.Play();
+
+                    // Reset old valid value
+                    HighSpeedTextBox.Text = m_CurrentProfile.GetSpeedHighLimit(m_SelectedSpeedZone.Index).ToString("0.0");
                 }
             }
         }
@@ -441,6 +489,11 @@ namespace GarminFitnessPlugin.View
                 MessageBox.Show(String.Format(GarminFitnessView.ResourceManager.GetString("IntegerRangeValidationText"), Constants.MinPower, Constants.MaxPower),
                                 GarminFitnessView.ResourceManager.GetString("ValueValidationTitleText"),
                                 MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                System.Media.SystemSounds.Asterisk.Play();
+
+                // Reset old valid value
+                GarminExtendedActivityProfile concreteProfile = (GarminExtendedActivityProfile)m_CurrentProfile;
+                LowPowerTextBox.Text = concreteProfile.GetPowerLowLimit(m_SelectedPowerZone.Index).ToString("0");
             }
         }
 
@@ -461,6 +514,11 @@ namespace GarminFitnessPlugin.View
                 MessageBox.Show(String.Format(GarminFitnessView.ResourceManager.GetString("IntegerRangeValidationText"), Constants.MinPower, Constants.MaxPower),
                                 GarminFitnessView.ResourceManager.GetString("ValueValidationTitleText"),
                                 MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                System.Media.SystemSounds.Asterisk.Play();
+
+                // Reset old valid value
+                GarminExtendedActivityProfile concreteProfile = (GarminExtendedActivityProfile)m_CurrentProfile;
+                HighPowerTextBox.Text = concreteProfile.GetPowerHighLimit(m_SelectedPowerZone.Index).ToString("0");
             }
         }
 

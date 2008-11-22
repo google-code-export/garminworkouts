@@ -186,9 +186,6 @@
   <data name="DeviceCommunicationErrorText" xml:space="preserve">
     <value>Unable to load the Garmin Cummunicator Plugin.  Please make sure you have SportTracks version 2.0.3170 or later and Garmin Cummunicator Plugin installed and activated in Internet Explorer.</value>
   </data>
-  <data name="DeviceText" xml:space="preserve">
-    <value>device</value>
-  </data>
   <data name="DistanceDurationComboBoxText" xml:space="preserve">
     <value>After I go a certain distance</value>
   </data>
@@ -207,14 +204,14 @@
   <data name="ExportAllText" xml:space="preserve">
     <value>Export All</value>
   </data>
-  <data name="ExportFailedText" xml:space="preserve">
+  <data name="ExportWorkoutsFailedText" xml:space="preserve">
     <value>There was an error while exporting workouts</value>
   </data>
   <data name="ExportSelectedText" xml:space="preserve">
     <value>Export Selected</value>
   </data>
-  <data name="ExportSuccessText" xml:space="preserve">
-    <value>Workouts have been successfully exported to {0}</value>
+  <data name="ExportWorkoutsSuccessText" xml:space="preserve">
+    <value>Workouts have been successfully exported to the device.</value>
   </data>
   <data name="FemaleText" xml:space="preserve">
     <value>Female</value>
@@ -512,5 +509,44 @@
   </data>
   <data name="WorkoutsText" xml:space="preserve">
     <value>Workouts</value>
+  </data>
+  <data name="ExportProfileFailedText" xml:space="preserve">
+    <value>There was an error while exporting the profile</value>
+  </data>
+  <data name="ExportText" xml:space="preserve">
+    <value>Export</value>
+  </data>
+  <data name="ExportProfileSuccessText" xml:space="preserve">
+    <value>The profile has been successfully exported to the device.</value>
+  </data>
+  <data name="ContinueLabelText" xml:space="preserve">
+    <value>To set up the plugin, click on "Next"</value>
+  </data>
+  <data name="FinishLabelText" xml:space="preserve">
+    <value>To set up the plugin later, click on "Finish"</value>
+  </data>
+  <data name="GarminModeRadioButtonText" xml:space="preserve">
+    <value>I want to use the Garmin mode</value>
+  </data>
+  <data name="GarminOrSTText" xml:space="preserve">
+    <value>Garmin or SportTracks mode</value>
+  </data>
+  <data name="IndependentModeRadioButtonText" xml:space="preserve">
+    <value>I want to configure the zones independently</value>
+  </data>
+  <data name="ModeExplanationText" xml:space="preserve">
+    <value>One of the things that the Garmin Fitness Plugin allows is a better integration with SportTracks.  What this means is that it is possible to use the SportTracks defined heart rate, speed and power zones instead of the ones defined by Garmin.  Some users prefer to remain with the Garmin zones though, it's your choice.  This choice can also be customized per zone type.</value>
+  </data>
+  <data name="STModeRadioButtonText" xml:space="preserve">
+    <value>I want to use the SportTracks mode</value>
+  </data>
+  <data name="WelcomeLabelText" xml:space="preserve">
+    <value>Welcome to the Garmin Fitness Plugin setup wizard.  This will help you setup the plugin for your logbook.  At any time, you can click on the "Finish" button to quit the wizard.  Also note that this wizard is always available from the plugin's "Settings" page so if you wish to configure the plugin later on, feel free to do so.</value>
+  </data>
+  <data name="WelcomeText" xml:space="preserve">
+    <value>Welcome</value>
+  </data>
+  <data name="ManualSTGarminZonesExplanationText" xml:space="preserve">
+    <value>You have chosen to configure your zone usage manually.  You can do so on this page.  Note that these settings are always available in the Garmin fitness Plugin "Settings" page.</value>
   </data>
 </root>
