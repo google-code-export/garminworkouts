@@ -964,7 +964,7 @@ namespace GarminFitnessPlugin.View
         private IGarminZoneWrapper m_SelectedHRZone = null;
         private IGarminZoneWrapper m_SelectedSpeedZone = null;
         private IGarminZoneWrapper m_SelectedPowerZone = null;
-        private GarminBikingActivityProfile.GarminBikeProfile m_CurrentBikeProfile = null;
+        private GarminBikeProfile m_CurrentBikeProfile = null;
         private int m_BikeProfileIndex = 0;
     }
 }

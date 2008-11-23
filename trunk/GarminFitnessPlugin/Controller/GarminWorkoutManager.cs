@@ -143,7 +143,7 @@ namespace GarminFitnessPlugin.Controller
             }
         }
 
-        public void Deserialize_V0(Stream stream, DataVersion version)
+        public override void Deserialize_V0(Stream stream, DataVersion version)
         {
             byte[] intBuffer = new byte[sizeof(Int32)];
             int workoutCount;
