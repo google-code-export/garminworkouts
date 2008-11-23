@@ -25,7 +25,7 @@ namespace GarminFitnessPlugin.Data
                 stream.Write(BitConverter.GetBytes((Int32)Type), 0, sizeof(Int32));
             }
 
-            public void Deserialize_V0(Stream stream, DataVersion version)
+            public override void Deserialize_V0(Stream stream, DataVersion version)
             {
                 // This is the code that was in ITarget in data V0.  Since we changed our
                 //  inheritance structure between V0 and V1, we must also change where the
@@ -98,7 +98,7 @@ namespace GarminFitnessPlugin.Data
             m_ConcreteTarget.Serialize(stream);
         }
 
-        public new void Deserialize_V0(Stream stream, DataVersion version)
+        public override void Deserialize_V0(Stream stream, DataVersion version)
         {
             // In V0, we only have GTC zone type
             m_ConcreteTarget = new CadenceRangeTarget(stream, version, this);

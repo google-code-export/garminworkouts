@@ -45,7 +45,7 @@ namespace GarminFitnessPlugin.Data
             stream.Write(BitConverter.GetBytes((Int32)LastSpeedUnit), 0, sizeof(Int32));
         }
 
-        public new void Deserialize_V0(Stream stream, DataVersion version)
+        public override void Deserialize_V0(Stream stream, DataVersion version)
         {
             // Call base deserialization
             Deserialize(typeof(BaseSpeedTarget.IConcreteSpeedTarget), stream, version);

@@ -35,7 +35,7 @@ namespace GarminFitnessPlugin.Data
             stream.WriteByte(MaxCadence);
         }
 
-        public new void Deserialize_V0(Stream stream, DataVersion version)
+        public override void Deserialize_V0(Stream stream, DataVersion version)
         {
             // Call base deserialization
             Deserialize(typeof(BaseCadenceTarget.IConcreteCadenceTarget), stream, version);
