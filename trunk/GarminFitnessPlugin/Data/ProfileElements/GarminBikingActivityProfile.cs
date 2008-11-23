@@ -12,7 +12,7 @@ namespace GarminFitnessPlugin.Data
 {
     class GarminBikingActivityProfile : GarminActivityProfile
     {
-        class GarminBikeProfile
+        public class GarminBikeProfile
         {
             public GarminBikeProfile()
             {
@@ -158,6 +158,8 @@ namespace GarminFitnessPlugin.Data
         public GarminBikingActivityProfile(GarminCategories category) :
             base(category)
         {
+            m_FTP = 300;
+
             // Power Zones
             UInt16 currentPower = 100;
             UInt16 powerStep = 50;
@@ -383,11 +385,13 @@ namespace GarminFitnessPlugin.Data
             {
                 XmlNode currentChild = parentNode.ChildNodes[i];
 
-                if (currentChild.Name == "Name" &&
-                    currentChild.ChildNodes.Count == 1 &&
-                    currentChild.FirstChild.GetType() == typeof(XmlText))
+                if (currentChild.Name == "Name")
                 {
-                    name = currentChild.FirstChild.Value;
+                    if (currentChild.ChildNodes.Count == 1 &&
+                    currentChild.FirstChild.GetType() == typeof(XmlText))
+                    {
+                        name = currentChild.FirstChild.Value;
+                    }
                     nameRead = true;
                 }
                 else if (currentChild.Name == Constants.OdometerTCXString &&
@@ -483,6 +487,37 @@ namespace GarminFitnessPlugin.Data
             }
         }
 
+        public string GetBikeName(int index)
+        {
+            Trace.Assert(index >= 0 && index <= Constants.GarminBikeProfileCount);
+
+            return m_Bikes[index].Name;
+        }
+
+        public GarminBikeProfile GetBikeProfile(int index)
+        {
+            Trace.Assert(index >= 0 && index <= Constants.GarminBikeProfileCount);
+
+            return m_Bikes[index];
+        }
+
+        public UInt16 FTP
+        {
+            get { return m_FTP; }
+            set
+            {
+                if (m_FTP != value)
+                {
+                    Trace.Assert(value >= Constants.MinPower && value <= Constants.MaxPower);
+
+                    m_FTP = value;
+
+                    TriggerChangedEvent(new PropertyChangedEventArgs("FTP"));
+                }
+            }
+        }
+
+        private UInt16 m_FTP;
         private List<GarminFitnessValueRange<UInt16>> m_PowerZones = new List<GarminFitnessValueRange<UInt16>>();
         private GarminBikeProfile[] m_Bikes = new GarminBikeProfile[3];
     }

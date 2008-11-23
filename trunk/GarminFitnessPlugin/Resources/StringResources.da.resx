@@ -552,4 +552,31 @@
   <data name="ImportProfileErrorText" xml:space="preserve">
     <value>There was an error while importing the profile</value>
   </data>
+  <data name="AutoText" xml:space="preserve">
+    <value>Auto</value>
+  </data>
+  <data name="BikeProfileMenuItemText" xml:space="preserve">
+    <value>Bike {0} ({1})</value>
+  </data>
+  <data name="FTPLabelText" xml:space="preserve">
+    <value>Functional Threshold Power :</value>
+  </data>
+  <data name="HasCadenceText" xml:space="preserve">
+    <value>Has cadence sensor</value>
+  </data>
+  <data name="HasPowerText" xml:space="preserve">
+    <value>Has power sensor</value>
+  </data>
+  <data name="MillimeterText" xml:space="preserve">
+    <value>mm</value>
+  </data>
+  <data name="OdometerLabelText" xml:space="preserve">
+    <value>Odometer :</value>
+  </data>
+  <data name="WheelSizeGroupBoxText" xml:space="preserve">
+    <value>Wheel size</value>
+  </data>
+  <data name="WheelSizeLabelText" xml:space="preserve">
+    <value>Wheel size :</value>
+  </data>
 </root>
