@@ -254,27 +254,18 @@ namespace GarminFitnessPlugin
                 {
                     byte[] headerBuffer = new byte[Constants.DataHeaderIdString.Length];
                     String headerIdString;
-                    DataVersion version = null;
+                    DataVersion version = new DataVersion(0);
 
                     stream.Read(headerBuffer, 0, Constants.DataHeaderIdString.Length);
                     headerIdString = Encoding.UTF8.GetString(headerBuffer);
 
-                    if (headerIdString != Constants.DataHeaderIdString)
-                    {
-                        // Deserialize using version 0
-                        version = new DataVersion(0);
-                        stream.Position = 0;
-                    }
-                    else
+                    if (headerIdString == Constants.DataHeaderIdString)
                     {
                         Byte versionNumber = (Byte)stream.ReadByte();
 
                         if (versionNumber <= Constants.CurrentVersion.VersionNumber)
                         {
                             version = new DataVersion(versionNumber);
-
-                            GarminWorkoutManager.Instance.Deserialize(stream, version);
-                            GarminProfileManager.Instance.Deserialize(stream, version);
                         }
                         else
                         {
@@ -283,6 +274,14 @@ namespace GarminFitnessPlugin
                                             MessageBoxButtons.OK, MessageBoxIcon.Error);
                         }
                     }
+                    else
+                    {
+                        // Deserialize using version 0.  Replace at start since we skipped some data
+                        stream.Position = 0;
+                    }
+
+                    GarminWorkoutManager.Instance.Deserialize(stream, version);
+                    GarminProfileManager.Instance.Deserialize(stream, version);
                 }
                 catch (Exception e)
                 {

@@ -66,7 +66,7 @@ namespace GarminFitnessPlugin.Data
             stream.Write(BitConverter.GetBytes(LastExportDate.Ticks), 0, sizeof(long));
         }
 
-        public override void Deserialize_V0(Stream stream, DataVersion version)
+        public void Deserialize_V0(Stream stream, DataVersion version)
         {
             byte[] intBuffer = new byte[sizeof(Int32)];
             byte[] stringBuffer;

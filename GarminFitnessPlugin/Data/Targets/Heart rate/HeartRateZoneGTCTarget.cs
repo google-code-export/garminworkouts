@@ -34,7 +34,7 @@ namespace GarminFitnessPlugin.Data
             stream.WriteByte(Zone);
         }
 
-        public override void Deserialize_V0(Stream stream, DataVersion version)
+        public new void Deserialize_V0(Stream stream, DataVersion version)
         {
             // Call base deserialization
             Deserialize(typeof(BaseHeartRateTarget.IConcreteHeartRateTarget), stream, version);

@@ -23,10 +23,6 @@ namespace GarminFitnessPlugin.Data
         {
         }
 
-        public override void Deserialize_V0(Stream stream, DataVersion version)
-        {
-        }
-
         public void Deserialize_V8(Stream stream, DataVersion version)
         {
         }
