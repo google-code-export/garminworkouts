@@ -67,12 +67,14 @@ namespace GarminFitnessPlugin
         public static readonly Byte GarminHRZoneCount = 5;
         public static readonly Byte GarminSpeedZoneCount = 10;
         public static readonly Byte GarminPowerZoneCount = 7;
+        public static readonly Byte GarminBikeProfileCount = 3;
 
         public static readonly string xmlns = "http://www.w3.org/2000/xmlns/";
         public static readonly string xsins = "http://www.w3.org/2001/XMLSchema-instance";
         
         public static readonly string DeserializeMethodNamePrefix = "Deserialize_V";
 
+        public static readonly string ExtensionsTCXString = "Extensions";
         public static readonly string ValueTCXString = "Value";
         public static readonly string LowInMeterPerSecTCXString = "LowInMetersPerSecond";
         public static readonly string HighInMeterPerSecTCXString = "HighInMetersPerSecond";
@@ -139,11 +141,24 @@ namespace GarminFitnessPlugin
         public static readonly string GearWeightTCXString = "GearWeightKilograms";
         public static readonly string HeartRateZonesTCXString = "HeartRateZones";
         public static readonly string SpeedZonesTCXString = "SpeedZones";
+
         public static readonly string ViewAsTCXString = "ViewAs";
         public static readonly string LowTCXString = "Low";
         public static readonly string HighTCXString = "High";
         public static readonly string PercentMaxTCXString = "Percent Max";
         public static readonly string BPMTCXString = "Beats Per Minute";
+
+        public static readonly string PowerZonesTCXString = "PowerZones";
+        public static readonly string PowerZoneTCXString = "PowerZone";
+        public static readonly string FTPTCXString = "FTP";
+
+        public static readonly string BikeTCXString = "Bike";
+        public static readonly string HasCadenceTCXString = "HasCadenceSensor";
+        public static readonly string HasPowerTCXString = "HasPowerSensor";
+        public static readonly string OdometerTCXString = "OdometerMeters";
+        public static readonly string WheelSizeTCXString = "WheelSize";
+        public static readonly string AutoWheelSizeTCXString = "AutoWheelSize";
+        public static readonly string SizeMillimetersTCXString = "SizeMillimeters";
 
         public static readonly DataVersion CurrentVersion = new DataVersion(8);
         public static readonly String DataHeaderIdString = "Garmin Workouts Plugin made by S->G";

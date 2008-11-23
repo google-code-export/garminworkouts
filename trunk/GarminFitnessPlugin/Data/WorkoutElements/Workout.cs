@@ -330,7 +330,7 @@ namespace GarminFitnessPlugin.Data
             // Extensions
             if (!skipExtensions)
             {
-                childNode = document.CreateElement("Extensions");
+                childNode = document.CreateElement(Constants.ExtensionsTCXString);
                 // Steps extensions
                 if (m_StepsExtensions.Count > 0)
                 {
@@ -447,7 +447,7 @@ namespace GarminFitnessPlugin.Data
 
                     ScheduledDates.Add(DateTime.ParseExact(((XmlText)child.FirstChild).Value, "yyyy-MM-dd", info.DateTimeFormat));
                 }
-                else if (child.Name == "Extensions")
+                else if (child.Name == Constants.ExtensionsTCXString)
                 {
                     for (int j = 0; j < child.ChildNodes.Count; ++j)
                     {

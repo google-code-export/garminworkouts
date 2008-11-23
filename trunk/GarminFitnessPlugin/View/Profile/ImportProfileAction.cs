@@ -98,7 +98,12 @@ namespace GarminFitnessPlugin.View
                     GarminDeviceManager.ImportProfileTask concreteTask = (GarminDeviceManager.ImportProfileTask)task;
                     MemoryStream stream = new MemoryStream(Encoding.UTF8.GetBytes(concreteTask.ProfileXML));
 
-                    ProfileImporter.ImportProfile(stream);
+                    if(!ProfileImporter.ImportProfile(stream))
+                    {
+                        MessageBox.Show(GarminFitnessView.ResourceManager.GetString("ImportProfileErrorText", GarminFitnessView.UICulture),
+                                        GarminFitnessView.ResourceManager.GetString("ErrorText", GarminFitnessView.UICulture),
+                                        MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
 
                     stream.Close();
                 }

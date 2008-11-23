@@ -117,7 +117,7 @@ namespace GarminFitnessPlugin.View
 
                 if (!WorkoutImporter.ImportWorkout(workoutStream))
                 {
-                    MessageBox.Show(GarminFitnessView.ResourceManager.GetString("ImportErrorText", GarminFitnessView.UICulture),
+                    MessageBox.Show(GarminFitnessView.ResourceManager.GetString("ImportWorkoutsErrorText", GarminFitnessView.UICulture),
                                     GarminFitnessView.ResourceManager.GetString("ErrorText", GarminFitnessView.UICulture),
                                     MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
@@ -146,12 +146,11 @@ namespace GarminFitnessPlugin.View
 
                     if (!WorkoutImporter.ImportWorkout(stream))
                     {
-                        MessageBox.Show(GarminFitnessView.ResourceManager.GetString("ImportErrorText", GarminFitnessView.UICulture),
+                        MessageBox.Show(GarminFitnessView.ResourceManager.GetString("ImportWorkoutsErrorText", GarminFitnessView.UICulture),
                                         GarminFitnessView.ResourceManager.GetString("ErrorText", GarminFitnessView.UICulture),
                                         MessageBoxButtons.OK, MessageBoxIcon.Error);
                     }
 
-                    PluginMain.GetApplication().ActiveView.ShowPage("");
                     stream.Close();
                 }
             }
