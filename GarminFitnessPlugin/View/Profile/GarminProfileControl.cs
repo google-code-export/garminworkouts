@@ -21,6 +21,7 @@ namespace GarminFitnessPlugin.View
 
             m_CurrentCategory = GarminCategories.Running;
             m_CurrentProfile = GarminProfileManager.Instance.GetProfileForActivity(m_CurrentCategory);
+            m_CurrentBikeProfile = null;
 
             GarminProfileManager.Instance.ProfileChanged += new GarminProfileManager.ProfileChangedEventHandler(OnProfileChanged);
             GarminProfileManager.Instance.ActivityProfileChanged += new GarminProfileManager.ActivityProfileChangedEventHandler(OnActivityProfileChanged);
@@ -35,6 +36,8 @@ namespace GarminFitnessPlugin.View
             HRZonesTreeList.ThemeChanged(visualTheme);
             SpeedZonesTreeList.ThemeChanged(visualTheme);
             PowerZonesTreeList.ThemeChanged(visualTheme);
+
+            BikeProfileActionBanner.ThemeChanged(visualTheme);
         }
 
         public void UICultureChanged(System.Globalization.CultureInfo culture)
@@ -209,19 +212,21 @@ namespace GarminFitnessPlugin.View
 
             RefreshUIFromProfile();
         }
-
-        private void PowerZonesTreeList_SelectedChanged(object sender, EventArgs e)
+        
+        private void FTPTextBox_Validating(object sender, System.ComponentModel.CancelEventArgs e)
         {
-            if (PowerZonesTreeList.Selected.Count == 1)
+            e.Cancel = !Utils.IsTextIntegerInRange(FTPTextBox.Text, Constants.MinPower, Constants.MaxPower);
+            if (e.Cancel)
             {
-                m_SelectedPowerZone = (GarminPowerZoneWrapper)PowerZonesTreeList.Selected[0];
-            }
-            else
-            {
-                m_SelectedPowerZone = null;
-            }
+                MessageBox.Show(String.Format(GarminFitnessView.ResourceManager.GetString("IntegerRangeValidationText"), Constants.MinPower, Constants.MaxPower),
+                                GarminFitnessView.ResourceManager.GetString("ValueValidationTitleText"),
+                                MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                System.Media.SystemSounds.Asterisk.Play();
 
-            RefreshUIFromProfile();
+                // Reset old valid value
+                GarminBikingActivityProfile concreteProfile = (GarminBikingActivityProfile)m_CurrentProfile;
+                FTPTextBox.Text = concreteProfile.FTP.ToString("0");
+            }
         }
 
         private void BPMRadioButton_CheckedChanged(object sender, EventArgs e)
@@ -485,6 +490,26 @@ namespace GarminFitnessPlugin.View
             m_CurrentProfile.SetSpeedName(m_SelectedSpeedZone.Index, SpeedNameTextBox.Text);
         }
 
+        private void FTPTextBox_Validated(object sender, EventArgs e)
+        {
+            GarminBikingActivityProfile concreteProfile = (GarminBikingActivityProfile)m_CurrentProfile;
+            concreteProfile.FTP = UInt16.Parse(FTPTextBox.Text);
+        }
+
+        private void PowerZonesTreeList_SelectedChanged(object sender, EventArgs e)
+        {
+            if (PowerZonesTreeList.Selected.Count == 1)
+            {
+                m_SelectedPowerZone = (GarminPowerZoneWrapper)PowerZonesTreeList.Selected[0];
+            }
+            else
+            {
+                m_SelectedPowerZone = null;
+            }
+
+            RefreshUIFromProfile();
+        }
+
         private void LowPowerTextBox_Validating(object sender, System.ComponentModel.CancelEventArgs e)
         {
             e.Cancel = !Utils.IsTextIntegerInRange(LowPowerTextBox.Text, Constants.MinPower, Constants.MaxPower);
@@ -535,6 +560,112 @@ namespace GarminFitnessPlugin.View
             concreteProfile.SetPowerHighLimit(m_SelectedPowerZone.Index, UInt16.Parse(HighPowerTextBox.Text));
         }
 
+        private void BikeProfileActionBanner_MenuClicked(object sender, EventArgs e)
+        {
+            GarminBikingActivityProfile concreteProfile = (GarminBikingActivityProfile)m_CurrentProfile;
+            ContextMenu menu = new ContextMenu();
+            MenuItem menuItem;
+            string baseMenuItemName;
+
+            baseMenuItemName = GarminFitnessView.ResourceManager.GetString("BikeProfileMenuItemText", GarminFitnessView.UICulture);
+
+            menuItem = new MenuItem(String.Format(baseMenuItemName, 1.ToString(), concreteProfile.GetBikeName(0)),
+                                    new EventHandler(Bike1ProfileEventHandler));
+            menu.MenuItems.Add(menuItem);
+            menuItem = new MenuItem(String.Format(baseMenuItemName, 2.ToString(), concreteProfile.GetBikeName(1)),
+                                    new EventHandler(Bike2ProfileEventHandler));
+            menu.MenuItems.Add(menuItem);
+            menuItem = new MenuItem(String.Format(baseMenuItemName, 3.ToString(), concreteProfile.GetBikeName(2)),
+                                    new EventHandler(Bike3ProfileEventHandler));
+            menu.MenuItems.Add(menuItem);
+
+            menu.Show(BikeProfileActionBanner, BikeProfileActionBanner.PointToClient(MousePosition));
+        }
+
+        private void BikeNameTextBox_Validated(object sender, EventArgs e)
+        {
+            m_CurrentBikeProfile.Name = BikeNameTextBox.Text;
+        }
+
+        private void OdometerTextBox_Validating(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            e.Cancel = !Utils.IsTextFloatInRange(OdometerTextBox.Text, Constants.MinOdometer, Constants.MaxOdometer);
+            if (e.Cancel)
+            {
+                MessageBox.Show(String.Format(GarminFitnessView.ResourceManager.GetString("DoubleRangeValidationText"), Constants.MinOdometer, Constants.MaxOdometer),
+                                GarminFitnessView.ResourceManager.GetString("ValueValidationTitleText"),
+                                MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                System.Media.SystemSounds.Asterisk.Play();
+
+                // Reset old valid value
+                OdometerTextBox.Text = Length.Convert(m_CurrentBikeProfile.OdometerInMeters, Length.Units.Meter, m_CurrentProfile.BaseSpeedUnit).ToString("0.0");
+            }
+        }
+
+        private void OdometerTextBox_Validated(object sender, EventArgs e)
+        {
+            double odometerValue = double.Parse(OdometerTextBox.Text);
+
+            m_CurrentBikeProfile.OdometerInMeters = Length.Convert(odometerValue, m_CurrentProfile.BaseSpeedUnit, Length.Units.Meter);
+        }
+
+        private void BikeWeightTextBox_Validating(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            e.Cancel = !Utils.IsTextFloatInRange(BikeWeightTextBox.Text, Constants.MinWeight, Constants.MaxWeight);
+            if (e.Cancel)
+            {
+                MessageBox.Show(String.Format(GarminFitnessView.ResourceManager.GetString("DoubleRangeValidationText"), Constants.MinWeight, Constants.MaxWeight),
+                                GarminFitnessView.ResourceManager.GetString("ValueValidationTitleText"),
+                                MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                System.Media.SystemSounds.Asterisk.Play();
+
+                // Reset old valid value
+                BikeWeightTextBox.Text = Weight.Convert(m_CurrentBikeProfile.WeightInPounds, Weight.Units.Pound, PluginMain.GetApplication().SystemPreferences.WeightUnits).ToString("0.0");
+            }
+        }
+
+        private void BikeWeightTextBox_Validated(object sender, EventArgs e)
+        {
+            double weight = double.Parse(BikeWeightTextBox.Text);
+
+            m_CurrentBikeProfile.WeightInPounds = Weight.Convert(weight, PluginMain.GetApplication().SystemPreferences.WeightUnits, Weight.Units.Pound);
+        }
+
+        private void HasCadenceCheckBox_CheckedChanged(object sender, EventArgs e)
+        {
+            m_CurrentBikeProfile.HasCadenceSensor = HasCadenceCheckBox.Checked;
+        }
+
+        private void HasPowerCheckBox_CheckedChanged(object sender, EventArgs e)
+        {
+            m_CurrentBikeProfile.HasPowerSensor = HasPowerCheckBox.Checked;
+        }
+
+        private void AutoWheelSizeCheckBox_CheckedChanged(object sender, EventArgs e)
+        {
+            m_CurrentBikeProfile.AutoWheelSize = AutoWheelSizeCheckBox.Checked;
+        }
+
+        private void WheelSizeTextBox_Validating(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            e.Cancel = !Utils.IsTextIntegerInRange(WheelSizeTextBox.Text, Constants.MinWheelSize, Constants.MaxWheelSize);
+            if (e.Cancel)
+            {
+                MessageBox.Show(String.Format(GarminFitnessView.ResourceManager.GetString("IntegerRangeValidationText"), Constants.MinWheelSize, Constants.MaxWheelSize),
+                                GarminFitnessView.ResourceManager.GetString("ValueValidationTitleText"),
+                                MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                System.Media.SystemSounds.Asterisk.Play();
+
+                // Reset old valid value
+                WheelSizeTextBox.Text = m_CurrentBikeProfile.WheelSize.ToString();
+            }
+        }
+
+        private void WheelSizeTextBox_Validated(object sender, EventArgs e)
+        {
+            m_CurrentBikeProfile.WheelSize = UInt16.Parse(WheelSizeTextBox.Text);
+        }
+
 #endregion
 
         public void RunningProfileEventHandler(object sender, EventArgs args)
@@ -549,6 +680,7 @@ namespace GarminFitnessPlugin.View
         {
             m_CurrentCategory = GarminCategories.Biking;
             m_CurrentProfile = GarminProfileManager.Instance.GetProfileForActivity(m_CurrentCategory);
+            m_CurrentBikeProfile = ((GarminBikingActivityProfile)m_CurrentProfile).GetBikeProfile(m_BikeProfileIndex);
 
             RefreshUIFromCategory();
         }
@@ -559,6 +691,30 @@ namespace GarminFitnessPlugin.View
             m_CurrentProfile = GarminProfileManager.Instance.GetProfileForActivity(m_CurrentCategory);
 
             RefreshUIFromCategory();
+        }
+
+        public void Bike1ProfileEventHandler(object sender, EventArgs args)
+        {
+            m_BikeProfileIndex = 0;
+            m_CurrentBikeProfile = ((GarminBikingActivityProfile)m_CurrentProfile).GetBikeProfile(m_BikeProfileIndex);
+
+            RefreshUIFromProfile();
+        }
+
+        public void Bike2ProfileEventHandler(object sender, EventArgs args)
+        {
+            m_BikeProfileIndex = 1;
+            m_CurrentBikeProfile = ((GarminBikingActivityProfile)m_CurrentProfile).GetBikeProfile(m_BikeProfileIndex);
+
+            RefreshUIFromProfile();
+        }
+
+        public void Bike3ProfileEventHandler(object sender, EventArgs args)
+        {
+            m_BikeProfileIndex = 2;
+            m_CurrentBikeProfile = ((GarminBikingActivityProfile)m_CurrentProfile).GetBikeProfile(m_BikeProfileIndex);
+
+            RefreshUIFromProfile();
         }
 
         private void RefreshProfileInfo()
@@ -644,7 +800,7 @@ namespace GarminFitnessPlugin.View
             RefreshTreeLists();
 
             MaxHRTextBox.Text = m_CurrentProfile.MaximumHeartRate.ToString();
-            GearWeightTextBox.Text = m_CurrentProfile.GearWeight.ToString("0.0");
+            GearWeightTextBox.Text = Weight.Convert(m_CurrentProfile.GearWeight, Weight.Units.Pound, PluginMain.GetApplication().SystemPreferences.WeightUnits).ToString("0.0");
 
             // HR Zones
             PercentMaxRadioButton.Checked = m_CurrentProfile.HRIsInPercentMax;
@@ -673,15 +829,38 @@ namespace GarminFitnessPlugin.View
             }
 
             // Power Zones
-            PowerZonesGroupBox.Visible = m_CurrentProfile.GetType() == typeof(GarminBikingActivityProfile);
+            BikingProfilePanel.Visible = m_CurrentProfile.GetType() == typeof(GarminBikingActivityProfile);
             PowerZonesTreeList.Invalidate();
             LowPowerTextBox.Enabled = m_SelectedPowerZone != null;
             HighPowerTextBox.Enabled = m_SelectedPowerZone != null;
-            if (m_CurrentProfile.GetType() == typeof(GarminBikingActivityProfile) &&
-                m_SelectedPowerZone != null)
+            if (m_CurrentProfile.GetType() == typeof(GarminBikingActivityProfile))
             {
-                LowPowerTextBox.Text = m_SelectedPowerZone.Low;
-                HighPowerTextBox.Text = m_SelectedPowerZone.High;
+                GarminBikingActivityProfile concreteProfile = (GarminBikingActivityProfile)m_CurrentProfile;
+                m_CurrentBikeProfile = ((GarminBikingActivityProfile)m_CurrentProfile).GetBikeProfile(m_BikeProfileIndex);
+
+                FTPTextBox.Text = concreteProfile.FTP.ToString();
+
+                if (m_SelectedPowerZone != null)
+                {
+                    LowPowerTextBox.Text = m_SelectedPowerZone.Low;
+                    HighPowerTextBox.Text = m_SelectedPowerZone.High;
+                }
+
+                // Bike profiles
+                string baseMenuItemName;
+
+                baseMenuItemName = GarminFitnessView.ResourceManager.GetString("BikeProfileMenuItemText", GarminFitnessView.UICulture);
+                BikeProfileActionBanner.Text = String.Format(baseMenuItemName, (m_BikeProfileIndex + 1).ToString(), m_CurrentBikeProfile.Name);
+
+                BikeNameTextBox.Text = m_CurrentBikeProfile.Name;
+                HasCadenceCheckBox.Checked = m_CurrentBikeProfile.HasCadenceSensor;
+                HasPowerCheckBox.Checked = m_CurrentBikeProfile.HasPowerSensor;
+                OdometerTextBox.Text = Length.Convert(m_CurrentBikeProfile.OdometerInMeters, Length.Units.Meter, m_CurrentProfile.BaseSpeedUnit).ToString("0.0");
+                BikeWeightTextBox.Text = Weight.Convert(m_CurrentBikeProfile.WeightInPounds, Weight.Units.Pound, PluginMain.GetApplication().SystemPreferences.WeightUnits).ToString("0.0");
+                WheelSizeGroupBox.Enabled = m_CurrentBikeProfile.HasCadenceSensor;
+                AutoWheelSizeCheckBox.Checked = m_CurrentBikeProfile.AutoWheelSize;
+                WheelSizeTextBox.Enabled = !m_CurrentBikeProfile.AutoWheelSize;
+                WheelSizeTextBox.Text = m_CurrentBikeProfile.WheelSize.ToString();
             }
         }
 
@@ -760,9 +939,24 @@ namespace GarminFitnessPlugin.View
             NameSpeedLabel.Text = GarminFitnessView.ResourceManager.GetString("NameLabelText", GarminFitnessView.UICulture);
 
             // Power zones
+            FTPLabel.Text = GarminFitnessView.ResourceManager.GetString("FTPLabelText", GarminFitnessView.UICulture);
+            FTPUnitsLabel.Text = CommonResources.Text.LabelWatts;
             PowerZonesGroupBox.Text = GarminFitnessView.ResourceManager.GetString("PowerZonesGroupBoxText", GarminFitnessView.UICulture);
             LowPowerLabel.Text = GarminFitnessView.ResourceManager.GetString("LowLabelText", GarminFitnessView.UICulture);
             HighPowerLabel.Text = GarminFitnessView.ResourceManager.GetString("HighLabelText", GarminFitnessView.UICulture);
+
+            // Bike profiles
+            BikeNameLabel.Text = GarminFitnessView.ResourceManager.GetString("NameLabelText", GarminFitnessView.UICulture);
+            OdometerLabel.Text = GarminFitnessView.ResourceManager.GetString("OdometerLabelText", GarminFitnessView.UICulture);
+            OdometerUnitsLabel.Text = Length.LabelAbbr(m_CurrentProfile.BaseSpeedUnit);
+            BikeWeightLabel.Text = GarminFitnessView.ResourceManager.GetString("WeightLabelText", GarminFitnessView.UICulture);
+            BikeWeightUnitLabel.Text = Weight.LabelAbbr(PluginMain.GetApplication().SystemPreferences.WeightUnits);
+            HasCadenceCheckBox.Text = GarminFitnessView.ResourceManager.GetString("HasCadenceText", GarminFitnessView.UICulture);
+            HasPowerCheckBox.Text = GarminFitnessView.ResourceManager.GetString("HasPowerText", GarminFitnessView.UICulture);
+            WheelSizeGroupBox.Text = GarminFitnessView.ResourceManager.GetString("WheelSizeGroupBoxText", GarminFitnessView.UICulture);
+            AutoWheelSizeCheckBox.Text = GarminFitnessView.ResourceManager.GetString("AutoText", GarminFitnessView.UICulture);
+            WheelSizeLabel.Text = GarminFitnessView.ResourceManager.GetString("WheelSizeLabelText", GarminFitnessView.UICulture);
+            WheelSizeUnitLabel.Text = GarminFitnessView.ResourceManager.GetString("MillimeterText", GarminFitnessView.UICulture);
         }
 
         private GarminCategories m_CurrentCategory;
@@ -770,5 +964,7 @@ namespace GarminFitnessPlugin.View
         private IGarminZoneWrapper m_SelectedHRZone = null;
         private IGarminZoneWrapper m_SelectedSpeedZone = null;
         private IGarminZoneWrapper m_SelectedPowerZone = null;
+        private GarminBikingActivityProfile.GarminBikeProfile m_CurrentBikeProfile = null;
+        private int m_BikeProfileIndex = 0;
     }
 }
