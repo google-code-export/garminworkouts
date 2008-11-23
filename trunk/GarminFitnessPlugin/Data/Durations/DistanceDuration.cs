@@ -37,7 +37,7 @@ namespace GarminFitnessPlugin.Data
             stream.Write(BitConverter.GetBytes((Int32)DistanceUnit), 0, sizeof(Int32));
         }
 
-        public override void Deserialize_V0(Stream stream, DataVersion version)
+        public new void Deserialize_V0(Stream stream, DataVersion version)
         {
             // Call base deserialization
             Deserialize(typeof(IDuration), stream, version);

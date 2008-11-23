@@ -26,7 +26,7 @@ namespace GarminFitnessPlugin.Data
             stream.Write(BitConverter.GetBytes((Int32)Type), 0, sizeof(Int32));
         }
 
-        public override void Deserialize_V0(Stream stream, DataVersion version)
+        public void Deserialize_V0(Stream stream, DataVersion version)
         {
         }
 

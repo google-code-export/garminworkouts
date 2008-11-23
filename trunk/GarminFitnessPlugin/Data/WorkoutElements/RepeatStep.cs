@@ -44,7 +44,7 @@ namespace GarminFitnessPlugin.Data
             }
         }
 
-        public override void Deserialize_V0(Stream stream, DataVersion version)
+        public new void Deserialize_V0(Stream stream, DataVersion version)
         {
             // Call base deserialization
             Deserialize(typeof(IStep), stream, version);

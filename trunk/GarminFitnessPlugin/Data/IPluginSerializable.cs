@@ -60,6 +60,5 @@ namespace GarminFitnessPlugin.Data
         }
 
         public abstract void Serialize(Stream stream);
-        public abstract void Deserialize_V0(Stream stream, DataVersion version);
     }
 }
