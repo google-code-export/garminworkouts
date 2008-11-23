@@ -44,7 +44,7 @@ namespace GarminFitnessPlugin.Controller
                     {
                         for(int j = 0; j < database.ChildNodes.Count; ++j)
                         {
-                            if(database.ChildNodes[j].Name == "Extensions")
+                            if (database.ChildNodes[j].Name == Constants.ExtensionsTCXString)
                             {
                                 XmlNode extensionsNode = database.ChildNodes[j];
 

@@ -378,7 +378,7 @@ namespace GarminFitnessPlugin.Data
             return true;
         }
 
-        private int PeekZoneNumber(XmlNode zoneNode)
+        protected int PeekZoneNumber(XmlNode zoneNode)
         {
             for (int i = 0; i < zoneNode.ChildNodes.Count; ++i)
             {

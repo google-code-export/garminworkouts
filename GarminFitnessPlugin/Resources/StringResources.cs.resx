@@ -300,8 +300,8 @@
   <data name="HRZonesGroupBoxText" xml:space="preserve">
     <value>Heart Rate Zones</value>
   </data>
-  <data name="ImportErrorText" xml:space="preserve">
-    <value>There was an error while importing the workout</value>
+  <data name="ImportWorkoutsErrorText" xml:space="preserve">
+    <value>There was an error while importing the workouts</value>
   </data>
   <data name="IntegerRangeValidationText" xml:space="preserve">
     <value>Value must be an integer between {0} and {1}</value>
@@ -548,5 +548,8 @@
   </data>
   <data name="ManualSTGarminZonesExplanationText" xml:space="preserve">
     <value>You have chosen to configure your zone usage manually.  You can do so on this page.  Note that these settings are always available in the Garmin fitness Plugin "Settings" page.</value>
+  </data>
+  <data name="ImportProfileErrorText" xml:space="preserve">
+    <value>There was an error while importing the profile</value>
   </data>
 </root>
