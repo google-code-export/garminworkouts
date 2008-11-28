@@ -139,6 +139,7 @@ namespace GarminFitnessPlugin
             };
 
         public static readonly string ProfileTCXString = "Profile";
+        public static readonly string TimeStampTCXString = "TimeStamp";
 
         public static readonly string BirthDateTCXString = "BirthDate";
         public static readonly string WeightTCXString = "WeightKilograms";

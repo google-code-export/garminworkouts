@@ -240,6 +240,8 @@ namespace GarminFitnessPlugin.View
             // Refresh the list of actions, ugly but working
             PluginMain.GetApplication().ShowView(GUIDs.DailyActivityView, "");
             PluginMain.GetApplication().ShowView(GUIDs.GarminFitnessView, "");
+
+            GetCurrentView().RefreshCalendar();
         }
 
         private void SetupCurrentView()

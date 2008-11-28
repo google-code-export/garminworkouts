@@ -1665,6 +1665,11 @@ namespace GarminFitnessPlugin.View
 
         #endregion
 
+        public void RefreshCalendar()
+        {
+            RefreshCalendarView();
+        }
+
         public void ThemeChanged(ITheme visualTheme)
         {
             CategoriesBanner.ThemeChanged(visualTheme);
