@@ -140,7 +140,7 @@ namespace GarminFitnessPlugin.Data
             // Bike profiles
             for (int i = 0; i < Constants.GarminBikeProfileCount; ++i)
             {
-                m_Bikes[i].Serialize(parentNode, document);
+                //m_Bikes[i].Serialize(parentNode, document);
             }
         }
 

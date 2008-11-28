@@ -29,6 +29,12 @@ namespace GarminFitnessPlugin.View
             BuildTreeLists();
         }
 
+        public void RefreshCalendar()
+        {
+            PluginMain.GetApplication().Calendar.SetHighlightedDates(null);
+            PluginMain.GetApplication().Calendar.SetMarkedDates(null);
+        }
+
         public void ThemeChanged(ITheme visualTheme)
         {
             GarminActivityBanner.ThemeChanged(visualTheme);

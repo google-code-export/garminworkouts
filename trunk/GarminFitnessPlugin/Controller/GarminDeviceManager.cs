@@ -220,11 +220,13 @@ namespace GarminFitnessPlugin.Controller
         {
             m_TimeoutTimer.Stop();
 
-            if (m_TaskQueue[0].Type == BasicTask.TaskTypes.TaskType_ExportWorkout)
+            if (m_TaskQueue[0].Type == BasicTask.TaskTypes.TaskType_ExportWorkout ||
+                m_TaskQueue[0].Type == BasicTask.TaskTypes.TaskType_ExportProfile)
             {
                 m_Controller.FireFinishWriteToDevice(false, "");
             }
-            else if (m_TaskQueue[0].Type == BasicTask.TaskTypes.TaskType_ImportWorkouts)
+            else if (m_TaskQueue[0].Type == BasicTask.TaskTypes.TaskType_ImportWorkouts ||
+                     m_TaskQueue[0].Type == BasicTask.TaskTypes.TaskType_ImportProfile)
             {
                 m_Controller.FireFinishReadFromDevice(false, "");
             }

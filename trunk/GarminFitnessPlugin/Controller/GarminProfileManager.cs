@@ -158,6 +158,11 @@ namespace GarminFitnessPlugin.Controller
                 m_ActivityProfiles[i].Serialize(profileNode, document);
             }
 
+            // Timestamp
+            currentChild = document.CreateElement(Constants.TimeStampTCXString);
+            currentChild.AppendChild(document.CreateTextNode(DateTime.Now.ToString("yyyy-MM-ddThh:mm:ssZ")));
+            profileNode.AppendChild(currentChild);
+
             parentNode.AppendChild(profileNode);
         }
 
