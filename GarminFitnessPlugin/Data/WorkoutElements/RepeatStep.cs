@@ -227,7 +227,7 @@ namespace GarminFitnessPlugin.Data
                         {
                             CadenceZoneSTTarget concreteTarget = (CadenceZoneSTTarget)baseTarget.ConcreteTarget;
 
-                            concreteTarget.Zone = Options.CadenceZoneCategory.Zones[0];
+                            concreteTarget.Zone = Options.Instance.CadenceZoneCategory.Zones[0];
                             concreteTarget.IsDirty = true;
                         }
                     }
@@ -257,7 +257,7 @@ namespace GarminFitnessPlugin.Data
                         {
                             PowerZoneSTTarget concreteTarget = (PowerZoneSTTarget)baseTarget.ConcreteTarget;
 
-                            concreteTarget.Zone = Options.PowerZoneCategory.Zones[0];
+                            concreteTarget.Zone = Options.Instance.PowerZoneCategory.Zones[0];
                             concreteTarget.IsDirty = true;
                         }
                     }

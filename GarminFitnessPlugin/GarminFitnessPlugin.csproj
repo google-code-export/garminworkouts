@@ -70,6 +70,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Constants.cs" />
+    <Compile Include="Controller\ProfileExporter.cs" />
     <Compile Include="Controller\ProfileImporter.cs" />
     <Compile Include="Controller\GarminCategoryStringProviderAttribute.cs" />
     <Compile Include="Controller\GarminProfileManager.cs" />
@@ -158,6 +159,16 @@
     <Compile Include="View\Profile\GarminHeartRateZoneWrapper.cs" />
     <Compile Include="View\Common\PluginViews.cs" />
     <Compile Include="View\Settings\STToGarminActivityCategoryWrapper.cs" />
+    <Compile Include="View\SetupWizard\SetupWizardEditBikingProfile.cs" />
+    <Compile Include="View\SetupWizard\SetupWizardEditBikingProfileControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="View\SetupWizard\SetupWizardEditBikingProfileControl.Designer.cs">
+      <DependentUpon>SetupWizardEditBikingProfileControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="View\SetupWizard\ExtendedWizardPageControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
     <Compile Include="View\SetupWizard\SetupWizardGarminCategoryAssociation.cs" />
     <Compile Include="View\SetupWizard\SetupWizardGarminCategoryAssociationControl.cs">
       <SubType>UserControl</SubType>
@@ -350,6 +361,10 @@
     <EmbeddedResource Include="View\Settings\GarminFitnessSettingsControl.resx">
       <SubType>Designer</SubType>
       <DependentUpon>GarminFitnessSettingsControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="View\SetupWizard\SetupWizardEditBikingProfileControl.resx">
+      <DependentUpon>SetupWizardEditBikingProfileControl.cs</DependentUpon>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="View\SetupWizard\SetupWizardGarminCategoryAssociationControl.resx">
       <DependentUpon>SetupWizardGarminCategoryAssociationControl.cs</DependentUpon>

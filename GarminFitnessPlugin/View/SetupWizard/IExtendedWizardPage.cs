@@ -1,4 +1,5 @@
 using System.ComponentModel;
+using System.Windows.Forms;
 using ZoneFiveSoftware.Common.Visuals;
 
 namespace GarminFitnessPlugin.View
@@ -21,7 +22,7 @@ namespace GarminFitnessPlugin.View
 #endregion
 
 #region IDialogPage Members
-        public abstract System.Windows.Forms.Control CreatePageControl();
+        public abstract ExtendedWizardPageControl CreatePageControl(ExtendedWizard wizard);
         public abstract bool HidePage();
         public abstract string PageName { get; }
         public abstract void ShowPage(string bookmark);
@@ -34,6 +35,11 @@ namespace GarminFitnessPlugin.View
 #region INotifyPropertyChanged Members
         public abstract event System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
 #endregion
+
+        public Control CreatePageControl()
+        {
+            return CreatePageControl(Wizard);
+        }
 
         public ExtendedWizard Wizard
         {

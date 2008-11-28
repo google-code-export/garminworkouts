@@ -35,14 +35,14 @@ namespace GarminFitnessPlugin.Controller
 
                         if (regularStep.IsRestingStep)
                         {
-                            result += " " + "(" + GarminFitnessView.ResourceManager.GetString("RestText", GarminFitnessView.UICulture) + ")";
+                            result += " " + "(" + GarminFitnessView.GetLocalizedString("RestText") + ")";
                         }
                         break;
                     }
                 case IStep.StepType.Repeat:
                     {
                         RepeatStep concreteStep = (RepeatStep)step;
-                        string baseString = GarminFitnessView.ResourceManager.GetString("RepeatStepDescriptionText", GarminFitnessView.UICulture);
+                        string baseString = GarminFitnessView.GetLocalizedString("RepeatStepDescriptionText");
                         result = String.Format(baseString, concreteStep.RepetitionCount);
                         break;
                     }
@@ -65,7 +65,7 @@ namespace GarminFitnessPlugin.Controller
             FieldInfo fieldInfo = type.GetType().GetField(Enum.GetName(type.GetType(), type));
             StepDescriptionStringProviderAttribute providerAttribute = (StepDescriptionStringProviderAttribute)Attribute.GetCustomAttribute(fieldInfo, typeof(StepDescriptionStringProviderAttribute));
 
-            baseString = GarminFitnessView.ResourceManager.GetString(providerAttribute.StringName, GarminFitnessView.UICulture);
+            baseString = GarminFitnessView.GetLocalizedString(providerAttribute.StringName);
 
             switch(type)
             {
@@ -147,7 +147,7 @@ namespace GarminFitnessPlugin.Controller
 
             if (providerAttribute != null)
             {
-                baseString = GarminFitnessView.ResourceManager.GetString(providerAttribute.StringName, GarminFitnessView.UICulture);
+                baseString = GarminFitnessView.GetLocalizedString(providerAttribute.StringName);
             }
 
             switch(type)
@@ -160,25 +160,25 @@ namespace GarminFitnessPlugin.Controller
                 case ITarget.TargetType.Speed:
                     {
                         BaseSpeedTarget baseTarget = (BaseSpeedTarget)target;
-                        result = FormatSpeedTarget(baseTarget.ConcreteTarget, GarminFitnessView.ResourceManager, GarminFitnessView.UICulture);
+                        result = FormatSpeedTarget(baseTarget.ConcreteTarget);
                         break;
                     }
                 case ITarget.TargetType.Cadence:
                     {
                         BaseCadenceTarget baseTarget = (BaseCadenceTarget)target;
-                        result = FormatCadenceTarget(baseTarget.ConcreteTarget, GarminFitnessView.ResourceManager, GarminFitnessView.UICulture);
+                        result = FormatCadenceTarget(baseTarget.ConcreteTarget);
                         break;
                     }
                 case ITarget.TargetType.HeartRate:
                     {
                         BaseHeartRateTarget baseTarget = (BaseHeartRateTarget)target;
-                        result = FormatHeartRateTarget(baseTarget.ConcreteTarget, GarminFitnessView.ResourceManager, GarminFitnessView.UICulture);
+                        result = FormatHeartRateTarget(baseTarget.ConcreteTarget);
                         break;
                     }
                 case ITarget.TargetType.Power:
                     {
                         BasePowerTarget baseTarget = (BasePowerTarget)target;
-                        result = FormatPowerTarget(baseTarget.ConcreteTarget, GarminFitnessView.ResourceManager, GarminFitnessView.UICulture);
+                        result = FormatPowerTarget(baseTarget.ConcreteTarget);
                         break;
                     }
                 default:
@@ -192,7 +192,7 @@ namespace GarminFitnessPlugin.Controller
             return result;
         }
 
-        static private string FormatCadenceTarget(BaseCadenceTarget.IConcreteCadenceTarget target, ResourceManager resManager, CultureInfo culture)
+        static private string FormatCadenceTarget(BaseCadenceTarget.IConcreteCadenceTarget target)
         {
             string result;
             string baseString;
@@ -200,7 +200,7 @@ namespace GarminFitnessPlugin.Controller
             FieldInfo fieldInfo = type.GetType().GetField(Enum.GetName(type.GetType(), type));
             StepDescriptionStringProviderAttribute providerAttribute = (StepDescriptionStringProviderAttribute)Attribute.GetCustomAttribute(fieldInfo, typeof(StepDescriptionStringProviderAttribute));
 
-            baseString = resManager.GetString(providerAttribute.StringName, culture);
+            baseString = GarminFitnessView.GetLocalizedString(providerAttribute.StringName);
 
             switch (type)
             {
@@ -229,7 +229,7 @@ namespace GarminFitnessPlugin.Controller
             return result;
         }
 
-        static private string FormatHeartRateTarget(BaseHeartRateTarget.IConcreteHeartRateTarget target, ResourceManager resManager, CultureInfo culture)
+        static private string FormatHeartRateTarget(BaseHeartRateTarget.IConcreteHeartRateTarget target)
         {
             string result;
             string baseString;
@@ -237,7 +237,7 @@ namespace GarminFitnessPlugin.Controller
             FieldInfo fieldInfo = type.GetType().GetField(Enum.GetName(type.GetType(), type));
             StepDescriptionStringProviderAttribute providerAttribute = (StepDescriptionStringProviderAttribute)Attribute.GetCustomAttribute(fieldInfo, typeof(StepDescriptionStringProviderAttribute));
 
-            baseString = resManager.GetString(providerAttribute.StringName, culture);
+            baseString = GarminFitnessView.GetLocalizedString(providerAttribute.StringName);
 
             switch (type)
             {
@@ -282,7 +282,7 @@ namespace GarminFitnessPlugin.Controller
         }
 
 
-        static private string FormatSpeedTarget(BaseSpeedTarget.IConcreteSpeedTarget target, ResourceManager resManager, CultureInfo culture)
+        static private string FormatSpeedTarget(BaseSpeedTarget.IConcreteSpeedTarget target)
         {
             string result;
             string baseString;
@@ -290,7 +290,7 @@ namespace GarminFitnessPlugin.Controller
             FieldInfo fieldInfo = type.GetType().GetField(Enum.GetName(type.GetType(), type));
             StepDescriptionStringProviderAttribute providerAttribute = (StepDescriptionStringProviderAttribute)Attribute.GetCustomAttribute(fieldInfo, typeof(StepDescriptionStringProviderAttribute));
 
-            baseString = resManager.GetString(providerAttribute.StringName, culture);
+            baseString = GarminFitnessView.GetLocalizedString(providerAttribute.StringName);
 
             switch (type)
             {
@@ -300,7 +300,7 @@ namespace GarminFitnessPlugin.Controller
 
                         if (concreteTarget.BaseTarget.ParentStep.ParentWorkout.Category.SpeedUnits == Speed.Units.Pace)
                         {
-                            baseString = resManager.GetString("PaceRangeTargetDescriptionText");
+                            baseString = GarminFitnessView.GetLocalizedString("PaceRangeTargetDescriptionText");
 
                             double min = concreteTarget.GetMinSpeedInMinutesPerBaseUnit();
                             double max = concreteTarget.GetMaxSpeedInMinutesPerBaseUnit();
@@ -323,7 +323,7 @@ namespace GarminFitnessPlugin.Controller
                 case BaseSpeedTarget.IConcreteSpeedTarget.SpeedTargetType.ZoneGTC:
                     {
                         SpeedZoneGTCTarget concreteTarget = (SpeedZoneGTCTarget)target;
-                        result = String.Format(baseString, resManager.GetString("GTCSpeedZone" + concreteTarget.Zone.ToString() + "Text", culture));
+                        result = String.Format(baseString, GarminFitnessView.GetLocalizedString("GTCSpeedZone" + concreteTarget.Zone.ToString() + "Text"));
                         break;
                     }
                 case BaseSpeedTarget.IConcreteSpeedTarget.SpeedTargetType.ZoneST:
@@ -343,7 +343,7 @@ namespace GarminFitnessPlugin.Controller
             return result;
         }
 
-        static private string FormatPowerTarget(BasePowerTarget.IConcretePowerTarget target, ResourceManager resManager, CultureInfo culture)
+        static private string FormatPowerTarget(BasePowerTarget.IConcretePowerTarget target)
         {
             string result;
             string baseString;
@@ -351,7 +351,7 @@ namespace GarminFitnessPlugin.Controller
             FieldInfo fieldInfo = type.GetType().GetField(Enum.GetName(type.GetType(), type));
             StepDescriptionStringProviderAttribute providerAttribute = (StepDescriptionStringProviderAttribute)Attribute.GetCustomAttribute(fieldInfo, typeof(StepDescriptionStringProviderAttribute));
 
-            baseString = resManager.GetString(providerAttribute.StringName, culture);
+            baseString = GarminFitnessView.GetLocalizedString(providerAttribute.StringName);
 
             switch (type)
             {

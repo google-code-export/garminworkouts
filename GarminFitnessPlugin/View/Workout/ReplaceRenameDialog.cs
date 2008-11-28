@@ -26,9 +26,9 @@ namespace GarminFitnessPlugin.View
             RenameExplanationLabel.Click += new EventHandler(RenamePanel_Click);
             NewNameLabel.Click += new EventHandler(RenamePanel_Click);
 
-            ReplaceRenameIntroLabel.Text = GarminFitnessView.ResourceManager.GetString("ReplaceRenameIntroLabelText", uiCulture);
-            ReplaceExplanationLabel.Text = GarminFitnessView.ResourceManager.GetString("ReplaceExplanationLabelText", uiCulture);
-            RenameExplanationLabel.Text = GarminFitnessView.ResourceManager.GetString("RenameExplanationLabelText", uiCulture);
+            ReplaceRenameIntroLabel.Text = GarminFitnessView.GetLocalizedString("ReplaceRenameIntroLabelText");
+            ReplaceExplanationLabel.Text = GarminFitnessView.GetLocalizedString("ReplaceExplanationLabelText");
+            RenameExplanationLabel.Text = GarminFitnessView.GetLocalizedString("RenameExplanationLabelText");
             NewNameTextBox.Text = newName;
         }
 
@@ -44,8 +44,8 @@ namespace GarminFitnessPlugin.View
 
             if(!GarminWorkoutManager.Instance.IsWorkoutNameValid(NewName))
             {
-                MessageBox.Show(GarminFitnessView.ResourceManager.GetString("InvalidWorkoutNameText", uiCulture),
-                                GarminFitnessView.ResourceManager.GetString("ErrorText", uiCulture),
+                MessageBox.Show(GarminFitnessView.GetLocalizedString("InvalidWorkoutNameText"),
+                                GarminFitnessView.GetLocalizedString("ErrorText"),
                                 MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
             else

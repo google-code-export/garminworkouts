@@ -296,7 +296,7 @@ namespace GarminFitnessPlugin.Data
                             if (!Utils.NamedZoneStillExists(PluginMain.GetApplication().Logbook.CadenceZones, concreteTarget.Zone))
                             {
                                 // Revert zone to a valid default zone
-                                concreteTarget.Zone = Options.CadenceZoneCategory.Zones[0];
+                                concreteTarget.Zone = Options.Instance.CadenceZoneCategory.Zones[0];
 
                                 // Mark as dirty
                                 concreteTarget.IsDirty = true;
@@ -359,7 +359,7 @@ namespace GarminFitnessPlugin.Data
                             if(!Utils.NamedZoneStillExists(PluginMain.GetApplication().Logbook.PowerZones, concreteTarget.Zone))
                             {
                                 // Revert zone to a valid default zone
-                                concreteTarget.Zone = Options.PowerZoneCategory.Zones[0];
+                                concreteTarget.Zone = Options.Instance.PowerZoneCategory.Zones[0];
 
                                 // Mark as dirty
                                 concreteTarget.IsDirty = true;

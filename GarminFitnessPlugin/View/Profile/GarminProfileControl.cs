@@ -49,6 +49,9 @@ namespace GarminFitnessPlugin.View
 
         public void RefreshUIFromLogbook()
         {
+            // Update profile from new logbook
+            m_CurrentProfile = GarminProfileManager.Instance.GetProfileForActivity(m_CurrentCategory);
+
             RefreshProfileInfo();
             RefreshUIFromCategory();
         }
@@ -62,7 +65,7 @@ namespace GarminFitnessPlugin.View
         {
             if (profileModified.Category == m_CurrentCategory)
             {
-                // make sure we have the right profile, when deserializing from
+                // Make sure we have the right profile, when deserializing from
                 //  XML, this is not valid
                 m_CurrentProfile = GarminProfileManager.Instance.GetProfileForActivity(m_CurrentCategory);
 
@@ -71,23 +74,9 @@ namespace GarminFitnessPlugin.View
         }
 
 #region UI callbacks
-        private void WeightTextBox_Validating(object sender, System.ComponentModel.CancelEventArgs e)
+        private void NameTextBox_Validated(object sender, EventArgs e)
         {
-            e.Cancel = !Utils.IsTextFloatInRange(WeightTextBox.Text, Constants.MinWeight, Constants.MaxWeight);
-            if (e.Cancel)
-            {
-                MessageBox.Show(String.Format(GarminFitnessView.ResourceManager.GetString("DoubleRangeValidationText"), Constants.MinWeight, Constants.MaxWeight),
-                                GarminFitnessView.ResourceManager.GetString("ValueValidationTitleText"), MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                System.Media.SystemSounds.Asterisk.Play();
-
-                // Reset old valid value
-                WeightTextBox.Text = Weight.Convert(GarminProfileManager.Instance.WeightInPounds, Weight.Units.Pound, PluginMain.GetApplication().SystemPreferences.WeightUnits).ToString("0.0");
-            }
-        }
-
-        private void WeightTextBox_Validated(object sender, EventArgs e)
-        {
-            GarminProfileManager.Instance.SetWeightInUnits(float.Parse(WeightTextBox.Text), PluginMain.GetApplication().SystemPreferences.WeightUnits);
+            GarminProfileManager.Instance.ProfileName = NameTextBox.Text;
         }
 
         private void MaleRadioButton_CheckedChanged(object sender, EventArgs e)
@@ -100,9 +89,23 @@ namespace GarminFitnessPlugin.View
             GarminProfileManager.Instance.IsMale = !FemaleRadioButton.Checked;
         }
 
-        private void NameTextBox_Validated(object sender, EventArgs e)
+        private void WeightTextBox_Validating(object sender, System.ComponentModel.CancelEventArgs e)
         {
-            GarminProfileManager.Instance.ProfileName = NameTextBox.Text;
+            e.Cancel = !Utils.IsTextFloatInRange(WeightTextBox.Text, Constants.MinWeight, Constants.MaxWeight);
+            if (e.Cancel)
+            {
+                MessageBox.Show(String.Format(GarminFitnessView.GetLocalizedString("DoubleRangeValidationText"), Constants.MinWeight, Constants.MaxWeight),
+                                GarminFitnessView.GetLocalizedString("ValueValidationTitleText"), MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                System.Media.SystemSounds.Asterisk.Play();
+
+                // Reset old valid value
+                WeightTextBox.Text = Weight.Convert(GarminProfileManager.Instance.WeightInPounds, Weight.Units.Pound, PluginMain.GetApplication().SystemPreferences.WeightUnits).ToString("0.0");
+            }
+        }
+
+        private void WeightTextBox_Validated(object sender, EventArgs e)
+        {
+            GarminProfileManager.Instance.SetWeightInUnits(float.Parse(WeightTextBox.Text), PluginMain.GetApplication().SystemPreferences.WeightUnits);
         }
 
         private void BirthDateTimePicker_Validated(object sender, EventArgs e)
@@ -115,8 +118,8 @@ namespace GarminFitnessPlugin.View
             e.Cancel = !Utils.IsTextIntegerInRange(RestHRTextBox.Text, Constants.MinHRInBPM, Constants.MaxHRInBPM);
             if (e.Cancel)
             {
-                MessageBox.Show(String.Format(GarminFitnessView.ResourceManager.GetString("IntegerRangeValidationText"), Constants.MinHRInBPM, Constants.MaxHRInBPM),
-                                GarminFitnessView.ResourceManager.GetString("ValueValidationTitleText"), MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show(String.Format(GarminFitnessView.GetLocalizedString("IntegerRangeValidationText"), Constants.MinHRInBPM, Constants.MaxHRInBPM),
+                                GarminFitnessView.GetLocalizedString("ValueValidationTitleText"), MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 System.Media.SystemSounds.Asterisk.Play();
 
                 // Reset old valid value
@@ -134,13 +137,13 @@ namespace GarminFitnessPlugin.View
             ContextMenu menu = new ContextMenu();
             MenuItem menuItem;
 
-            menuItem = new MenuItem(GarminFitnessView.ResourceManager.GetString("RunningText", GarminFitnessView.UICulture),
+            menuItem = new MenuItem(GarminFitnessView.GetLocalizedString("RunningText"),
                                     new EventHandler(RunningProfileEventHandler));
             menu.MenuItems.Add(menuItem);
-            menuItem = new MenuItem(GarminFitnessView.ResourceManager.GetString("BikingText", GarminFitnessView.UICulture),
+            menuItem = new MenuItem(GarminFitnessView.GetLocalizedString("BikingText"),
                                     new EventHandler(BikingProfileEventHandler));
             menu.MenuItems.Add(menuItem);
-            menuItem = new MenuItem(GarminFitnessView.ResourceManager.GetString("OtherText", GarminFitnessView.UICulture),
+            menuItem = new MenuItem(GarminFitnessView.GetLocalizedString("OtherText"),
                                     new EventHandler(OtherProfileEventHandler));
             menu.MenuItems.Add(menuItem);
 
@@ -152,8 +155,8 @@ namespace GarminFitnessPlugin.View
             e.Cancel = !Utils.IsTextIntegerInRange(MaxHRTextBox.Text, Constants.MinHRInBPM, Constants.MaxHRInBPM);
             if (e.Cancel)
             {
-                MessageBox.Show(String.Format(GarminFitnessView.ResourceManager.GetString("IntegerRangeValidationText"), Constants.MinHRInBPM, Constants.MaxHRInBPM),
-                                GarminFitnessView.ResourceManager.GetString("ValueValidationTitleText"), MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show(String.Format(GarminFitnessView.GetLocalizedString("IntegerRangeValidationText"), Constants.MinHRInBPM, Constants.MaxHRInBPM),
+                                GarminFitnessView.GetLocalizedString("ValueValidationTitleText"), MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 System.Media.SystemSounds.Asterisk.Play();
 
                 // Reset old valid value
@@ -171,8 +174,8 @@ namespace GarminFitnessPlugin.View
             e.Cancel = !Utils.IsTextFloatInRange(GearWeightTextBox.Text, Constants.MinWeight, Constants.MaxWeight);
             if (e.Cancel)
             {
-                MessageBox.Show(String.Format(GarminFitnessView.ResourceManager.GetString("DoubleRangeValidationText"), Constants.MinWeight, Constants.MaxWeight),
-                                GarminFitnessView.ResourceManager.GetString("ValueValidationTitleText"), MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show(String.Format(GarminFitnessView.GetLocalizedString("DoubleRangeValidationText"), Constants.MinWeight, Constants.MaxWeight),
+                                GarminFitnessView.GetLocalizedString("ValueValidationTitleText"), MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 System.Media.SystemSounds.Asterisk.Play();
 
                 // Reset old valid value
@@ -212,22 +215,6 @@ namespace GarminFitnessPlugin.View
 
             RefreshUIFromProfile();
         }
-        
-        private void FTPTextBox_Validating(object sender, System.ComponentModel.CancelEventArgs e)
-        {
-            e.Cancel = !Utils.IsTextIntegerInRange(FTPTextBox.Text, Constants.MinPower, Constants.MaxPower);
-            if (e.Cancel)
-            {
-                MessageBox.Show(String.Format(GarminFitnessView.ResourceManager.GetString("IntegerRangeValidationText"), Constants.MinPower, Constants.MaxPower),
-                                GarminFitnessView.ResourceManager.GetString("ValueValidationTitleText"),
-                                MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                System.Media.SystemSounds.Asterisk.Play();
-
-                // Reset old valid value
-                GarminBikingActivityProfile concreteProfile = (GarminBikingActivityProfile)m_CurrentProfile;
-                FTPTextBox.Text = concreteProfile.FTP.ToString("0");
-            }
-        }
 
         private void BPMRadioButton_CheckedChanged(object sender, EventArgs e)
         {
@@ -254,8 +241,8 @@ namespace GarminFitnessPlugin.View
                 e.Cancel = !Utils.IsTextIntegerInRange(LowHRTextBox.Text, Constants.MinHRInPercentMax, Constants.MaxHRInPercentMax);
                 if (e.Cancel)
                 {
-                    MessageBox.Show(String.Format(GarminFitnessView.ResourceManager.GetString("IntegerRangeValidationText"), Constants.MinHRInPercentMax, Constants.MaxHRInPercentMax),
-                                    GarminFitnessView.ResourceManager.GetString("ValueValidationTitleText"), MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    MessageBox.Show(String.Format(GarminFitnessView.GetLocalizedString("IntegerRangeValidationText"), Constants.MinHRInPercentMax, Constants.MaxHRInPercentMax),
+                                    GarminFitnessView.GetLocalizedString("ValueValidationTitleText"), MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     System.Media.SystemSounds.Asterisk.Play();
 
                     // Reset old valid value
@@ -267,8 +254,8 @@ namespace GarminFitnessPlugin.View
                 e.Cancel = !Utils.IsTextIntegerInRange(LowHRTextBox.Text, Constants.MinHRInBPM, Constants.MaxHRInBPM);
                 if (e.Cancel)
                 {
-                    MessageBox.Show(String.Format(GarminFitnessView.ResourceManager.GetString("IntegerRangeValidationText"), Constants.MinHRInBPM, Constants.MaxHRInBPM),
-                                    GarminFitnessView.ResourceManager.GetString("ValueValidationTitleText"), MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    MessageBox.Show(String.Format(GarminFitnessView.GetLocalizedString("IntegerRangeValidationText"), Constants.MinHRInBPM, Constants.MaxHRInBPM),
+                                    GarminFitnessView.GetLocalizedString("ValueValidationTitleText"), MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     System.Media.SystemSounds.Asterisk.Play();
 
                     // Reset old valid value
@@ -291,8 +278,8 @@ namespace GarminFitnessPlugin.View
                 e.Cancel = !Utils.IsTextIntegerInRange(HighHRTextBox.Text, Constants.MinHRInPercentMax, Constants.MaxHRInPercentMax);
                 if (e.Cancel)
                 {
-                    MessageBox.Show(String.Format(GarminFitnessView.ResourceManager.GetString("IntegerRangeValidationText"), Constants.MinHRInPercentMax, Constants.MaxHRInPercentMax),
-                                    GarminFitnessView.ResourceManager.GetString("ValueValidationTitleText"), MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    MessageBox.Show(String.Format(GarminFitnessView.GetLocalizedString("IntegerRangeValidationText"), Constants.MinHRInPercentMax, Constants.MaxHRInPercentMax),
+                                    GarminFitnessView.GetLocalizedString("ValueValidationTitleText"), MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     System.Media.SystemSounds.Asterisk.Play();
 
                     // Reset old valid value
@@ -304,8 +291,8 @@ namespace GarminFitnessPlugin.View
                 e.Cancel = !Utils.IsTextIntegerInRange(HighHRTextBox.Text, Constants.MinHRInBPM, profile.MaximumHeartRate);
                 if (e.Cancel)
                 {
-                    MessageBox.Show(String.Format(GarminFitnessView.ResourceManager.GetString("IntegerRangeValidationText"), Constants.MinHRInBPM, profile.MaximumHeartRate),
-                                    GarminFitnessView.ResourceManager.GetString("ValueValidationTitleText"), MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    MessageBox.Show(String.Format(GarminFitnessView.GetLocalizedString("IntegerRangeValidationText"), Constants.MinHRInBPM, profile.MaximumHeartRate),
+                                    GarminFitnessView.GetLocalizedString("ValueValidationTitleText"), MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     System.Media.SystemSounds.Asterisk.Play();
 
                     // Reset old valid value
@@ -360,10 +347,10 @@ namespace GarminFitnessPlugin.View
 
                     Utils.DoubleToTime(min, out minMinutes, out minSeconds);
                     Utils.DoubleToTime(max, out maxMinutes, out maxSeconds);
-                    MessageBox.Show(String.Format(GarminFitnessView.ResourceManager.GetString("TimeRangeValidationText"),
+                    MessageBox.Show(String.Format(GarminFitnessView.GetLocalizedString("TimeRangeValidationText"),
                                                   minMinutes, minSeconds,
                                                   maxMinutes, maxSeconds),
-                                    GarminFitnessView.ResourceManager.GetString("ValueValidationTitleText"),
+                                    GarminFitnessView.GetLocalizedString("ValueValidationTitleText"),
                                     MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     System.Media.SystemSounds.Asterisk.Play();
 
@@ -387,8 +374,8 @@ namespace GarminFitnessPlugin.View
                 e.Cancel = !Utils.IsTextFloatInRange(LowSpeedTextBox.Text, min, max);
                 if (e.Cancel)
                 {
-                    MessageBox.Show(String.Format(GarminFitnessView.ResourceManager.GetString("DoubleRangeValidationText"), min, max),
-                                    GarminFitnessView.ResourceManager.GetString("ValueValidationTitleText"),
+                    MessageBox.Show(String.Format(GarminFitnessView.GetLocalizedString("DoubleRangeValidationText"), min, max),
+                                    GarminFitnessView.GetLocalizedString("ValueValidationTitleText"),
                                     MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     System.Media.SystemSounds.Asterisk.Play();
 
@@ -435,10 +422,10 @@ namespace GarminFitnessPlugin.View
 
                     Utils.DoubleToTime(min, out minMinutes, out minSeconds);
                     Utils.DoubleToTime(max, out maxMinutes, out maxSeconds);
-                    MessageBox.Show(String.Format(GarminFitnessView.ResourceManager.GetString("TimeRangeValidationText"),
+                    MessageBox.Show(String.Format(GarminFitnessView.GetLocalizedString("TimeRangeValidationText"),
                                                   minMinutes, minSeconds,
                                                   maxMinutes, maxSeconds),
-                                    GarminFitnessView.ResourceManager.GetString("ValueValidationTitleText"),
+                                    GarminFitnessView.GetLocalizedString("ValueValidationTitleText"),
                                     MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     System.Media.SystemSounds.Asterisk.Play();
 
@@ -462,8 +449,8 @@ namespace GarminFitnessPlugin.View
                 e.Cancel = !Utils.IsTextFloatInRange(HighSpeedTextBox.Text, min, max);
                 if (e.Cancel)
                 {
-                    MessageBox.Show(String.Format(GarminFitnessView.ResourceManager.GetString("DoubleRangeValidationText"), min, max),
-                                    GarminFitnessView.ResourceManager.GetString("ValueValidationTitleText"),
+                    MessageBox.Show(String.Format(GarminFitnessView.GetLocalizedString("DoubleRangeValidationText"), min, max),
+                                    GarminFitnessView.GetLocalizedString("ValueValidationTitleText"),
                                     MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     System.Media.SystemSounds.Asterisk.Play();
 
@@ -488,6 +475,22 @@ namespace GarminFitnessPlugin.View
         private void SpeedNameTextBox_Validated(object sender, EventArgs e)
         {
             m_CurrentProfile.SetSpeedName(m_SelectedSpeedZone.Index, SpeedNameTextBox.Text);
+        }
+
+        private void FTPTextBox_Validating(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            e.Cancel = !Utils.IsTextIntegerInRange(FTPTextBox.Text, Constants.MinPower, Constants.MaxPower);
+            if (e.Cancel)
+            {
+                MessageBox.Show(String.Format(GarminFitnessView.GetLocalizedString("IntegerRangeValidationText"), Constants.MinPower, Constants.MaxPower),
+                                GarminFitnessView.GetLocalizedString("ValueValidationTitleText"),
+                                MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                System.Media.SystemSounds.Asterisk.Play();
+
+                // Reset old valid value
+                GarminBikingActivityProfile concreteProfile = (GarminBikingActivityProfile)m_CurrentProfile;
+                FTPTextBox.Text = concreteProfile.FTP.ToString("0");
+            }
         }
 
         private void FTPTextBox_Validated(object sender, EventArgs e)
@@ -515,8 +518,8 @@ namespace GarminFitnessPlugin.View
             e.Cancel = !Utils.IsTextIntegerInRange(LowPowerTextBox.Text, Constants.MinPower, Constants.MaxPower);
             if (e.Cancel)
             {
-                MessageBox.Show(String.Format(GarminFitnessView.ResourceManager.GetString("IntegerRangeValidationText"), Constants.MinPower, Constants.MaxPower),
-                                GarminFitnessView.ResourceManager.GetString("ValueValidationTitleText"),
+                MessageBox.Show(String.Format(GarminFitnessView.GetLocalizedString("IntegerRangeValidationText"), Constants.MinPower, Constants.MaxPower),
+                                GarminFitnessView.GetLocalizedString("ValueValidationTitleText"),
                                 MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 System.Media.SystemSounds.Asterisk.Play();
 
@@ -540,8 +543,8 @@ namespace GarminFitnessPlugin.View
             e.Cancel = !Utils.IsTextIntegerInRange(HighPowerTextBox.Text, Constants.MinPower, Constants.MaxPower);
             if (e.Cancel)
             {
-                MessageBox.Show(String.Format(GarminFitnessView.ResourceManager.GetString("IntegerRangeValidationText"), Constants.MinPower, Constants.MaxPower),
-                                GarminFitnessView.ResourceManager.GetString("ValueValidationTitleText"),
+                MessageBox.Show(String.Format(GarminFitnessView.GetLocalizedString("IntegerRangeValidationText"), Constants.MinPower, Constants.MaxPower),
+                                GarminFitnessView.GetLocalizedString("ValueValidationTitleText"),
                                 MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 System.Media.SystemSounds.Asterisk.Play();
 
@@ -567,7 +570,7 @@ namespace GarminFitnessPlugin.View
             MenuItem menuItem;
             string baseMenuItemName;
 
-            baseMenuItemName = GarminFitnessView.ResourceManager.GetString("BikeProfileMenuItemText", GarminFitnessView.UICulture);
+            baseMenuItemName = GarminFitnessView.GetLocalizedString("BikeProfileMenuItemText");
 
             menuItem = new MenuItem(String.Format(baseMenuItemName, 1.ToString(), concreteProfile.GetBikeName(0)),
                                     new EventHandler(Bike1ProfileEventHandler));
@@ -592,8 +595,8 @@ namespace GarminFitnessPlugin.View
             e.Cancel = !Utils.IsTextFloatInRange(OdometerTextBox.Text, Constants.MinOdometer, Constants.MaxOdometer);
             if (e.Cancel)
             {
-                MessageBox.Show(String.Format(GarminFitnessView.ResourceManager.GetString("DoubleRangeValidationText"), Constants.MinOdometer, Constants.MaxOdometer),
-                                GarminFitnessView.ResourceManager.GetString("ValueValidationTitleText"),
+                MessageBox.Show(String.Format(GarminFitnessView.GetLocalizedString("DoubleRangeValidationText"), Constants.MinOdometer, Constants.MaxOdometer),
+                                GarminFitnessView.GetLocalizedString("ValueValidationTitleText"),
                                 MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 System.Media.SystemSounds.Asterisk.Play();
 
@@ -614,8 +617,8 @@ namespace GarminFitnessPlugin.View
             e.Cancel = !Utils.IsTextFloatInRange(BikeWeightTextBox.Text, Constants.MinWeight, Constants.MaxWeight);
             if (e.Cancel)
             {
-                MessageBox.Show(String.Format(GarminFitnessView.ResourceManager.GetString("DoubleRangeValidationText"), Constants.MinWeight, Constants.MaxWeight),
-                                GarminFitnessView.ResourceManager.GetString("ValueValidationTitleText"),
+                MessageBox.Show(String.Format(GarminFitnessView.GetLocalizedString("DoubleRangeValidationText"), Constants.MinWeight, Constants.MaxWeight),
+                                GarminFitnessView.GetLocalizedString("ValueValidationTitleText"),
                                 MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 System.Media.SystemSounds.Asterisk.Play();
 
@@ -651,8 +654,8 @@ namespace GarminFitnessPlugin.View
             e.Cancel = !Utils.IsTextIntegerInRange(WheelSizeTextBox.Text, Constants.MinWheelSize, Constants.MaxWheelSize);
             if (e.Cancel)
             {
-                MessageBox.Show(String.Format(GarminFitnessView.ResourceManager.GetString("IntegerRangeValidationText"), Constants.MinWheelSize, Constants.MaxWheelSize),
-                                GarminFitnessView.ResourceManager.GetString("ValueValidationTitleText"),
+                MessageBox.Show(String.Format(GarminFitnessView.GetLocalizedString("IntegerRangeValidationText"), Constants.MinWheelSize, Constants.MaxWheelSize),
+                                GarminFitnessView.GetLocalizedString("ValueValidationTitleText"),
                                 MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 System.Media.SystemSounds.Asterisk.Play();
 
@@ -664,6 +667,14 @@ namespace GarminFitnessPlugin.View
         private void WheelSizeTextBox_Validated(object sender, EventArgs e)
         {
             m_CurrentBikeProfile.WheelSize = UInt16.Parse(WheelSizeTextBox.Text);
+        }
+
+        private void OnValidatedKeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Enter)
+            {
+                SendKeys.Send("{TAB}");
+            }
         }
 
 #endregion
@@ -734,17 +745,17 @@ namespace GarminFitnessPlugin.View
             {
                 case GarminCategories.Running:
                     {
-                        GarminActivityBanner.Text = GarminFitnessView.ResourceManager.GetString("RunningText", GarminFitnessView.UICulture);
+                        GarminActivityBanner.Text = GarminFitnessView.GetLocalizedString("RunningText");
                         break;
                     }
                 case GarminCategories.Biking:
                     {
-                        GarminActivityBanner.Text = GarminFitnessView.ResourceManager.GetString("BikingText", GarminFitnessView.UICulture);
+                        GarminActivityBanner.Text = GarminFitnessView.GetLocalizedString("BikingText");
                         break;
                     }
                 case GarminCategories.Other:
                     {
-                        GarminActivityBanner.Text = GarminFitnessView.ResourceManager.GetString("OtherText", GarminFitnessView.UICulture);
+                        GarminActivityBanner.Text = GarminFitnessView.GetLocalizedString("OtherText");
                         break;
                     }
             }
@@ -756,21 +767,39 @@ namespace GarminFitnessPlugin.View
         {
             HRZonesTreeList.RowData = BuildTreeListDataForHeartRateZones();
             HRZonesTreeList.Columns.Clear();
-            HRZonesTreeList.Columns.Add(new TreeList.Column("Name", "Name", 150, System.Drawing.StringAlignment.Near));
-            HRZonesTreeList.Columns.Add(new TreeList.Column("Low", "Low", 50, System.Drawing.StringAlignment.Near));
-            HRZonesTreeList.Columns.Add(new TreeList.Column("High", "High", 50, System.Drawing.StringAlignment.Near));
+            HRZonesTreeList.Columns.Add(new TreeList.Column("Name",
+                                                            GarminFitnessView.GetLocalizedString("NumberText"),
+                                                            150, System.Drawing.StringAlignment.Near));
+            HRZonesTreeList.Columns.Add(new TreeList.Column("Low",
+                                                            GarminFitnessView.GetLocalizedString("LowText"),
+                                                            50, System.Drawing.StringAlignment.Near));
+            HRZonesTreeList.Columns.Add(new TreeList.Column("High",
+                                                            GarminFitnessView.GetLocalizedString("HighText"),
+                                                            50, System.Drawing.StringAlignment.Near));
 
             SpeedZonesTreeList.RowData = BuildTreeListDataForSpeedZones();
             SpeedZonesTreeList.Columns.Clear();
-            SpeedZonesTreeList.Columns.Add(new TreeList.Column("Name", "Name", 150, System.Drawing.StringAlignment.Near));
-            SpeedZonesTreeList.Columns.Add(new TreeList.Column("Low", "Low", 50, System.Drawing.StringAlignment.Near));
-            SpeedZonesTreeList.Columns.Add(new TreeList.Column("High", "High", 50, System.Drawing.StringAlignment.Near));
+            SpeedZonesTreeList.Columns.Add(new TreeList.Column("Name",
+                                                               GarminFitnessView.GetLocalizedString("NameText"),
+                                                               150, System.Drawing.StringAlignment.Near));
+            SpeedZonesTreeList.Columns.Add(new TreeList.Column("Low",
+                                                               GarminFitnessView.GetLocalizedString("LowText"),
+                                                               50, System.Drawing.StringAlignment.Near));
+            SpeedZonesTreeList.Columns.Add(new TreeList.Column("High",
+                                                               GarminFitnessView.GetLocalizedString("HighText"),
+                                                               50, System.Drawing.StringAlignment.Near));
 
             PowerZonesTreeList.RowData = BuildTreeListDataForPowerZones();
             PowerZonesTreeList.Columns.Clear();
-            PowerZonesTreeList.Columns.Add(new TreeList.Column("Name", "Name", 150, System.Drawing.StringAlignment.Near));
-            PowerZonesTreeList.Columns.Add(new TreeList.Column("Low", "Low", 50, System.Drawing.StringAlignment.Near));
-            PowerZonesTreeList.Columns.Add(new TreeList.Column("High", "High", 50, System.Drawing.StringAlignment.Near));
+            PowerZonesTreeList.Columns.Add(new TreeList.Column("Name",
+                                                               GarminFitnessView.GetLocalizedString("NumberText"),
+                                                               150, System.Drawing.StringAlignment.Near));
+            PowerZonesTreeList.Columns.Add(new TreeList.Column("Low",
+                                                               GarminFitnessView.GetLocalizedString("LowText"),
+                                                               50, System.Drawing.StringAlignment.Near));
+            PowerZonesTreeList.Columns.Add(new TreeList.Column("High",
+                                                               GarminFitnessView.GetLocalizedString("HighText"),
+                                                               50, System.Drawing.StringAlignment.Near));
         }
 
         private void RefreshTreeLists()
@@ -849,7 +878,7 @@ namespace GarminFitnessPlugin.View
                 // Bike profiles
                 string baseMenuItemName;
 
-                baseMenuItemName = GarminFitnessView.ResourceManager.GetString("BikeProfileMenuItemText", GarminFitnessView.UICulture);
+                baseMenuItemName = GarminFitnessView.GetLocalizedString("BikeProfileMenuItemText");
                 BikeProfileActionBanner.Text = String.Format(baseMenuItemName, (m_BikeProfileIndex + 1).ToString(), m_CurrentBikeProfile.Name);
 
                 BikeNameTextBox.Text = m_CurrentBikeProfile.Name;
@@ -905,62 +934,62 @@ namespace GarminFitnessPlugin.View
             BirthDateTimePicker.CustomFormat = CultureInfo.CreateSpecificCulture(GarminFitnessView.UICulture.Name).DateTimeFormat.ShortDatePattern;
 
             // User data
-            ProfileNameLabel.Text = GarminFitnessView.ResourceManager.GetString("NameLabelText", GarminFitnessView.UICulture);
-            GenderLabel.Text = GarminFitnessView.ResourceManager.GetString("GenderLabelText", GarminFitnessView.UICulture);
-            MaleRadioButton.Text = GarminFitnessView.ResourceManager.GetString("MaleText", GarminFitnessView.UICulture);
-            FemaleRadioButton.Text = GarminFitnessView.ResourceManager.GetString("FemaleText", GarminFitnessView.UICulture);
-            WeightLabel.Text = GarminFitnessView.ResourceManager.GetString("WeightLabelText", GarminFitnessView.UICulture);
+            ProfileNameLabel.Text = GarminFitnessView.GetLocalizedString("NameLabelText");
+            GenderLabel.Text = GarminFitnessView.GetLocalizedString("GenderLabelText");
+            MaleRadioButton.Text = GarminFitnessView.GetLocalizedString("MaleText");
+            FemaleRadioButton.Text = GarminFitnessView.GetLocalizedString("FemaleText");
+            WeightLabel.Text = GarminFitnessView.GetLocalizedString("WeightLabelText");
             WeightUnitLabel.Text = Weight.LabelAbbr(PluginMain.GetApplication().SystemPreferences.WeightUnits);
-            BirthDateLabel.Text = GarminFitnessView.ResourceManager.GetString("BirthDateLabelText", GarminFitnessView.UICulture);
-            RestingHeartRateLabel.Text = GarminFitnessView.ResourceManager.GetString("RestingHeartRateLabelText", GarminFitnessView.UICulture);
+            BirthDateLabel.Text = GarminFitnessView.GetLocalizedString("BirthDateLabelText");
+            RestingHeartRateLabel.Text = GarminFitnessView.GetLocalizedString("RestingHeartRateLabelText");
             RestBPMLabel.Text = CommonResources.Text.LabelBPM;
 
             // Activity data
-            MaxHRLabel.Text = GarminFitnessView.ResourceManager.GetString("MaxHRLabelText", GarminFitnessView.UICulture);
+            MaxHRLabel.Text = GarminFitnessView.GetLocalizedString("MaxHRLabelText");
             MaxHRBPMLabel.Text = CommonResources.Text.LabelBPM;
-            GearWeightLabel.Text = GarminFitnessView.ResourceManager.GetString("GearWeightLabelText", GarminFitnessView.UICulture);
+            GearWeightLabel.Text = GarminFitnessView.GetLocalizedString("GearWeightLabelText");
             GearWeightUnitLabel.Text = Weight.LabelAbbr(PluginMain.GetApplication().SystemPreferences.WeightUnits);
 
             // HR zones
-            HRZonesGroupBox.Text = GarminFitnessView.ResourceManager.GetString("HRZonesGroupBoxText", GarminFitnessView.UICulture);
+            HRZonesGroupBox.Text = GarminFitnessView.GetLocalizedString("HRZonesGroupBoxText");
             BPMRadioButton.Text = CommonResources.Text.LabelBPM;
             PercentMaxRadioButton.Text = CommonResources.Text.LabelPercentOfMax;
-            LowHRLabel.Text = GarminFitnessView.ResourceManager.GetString("LowLabelText", GarminFitnessView.UICulture);
-            HighHRLabel.Text = GarminFitnessView.ResourceManager.GetString("HighLabelText", GarminFitnessView.UICulture);
+            LowHRLabel.Text = GarminFitnessView.GetLocalizedString("LowLabelText");
+            HighHRLabel.Text = GarminFitnessView.GetLocalizedString("HighLabelText");
 
             // Speed zones
-            SpeedZonesGroupBox.Text = GarminFitnessView.ResourceManager.GetString("SpeedZonesGroupBoxText", GarminFitnessView.UICulture);
+            SpeedZonesGroupBox.Text = GarminFitnessView.GetLocalizedString("SpeedZonesGroupBoxText");
             SpeedRadioButton.Text = Length.LabelAbbr(m_CurrentProfile.BaseSpeedUnit) +
-                                    GarminFitnessView.ResourceManager.GetString("PerHourText", GarminFitnessView.UICulture);
-            PaceRadioButton.Text = GarminFitnessView.ResourceManager.GetString("MinuteAbbrText", GarminFitnessView.UICulture) + "/" +
+                                    GarminFitnessView.GetLocalizedString("PerHourText");
+            PaceRadioButton.Text = GarminFitnessView.GetLocalizedString("MinuteAbbrText") + "/" +
                                    Length.LabelAbbr(m_CurrentProfile.BaseSpeedUnit);
-            LowSpeedLabel.Text = GarminFitnessView.ResourceManager.GetString("LowLabelText", GarminFitnessView.UICulture);
-            HighSpeedLabel.Text = GarminFitnessView.ResourceManager.GetString("HighLabelText", GarminFitnessView.UICulture);
-            NameSpeedLabel.Text = GarminFitnessView.ResourceManager.GetString("NameLabelText", GarminFitnessView.UICulture);
+            LowSpeedLabel.Text = GarminFitnessView.GetLocalizedString("LowLabelText");
+            HighSpeedLabel.Text = GarminFitnessView.GetLocalizedString("HighLabelText");
+            NameSpeedLabel.Text = GarminFitnessView.GetLocalizedString("NameLabelText");
 
             // Power zones
-            FTPLabel.Text = GarminFitnessView.ResourceManager.GetString("FTPLabelText", GarminFitnessView.UICulture);
+            FTPLabel.Text = GarminFitnessView.GetLocalizedString("FTPLabelText");
             FTPUnitsLabel.Text = CommonResources.Text.LabelWatts;
-            PowerZonesGroupBox.Text = GarminFitnessView.ResourceManager.GetString("PowerZonesGroupBoxText", GarminFitnessView.UICulture);
-            LowPowerLabel.Text = GarminFitnessView.ResourceManager.GetString("LowLabelText", GarminFitnessView.UICulture);
-            HighPowerLabel.Text = GarminFitnessView.ResourceManager.GetString("HighLabelText", GarminFitnessView.UICulture);
+            PowerZonesGroupBox.Text = GarminFitnessView.GetLocalizedString("PowerZonesGroupBoxText");
+            LowPowerLabel.Text = GarminFitnessView.GetLocalizedString("LowLabelText");
+            HighPowerLabel.Text = GarminFitnessView.GetLocalizedString("HighLabelText");
 
             // Bike profiles
-            BikeNameLabel.Text = GarminFitnessView.ResourceManager.GetString("NameLabelText", GarminFitnessView.UICulture);
-            OdometerLabel.Text = GarminFitnessView.ResourceManager.GetString("OdometerLabelText", GarminFitnessView.UICulture);
+            BikeNameLabel.Text = GarminFitnessView.GetLocalizedString("NameLabelText");
+            OdometerLabel.Text = GarminFitnessView.GetLocalizedString("OdometerLabelText");
             OdometerUnitsLabel.Text = Length.LabelAbbr(m_CurrentProfile.BaseSpeedUnit);
-            BikeWeightLabel.Text = GarminFitnessView.ResourceManager.GetString("WeightLabelText", GarminFitnessView.UICulture);
+            BikeWeightLabel.Text = GarminFitnessView.GetLocalizedString("WeightLabelText");
             BikeWeightUnitLabel.Text = Weight.LabelAbbr(PluginMain.GetApplication().SystemPreferences.WeightUnits);
-            HasCadenceCheckBox.Text = GarminFitnessView.ResourceManager.GetString("HasCadenceText", GarminFitnessView.UICulture);
-            HasPowerCheckBox.Text = GarminFitnessView.ResourceManager.GetString("HasPowerText", GarminFitnessView.UICulture);
-            WheelSizeGroupBox.Text = GarminFitnessView.ResourceManager.GetString("WheelSizeGroupBoxText", GarminFitnessView.UICulture);
-            AutoWheelSizeCheckBox.Text = GarminFitnessView.ResourceManager.GetString("AutoText", GarminFitnessView.UICulture);
-            WheelSizeLabel.Text = GarminFitnessView.ResourceManager.GetString("WheelSizeLabelText", GarminFitnessView.UICulture);
-            WheelSizeUnitLabel.Text = GarminFitnessView.ResourceManager.GetString("MillimeterText", GarminFitnessView.UICulture);
+            HasCadenceCheckBox.Text = GarminFitnessView.GetLocalizedString("HasCadenceText");
+            HasPowerCheckBox.Text = GarminFitnessView.GetLocalizedString("HasPowerText");
+            WheelSizeGroupBox.Text = GarminFitnessView.GetLocalizedString("WheelSizeGroupBoxText");
+            AutoWheelSizeCheckBox.Text = GarminFitnessView.GetLocalizedString("AutoText");
+            WheelSizeLabel.Text = GarminFitnessView.GetLocalizedString("WheelSizeLabelText");
+            WheelSizeUnitLabel.Text = GarminFitnessView.GetLocalizedString("MillimeterText");
         }
 
         private GarminCategories m_CurrentCategory;
-        GarminActivityProfile m_CurrentProfile;
+        private GarminActivityProfile m_CurrentProfile;
         private IGarminZoneWrapper m_SelectedHRZone = null;
         private IGarminZoneWrapper m_SelectedSpeedZone = null;
         private IGarminZoneWrapper m_SelectedPowerZone = null;

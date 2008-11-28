@@ -28,18 +28,59 @@ namespace GarminFitnessPlugin.View
         /// </summary>
         private void InitializeComponent()
         {
+            this.pictureBox1 = new System.Windows.Forms.PictureBox();
+            this.ExplanationLabel = new System.Windows.Forms.Label();
+            this.FinishLabel = new System.Windows.Forms.Label();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.SuspendLayout();
             // 
-            // SetupWizardSetupSTGarminZonesControl
+            // pictureBox1
+            // 
+            this.pictureBox1.Image = global::GarminFitnessPlugin.Properties.Resources.GarminLogo;
+            this.pictureBox1.InitialImage = global::GarminFitnessPlugin.Properties.Resources.GarminLogo;
+            this.pictureBox1.Location = new System.Drawing.Point(3, 4);
+            this.pictureBox1.Name = "pictureBox1";
+            this.pictureBox1.Size = new System.Drawing.Size(184, 70);
+            this.pictureBox1.TabIndex = 3;
+            this.pictureBox1.TabStop = false;
+            // 
+            // ExplanationLabel
+            // 
+            this.ExplanationLabel.Location = new System.Drawing.Point(193, 6);
+            this.ExplanationLabel.Name = "ExplanationLabel";
+            this.ExplanationLabel.Size = new System.Drawing.Size(323, 70);
+            this.ExplanationLabel.TabIndex = 2;
+            this.ExplanationLabel.Text = "You have completed the setup wizard successfully.  The plugin is now available fr" +
+                "om the \"Views\" menu.  Note that all the settings are always available in the Gar" +
+                "min fitness Plugin \"Settings\" page.";
+            // 
+            // FinishLabel
+            // 
+            this.FinishLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.FinishLabel.Location = new System.Drawing.Point(3, 100);
+            this.FinishLabel.Name = "FinishLabel";
+            this.FinishLabel.Size = new System.Drawing.Size(514, 25);
+            this.FinishLabel.TabIndex = 4;
+            this.FinishLabel.Text = "To close the wizard click on \"Finish\"";
+            // 
+            // SetupWizardCompletedControl
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.Name = "SetupWizardSetupSTGarminZonesControl";
-            this.Size = new System.Drawing.Size(500, 150);
+            this.Controls.Add(this.FinishLabel);
+            this.Controls.Add(this.pictureBox1);
+            this.Controls.Add(this.ExplanationLabel);
+            this.Name = "SetupWizardCompletedControl";
+            this.Size = new System.Drawing.Size(520, 132);
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             this.ResumeLayout(false);
 
         }
 
         #endregion
+
+        private System.Windows.Forms.PictureBox pictureBox1;
+        private System.Windows.Forms.Label ExplanationLabel;
+        private System.Windows.Forms.Label FinishLabel;
     }
 }

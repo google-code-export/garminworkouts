@@ -8,18 +8,26 @@ using System.Windows.Forms;
 
 namespace GarminFitnessPlugin.View
 {
-    public partial class SetupWizardImportOrEditProfileControl : UserControl
+    partial class SetupWizardImportOrEditProfileControl : ExtendedWizardPageControl
     {
-        public SetupWizardImportOrEditProfileControl()
+        public SetupWizardImportOrEditProfileControl(ExtendedWizard wizard)
+            : base(wizard)
         {
             InitializeComponent();
+
+            ExplanationLabel.Text = GarminFitnessView.GetLocalizedString("ImportEditExplanationText");
+            ImportProfileRadioButton.Text = GarminFitnessView.GetLocalizedString("ImportRadioButtonText");
+            EditProfileRadioButton.Text = GarminFitnessView.GetLocalizedString("EditRadioButtonText");
+
+            ImportProfileRadioButton.Checked = ((GarminFitnessSetupWizard)Wizard).ImportProfile;
+            EditProfileRadioButton.Checked = !((GarminFitnessSetupWizard)Wizard).ImportProfile;
         }
 
         private void EditProfileRadioButton_CheckedChanged(object sender, EventArgs e)
         {
             if (EditProfileRadioButton.Checked)
             {
-                m_EditProfile = true;
+                ((GarminFitnessSetupWizard)Wizard).ImportProfile = false;
             }
         }
 
@@ -27,20 +35,8 @@ namespace GarminFitnessPlugin.View
         {
             if (ImportProfileRadioButton.Checked)
             {
-                m_EditProfile = false;
+                ((GarminFitnessSetupWizard)Wizard).ImportProfile = true;
             }
         }
-
-        public bool EditProfile
-        {
-            get { return m_EditProfile; }
-        }
-
-        public bool ImportProfile
-        {
-            get { return !m_EditProfile; }
-        }
-
-        private bool m_EditProfile = false;
     }
 }

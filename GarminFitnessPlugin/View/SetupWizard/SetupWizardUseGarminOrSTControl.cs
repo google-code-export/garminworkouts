@@ -9,24 +9,25 @@ using GarminFitnessPlugin.Controller;
 
 namespace GarminFitnessPlugin.View
 {
-    public partial class SetupWizardUseGarminOrSTControl : UserControl
+    partial class SetupWizardUseGarminOrSTControl : ExtendedWizardPageControl
     {
-        public SetupWizardUseGarminOrSTControl()
+        public SetupWizardUseGarminOrSTControl(ExtendedWizard wizard)
+            : base(wizard)
         {
             InitializeComponent();
 
-            ExplanationLabel.Text = GarminFitnessView.ResourceManager.GetString("ModeExplanationText", GarminFitnessView.UICulture);
-            STModeRadioButton.Text = GarminFitnessView.ResourceManager.GetString("STModeRadioButtonText", GarminFitnessView.UICulture);
-            GarminModeRadioButton.Text = GarminFitnessView.ResourceManager.GetString("GarminModeRadioButtonText", GarminFitnessView.UICulture);
-            IndependentModeRadioButton.Text = GarminFitnessView.ResourceManager.GetString("IndependentModeRadioButtonText", GarminFitnessView.UICulture);
+            ExplanationLabel.Text = GarminFitnessView.GetLocalizedString("ModeExplanationText");
+            STModeRadioButton.Text = GarminFitnessView.GetLocalizedString("STModeRadioButtonText");
+            GarminModeRadioButton.Text = GarminFitnessView.GetLocalizedString("GarminModeRadioButtonText");
+            IndependentModeRadioButton.Text = GarminFitnessView.GetLocalizedString("IndependentModeRadioButtonText");
 
             // Find the current settings and setup the radio buttons accordingly
-            if (Options.UseSportTracksHeartRateZones == Options.UseSportTracksSpeedZones &&
-                Options.UseSportTracksSpeedZones == Options.UseSportTracksPowerZones)
+            if (Options.Instance.UseSportTracksHeartRateZones == Options.Instance.UseSportTracksSpeedZones &&
+                Options.Instance.UseSportTracksSpeedZones == Options.Instance.UseSportTracksPowerZones)
             {
                 // All have the same setting
-                STModeRadioButton.Checked = Options.UseSportTracksHeartRateZones;
-                GarminModeRadioButton.Checked = !Options.UseSportTracksHeartRateZones;
+                STModeRadioButton.Checked = Options.Instance.UseSportTracksHeartRateZones;
+                GarminModeRadioButton.Checked = !Options.Instance.UseSportTracksHeartRateZones;
             }
             else
             {
@@ -39,9 +40,9 @@ namespace GarminFitnessPlugin.View
         {
             if (STModeRadioButton.Checked)
             {
-                Options.UseSportTracksHeartRateZones = true;
-                Options.UseSportTracksPowerZones = true;
-                Options.UseSportTracksSpeedZones = true;
+                Options.Instance.UseSportTracksHeartRateZones = true;
+                Options.Instance.UseSportTracksPowerZones = true;
+                Options.Instance.UseSportTracksSpeedZones = true;
             }
         }
 
@@ -49,15 +50,15 @@ namespace GarminFitnessPlugin.View
         {
             if (GarminModeRadioButton.Checked)
             {
-                Options.UseSportTracksHeartRateZones = false;
-                Options.UseSportTracksPowerZones = false;
-                Options.UseSportTracksSpeedZones = false;
+                Options.Instance.UseSportTracksHeartRateZones = false;
+                Options.Instance.UseSportTracksPowerZones = false;
+                Options.Instance.UseSportTracksSpeedZones = false;
             }
         }
 
-        public bool IsIndependentSetupSelected
+        private void IndependentModeRadioButton_CheckedChanged(object sender, EventArgs e)
         {
-            get { return IndependentModeRadioButton.Checked;  }
+            ((GarminFitnessSetupWizard)Wizard).IsIndependentZonesSetupSelected = IndependentModeRadioButton.Checked;
         }
     }
 }

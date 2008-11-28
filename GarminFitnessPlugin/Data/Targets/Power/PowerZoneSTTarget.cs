@@ -14,9 +14,9 @@ namespace GarminFitnessPlugin.Data
         public PowerZoneSTTarget(BasePowerTarget baseTarget)
             : base(PowerTargetType.ZoneST, baseTarget)
         {
-            Trace.Assert(Options.PowerZoneCategory.Zones.Count > 0);
+            Trace.Assert(Options.Instance.PowerZoneCategory.Zones.Count > 0);
 
-            Zone = Options.PowerZoneCategory.Zones[0];
+            Zone = Options.Instance.PowerZoneCategory.Zones[0];
         }
 
         public PowerZoneSTTarget(INamedLowHighZone zone, BasePowerTarget baseTarget)
@@ -35,7 +35,7 @@ namespace GarminFitnessPlugin.Data
         {
             base.Serialize(stream);
 
-            IZoneCategory zones = Options.PowerZoneCategory;
+            IZoneCategory zones = Options.Instance.PowerZoneCategory;
             String zoneRefID = zones.ReferenceId;
 
             // Zone categroy refId
@@ -54,7 +54,7 @@ namespace GarminFitnessPlugin.Data
             // Call base deserialization
             Deserialize(typeof(BasePowerTarget.IConcretePowerTarget), stream, version);
 
-            IZoneCategory zones = Options.PowerZoneCategory;
+            IZoneCategory zones = Options.Instance.PowerZoneCategory;
             byte[] intBuffer = new byte[sizeof(Int32)];
             byte[] stringBuffer;
             Int32 stringLength;
@@ -86,7 +86,7 @@ namespace GarminFitnessPlugin.Data
             // Call base deserialization
             Deserialize(typeof(BasePowerTarget.IConcretePowerTarget), stream, version);
 
-            IZoneCategory zones = Options.PowerZoneCategory;
+            IZoneCategory zones = Options.Instance.PowerZoneCategory;
             byte[] intBuffer = new byte[sizeof(Int32)];
             byte[] boolBuffer = new byte[sizeof(bool)];
             byte[] stringBuffer;
@@ -159,9 +159,9 @@ namespace GarminFitnessPlugin.Data
             parentNode.AppendChild(childNode);
 
             // Extension
-            for (int i = 0; i < Options.PowerZoneCategory.Zones.Count; ++i)
+            for (int i = 0; i < Options.Instance.PowerZoneCategory.Zones.Count; ++i)
             {
-                INamedLowHighZone currentZone = Options.PowerZoneCategory.Zones[i];
+                INamedLowHighZone currentZone = Options.Instance.PowerZoneCategory.Zones[i];
                 
                 if(currentZone == Zone)
                 {
@@ -174,7 +174,7 @@ namespace GarminFitnessPlugin.Data
                     extensionNode.AppendChild(valueNode);
                     categoryNode = document.CreateElement("Category");
                     valueNode = document.CreateElement("Id");
-                    valueNode.AppendChild(document.CreateTextNode(Options.PowerZoneCategory.ReferenceId));
+                    valueNode.AppendChild(document.CreateTextNode(Options.Instance.PowerZoneCategory.ReferenceId));
                     categoryNode.AppendChild(valueNode);
                     valueNode = document.CreateElement("Index");
                     valueNode.AppendChild(document.CreateTextNode(i.ToString()));

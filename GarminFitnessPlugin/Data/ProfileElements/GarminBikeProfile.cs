@@ -1,5 +1,7 @@
 using System;
+using System.Globalization;
 using System.IO;
+using System.Text;
 using System.Xml;
 using System.ComponentModel;
 using ZoneFiveSoftware.Common.Data.Measurement;
@@ -21,14 +23,116 @@ namespace GarminFitnessPlugin.Data
 
         public override void Serialize(Stream stream)
         {
+            // Has cadence sensor
+            stream.Write(BitConverter.GetBytes(m_HasCadenceSensor), 0, sizeof(bool));
+
+            // Has power sensor
+            stream.Write(BitConverter.GetBytes(m_HasPowerSensor), 0, sizeof(bool));
+
+            // Auto wheel size
+            stream.Write(BitConverter.GetBytes(m_AutoWheelSize), 0, sizeof(bool));
+
+            // Name
+            stream.Write(BitConverter.GetBytes(Encoding.UTF8.GetByteCount(m_Name)), 0, sizeof(Int32));
+            stream.Write(Encoding.UTF8.GetBytes(m_Name), 0, Encoding.UTF8.GetByteCount(m_Name));
+
+            // Odometer
+            stream.Write(BitConverter.GetBytes(m_OdometerInMeters), 0, sizeof(double));
+
+            // Bike weight
+            stream.Write(BitConverter.GetBytes(m_WeightInPounds), 0, sizeof(double));
+
+            // Wheel size
+            stream.Write(BitConverter.GetBytes(m_WheelSize), 0, sizeof(UInt16));
         }
 
         public void Deserialize_V8(Stream stream, DataVersion version)
         {
+            byte[] uintBuffer = new byte[sizeof(UInt16)];
+            byte[] intBuffer = new byte[sizeof(Int32)];
+            byte[] boolBuffer = new byte[sizeof(bool)];
+            byte[] doubleBuffer = new byte[sizeof(double)];
+            byte[] stringBuffer;
+            Int32 stringLength;
+
+            // Has cadence sensor
+            stream.Read(boolBuffer, 0, sizeof(bool));
+            HasCadenceSensor = BitConverter.ToBoolean(boolBuffer, 0);
+
+            // Has power sensor
+            stream.Read(boolBuffer, 0, sizeof(bool));
+            HasPowerSensor = BitConverter.ToBoolean(boolBuffer, 0);
+
+            // Auto wheel size
+            stream.Read(boolBuffer, 0, sizeof(bool));
+            AutoWheelSize = BitConverter.ToBoolean(boolBuffer, 0);
+
+            // Name
+            stream.Read(intBuffer, 0, sizeof(Int32));
+            stringLength = BitConverter.ToInt32(intBuffer, 0);
+            stringBuffer = new byte[stringLength];
+            stream.Read(stringBuffer, 0, stringLength);
+            Name = Encoding.UTF8.GetString(stringBuffer);
+
+            // Odometer
+            stream.Read(doubleBuffer, 0, sizeof(double));
+            OdometerInMeters = BitConverter.ToDouble(doubleBuffer, 0);
+
+            // Bike weight
+            stream.Read(doubleBuffer, 0, sizeof(double));
+            WeightInPounds = BitConverter.ToDouble(doubleBuffer, 0);
+
+            // Wheel size
+            stream.Read(uintBuffer, 0, sizeof(UInt16));
+            WheelSize = BitConverter.ToUInt16(uintBuffer, 0);
         }
 
         public void Serialize(XmlNode parentNode, XmlDocument document)
         {
+            XmlAttribute attributeNode;
+            XmlNode bikeNode, currentChild;
+            CultureInfo culture = new CultureInfo("en-us");
+
+            bikeNode = document.CreateElement(Constants.BikeTCXString);
+
+            // Has cadence sensor
+            attributeNode = document.CreateAttribute(Constants.HasCadenceTCXString);
+            attributeNode.Value = HasCadenceSensor.ToString().ToLower();
+            bikeNode.Attributes.Append(attributeNode);
+
+            // Has power sensor
+            attributeNode = document.CreateAttribute(Constants.HasPowerTCXString);
+            attributeNode.Value = HasPowerSensor.ToString().ToLower();
+            bikeNode.Attributes.Append(attributeNode);
+
+            // Name
+            currentChild = document.CreateElement("Name");
+            currentChild.AppendChild(document.CreateTextNode(Name));
+            bikeNode.AppendChild(currentChild);
+
+            // Odometer
+            currentChild = document.CreateElement(Constants.OdometerTCXString);
+            currentChild.AppendChild(document.CreateTextNode(OdometerInMeters.ToString("0.00000", culture.NumberFormat)));
+            bikeNode.AppendChild(currentChild);
+
+            // Weight
+            currentChild = document.CreateElement(Constants.WeightTCXString);
+            currentChild.AppendChild(document.CreateTextNode(Weight.Convert(WeightInPounds, Weight.Units.Pound, Weight.Units.Kilogram).ToString("0.00000", culture.NumberFormat)));
+            bikeNode.AppendChild(currentChild);
+
+            // Auto wheel size
+            currentChild = document.CreateElement(Constants.WheelSizeTCXString);
+            attributeNode = document.CreateAttribute(Constants.AutoWheelSizeTCXString);
+            attributeNode.Value = AutoWheelSize.ToString().ToLower();
+            currentChild.Attributes.Append(attributeNode);
+
+            // Wheel size
+            XmlNode wheelSizeNode = document.CreateElement(Constants.SizeMillimetersTCXString);
+            wheelSizeNode.AppendChild(document.CreateTextNode(WheelSize.ToString()));
+            currentChild.AppendChild(wheelSizeNode);
+            bikeNode.AppendChild(currentChild);
+
+            parentNode.AppendChild(bikeNode);
         }
 
         public bool Deserialize(XmlNode parentNode)

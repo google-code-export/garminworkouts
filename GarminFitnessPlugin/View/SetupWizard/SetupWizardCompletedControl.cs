@@ -8,11 +8,15 @@ using System.Windows.Forms;
 
 namespace GarminFitnessPlugin.View
 {
-    public partial class SetupWizardCompletedControl : UserControl
+    partial class SetupWizardCompletedControl : ExtendedWizardPageControl
     {
-        public SetupWizardCompletedControl()
+        public SetupWizardCompletedControl(ExtendedWizard wizard)
+            : base(wizard)
         {
             InitializeComponent();
+
+            ExplanationLabel.Text = GarminFitnessView.GetLocalizedString("CompletedExplanationText");
+            FinishLabel.Text = GarminFitnessView.GetLocalizedString("CompletedLabelText");
         }
     }
 }

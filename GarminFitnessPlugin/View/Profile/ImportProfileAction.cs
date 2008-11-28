@@ -46,18 +46,18 @@ namespace GarminFitnessPlugin.View
         {
             try
             {
-                GarminDeviceManager.GetInstance().TaskCompleted += new GarminDeviceManager.TaskCompletedEventHandler(OnDeviceManagerTaskCompleted);
+                GarminDeviceManager.Instance.TaskCompleted += new GarminDeviceManager.TaskCompletedEventHandler(OnDeviceManagerTaskCompleted);
 
                 Utils.HijackMainWindow();
 
                 // Import using Communicator Plugin
-                GarminDeviceManager.GetInstance().SetOperatingDevice();
-                GarminDeviceManager.GetInstance().ImportProfile();
+                GarminDeviceManager.Instance.SetOperatingDevice();
+                GarminDeviceManager.Instance.ImportProfile();
             }
             catch (FileNotFoundException)
             {
-                MessageBox.Show(GarminFitnessView.ResourceManager.GetString("DeviceCommunicationErrorText", GarminFitnessView.UICulture),
-                                GarminFitnessView.ResourceManager.GetString("ErrorText", GarminFitnessView.UICulture),
+                MessageBox.Show(GarminFitnessView.GetLocalizedString("DeviceCommunicationErrorText"),
+                                GarminFitnessView.GetLocalizedString("ErrorText"),
                                 MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
@@ -86,8 +86,8 @@ namespace GarminFitnessPlugin.View
             {
                 if (task.Type == GarminDeviceManager.BasicTask.TaskTypes.TaskType_Initialize)
                 {
-                    MessageBox.Show(GarminFitnessView.ResourceManager.GetString("DeviceCommunicationErrorText", GarminFitnessView.UICulture),
-                                    GarminFitnessView.ResourceManager.GetString("ErrorText", GarminFitnessView.UICulture),
+                    MessageBox.Show(GarminFitnessView.GetLocalizedString("DeviceCommunicationErrorText"),
+                                    GarminFitnessView.GetLocalizedString("ErrorText"),
                                     MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
             }
@@ -100,8 +100,8 @@ namespace GarminFitnessPlugin.View
 
                     if(!ProfileImporter.ImportProfile(stream))
                     {
-                        MessageBox.Show(GarminFitnessView.ResourceManager.GetString("ImportProfileErrorText", GarminFitnessView.UICulture),
-                                        GarminFitnessView.ResourceManager.GetString("ErrorText", GarminFitnessView.UICulture),
+                        MessageBox.Show(GarminFitnessView.GetLocalizedString("ImportProfileErrorText"),
+                                        GarminFitnessView.GetLocalizedString("ErrorText"),
                                         MessageBoxButtons.OK, MessageBoxIcon.Error);
                     }
 

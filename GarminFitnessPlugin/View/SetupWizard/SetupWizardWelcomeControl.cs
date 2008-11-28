@@ -8,15 +8,16 @@ using System.Windows.Forms;
 
 namespace GarminFitnessPlugin.View
 {
-    public partial class SetupWizardWelcomeControl : UserControl
+    partial class SetupWizardWelcomeControl : ExtendedWizardPageControl
     {
-        public SetupWizardWelcomeControl()
+        public SetupWizardWelcomeControl(ExtendedWizard wizard)
+            : base(wizard)
         {
             InitializeComponent();
 
-            WelcomeLabel.Text = GarminFitnessView.ResourceManager.GetString("WelcomeLabelText", GarminFitnessView.UICulture);
-            ContinueLabel.Text = GarminFitnessView.ResourceManager.GetString("ContinueLabelText", GarminFitnessView.UICulture);
-            FinishLabel.Text = GarminFitnessView.ResourceManager.GetString("FinishLabelText", GarminFitnessView.UICulture);
+            WelcomeLabel.Text = GarminFitnessView.GetLocalizedString("WelcomeLabelText");
+            ContinueLabel.Text = GarminFitnessView.GetLocalizedString("ContinueLabelText");
+            FinishLabel.Text = GarminFitnessView.GetLocalizedString("FinishLabelText");
         }
     }
 }

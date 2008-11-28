@@ -9,43 +9,40 @@ using GarminFitnessPlugin.Controller;
 
 namespace GarminFitnessPlugin.View
 {
-    public partial class SetupWizardSetupSTGarminZonesControl : UserControl
+    partial class SetupWizardSetupSTGarminZonesControl : ExtendedWizardPageControl
     {
-        public SetupWizardSetupSTGarminZonesControl()
+        public SetupWizardSetupSTGarminZonesControl(ExtendedWizard wizard)
+            : base(wizard)
         {
             InitializeComponent();
 
-            ExplanationLabel.Text = GarminFitnessView.ResourceManager.GetString("ManualSTGarminZonesExplanationText", GarminFitnessView.UICulture);
+            ExplanationLabel.Text = GarminFitnessView.GetLocalizedString("ManualSTGarminZonesExplanationText");
 
-            HRGarminRadioButton.Text = GarminFitnessView.ResourceManager.GetString("GarminText", GarminFitnessView.UICulture);
-            HRSportTracksRadioButton.Text = GarminFitnessView.ResourceManager.GetString("SportTracksText", GarminFitnessView.UICulture);
-            SpeedGarminRadioButton.Text = GarminFitnessView.ResourceManager.GetString("GarminText", GarminFitnessView.UICulture);
-            SpeedSportTracksRadioButton.Text = GarminFitnessView.ResourceManager.GetString("SportTracksText", GarminFitnessView.UICulture);
-            PowerGarminRadioButton.Text = GarminFitnessView.ResourceManager.GetString("GarminText", GarminFitnessView.UICulture);
-            PowerSportTracksRadioButton.Text = GarminFitnessView.ResourceManager.GetString("SportTracksText", GarminFitnessView.UICulture);
-
-            HRSettingsGroupBox.Text = GarminFitnessView.ResourceManager.GetString("HRSettingsGroupBoxText", GarminFitnessView.UICulture);
-            SpeedSettingsGroupBox.Text = GarminFitnessView.ResourceManager.GetString("SpeedSettingsGroupBoxText", GarminFitnessView.UICulture);
-            PowerSettingsGroupBox.Text = GarminFitnessView.ResourceManager.GetString("PowerSettingsGroupBoxText", GarminFitnessView.UICulture);
+            HRGarminRadioButton.Text = GarminFitnessView.GetLocalizedString("GarminText");
+            HRSportTracksRadioButton.Text = GarminFitnessView.GetLocalizedString("SportTracksText");
+            SpeedGarminRadioButton.Text = GarminFitnessView.GetLocalizedString("GarminText");
+            SpeedSportTracksRadioButton.Text = GarminFitnessView.GetLocalizedString("SportTracksText");
+            PowerGarminRadioButton.Text = GarminFitnessView.GetLocalizedString("GarminText");
+            PowerSportTracksRadioButton.Text = GarminFitnessView.GetLocalizedString("SportTracksText");
 
             // HR
-            HRGarminRadioButton.Checked = !Options.UseSportTracksHeartRateZones;
-            HRSportTracksRadioButton.Checked = Options.UseSportTracksHeartRateZones;
+            HRGarminRadioButton.Checked = !Options.Instance.UseSportTracksHeartRateZones;
+            HRSportTracksRadioButton.Checked = Options.Instance.UseSportTracksHeartRateZones;
 
             // Speed
-            SpeedGarminRadioButton.Checked = !Options.UseSportTracksSpeedZones;
-            SpeedSportTracksRadioButton.Checked = Options.UseSportTracksSpeedZones;
+            SpeedGarminRadioButton.Checked = !Options.Instance.UseSportTracksSpeedZones;
+            SpeedSportTracksRadioButton.Checked = Options.Instance.UseSportTracksSpeedZones;
 
             // Power
-            PowerGarminRadioButton.Checked = !Options.UseSportTracksPowerZones;
-            PowerSportTracksRadioButton.Checked = Options.UseSportTracksPowerZones;
+            PowerGarminRadioButton.Checked = !Options.Instance.UseSportTracksPowerZones;
+            PowerSportTracksRadioButton.Checked = Options.Instance.UseSportTracksPowerZones;
         }
 
         private void HRGarminRadioButton_CheckedChanged(object sender, EventArgs e)
         {
             if (HRGarminRadioButton.Checked)
             {
-                Options.UseSportTracksHeartRateZones = false;
+                Options.Instance.UseSportTracksHeartRateZones = false;
             }
         }
 
@@ -53,7 +50,7 @@ namespace GarminFitnessPlugin.View
         {
             if (HRSportTracksRadioButton.Checked)
             {
-                Options.UseSportTracksHeartRateZones = true;
+                Options.Instance.UseSportTracksHeartRateZones = true;
             }
         }
 
@@ -61,7 +58,7 @@ namespace GarminFitnessPlugin.View
         {
             if (SpeedGarminRadioButton.Checked)
             {
-                Options.UseSportTracksHeartRateZones = false;
+                Options.Instance.UseSportTracksSpeedZones = false;
             }
         }
 
@@ -69,7 +66,7 @@ namespace GarminFitnessPlugin.View
         {
             if (SpeedSportTracksRadioButton.Checked)
             {
-                Options.UseSportTracksHeartRateZones = true;
+                Options.Instance.UseSportTracksSpeedZones = true;
             }
         }
 
@@ -77,7 +74,7 @@ namespace GarminFitnessPlugin.View
         {
             if (PowerGarminRadioButton.Checked)
             {
-                Options.UseSportTracksHeartRateZones = false;
+                Options.Instance.UseSportTracksPowerZones = false;
             }
         }
 
@@ -85,7 +82,7 @@ namespace GarminFitnessPlugin.View
         {
             if (PowerSportTracksRadioButton.Checked)
             {
-                Options.UseSportTracksHeartRateZones = true;
+                Options.Instance.UseSportTracksPowerZones = true;
             }
         }
     }

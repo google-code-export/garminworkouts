@@ -117,4 +117,7 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="ExplanationLabel.Text" xml:space="preserve">
+    <value>In order for your workouts to use the right zones, we must setup these zones.  Even if you setup the plugin in SportTracks mode, your profile in used for the display (speed vs. pace, BPM vs. % max HR) so it is important to setup your profile.  You can either import you profile from your unit or you can edit it manually.</value>
+  </data>
 </root>

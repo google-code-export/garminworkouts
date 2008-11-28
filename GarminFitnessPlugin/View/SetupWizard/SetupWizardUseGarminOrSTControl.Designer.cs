@@ -59,7 +59,7 @@ namespace GarminFitnessPlugin.View
             // 
             this.STModeRadioButton.AutoSize = true;
             this.STModeRadioButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.STModeRadioButton.Location = new System.Drawing.Point(4, 105);
+            this.STModeRadioButton.Location = new System.Drawing.Point(4, 100);
             this.STModeRadioButton.Name = "STModeRadioButton";
             this.STModeRadioButton.Size = new System.Drawing.Size(313, 24);
             this.STModeRadioButton.TabIndex = 4;
@@ -72,7 +72,7 @@ namespace GarminFitnessPlugin.View
             // 
             this.GarminModeRadioButton.AutoSize = true;
             this.GarminModeRadioButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.GarminModeRadioButton.Location = new System.Drawing.Point(4, 135);
+            this.GarminModeRadioButton.Location = new System.Drawing.Point(4, 140);
             this.GarminModeRadioButton.Name = "GarminModeRadioButton";
             this.GarminModeRadioButton.Size = new System.Drawing.Size(274, 24);
             this.GarminModeRadioButton.TabIndex = 4;
@@ -85,13 +85,14 @@ namespace GarminFitnessPlugin.View
             // 
             this.IndependentModeRadioButton.AutoSize = true;
             this.IndependentModeRadioButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.IndependentModeRadioButton.Location = new System.Drawing.Point(4, 165);
+            this.IndependentModeRadioButton.Location = new System.Drawing.Point(4, 180);
             this.IndependentModeRadioButton.Name = "IndependentModeRadioButton";
             this.IndependentModeRadioButton.Size = new System.Drawing.Size(378, 24);
             this.IndependentModeRadioButton.TabIndex = 4;
             this.IndependentModeRadioButton.TabStop = true;
             this.IndependentModeRadioButton.Text = "I want to configure the zones independently";
             this.IndependentModeRadioButton.UseVisualStyleBackColor = true;
+            this.IndependentModeRadioButton.CheckedChanged += new System.EventHandler(this.IndependentModeRadioButton_CheckedChanged);
             // 
             // SetupWizardUseGarminOrSTControl
             // 
@@ -103,7 +104,7 @@ namespace GarminFitnessPlugin.View
             this.Controls.Add(this.pictureBox1);
             this.Controls.Add(this.ExplanationLabel);
             this.Name = "SetupWizardUseGarminOrSTControl";
-            this.Size = new System.Drawing.Size(520, 193);
+            this.Size = new System.Drawing.Size(520, 214);
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();

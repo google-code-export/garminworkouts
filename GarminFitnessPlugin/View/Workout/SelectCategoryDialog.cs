@@ -11,11 +11,11 @@ namespace GarminFitnessPlugin.View
 {
     public partial class SelectCategoryDialog : Form
     {
-        public SelectCategoryDialog(string workoutName, CultureInfo UICulture)
+        public SelectCategoryDialog(string workoutName)
         {
             InitializeComponent();
 
-            this.Text = GarminFitnessView.ResourceManager.GetString("SelectCategoryDialogText", UICulture) + workoutName;
+            this.Text = GarminFitnessView.GetLocalizedString("SelectCategoryDialogText") + workoutName;
             SelectCategoryLabel.Text = this.Text;
             OkButton.Text = CommonResources.Text.ActionOk;
 
@@ -39,7 +39,7 @@ namespace GarminFitnessPlugin.View
 
             ActivityCategoryList.RowData = categories;
             ActivityCategoryList.Columns.Clear();
-            ActivityCategoryList.Columns.Add(new TreeList.Column("Name", GarminFitnessView.ResourceManager.GetString("CategoryText", UICulture),
+            ActivityCategoryList.Columns.Add(new TreeList.Column("Name", GarminFitnessView.GetLocalizedString("CategoryText"),
                                                          150, StringAlignment.Near));
             ActivityCategoryList.Selected = selection;
             ActivityCategoryList.SetExpanded(ActivityCategoryList.RowData, true, true);

@@ -117,4 +117,7 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="ExplanationLabel.Text" xml:space="preserve">
+    <value>When using SportTracks zones, the plugin uses the heart rate and speed zones as defined in the category in which the workout is classified.  The SportTracks activity categories don't have cadence or power zones, this is why these must be defined independently.</value>
+  </data>
 </root>

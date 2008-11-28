@@ -1,12 +1,25 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
 using ZoneFiveSoftware.Common.Visuals;
 
 namespace GarminFitnessPlugin.View
 {
     class ExtendedWizard : Wizard
     {
+        public ExtendedWizard()
+        {
+        }
+
+        protected override void OnLoad(EventArgs e)
+        {
+            base.OnLoad(e);
+
+            m_BaseWizardHeight = this.Height;
+            m_ExcessWizardHeight = m_BaseWizardHeight - panelMain.Height;
+        }
+
         public IExtendedWizardPage GetPageByType(Type type)
         {
             for (int i = 0; i < m_Pages.Count; ++i)
@@ -22,7 +35,10 @@ namespace GarminFitnessPlugin.View
 
         protected override void OnShown(System.EventArgs e)
         {
-            bannerPage.ThemeChanged(PluginMain.GetApplication().VisualTheme);
+            if (PluginMain.GetApplication() != null)
+            {
+                bannerPage.ThemeChanged(PluginMain.GetApplication().VisualTheme);
+            }
 
             base.OnShown(e);
         }
@@ -59,7 +75,7 @@ namespace GarminFitnessPlugin.View
 
             if (!e.Cancel)
             {
-                base.NextClicked();
+                GoNext();
             }
         }
 
@@ -77,8 +93,47 @@ namespace GarminFitnessPlugin.View
 
             if (!e.Cancel)
             {
-                base.PrevClicked();
+                GoPrev();
             }
+        }
+
+        public new void GoNext()
+        {
+            Trace.Assert((ActivePageNum + 1) < Pages.Count);
+
+            ShowPage(Pages[ActivePageNum + 1]);
+        }
+
+        public new void GoPrev()
+        {
+            Trace.Assert((ActivePageNum - 1) >= 0);
+
+            ShowPage(Pages[ActivePageNum - 1]);
+        }
+
+        public new void ShowPage(IWizardPage page)
+        {
+            int requiredHeight = page.CreatePageControl().Height + m_ExcessWizardHeight;
+
+            base.ShowPage(page);
+
+            if (requiredHeight > m_BaseWizardHeight)
+            {
+                // Realign the center
+                this.Top += (this.Height - requiredHeight) / 2;
+
+                this.Height = requiredHeight;
+            }
+            else if(this.Height != m_BaseWizardHeight)
+            {
+                // Realign the center
+                this.Top += (this.Height - m_BaseWizardHeight) / 2;
+
+                // Set back to our default value
+                this.Height = m_BaseWizardHeight;
+            }
+
+            this.Invalidate();
         }
 
         protected override bool CanFinish
@@ -140,5 +195,7 @@ namespace GarminFitnessPlugin.View
         }
 
         IList<IExtendedWizardPage> m_Pages;
+        int m_BaseWizardHeight;
+        int m_ExcessWizardHeight;
     }
 }

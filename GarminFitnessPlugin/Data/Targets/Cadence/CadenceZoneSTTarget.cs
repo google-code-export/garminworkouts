@@ -15,9 +15,9 @@ namespace GarminFitnessPlugin.Data
         public CadenceZoneSTTarget(BaseCadenceTarget baseTarget)
             : base(CadenceTargetType.ZoneST, baseTarget)
         {
-            Trace.Assert(Options.CadenceZoneCategory.Zones.Count > 0);
+            Trace.Assert(Options.Instance.CadenceZoneCategory.Zones.Count > 0);
 
-            Zone = Options.CadenceZoneCategory.Zones[0];
+            Zone = Options.Instance.CadenceZoneCategory.Zones[0];
         }
 
         public CadenceZoneSTTarget(INamedLowHighZone zone, BaseCadenceTarget baseTarget)
@@ -36,7 +36,7 @@ namespace GarminFitnessPlugin.Data
         {
             base.Serialize(stream);
 
-            IZoneCategory zones = Options.CadenceZoneCategory;
+            IZoneCategory zones = Options.Instance.CadenceZoneCategory;
             String zoneRefID = zones.ReferenceId;
 
             // Zone categroy refId
@@ -55,7 +55,7 @@ namespace GarminFitnessPlugin.Data
             // Call base deserialization
             Deserialize(typeof(BaseCadenceTarget.IConcreteCadenceTarget), stream, version);
 
-            IZoneCategory zones = Options.CadenceZoneCategory;
+            IZoneCategory zones = Options.Instance.CadenceZoneCategory;
             byte[] intBuffer = new byte[sizeof(Int32)];
             byte[] stringBuffer;
             Int32 stringLength;
@@ -87,7 +87,7 @@ namespace GarminFitnessPlugin.Data
             // Call base deserialization
             Deserialize(typeof(BaseCadenceTarget.IConcreteCadenceTarget), stream, version);
 
-            IZoneCategory zones = Options.CadenceZoneCategory;
+            IZoneCategory zones = Options.Instance.CadenceZoneCategory;
             byte[] intBuffer = new byte[sizeof(Int32)];
             byte[] boolBuffer = new byte[sizeof(bool)];
             byte[] stringBuffer;
@@ -144,9 +144,9 @@ namespace GarminFitnessPlugin.Data
             parentNode.AppendChild(childNode);
 
             // Extension
-            for (int i = 0; i < Options.CadenceZoneCategory.Zones.Count; ++i)
+            for (int i = 0; i < Options.Instance.CadenceZoneCategory.Zones.Count; ++i)
             {
-                INamedLowHighZone currentZone = Options.CadenceZoneCategory.Zones[i];
+                INamedLowHighZone currentZone = Options.Instance.CadenceZoneCategory.Zones[i];
                 
                 if(currentZone == Zone)
                 {
@@ -159,7 +159,7 @@ namespace GarminFitnessPlugin.Data
                     extensionNode.AppendChild(valueNode);
                     categoryNode = document.CreateElement("Category");
                     valueNode = document.CreateElement("Id");
-                    valueNode.AppendChild(document.CreateTextNode(Options.CadenceZoneCategory.ReferenceId));
+                    valueNode.AppendChild(document.CreateTextNode(Options.Instance.CadenceZoneCategory.ReferenceId));
                     categoryNode.AppendChild(valueNode);
                     valueNode = document.CreateElement("Index");
                     valueNode.AppendChild(document.CreateTextNode(i.ToString()));

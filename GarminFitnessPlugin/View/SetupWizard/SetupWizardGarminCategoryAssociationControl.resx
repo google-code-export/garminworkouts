@@ -117,4 +117,7 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="ExplanationLabel.Text" xml:space="preserve">
+    <value>For your workouts to be correctly categorized on your unit you must associate every SportTracks activity category with it's corresponding Garmin activity category.  Doing so allows your workouts to use the right heart rate zones and speed zones as setup in your profile.</value>
+  </data>
 </root>

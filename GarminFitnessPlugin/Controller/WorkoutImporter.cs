@@ -101,7 +101,7 @@ namespace GarminFitnessPlugin.Controller
 
                         if (category == null)
                         {
-                            SelectCategoryDialog categoryDlg = new SelectCategoryDialog(newWorkout.Name, GarminFitnessView.UICulture);
+                            SelectCategoryDialog categoryDlg = new SelectCategoryDialog(newWorkout.Name);
 
                             categoryDlg.ShowDialog();
                             newWorkout.Category = categoryDlg.SelectedCategory;

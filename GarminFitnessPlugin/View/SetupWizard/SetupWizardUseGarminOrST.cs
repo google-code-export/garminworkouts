@@ -24,7 +24,7 @@ namespace GarminFitnessPlugin.View
 
         public override void NextClicked(CancelEventArgs e)
         {
-            if (m_Control.IsIndependentSetupSelected)
+            if (((GarminFitnessSetupWizard)Wizard).IsIndependentZonesSetupSelected)
             {
                 IExtendedWizardPage nextPage = Wizard.GetPageByType(typeof(SetupWizardSetupSTGarminZones));
 
@@ -37,10 +37,6 @@ namespace GarminFitnessPlugin.View
         public override void PrevClicked(CancelEventArgs e)
         {
         }
-
-#endregion
-
-#region IWizardPage Members
 
         public override bool CanFinish
         {
@@ -56,16 +52,11 @@ namespace GarminFitnessPlugin.View
         {
             get { return true; }
         }
-
-#endregion
-
-#region IDialogPage Members
-
-        public override System.Windows.Forms.Control CreatePageControl()
+        public override ExtendedWizardPageControl CreatePageControl(ExtendedWizard wizard)
         {
             if (m_Control == null)
             {
-                m_Control = new SetupWizardUseGarminOrSTControl();
+                m_Control = new SetupWizardUseGarminOrSTControl(wizard);
             }
 
             return m_Control;
@@ -83,7 +74,7 @@ namespace GarminFitnessPlugin.View
 
         public override void ShowPage(string bookmark)
         {
-            
+
         }
 
         public override IPageStatus Status
@@ -97,16 +88,12 @@ namespace GarminFitnessPlugin.View
 
         public override string Title
         {
-            get { return GarminFitnessView.ResourceManager.GetString("GarminOrSTText", GarminFitnessView.UICulture); }
+            get { return GarminFitnessView.GetLocalizedString("GarminOrSTText"); }
         }
 
         public override void UICultureChanged(System.Globalization.CultureInfo culture)
         {
         }
-
-#endregion
-
-#region INotifyPropertyChanged Members
 
         public override event System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
 
