@@ -25,11 +25,11 @@ namespace GarminFitnessPlugin.View
         {
             get
             {
-                GarminCategories garminCategory = Options.GetGarminCategory((IActivityCategory)Element);
+                GarminCategories garminCategory = Options.Instance.GetGarminCategory((IActivityCategory)Element);
                 FieldInfo fieldInfo = garminCategory.GetType().GetField(Enum.GetName(garminCategory.GetType(), garminCategory));
                 GarminCategoryStringProviderAttribute providerAttribute = (GarminCategoryStringProviderAttribute)Attribute.GetCustomAttribute(fieldInfo, typeof(GarminCategoryStringProviderAttribute));
 
-                return GarminFitnessView.ResourceManager.GetString(providerAttribute.StringName, GarminFitnessView.UICulture);
+                return GarminFitnessView.GetLocalizedString(providerAttribute.StringName);
             }
         }
     }

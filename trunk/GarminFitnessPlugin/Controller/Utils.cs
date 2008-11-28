@@ -133,6 +133,7 @@ namespace GarminFitnessPlugin.Controller
             stream.Write(Encoding.UTF8.GetBytes(Constants.DataHeaderIdString), 0, Encoding.UTF8.GetByteCount(Constants.DataHeaderIdString));
             stream.WriteByte(Constants.CurrentVersion.VersionNumber);
 
+            Options.Instance.Serialize(stream);
             GarminWorkoutManager.Instance.Serialize(stream);
             GarminProfileManager.Instance.Serialize(stream);
 

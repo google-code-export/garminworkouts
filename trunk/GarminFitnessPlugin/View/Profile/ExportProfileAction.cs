@@ -47,24 +47,24 @@ namespace GarminFitnessPlugin.View
         {
             try
             {
-                GarminDeviceManager.GetInstance().TaskCompleted += new GarminDeviceManager.TaskCompletedEventHandler(OnDeviceManagerTaskCompleted);
+                GarminDeviceManager.Instance.TaskCompleted += new GarminDeviceManager.TaskCompletedEventHandler(OnDeviceManagerTaskCompleted);
 
                 Utils.HijackMainWindow();
 
                 // Export using Communicator Plugin
-                GarminDeviceManager.GetInstance().SetOperatingDevice();
-                GarminDeviceManager.GetInstance().ExportProfile();
+                GarminDeviceManager.Instance.SetOperatingDevice();
+                GarminDeviceManager.Instance.ExportProfile();
             }
             catch (FileNotFoundException)
             {
-                MessageBox.Show(GarminFitnessView.ResourceManager.GetString("DeviceCommunicationErrorText", GarminFitnessView.UICulture),
-                                GarminFitnessView.ResourceManager.GetString("ErrorText", GarminFitnessView.UICulture),
+                MessageBox.Show(GarminFitnessView.GetLocalizedString("DeviceCommunicationErrorText"),
+                                GarminFitnessView.GetLocalizedString("ErrorText"),
                                 MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
             catch (Exception e)
             {
-                MessageBox.Show(GarminFitnessView.ResourceManager.GetString("ExportWorkoutsFailedText", GarminFitnessView.UICulture),
-                                GarminFitnessView.ResourceManager.GetString("ErrorText", GarminFitnessView.UICulture),
+                MessageBox.Show(GarminFitnessView.GetLocalizedString("ExportWorkoutsFailedText"),
+                                GarminFitnessView.GetLocalizedString("ErrorText"),
                                 MessageBoxButtons.OK, MessageBoxIcon.Information);
 
                 throw e;
@@ -77,7 +77,7 @@ namespace GarminFitnessPlugin.View
             {
                 Trace.Assert(PluginMain.GetApplication().ActiveView.GetType() == typeof(GarminFitnessView));
 
-                return GarminFitnessView.ResourceManager.GetString("ExportText", GarminFitnessView.UICulture);
+                return GarminFitnessView.GetLocalizedString("ExportText");
             }
         }
 
@@ -101,8 +101,8 @@ namespace GarminFitnessPlugin.View
                 {
                     exportCancelled = true;
 
-                    MessageBox.Show(GarminFitnessView.ResourceManager.GetString("DeviceCommunicationErrorText", GarminFitnessView.UICulture),
-                                    GarminFitnessView.ResourceManager.GetString("ErrorText", GarminFitnessView.UICulture),
+                    MessageBox.Show(GarminFitnessView.GetLocalizedString("DeviceCommunicationErrorText"),
+                                    GarminFitnessView.GetLocalizedString("ErrorText"),
                                     MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
                 else if (task.Type == GarminDeviceManager.BasicTask.TaskTypes.TaskType_SetOperatingDevice)
@@ -111,8 +111,8 @@ namespace GarminFitnessPlugin.View
                 }
                 else if (task.Type == GarminDeviceManager.BasicTask.TaskTypes.TaskType_ExportProfile)
                 {
-                    MessageBox.Show(GarminFitnessView.ResourceManager.GetString("ExportProfileFailedText", GarminFitnessView.UICulture),
-                                    GarminFitnessView.ResourceManager.GetString("ErrorText", GarminFitnessView.UICulture),
+                    MessageBox.Show(GarminFitnessView.GetLocalizedString("ExportProfileFailedText"),
+                                    GarminFitnessView.GetLocalizedString("ErrorText"),
                                     MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
             }
@@ -125,8 +125,8 @@ namespace GarminFitnessPlugin.View
 
                 if (!exportCancelled && succeeded)
                 {
-                    MessageBox.Show(GarminFitnessView.ResourceManager.GetString("ExportProfileSuccessText", GarminFitnessView.UICulture),
-                                    GarminFitnessView.ResourceManager.GetString("SuccessText", GarminFitnessView.UICulture),
+                    MessageBox.Show(GarminFitnessView.GetLocalizedString("ExportProfileSuccessText"),
+                                    GarminFitnessView.GetLocalizedString("SuccessText"),
                                     MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
             }

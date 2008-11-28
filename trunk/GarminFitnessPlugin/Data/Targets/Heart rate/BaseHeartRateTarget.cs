@@ -85,7 +85,7 @@ namespace GarminFitnessPlugin.Data
         public BaseHeartRateTarget(IStep parent)
             : base(ITarget.TargetType.HeartRate, parent)
         {
-            if (Options.UseSportTracksHeartRateZones)
+            if (Options.Instance.UseSportTracksHeartRateZones)
             {
                 ConcreteTarget = new HeartRateZoneSTTarget(this);
             }

@@ -41,14 +41,17 @@ namespace GarminFitnessPlugin.Controller
             m_Controller.FinishReadFromDevice -= new GarminDeviceControl.TransferCompleteEventHandler(OnControllerFinishReadFromDevice);
         }
 
-        public static GarminDeviceManager GetInstance()
+        public static GarminDeviceManager Instance
         {
-            if (m_Instance == null)
+            get
             {
-                m_Instance = new GarminDeviceManager();
-            }
+                if (m_Instance == null)
+                {
+                    m_Instance = new GarminDeviceManager();
+                }
 
-            return m_Instance;
+                return m_Instance;
+            }
         }
 
         public void RefreshDevices()
@@ -326,6 +329,14 @@ namespace GarminFitnessPlugin.Controller
 
             public override void ExecuteTask(GarminDeviceControl controller, Device device)
             {
+                string fileName = "Profile.tcx";
+                MemoryStream textStream = new MemoryStream();
+
+                ProfileExporter.ExportProfile(textStream);
+                string xmlCode = Encoding.UTF8.GetString(textStream.GetBuffer());
+                controller.WriteUserProfile(device,
+                                            xmlCode,
+                                            fileName);
             }
         }
 

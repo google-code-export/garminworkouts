@@ -90,7 +90,7 @@ namespace GarminFitnessPlugin.Data
         public BaseSpeedTarget(IStep parent)
             : base(TargetType.Speed, parent)
         {
-            if (Options.UseSportTracksSpeedZones)
+            if (Options.Instance.UseSportTracksSpeedZones)
             {
                 ConcreteTarget = new SpeedZoneSTTarget(this);
             }

@@ -159,7 +159,7 @@ namespace GarminFitnessPlugin.Data
             // We got here so our target must be a range
             Trace.Assert(ConcreteTarget.Type == BaseCadenceTarget.IConcreteCadenceTarget.CadenceTargetType.Range);
 
-            IZoneCategory referenceZones = Options.CadenceZoneCategory;
+            IZoneCategory referenceZones = Options.Instance.CadenceZoneCategory;
             string zoneReferenceId = null;
             int zoneIndex = -1;
 

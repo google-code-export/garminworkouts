@@ -7,6 +7,7 @@ using System.IO;
 using System.Reflection;
 using System.Resources;
 using System.Runtime.Serialization.Formatters.Binary;
+using System.Threading;
 using System.Windows.Forms;
 using ZoneFiveSoftware.Common.Data.Fitness;
 using ZoneFiveSoftware.Common.Visuals.Fitness;
@@ -17,6 +18,18 @@ namespace GarminFitnessPlugin.View
 {
     class GarminFitnessView : IView
     {
+        public GarminFitnessView()
+        {
+            PropertyChanged += new PropertyChangedEventHandler(OnPropertyChanged);
+            PluginMain.LogbookChanged += new PluginMain.LogbookChangedEventHandler(OnLogbookChanged);
+
+            m_ViewControls = new IGarminFitnessPluginControl[]
+                    {
+                        null,
+                        null,
+                    };
+        }
+
 #region IView Members
 
         public System.Collections.Generic.IList<IAction> Actions
@@ -53,11 +66,11 @@ namespace GarminFitnessPlugin.View
                 {
                     case PluginViews.Workouts:
                         {
-                            return GarminFitnessView.ResourceManager.GetString("WorkoutsText", GarminFitnessView.UICulture);
+                            return GarminFitnessView.GetLocalizedString("WorkoutsText");
                         }
                     case PluginViews.Profile:
                         {
-                            return GarminFitnessView.ResourceManager.GetString("ProfileText", GarminFitnessView.UICulture);
+                            return GarminFitnessView.GetLocalizedString("ProfileText");
                         }
                     default:
                         {
@@ -75,10 +88,10 @@ namespace GarminFitnessPlugin.View
             ContextMenu menu = new ContextMenu();
             MenuItem menuItem;
 
-            menuItem = new MenuItem(GarminFitnessView.ResourceManager.GetString("WorkoutsText", GarminFitnessView.UICulture),
+            menuItem = new MenuItem(GarminFitnessView.GetLocalizedString("WorkoutsText"),
                                     new EventHandler(WorkoutsViewEventHandler));
             menu.MenuItems.Add(menuItem);
-            menuItem = new MenuItem(GarminFitnessView.ResourceManager.GetString("ProfileText", GarminFitnessView.UICulture),
+            menuItem = new MenuItem(GarminFitnessView.GetLocalizedString("ProfileText"),
                                     new EventHandler(ProfileViewEventHandler));
             menu.MenuItems.Add(menuItem);
 
@@ -92,7 +105,7 @@ namespace GarminFitnessPlugin.View
 
         public string TasksHeading
         {
-            get { return GarminFitnessView.ResourceManager.GetString("GarminFitnessText", GarminFitnessView.UICulture); }
+            get { return GarminFitnessView.GetLocalizedString("GarminFitnessText"); }
         }
 
 #endregion
@@ -110,6 +123,74 @@ namespace GarminFitnessPlugin.View
             }
 
             return m_MainControl;
+        }
+
+        void OnPropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+        }
+
+        public bool HidePage()
+        {
+            return true;
+        }
+
+        public string PageName
+        {
+            get { return GarminFitnessView.GetLocalizedString("GarminFitnessText"); }
+        }
+
+        public void ShowPage(string bookmark)
+        {
+        }
+
+        public IPageStatus Status
+        {
+            get { throw new System.Exception("The method or operation is not implemented."); }
+        }
+
+        public void ThemeChanged(ITheme visualTheme)
+        {
+            GetCurrentView().ThemeChanged(visualTheme);
+        }
+
+        public string Title
+        {
+            get { return GarminFitnessView.GetLocalizedString("GarminFitnessText"); }
+        }
+
+        public void UICultureChanged(CultureInfo culture)
+        {
+            m_CurrentCulture = culture;
+            GetCurrentView().UICultureChanged(culture);
+        }
+
+#endregion
+
+#region INotifyPropertyChanged Members
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+#endregion
+
+        private void OnLogbookChanged(object sender, ILogbook oldLogbook, ILogbook newLogbook)
+        {
+            GetCurrentView().RefreshUIFromLogbook();
+        }
+
+        public void WorkoutsViewEventHandler(object sender, EventArgs args)
+        {
+            if (m_CurrentView != PluginViews.Workouts)
+            {
+                SwapViews();
+            }
+        }
+
+        public void ProfileViewEventHandler(object sender, EventArgs args)
+        {
+            if (m_CurrentView != PluginViews.Profile)
+            {
+                SwapViews();
+            }
         }
 
         public IGarminFitnessPluginControl GetCurrentView()
@@ -134,86 +215,6 @@ namespace GarminFitnessPlugin.View
             }
 
             return m_ViewControls[(int)m_CurrentView];
-        }
-
-        void OnPropertyChanged(object sender, PropertyChangedEventArgs e)
-        {
-        }
-
-        public bool HidePage()
-        {
-            return true;
-        }
-
-        public string PageName
-        {
-            get { return GarminFitnessView.ResourceManager.GetString("GarminFitnessText", GarminFitnessView.UICulture); }
-        }
-
-        public void ShowPage(string bookmark)
-        {
-        }
-
-        public IPageStatus Status
-        {
-            get { throw new System.Exception("The method or operation is not implemented."); }
-        }
-
-        public void ThemeChanged(ITheme visualTheme)
-        {
-            GetCurrentView().ThemeChanged(visualTheme);
-        }
-
-        public string Title
-        {
-            get { return GarminFitnessView.ResourceManager.GetString("GarminFitnessText", GarminFitnessView.UICulture); }
-        }
-
-        public void UICultureChanged(System.Globalization.CultureInfo culture)
-        {
-            m_CurrentCulture = culture;
-            GetCurrentView().UICultureChanged(culture);
-        }
-
-#endregion
-
-#region INotifyPropertyChanged Members
-
-        public event PropertyChangedEventHandler PropertyChanged;
-
-#endregion
-
-        public GarminFitnessView()
-        {
-            PropertyChanged += new PropertyChangedEventHandler(OnPropertyChanged);
-            PluginMain.LogbookChanged += new PluginMain.LogbookChangedEventHandler(OnLogbookChanged);
-
-            m_ViewControls = new IGarminFitnessPluginControl[]
-                    {
-                        null,
-                        null,
-                    };
-        }
-
-        private void OnLogbookChanged(object sender, ILogbook oldLogbook, ILogbook newLogbook)
-        {
-            GetCurrentView().RefreshUIFromLogbook();
-        }
-
-        public void WorkoutsViewEventHandler(object sender, EventArgs args)
-        {
-            if (m_CurrentView != PluginViews.Workouts)
-            {
-                SwapViews();
-            }
-        }
-
-        public void ProfileViewEventHandler(object sender, EventArgs args)
-        {
-            if (m_CurrentView != PluginViews.Profile)
-            {
-                SwapViews();
-            }
         }
 
         private void SwapViews()
@@ -255,6 +256,11 @@ namespace GarminFitnessPlugin.View
             currentControl.Visible = true;
         }
 
+        public static string GetLocalizedString(string name)
+        {
+            return ResourceManager.GetString(name);
+        }
+
         public static ResourceManager ResourceManager
         {
             get { return m_ResourceManager; }
@@ -262,7 +268,17 @@ namespace GarminFitnessPlugin.View
 
         public static CultureInfo UICulture
         {
-            get { return m_CurrentCulture; }
+            get
+            {
+                if (m_CurrentCulture != null)
+                {
+                    return m_CurrentCulture;
+                }
+                else
+                {
+                    return Thread.CurrentThread.CurrentCulture;
+                }
+            }
         }
 
         private IAction[] m_WorkoutsViewActions = new IAction[]

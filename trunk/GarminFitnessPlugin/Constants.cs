@@ -137,6 +137,9 @@ namespace GarminFitnessPlugin
                 "Biking",
                 "Other"
             };
+
+        public static readonly string ProfileTCXString = "Profile";
+
         public static readonly string BirthDateTCXString = "BirthDate";
         public static readonly string WeightTCXString = "WeightKilograms";
         public static readonly string GenderTCXString = "Gender";
@@ -144,6 +147,8 @@ namespace GarminFitnessPlugin
         public static readonly string GenderFemaleTCXString = "Female";
         public static readonly string MaxHRBPMTCXString = "MaximumHeartRateBpm";
         public static readonly string RestHRBPMTCXString = "RestingHeartRateBpm";
+
+        public static readonly string ActivitiesTCXString = "Activities";
         public static readonly string GearWeightTCXString = "GearWeightKilograms";
         public static readonly string HeartRateZonesTCXString = "HeartRateZones";
         public static readonly string SpeedZonesTCXString = "SpeedZones";
@@ -166,10 +171,10 @@ namespace GarminFitnessPlugin
         public static readonly string AutoWheelSizeTCXString = "AutoWheelSize";
         public static readonly string SizeMillimetersTCXString = "SizeMillimeters";
 
-        public static readonly DataVersion CurrentVersion = new DataVersion(8);
-        public static readonly String DataHeaderIdString = "Garmin Workouts Plugin made by S->G";
-
         public static readonly string WorkoutsClipboardID = "GFP_WorkoutsList";
         public static readonly string StepsClipboardID = "GFP_StepsList";
+
+        public static readonly DataVersion CurrentVersion = new DataVersion(8);
+        public static readonly String DataHeaderIdString = "Garmin Workouts Plugin made by S->G";
    }
 }

@@ -48,7 +48,7 @@ namespace GarminFitnessPlugin.Controller
                             {
                                 XmlNode extensionsNode = database.ChildNodes[j];
 
-                                if (extensionsNode.ChildNodes.Count == 1 && extensionsNode.FirstChild.Name == "Profile")
+                                if (extensionsNode.ChildNodes.Count == 1 && extensionsNode.FirstChild.Name == Constants.ProfileTCXString)
                                 {
                                     return GarminProfileManager.Instance.Deserialize(extensionsNode.FirstChild);
                                 }

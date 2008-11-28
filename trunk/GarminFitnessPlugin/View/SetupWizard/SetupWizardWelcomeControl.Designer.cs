@@ -57,7 +57,7 @@ namespace GarminFitnessPlugin.View
             // ContinueLabel
             // 
             this.ContinueLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.ContinueLabel.Location = new System.Drawing.Point(3, 102);
+            this.ContinueLabel.Location = new System.Drawing.Point(3, 100);
             this.ContinueLabel.Name = "ContinueLabel";
             this.ContinueLabel.Size = new System.Drawing.Size(514, 25);
             this.ContinueLabel.TabIndex = 2;
@@ -66,7 +66,7 @@ namespace GarminFitnessPlugin.View
             // FinishLabel
             // 
             this.FinishLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.FinishLabel.Location = new System.Drawing.Point(3, 143);
+            this.FinishLabel.Location = new System.Drawing.Point(3, 140);
             this.FinishLabel.Name = "FinishLabel";
             this.FinishLabel.Size = new System.Drawing.Size(514, 25);
             this.FinishLabel.TabIndex = 2;

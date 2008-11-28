@@ -26,11 +26,6 @@ namespace GarminFitnessPlugin.View
 
         public override void NextClicked(CancelEventArgs e)
         {
-            IExtendedWizardPage nextPage = Wizard.GetPageByType(typeof(SetupWizardCompleted));
-
-            Wizard.ShowPage(nextPage);
-
-            e.Cancel = true;
         }
 
         public override void PrevClicked(CancelEventArgs e)
@@ -57,11 +52,11 @@ namespace GarminFitnessPlugin.View
             get { return true; }
         }
 
-        public override System.Windows.Forms.Control CreatePageControl()
+        public override ExtendedWizardPageControl CreatePageControl(ExtendedWizard wizard)
         {
             if (m_Control == null)
             {
-                m_Control = new SetupWizardEditProfileControl();
+                m_Control = new SetupWizardEditProfileControl(wizard);
             }
 
             return m_Control;
@@ -92,7 +87,7 @@ namespace GarminFitnessPlugin.View
 
         public override string Title
         {
-            get { return "EditProfile"; }
+            get { return GarminFitnessView.GetLocalizedString("EditProfileText"); }
         }
 
         public override void UICultureChanged(System.Globalization.CultureInfo culture)

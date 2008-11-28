@@ -129,6 +129,36 @@ namespace GarminFitnessPlugin.Controller
 
         public virtual void Serialize(XmlNode parentNode, XmlDocument document)
         {
+            XmlNode profileNode = document.CreateElement(Constants.ProfileTCXString);
+            XmlNode currentChild;
+            CultureInfo culture = new CultureInfo("en-us");
+
+            XmlAttribute attributeNode = document.CreateAttribute("xmlns");
+            attributeNode.Value = "http://www.garmin.com/xmlschemas/UserProfile/v2";
+            profileNode.Attributes.Append(attributeNode);
+
+            // Birth date
+            currentChild = document.CreateElement(Constants.BirthDateTCXString);
+            currentChild.AppendChild(document.CreateTextNode(BirthDate.ToString("yyyy-MM-dd")));
+            profileNode.AppendChild(currentChild);
+
+            // Weight
+            currentChild = document.CreateElement(Constants.WeightTCXString);
+            currentChild.AppendChild(document.CreateTextNode(Weight.Convert(WeightInPounds, Weight.Units.Pound, Weight.Units.Kilogram).ToString("0.00000", culture.NumberFormat)));
+            profileNode.AppendChild(currentChild);
+
+            // Gender
+            currentChild = document.CreateElement(Constants.GenderTCXString);
+            currentChild.AppendChild(document.CreateTextNode(IsMale ? Constants.GenderMaleTCXString : Constants.GenderFemaleTCXString));
+            profileNode.AppendChild(currentChild);
+
+            // Activities
+            for (int i = 0; i < (int)GarminCategories.GarminCategoriesCount; ++i)
+            {
+                m_ActivityProfiles[i].Serialize(profileNode, document);
+            }
+
+            parentNode.AppendChild(profileNode);
         }
 
         public virtual bool Deserialize(XmlNode parentNode)
@@ -144,9 +174,9 @@ namespace GarminFitnessPlugin.Controller
 
             profiles = new GarminActivityProfile[]
                 {
-                    new GarminActivityProfile(GarminCategories.Running),
-                    new GarminBikingActivityProfile(GarminCategories.Biking),
-                    new GarminActivityProfile(GarminCategories.Other)
+                    m_ActivityProfiles[0].Clone(),
+                    m_ActivityProfiles[1].Clone(),
+                    m_ActivityProfiles[2].Clone()
                 };
 
             for(int i = 0; i < parentNode.ChildNodes.Count; ++i)
@@ -184,7 +214,7 @@ namespace GarminFitnessPlugin.Controller
                     isMale = currentChild.FirstChild.Value == Constants.GenderMaleTCXString;
                     genderRead = true;
                 }
-                else if (currentChild.Name == "Activities")
+                else if (currentChild.Name == Constants.ActivitiesTCXString)
                 {
                     string activityType = PeekActivityType(currentChild);
 
@@ -347,19 +377,13 @@ namespace GarminFitnessPlugin.Controller
         {
             get
             {
-                Trace.Assert(m_ActivityProfiles[2].RestingHeartRate == m_ActivityProfiles[1].RestingHeartRate &&
-                             m_ActivityProfiles[1].RestingHeartRate == m_ActivityProfiles[0].RestingHeartRate);
-
-                return m_ActivityProfiles[0].RestingHeartRate;
+                return m_RestingHeartRate;
             }
             set
             {
-                if (RestingHeartRate != value)
+                if (m_RestingHeartRate != value)
                 {
-                    for (int i = 0; i < (int)GarminCategories.GarminCategoriesCount; ++i)
-                    {
-                        m_ActivityProfiles[i].RestingHeartRate = value;
-                    }
+                    m_RestingHeartRate = value;
 
                     TriggerChangedEvent(new PropertyChangedEventArgs("RestingHeartRate"));
                 }
@@ -390,6 +414,7 @@ namespace GarminFitnessPlugin.Controller
 
         private static GarminProfileManager m_Instance = new GarminProfileManager();
         private String m_ProfileName;
+        private Byte m_RestingHeartRate;
         private bool m_IsGenderMale;
         private double m_WeightInPounds;
         private DateTime m_BirthDate;

@@ -84,7 +84,7 @@ namespace GarminFitnessPlugin.Data
         public BasePowerTarget(IStep parent)
             : base(ITarget.TargetType.Power, parent)
         {
-            if (Options.UseSportTracksPowerZones)
+            if (Options.Instance.UseSportTracksPowerZones)
             {
                 ConcreteTarget = new PowerZoneSTTarget(this);
             }
@@ -198,7 +198,7 @@ namespace GarminFitnessPlugin.Data
             // We got here so our target must be a range
             Trace.Assert(ConcreteTarget.Type == IConcretePowerTarget.PowerTargetType.Range);
 
-            IZoneCategory referenceZones = Options.PowerZoneCategory;
+            IZoneCategory referenceZones = Options.Instance.PowerZoneCategory;
             string zoneReferenceId = null;
             int zoneIndex = -1;
 

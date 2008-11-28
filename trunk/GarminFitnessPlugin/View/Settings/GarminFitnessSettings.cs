@@ -42,7 +42,7 @@ namespace GarminFitnessPlugin.View
 
         public string PageName
         {
-            get{ return GarminFitnessView.ResourceManager.GetString("SettingsPageNameText", GarminFitnessView.UICulture); }
+            get{ return GarminFitnessView.GetLocalizedString("SettingsPageNameText"); }
         }
 
         public void ShowPage(string bookmark)
@@ -61,7 +61,7 @@ namespace GarminFitnessPlugin.View
 
         public string Title
         {
-            get { return GarminFitnessView.ResourceManager.GetString("SettingsPageNameText", GarminFitnessView.UICulture); }
+            get { return GarminFitnessView.GetLocalizedString("SettingsPageNameText"); }
         }
 
         public void UICultureChanged(CultureInfo culture)

@@ -53,11 +53,11 @@ namespace GarminFitnessPlugin.View
 
 #region IDialogPage Members
 
-        public override System.Windows.Forms.Control CreatePageControl()
+        public override ExtendedWizardPageControl CreatePageControl(ExtendedWizard wizard)
         {
             if(m_Control == null)
             {
-                m_Control = new SetupWizardWelcomeControl();
+                m_Control = new SetupWizardWelcomeControl(wizard);
             }
 
             return m_Control;
@@ -88,7 +88,7 @@ namespace GarminFitnessPlugin.View
 
         public override string Title
         {
-            get { return GarminFitnessView.ResourceManager.GetString("WelcomeText", GarminFitnessView.UICulture); }
+            get { return GarminFitnessView.GetLocalizedString("WelcomeText"); }
         }
 
         public override void UICultureChanged(System.Globalization.CultureInfo culture)
@@ -103,6 +103,6 @@ namespace GarminFitnessPlugin.View
 
 #endregion
 
-        System.Windows.Forms.Control m_Control = null;
+        SetupWizardWelcomeControl m_Control = null;
     }
 }

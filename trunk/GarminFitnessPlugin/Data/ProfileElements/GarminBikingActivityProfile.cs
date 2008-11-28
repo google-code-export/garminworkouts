@@ -56,6 +56,12 @@ namespace GarminFitnessPlugin.Data
                 // High bound
                 stream.Write(BitConverter.GetBytes(m_PowerZones[i].Upper), 0, sizeof(UInt16));
             }
+
+            // Bike profiles
+            for (int i = 0; i < Constants.GarminBikeProfileCount; ++i)
+            {
+                m_Bikes[i].Serialize(stream);
+            }
         }
 
         public new void Deserialize_V8(Stream stream, DataVersion version)
@@ -75,79 +81,133 @@ namespace GarminFitnessPlugin.Data
                 stream.Read(intBuffer, 0, sizeof(UInt16));
                 m_PowerZones[i].Upper = BitConverter.ToUInt16(intBuffer, 0);
             }
+
+            // Bike profiles
+            for (int i = 0; i < Constants.GarminBikeProfileCount; ++i)
+            {
+                m_Bikes[i].Deserialize(stream, version);
+            }
         }
 
         public override void Serialize(XmlNode parentNode, XmlDocument document)
         {
+            base.Serialize(parentNode, document);
+
+            // Get the right parent, which was created in the base class
+            parentNode = parentNode.LastChild;
+
+            XmlAttribute attributeNode;
+            XmlNode currentChild;
+
+            currentChild = document.CreateElement(Constants.ExtensionsTCXString);
+
+            // Power zones
+            XmlNode powerZonesChild = document.CreateElement(Constants.PowerZonesTCXString);
+            attributeNode = document.CreateAttribute("xmlns");
+            attributeNode.Value = "http://www.garmin.com/xmlschemas/ProfileExtension/v1";
+            powerZonesChild.Attributes.Append(attributeNode);
+
+            // FTP
+            XmlNode FTPNode = document.CreateElement(Constants.FTPTCXString);
+            FTPNode.AppendChild(document.CreateTextNode(FTP.ToString()));
+            powerZonesChild.AppendChild(FTPNode);
+
+            for (int i = 0; i < Constants.GarminPowerZoneCount; ++i)
+            {
+                XmlNode currentZoneNode = document.CreateElement(Constants.PowerZoneTCXString);
+
+                // Number
+                XmlNode numberNode = document.CreateElement("Number");
+                numberNode.AppendChild(document.CreateTextNode((i + 1).ToString()));
+                currentZoneNode.AppendChild(numberNode);
+
+                // Low
+                XmlNode low = document.CreateElement(Constants.LowTCXString);
+                low.AppendChild(document.CreateTextNode(m_PowerZones[i].Lower.ToString()));
+                currentZoneNode.AppendChild(low);
+
+                // High
+                XmlNode high = document.CreateElement(Constants.HighTCXString);
+                high.AppendChild(document.CreateTextNode(m_PowerZones[i].Upper.ToString()));
+                currentZoneNode.AppendChild(high);
+
+                powerZonesChild.AppendChild(currentZoneNode);
+            }
+
+            currentChild.AppendChild(powerZonesChild);
+            parentNode.AppendChild(currentChild);
+
+            // Bike profiles
+            for (int i = 0; i < Constants.GarminBikeProfileCount; ++i)
+            {
+                m_Bikes[i].Serialize(parentNode, document);
+            }
         }
 
         public override bool Deserialize(XmlNode parentNode)
         {
-            base.Deserialize(parentNode);
-
-            bool FTPRead = false;
-            int powerZonesRead = 0;
-            int bikeProfilesRead = 0;
-            UInt16 FTPValue = 0;
-
-            for (int i = 0; i < parentNode.ChildNodes.Count; ++i)
+            if (base.Deserialize(parentNode))
             {
-                XmlNode currentChild = parentNode.ChildNodes[i];
+                UInt16 FTPValue = 0;
+                int bikeProfilesRead = 0;
 
-                if (currentChild.Name == Constants.ExtensionsTCXString &&
-                    currentChild.ChildNodes.Count == 1 &&
-                    currentChild.FirstChild.Name == Constants.PowerZonesTCXString)
+                for (int i = 0; i < parentNode.ChildNodes.Count; ++i)
                 {
-                    XmlNode powerZonesNode = currentChild.FirstChild;
+                    XmlNode currentChild = parentNode.ChildNodes[i];
 
-                    for (int j = 0; j < powerZonesNode.ChildNodes.Count; ++j)
+                    if (currentChild.Name == Constants.ExtensionsTCXString &&
+                        currentChild.ChildNodes.Count == 1 &&
+                        currentChild.FirstChild.Name == Constants.PowerZonesTCXString)
                     {
-                        XmlNode powerChild = powerZonesNode.ChildNodes[j];
+                        XmlNode powerZonesNode = currentChild.FirstChild;
 
-                        if (powerChild.Name == Constants.FTPTCXString &&
-                            powerChild.ChildNodes.Count == 1 &&
-                            powerChild.FirstChild.GetType() == typeof(XmlText))
+                        for (int j = 0; j < powerZonesNode.ChildNodes.Count; ++j)
                         {
-                            if (!Utils.IsTextIntegerInRange(powerChild.FirstChild.Value, Constants.MinPower, Constants.MaxPower))
-                            {
-                                return false;
-                            }
+                            XmlNode powerChild = powerZonesNode.ChildNodes[j];
 
-                            FTPValue = UInt16.Parse(powerChild.FirstChild.Value);
-                            FTPRead = true;
-                        }
-                        else if (powerChild.Name == Constants.PowerZoneTCXString)
-                        {
-                            int zoneIndex = PeekZoneNumber(powerChild);
-
-                            if (zoneIndex != -1)
+                            if (powerChild.Name == Constants.FTPTCXString &&
+                                powerChild.ChildNodes.Count == 1 &&
+                                powerChild.FirstChild.GetType() == typeof(XmlText))
                             {
-                                if (ReadPowerZone(zoneIndex, powerChild))
+                                if (!Utils.IsTextIntegerInRange(powerChild.FirstChild.Value, Constants.MinPower, Constants.MaxPower))
                                 {
-                                    powerZonesRead++;
+                                    return false;
+                                }
+
+                                FTPValue = UInt16.Parse(powerChild.FirstChild.Value);
+                            }
+                            else if (powerChild.Name == Constants.PowerZoneTCXString)
+                            {
+                                int zoneIndex = PeekZoneNumber(powerChild);
+
+                                if (zoneIndex != -1)
+                                {
+                                    if (!ReadPowerZone(zoneIndex, powerChild))
+                                    {
+                                        return false;
+                                    }
                                 }
                             }
                         }
                     }
-                }
-                else if (currentChild.Name == Constants.BikeTCXString)
-                {
-                    if (m_Bikes[bikeProfilesRead].Deserialize(currentChild))
+                    else if (currentChild.Name == Constants.BikeTCXString)
                     {
+                        if (!m_Bikes[bikeProfilesRead].Deserialize(currentChild))
+                        {
+                            return false;
+                        }
+
                         bikeProfilesRead++;
                     }
                 }
+
+                // Officialize
+                FTP = FTPValue;
+
+                return true;
             }
 
-            // Check if all was read successfully
-            if (!FTPRead ||
-                powerZonesRead != Constants.GarminPowerZoneCount ||
-                bikeProfilesRead != Constants.GarminBikeProfileCount)
-            {
-                return false;
-            }
-
-            return true;
+            return false;
         }
 
         private bool ReadPowerZone(int index, XmlNode parentNode)
@@ -201,6 +261,17 @@ namespace GarminFitnessPlugin.Data
             m_PowerZones[index].Upper = (UInt16)Math.Max(lowLimit, highLimit);
 
             return true;
+        }
+
+        public override GarminActivityProfile Clone()
+        {
+            MemoryStream stream = new MemoryStream();
+            GarminActivityProfile clone = new GarminBikingActivityProfile(Category);
+
+            Serialize(stream);
+            clone.Deserialize(stream, Constants.CurrentVersion);
+
+            return clone;
         }
 
         public UInt16 GetPowerLowLimit(int index)

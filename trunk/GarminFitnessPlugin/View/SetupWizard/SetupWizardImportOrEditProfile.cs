@@ -1,6 +1,10 @@
 using System;
 using System.ComponentModel;
+using System.IO;
+using System.Text;
+using System.Windows.Forms;
 using ZoneFiveSoftware.Common.Visuals;
+using GarminFitnessPlugin.Controller;
 
 namespace GarminFitnessPlugin.View
 {
@@ -25,11 +29,24 @@ namespace GarminFitnessPlugin.View
 
         public override void NextClicked(CancelEventArgs e)
         {
-            if (m_Control.EditProfile)
+            if (!((GarminFitnessSetupWizard)Wizard).ImportProfile)
             {
                 IExtendedWizardPage nextPage = Wizard.GetPageByType(typeof(SetupWizardEditProfile));
 
                 Wizard.ShowPage(nextPage);
+
+                e.Cancel = true;
+            }
+            else
+            {
+                GarminDeviceManager.Instance.TaskCompleted += new GarminDeviceManager.TaskCompletedEventHandler(OnDeviceManagerTaskCompleted);
+
+                Wizard.Enabled = false;
+                Wizard.Cursor = Cursors.WaitCursor;
+
+                // Import using Communicator Plugin
+                GarminDeviceManager.Instance.SetOperatingDevice();
+                GarminDeviceManager.Instance.ImportProfile();
 
                 e.Cancel = true;
             }
@@ -54,11 +71,11 @@ namespace GarminFitnessPlugin.View
             get { return true; }
         }
 
-        public override System.Windows.Forms.Control CreatePageControl()
+        public override ExtendedWizardPageControl CreatePageControl(ExtendedWizard wizard)
         {
             if (m_Control == null)
             {
-                m_Control = new SetupWizardImportOrEditProfileControl();
+                m_Control = new SetupWizardImportOrEditProfileControl(wizard);
             }
 
             return m_Control;
@@ -89,7 +106,7 @@ namespace GarminFitnessPlugin.View
 
         public override string Title
         {
-            get { return "ImportOrEditProfile"; }
+            get { return GarminFitnessView.GetLocalizedString("ImportOrEditProfileText"); }
         }
 
         public override void UICultureChanged(System.Globalization.CultureInfo culture)
@@ -99,6 +116,48 @@ namespace GarminFitnessPlugin.View
         public override event System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
 
 #endregion
+
+        void OnDeviceManagerTaskCompleted(GarminDeviceManager manager, GarminDeviceManager.BasicTask task, bool succeeded)
+        {
+            if (!succeeded)
+            {
+                if (task.Type == GarminDeviceManager.BasicTask.TaskTypes.TaskType_Initialize)
+                {
+                    MessageBox.Show(GarminFitnessView.GetLocalizedString("DeviceCommunicationErrorText"),
+                                    GarminFitnessView.GetLocalizedString("ErrorText"),
+                                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+            }
+            else
+            {
+                if (task.Type == GarminDeviceManager.BasicTask.TaskTypes.TaskType_ImportProfile)
+                {
+                    GarminDeviceManager.ImportProfileTask concreteTask = (GarminDeviceManager.ImportProfileTask)task;
+                    MemoryStream stream = new MemoryStream(Encoding.UTF8.GetBytes(concreteTask.ProfileXML));
+
+                    if (!ProfileImporter.ImportProfile(stream))
+                    {
+                        MessageBox.Show(GarminFitnessView.GetLocalizedString("ImportProfileErrorText"),
+                                        GarminFitnessView.GetLocalizedString("ErrorText"),
+                                        MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
+                    else
+                    {
+                        Wizard.GoNext();
+                    }
+
+                    stream.Close();
+                }
+            }
+
+            if (manager.AreAllTasksFinished)
+            {
+                Wizard.Enabled = true;
+                Wizard.Cursor = Cursors.Default;
+
+                manager.TaskCompleted -= new GarminDeviceManager.TaskCompletedEventHandler(OnDeviceManagerTaskCompleted);
+            }
+        }
 
         SetupWizardImportOrEditProfileControl m_Control = null;
     }

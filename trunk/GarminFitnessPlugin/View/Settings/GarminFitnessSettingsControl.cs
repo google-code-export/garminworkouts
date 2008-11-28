@@ -18,62 +18,70 @@ namespace GarminFitnessPlugin.View
         public GarminFitnessSettingsControl()
         {
             InitializeComponent();
+
+            Options.Instance.OptionsChanged += new Options.OptionsChangedEventHandler(OnOptionsChanged);
+            PluginMain.LogbookChanged += new PluginMain.LogbookChangedEventHandler(OnLogbookChanged);
+
+            UpdateUIStrings();
+        }
+
+        public void UICultureChanged(CultureInfo culture)
+        {
+            UpdateUIStrings();
+        }
+
+        void OnOptionsChanged(System.ComponentModel.PropertyChangedEventArgs changedProperty)
+        {
+            UpdateUIStrings();
         }
 
         void OnLogbookChanged(object sender, ILogbook oldLogbook, ILogbook newLogbook)
         {
-            UpdateUIStrings();
-        }
-
-        private void GarminFitnessSettingsControl_Load(object sender, System.EventArgs e)
-        {
-            UpdateUIStrings();
-
-            PluginMain.LogbookChanged += new PluginMain.LogbookChangedEventHandler(OnLogbookChanged);
+            UpdateOptionsUI();
         }
 
         private void HRGarminRadioButton_CheckedChanged(object sender, System.EventArgs e)
         {
-            Options.UseSportTracksHeartRateZones = !HRGarminRadioButton.Checked;
+            Options.Instance.UseSportTracksHeartRateZones = !HRGarminRadioButton.Checked;
         }
 
         private void HRSportTracksRadioButton_CheckedChanged(object sender, System.EventArgs e)
         {
-            Options.UseSportTracksHeartRateZones = HRSportTracksRadioButton.Checked;
+            Options.Instance.UseSportTracksHeartRateZones = HRSportTracksRadioButton.Checked;
         }
 
         private void SpeedGarminRadioButton_CheckedChanged(object sender, System.EventArgs e)
         {
-            Options.UseSportTracksSpeedZones = !SpeedGarminRadioButton.Checked;
+            Options.Instance.UseSportTracksSpeedZones = !SpeedGarminRadioButton.Checked;
         }
 
         private void SpeedSportTracksRadioButton_CheckedChanged(object sender, System.EventArgs e)
         {
-            Options.UseSportTracksSpeedZones = SpeedSportTracksRadioButton.Checked;
+            Options.Instance.UseSportTracksSpeedZones = SpeedSportTracksRadioButton.Checked;
         }
 
         private void CadenceZoneComboBox_SelectionChangedCommited(object sender, System.EventArgs e)
         {
             Trace.Assert(PluginMain.GetApplication().Logbook.CadenceZones.Count > CadenceZoneComboBox.SelectedIndex);
 
-            Options.CadenceZoneCategory = PluginMain.GetApplication().Logbook.CadenceZones[CadenceZoneComboBox.SelectedIndex];
+            Options.Instance.CadenceZoneCategory = PluginMain.GetApplication().Logbook.CadenceZones[CadenceZoneComboBox.SelectedIndex];
         }
 
         private void PowerGarminRadioButton_CheckedChanged(object sender, System.EventArgs e)
         {
-            Options.UseSportTracksPowerZones = !PowerGarminRadioButton.Checked;
+            Options.Instance.UseSportTracksPowerZones = !PowerGarminRadioButton.Checked;
         }
 
         private void PowerSportTracksRadioButton_CheckedChanged(object sender, System.EventArgs e)
         {
-            Options.UseSportTracksPowerZones = PowerSportTracksRadioButton.Checked;
+            Options.Instance.UseSportTracksPowerZones = PowerSportTracksRadioButton.Checked;
         }
 
         private void PowerZoneComboBox_SelectionChangedCommited(object sender, System.EventArgs e)
         {
             Trace.Assert(PluginMain.GetApplication().Logbook.PowerZones.Count > PowerZoneComboBox.SelectedIndex);
 
-            Options.PowerZoneCategory = PluginMain.GetApplication().Logbook.PowerZones[PowerZoneComboBox.SelectedIndex];
+            Options.Instance.PowerZoneCategory = PluginMain.GetApplication().Logbook.PowerZones[PowerZoneComboBox.SelectedIndex];
         }
 
         private void ParentCategoryRadioButton_CheckedChanged(object sender, System.EventArgs e)
@@ -84,12 +92,9 @@ namespace GarminFitnessPlugin.View
             if (ParentCategoryRadioButton.Checked)
             {
                 IActivityCategory selectedCategory = (IActivityCategory)((STToGarminActivityCategoryWrapper)ActivityCategoryList.Selected[0]).Element;
-                if (Options.STToGarminCategoryMap.ContainsKey(selectedCategory))
-                {
-                    Options.STToGarminCategoryMap.Remove(selectedCategory);
 
-                    ActivityCategoryList.Invalidate();
-                }
+                Options.Instance.RemoveGarminCategory(selectedCategory);
+                ActivityCategoryList.Invalidate();
             }
         }
 
@@ -101,9 +106,9 @@ namespace GarminFitnessPlugin.View
             if (CustomCategoryRadioButton.Checked)
             {
                 IActivityCategory selectedCategory = (IActivityCategory)((STToGarminActivityCategoryWrapper)ActivityCategoryList.Selected[0]).Element;
-                GarminCategories parentCategory = Options.GetGarminCategory(selectedCategory);
+                GarminCategories parentCategory = Options.Instance.GetGarminCategory(selectedCategory);
 
-                Options.STToGarminCategoryMap[selectedCategory] = parentCategory;
+                Options.Instance.SetGarminCategory(selectedCategory, parentCategory);
 
                 switch (parentCategory)
                 {
@@ -124,12 +129,9 @@ namespace GarminFitnessPlugin.View
         {
             IActivityCategory selectedCategory = (IActivityCategory)((STToGarminActivityCategoryWrapper)ActivityCategoryList.Selected[0]).Element;
 
-            if (RunningRadioButton.Checked &&
-                Options.STToGarminCategoryMap[selectedCategory] != GarminCategories.Running)
+            if (RunningRadioButton.Checked)
             {
-                Options.STToGarminCategoryMap[selectedCategory] = GarminCategories.Running;
-
-                ActivityCategoryList.Invalidate();
+                Options.Instance.SetGarminCategory(selectedCategory, GarminCategories.Running);
             }
         }
 
@@ -137,12 +139,9 @@ namespace GarminFitnessPlugin.View
         {
             IActivityCategory selectedCategory = (IActivityCategory)((STToGarminActivityCategoryWrapper)ActivityCategoryList.Selected[0]).Element;
 
-            if (CyclingRadioButton.Checked &&
-                Options.STToGarminCategoryMap[selectedCategory] != GarminCategories.Biking)
+            if (CyclingRadioButton.Checked)
             {
-                Options.STToGarminCategoryMap[selectedCategory] = GarminCategories.Biking;
-
-                ActivityCategoryList.Invalidate();
+                Options.Instance.SetGarminCategory(selectedCategory, GarminCategories.Biking);
             }
         }
 
@@ -150,12 +149,9 @@ namespace GarminFitnessPlugin.View
         {
             IActivityCategory selectedCategory = (IActivityCategory)((STToGarminActivityCategoryWrapper)ActivityCategoryList.Selected[0]).Element;
 
-            if (OtherRadioButton.Checked &&
-                Options.STToGarminCategoryMap[selectedCategory] != GarminCategories.Other)
+            if (OtherRadioButton.Checked)
             {
-                Options.STToGarminCategoryMap[selectedCategory] = GarminCategories.Other;
-
-                ActivityCategoryList.Invalidate();
+                Options.Instance.SetGarminCategory(selectedCategory, GarminCategories.Other);
             }
         }
 
@@ -163,11 +159,11 @@ namespace GarminFitnessPlugin.View
         {
             FolderBrowserDialog dlg = new FolderBrowserDialog();
 
-            dlg.SelectedPath = Options.DefaultExportDirectory;
+            dlg.SelectedPath = Options.Instance.DefaultExportDirectory;
             if (dlg.ShowDialog() == DialogResult.OK)
             {
-                Options.DefaultExportDirectory = dlg.SelectedPath;
-                ExportDirectoryTextBox.Text = Options.DefaultExportDirectory;
+                Options.Instance.DefaultExportDirectory = dlg.SelectedPath;
+                ExportDirectoryTextBox.Text = Options.Instance.DefaultExportDirectory;
             }
         }
 
@@ -179,11 +175,11 @@ namespace GarminFitnessPlugin.View
 
                 CategorySelectionPanel.Enabled = true;
 
-                if (Options.STToGarminCategoryMap.ContainsKey(selectedCategory))
+                if (Options.Instance.IsCustomGarminCategory(selectedCategory))
                 {
                     CustomCategoryRadioButton.Checked = true;
 
-                    switch (Options.STToGarminCategoryMap[selectedCategory])
+                    switch (Options.Instance.GetGarminCategory(selectedCategory))
                     {
                         case GarminCategories.Running:
                             RunningRadioButton.Checked = true;
@@ -212,34 +208,37 @@ namespace GarminFitnessPlugin.View
             }
         }
 
-        public void UICultureChanged(CultureInfo culture)
+        private void RunWizardLinkLabel_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
-            UpdateUIStrings();
+            GarminFitnessSetupWizard wizard = new GarminFitnessSetupWizard();
+
+            wizard.ShowDialog();
         }
 
         private void UpdateUIStrings()
         {
-            HRGarminRadioButton.Text = GarminFitnessView.ResourceManager.GetString("GarminText", GarminFitnessView.UICulture);
-            HRSportTracksRadioButton.Text = GarminFitnessView.ResourceManager.GetString("SportTracksText", GarminFitnessView.UICulture);
-            SpeedGarminRadioButton.Text = GarminFitnessView.ResourceManager.GetString("GarminText", GarminFitnessView.UICulture);
-            SpeedSportTracksRadioButton.Text = GarminFitnessView.ResourceManager.GetString("SportTracksText", GarminFitnessView.UICulture);
-            PowerGarminRadioButton.Text = GarminFitnessView.ResourceManager.GetString("GarminText", GarminFitnessView.UICulture);
-            PowerSportTracksRadioButton.Text = GarminFitnessView.ResourceManager.GetString("SportTracksText", GarminFitnessView.UICulture);
+            HRGarminRadioButton.Text = GarminFitnessView.GetLocalizedString("GarminText");
+            HRSportTracksRadioButton.Text = GarminFitnessView.GetLocalizedString("SportTracksText");
+            SpeedGarminRadioButton.Text = GarminFitnessView.GetLocalizedString("GarminText");
+            SpeedSportTracksRadioButton.Text = GarminFitnessView.GetLocalizedString("SportTracksText");
+            PowerGarminRadioButton.Text = GarminFitnessView.GetLocalizedString("GarminText");
+            PowerSportTracksRadioButton.Text = GarminFitnessView.GetLocalizedString("SportTracksText");
 
-            HRSettingsGroupBox.Text = GarminFitnessView.ResourceManager.GetString("HRSettingsGroupBoxText", GarminFitnessView.UICulture);
-            SpeedSettingsGroupBox.Text = GarminFitnessView.ResourceManager.GetString("SpeedSettingsGroupBoxText", GarminFitnessView.UICulture);
-            CadenceSettingsGroupBox.Text = GarminFitnessView.ResourceManager.GetString("CadenceSettingsGroupBoxText", GarminFitnessView.UICulture);
-            PowerSettingsGroupBox.Text = GarminFitnessView.ResourceManager.GetString("PowerSettingsGroupBoxText", GarminFitnessView.UICulture);
-            ExportDirectoryGroupBox.Text = GarminFitnessView.ResourceManager.GetString("DefaultExportDirectoryGroupBoxText", GarminFitnessView.UICulture);
+            HRSettingsGroupBox.Text = GarminFitnessView.GetLocalizedString("HRSettingsGroupBoxText");
+            SpeedSettingsGroupBox.Text = GarminFitnessView.GetLocalizedString("SpeedSettingsGroupBoxText");
+            CadenceSettingsGroupBox.Text = GarminFitnessView.GetLocalizedString("CadenceSettingsGroupBoxText");
+            PowerSettingsGroupBox.Text = GarminFitnessView.GetLocalizedString("PowerSettingsGroupBoxText");
+            ExportDirectoryGroupBox.Text = GarminFitnessView.GetLocalizedString("DefaultExportDirectoryGroupBoxText");
 
-            DefaultHeartRateZonesLabel.Text = GarminFitnessView.ResourceManager.GetString("DefaultHeartRateZoneLabelText", GarminFitnessView.UICulture);
-            DefaultSpeedZoneLabel.Text = GarminFitnessView.ResourceManager.GetString("DefaultSpeedZoneLabelText", GarminFitnessView.UICulture);
-            CadenceZoneSelectionLabel.Text = GarminFitnessView.ResourceManager.GetString("CadenceZoneSelectionLabelText", GarminFitnessView.UICulture);
-            DefaultPowerZonesLabel.Text = GarminFitnessView.ResourceManager.GetString("DefaultPowerZoneLabelText", GarminFitnessView.UICulture);
-            PowerZoneSelectionLabel.Text = GarminFitnessView.ResourceManager.GetString("PowerZoneSelectionLabelText", GarminFitnessView.UICulture);
-            BrowseButton.Text = GarminFitnessView.ResourceManager.GetString("BrowseButtonText", GarminFitnessView.UICulture);
+            DefaultHeartRateZonesLabel.Text = GarminFitnessView.GetLocalizedString("DefaultHeartRateZoneLabelText");
+            DefaultSpeedZoneLabel.Text = GarminFitnessView.GetLocalizedString("DefaultSpeedZoneLabelText");
+            CadenceZoneSelectionLabel.Text = GarminFitnessView.GetLocalizedString("CadenceZoneSelectionLabelText");
+            DefaultPowerZonesLabel.Text = GarminFitnessView.GetLocalizedString("DefaultPowerZoneLabelText");
+            PowerZoneSelectionLabel.Text = GarminFitnessView.GetLocalizedString("PowerZoneSelectionLabelText");
+            BrowseButton.Text = GarminFitnessView.GetLocalizedString("BrowseButtonText");
 
-            int cadenceSelectedIndex = Utils.FindIndexForZoneCategory(PluginMain.GetApplication().Logbook.CadenceZones, Options.CadenceZoneCategory);
+            RunWizardLinkLabel.Text = GarminFitnessView.GetLocalizedString("RunWizardText");
+
             CadenceZoneComboBox.Items.Clear();
             for (int i = 0; i < PluginMain.GetApplication().Logbook.CadenceZones.Count; ++i)
             {
@@ -248,7 +247,6 @@ namespace GarminFitnessPlugin.View
                 CadenceZoneComboBox.Items.Add(currentZone.Name);
             }
 
-            int powerSelectedIndex = Utils.FindIndexForZoneCategory(PluginMain.GetApplication().Logbook.PowerZones, Options.PowerZoneCategory);
             PowerZoneComboBox.Items.Clear();
             for (int i = 0; i < PluginMain.GetApplication().Logbook.PowerZones.Count; ++i)
             {
@@ -257,11 +255,11 @@ namespace GarminFitnessPlugin.View
                 PowerZoneComboBox.Items.Add(currentZone.Name);
             }
 
-            ParentCategoryRadioButton.Text = GarminFitnessView.ResourceManager.GetString("UseParentCategoryText", GarminFitnessView.UICulture);
-            CustomCategoryRadioButton.Text = GarminFitnessView.ResourceManager.GetString("UseCustomCategoryText", GarminFitnessView.UICulture);
-            RunningRadioButton.Text = GarminFitnessView.ResourceManager.GetString("RunningText", GarminFitnessView.UICulture);
-            CyclingRadioButton.Text = GarminFitnessView.ResourceManager.GetString("BikingText", GarminFitnessView.UICulture);
-            OtherRadioButton.Text = GarminFitnessView.ResourceManager.GetString("OtherText", GarminFitnessView.UICulture);
+            ParentCategoryRadioButton.Text = GarminFitnessView.GetLocalizedString("UseParentCategoryText");
+            CustomCategoryRadioButton.Text = GarminFitnessView.GetLocalizedString("UseCustomCategoryText");
+            RunningRadioButton.Text = GarminFitnessView.GetLocalizedString("RunningText");
+            CyclingRadioButton.Text = GarminFitnessView.GetLocalizedString("BikingText");
+            OtherRadioButton.Text = GarminFitnessView.GetLocalizedString("OtherText");
 
             // Fill category list
             IApplication app = PluginMain.GetApplication();
@@ -278,28 +276,36 @@ namespace GarminFitnessPlugin.View
 
             ActivityCategoryList.RowData = categories;
             ActivityCategoryList.Columns.Clear();
-            ActivityCategoryList.Columns.Add(new TreeList.Column("Name", GarminFitnessView.ResourceManager.GetString("CategoryText", GarminFitnessView.UICulture),
+            ActivityCategoryList.Columns.Add(new TreeList.Column("Name", GarminFitnessView.GetLocalizedString("CategoryText"),
                                                                  140, StringAlignment.Near));
             ActivityCategoryList.Columns.Add(new TreeList.Column("GarminCategory", "", 75, StringAlignment.Near));
 
+            // Update options since we modified the different lists and combo boxes
+            UpdateOptionsUI();
+        }
+
+        private void UpdateOptionsUI()
+        {
             // HR
-            HRGarminRadioButton.Checked = !Options.UseSportTracksHeartRateZones;
-            HRSportTracksRadioButton.Checked = Options.UseSportTracksHeartRateZones;
+            HRGarminRadioButton.Checked = !Options.Instance.UseSportTracksHeartRateZones;
+            HRSportTracksRadioButton.Checked = Options.Instance.UseSportTracksHeartRateZones;
 
             // Speed
-            SpeedGarminRadioButton.Checked = !Options.UseSportTracksSpeedZones;
-            SpeedSportTracksRadioButton.Checked = Options.UseSportTracksSpeedZones;
+            SpeedGarminRadioButton.Checked = !Options.Instance.UseSportTracksSpeedZones;
+            SpeedSportTracksRadioButton.Checked = Options.Instance.UseSportTracksSpeedZones;
 
             // Cadence
+            int cadenceSelectedIndex = Utils.FindIndexForZoneCategory(PluginMain.GetApplication().Logbook.CadenceZones, Options.Instance.CadenceZoneCategory);
             CadenceZoneComboBox.SelectedIndex = cadenceSelectedIndex;
 
             // Power
-            PowerGarminRadioButton.Checked = !Options.UseSportTracksPowerZones;
-            PowerSportTracksRadioButton.Checked = Options.UseSportTracksPowerZones;
+            int powerSelectedIndex = Utils.FindIndexForZoneCategory(PluginMain.GetApplication().Logbook.PowerZones, Options.Instance.PowerZoneCategory);
+            PowerGarminRadioButton.Checked = !Options.Instance.UseSportTracksPowerZones;
+            PowerSportTracksRadioButton.Checked = Options.Instance.UseSportTracksPowerZones;
             PowerZoneComboBox.SelectedIndex = powerSelectedIndex;
 
             // Default directory
-            ExportDirectoryTextBox.Text = Options.DefaultExportDirectory;
+            ExportDirectoryTextBox.Text = Options.Instance.DefaultExportDirectory;
         }
 
         private void AddCategoryNode(STToGarminActivityCategoryWrapper categoryNode, STToGarminActivityCategoryWrapper parent)

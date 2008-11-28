@@ -29,6 +29,14 @@ namespace GarminFitnessPlugin.View
 
         public override void PrevClicked(CancelEventArgs e)
         {
+            if (!((GarminFitnessSetupWizard)Wizard).ImportProfile)
+            {
+                IExtendedWizardPage previousPage = Wizard.GetPageByType(typeof(SetupWizardEditBikingProfile));
+
+                Wizard.ShowPage(previousPage);
+
+                e.Cancel = true;
+            }
         }
 
         public override bool CanFinish
@@ -46,11 +54,11 @@ namespace GarminFitnessPlugin.View
             get { return true; }
         }
 
-        public override System.Windows.Forms.Control CreatePageControl()
+        public override ExtendedWizardPageControl CreatePageControl(ExtendedWizard wizard)
         {
             if (m_Control == null)
             {
-                m_Control = new SetupWizardCompletedControl();
+                m_Control = new SetupWizardCompletedControl(wizard);
             }
 
             return m_Control;

@@ -17,11 +17,11 @@ namespace GarminFitnessPlugin.View
 
             InitializeComponent();
 
-            GarminDeviceManager.GetInstance().TaskCompleted += new GarminDeviceManager.TaskCompletedEventHandler(OnManagerTaskCompleted);
+            GarminDeviceManager.Instance.TaskCompleted += new GarminDeviceManager.TaskCompletedEventHandler(OnManagerTaskCompleted);
 
-            this.Text = GarminFitnessView.ResourceManager.GetString("SelectDeviceText", UICulture);
-            IntroLabel.Text = GarminFitnessView.ResourceManager.GetString("SelectDeviceIntroText", UICulture);
-            RefreshButton.Text = GarminFitnessView.ResourceManager.GetString("RefreshButtonText", UICulture);
+            this.Text = GarminFitnessView.GetLocalizedString("SelectDeviceText");
+            IntroLabel.Text = GarminFitnessView.GetLocalizedString("SelectDeviceIntroText");
+            RefreshButton.Text = GarminFitnessView.GetLocalizedString("RefreshButtonText");
             Cancel_Button.Text = CommonResources.Text.ActionCancel;
             OKButton.Text = CommonResources.Text.ActionOk;
 
@@ -30,7 +30,7 @@ namespace GarminFitnessPlugin.View
 
         ~SelectDeviceDialog()
         {
-            GarminDeviceManager.GetInstance().TaskCompleted -= new GarminDeviceManager.TaskCompletedEventHandler(OnManagerTaskCompleted);
+            GarminDeviceManager.Instance.TaskCompleted -= new GarminDeviceManager.TaskCompletedEventHandler(OnManagerTaskCompleted);
         }
 
         private void RefreshButton_Click(object sender, System.EventArgs e)
@@ -41,12 +41,12 @@ namespace GarminFitnessPlugin.View
             DevicesComboBox.Enabled = false;
             Cursor = Cursors.WaitCursor;
 
-            GarminDeviceManager.GetInstance().RefreshDevices();
+            GarminDeviceManager.Instance.RefreshDevices();
         }
 
         private void DevicesComboBox_SelectionChangeCommitted(object sender, System.EventArgs e)
         {
-            m_SelectedDevice = GarminDeviceManager.GetInstance().Devices[DevicesComboBox.SelectedIndex];
+            m_SelectedDevice = GarminDeviceManager.Instance.Devices[DevicesComboBox.SelectedIndex];
         }
 
         private void OKButton_Click(object sender, System.EventArgs e)
@@ -64,14 +64,14 @@ namespace GarminFitnessPlugin.View
         private void RefreshDeviceComboBox()
         {
             DevicesComboBox.Items.Clear();
-            for (int i = 0; i < GarminDeviceManager.GetInstance().Devices.Count; ++i)
+            for (int i = 0; i < GarminDeviceManager.Instance.Devices.Count; ++i)
             {
-                DevicesComboBox.Items.Add(GarminDeviceManager.GetInstance().Devices[i].DisplayName);
+                DevicesComboBox.Items.Add(GarminDeviceManager.Instance.Devices[i].DisplayName);
             }
 
-            if (GarminDeviceManager.GetInstance().Devices.Count > 0)
+            if (GarminDeviceManager.Instance.Devices.Count > 0)
             {
-                m_SelectedDevice = GarminDeviceManager.GetInstance().Devices[0];
+                m_SelectedDevice = GarminDeviceManager.Instance.Devices[0];
                 DevicesComboBox.SelectedIndex = 0;
             }
 

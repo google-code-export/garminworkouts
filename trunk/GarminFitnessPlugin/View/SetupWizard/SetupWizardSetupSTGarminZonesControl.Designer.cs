@@ -31,7 +31,6 @@ namespace GarminFitnessPlugin.View
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.ExplanationLabel = new System.Windows.Forms.Label();
             this.DefaultPowerZonesLabel = new System.Windows.Forms.Label();
-            this.SpeedSettingsGroupBox = new System.Windows.Forms.GroupBox();
             this.SpeedSportTracksRadioButton = new System.Windows.Forms.RadioButton();
             this.DefaultSpeedZoneLabel = new System.Windows.Forms.Label();
             this.SpeedGarminRadioButton = new System.Windows.Forms.RadioButton();
@@ -39,13 +38,14 @@ namespace GarminFitnessPlugin.View
             this.PowerSportTracksRadioButton = new System.Windows.Forms.RadioButton();
             this.HRGarminRadioButton = new System.Windows.Forms.RadioButton();
             this.DefaultHeartRateZonesLabel = new System.Windows.Forms.Label();
-            this.HRSettingsGroupBox = new System.Windows.Forms.GroupBox();
             this.HRSportTracksRadioButton = new System.Windows.Forms.RadioButton();
-            this.PowerSettingsGroupBox = new System.Windows.Forms.GroupBox();
+            this.panel1 = new System.Windows.Forms.Panel();
+            this.panel2 = new System.Windows.Forms.Panel();
+            this.panel3 = new System.Windows.Forms.Panel();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
-            this.SpeedSettingsGroupBox.SuspendLayout();
-            this.HRSettingsGroupBox.SuspendLayout();
-            this.PowerSettingsGroupBox.SuspendLayout();
+            this.panel1.SuspendLayout();
+            this.panel2.SuspendLayout();
+            this.panel3.SuspendLayout();
             this.SuspendLayout();
             // 
             // pictureBox1
@@ -65,37 +65,27 @@ namespace GarminFitnessPlugin.View
             this.ExplanationLabel.Size = new System.Drawing.Size(323, 70);
             this.ExplanationLabel.TabIndex = 2;
             this.ExplanationLabel.Text = "You have chosen to configure your zone usage manually.  You can do so on this pag" +
-                "e.  Note that these settings are always available in the Garmin fitness Plugin \"" +
-                "Settings\" page.";
+                "e.  This will determine what heart rate, speed and power zones will be available" +
+                " in your workouts.";
             // 
             // DefaultPowerZonesLabel
             // 
             this.DefaultPowerZonesLabel.AutoSize = true;
-            this.DefaultPowerZonesLabel.Location = new System.Drawing.Point(6, 16);
+            this.DefaultPowerZonesLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.DefaultPowerZonesLabel.Location = new System.Drawing.Point(4, 9);
             this.DefaultPowerZonesLabel.Name = "DefaultPowerZonesLabel";
-            this.DefaultPowerZonesLabel.Size = new System.Drawing.Size(136, 13);
+            this.DefaultPowerZonesLabel.Size = new System.Drawing.Size(229, 20);
             this.DefaultPowerZonesLabel.TabIndex = 0;
             this.DefaultPowerZonesLabel.Text = "Use the power zones from :";
-            // 
-            // SpeedSettingsGroupBox
-            // 
-            this.SpeedSettingsGroupBox.Controls.Add(this.SpeedSportTracksRadioButton);
-            this.SpeedSettingsGroupBox.Controls.Add(this.DefaultSpeedZoneLabel);
-            this.SpeedSettingsGroupBox.Controls.Add(this.SpeedGarminRadioButton);
-            this.SpeedSettingsGroupBox.Location = new System.Drawing.Point(3, 141);
-            this.SpeedSettingsGroupBox.Name = "SpeedSettingsGroupBox";
-            this.SpeedSettingsGroupBox.Size = new System.Drawing.Size(513, 37);
-            this.SpeedSettingsGroupBox.TabIndex = 7;
-            this.SpeedSettingsGroupBox.TabStop = false;
-            this.SpeedSettingsGroupBox.Text = "Speed Settings";
             // 
             // SpeedSportTracksRadioButton
             // 
             this.SpeedSportTracksRadioButton.AutoSize = true;
             this.SpeedSportTracksRadioButton.Checked = true;
-            this.SpeedSportTracksRadioButton.Location = new System.Drawing.Point(394, 11);
+            this.SpeedSportTracksRadioButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.SpeedSportTracksRadioButton.Location = new System.Drawing.Point(384, 9);
             this.SpeedSportTracksRadioButton.Name = "SpeedSportTracksRadioButton";
-            this.SpeedSportTracksRadioButton.Size = new System.Drawing.Size(83, 17);
+            this.SpeedSportTracksRadioButton.Size = new System.Drawing.Size(124, 24);
             this.SpeedSportTracksRadioButton.TabIndex = 1;
             this.SpeedSportTracksRadioButton.TabStop = true;
             this.SpeedSportTracksRadioButton.Text = "SportTracks";
@@ -105,18 +95,20 @@ namespace GarminFitnessPlugin.View
             // DefaultSpeedZoneLabel
             // 
             this.DefaultSpeedZoneLabel.AutoSize = true;
-            this.DefaultSpeedZoneLabel.Location = new System.Drawing.Point(6, 16);
+            this.DefaultSpeedZoneLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.DefaultSpeedZoneLabel.Location = new System.Drawing.Point(4, 9);
             this.DefaultSpeedZoneLabel.Name = "DefaultSpeedZoneLabel";
-            this.DefaultSpeedZoneLabel.Size = new System.Drawing.Size(136, 13);
+            this.DefaultSpeedZoneLabel.Size = new System.Drawing.Size(230, 20);
             this.DefaultSpeedZoneLabel.TabIndex = 0;
             this.DefaultSpeedZoneLabel.Text = "Use the speed zones from :";
             // 
             // SpeedGarminRadioButton
             // 
             this.SpeedGarminRadioButton.AutoSize = true;
-            this.SpeedGarminRadioButton.Location = new System.Drawing.Point(262, 13);
+            this.SpeedGarminRadioButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.SpeedGarminRadioButton.Location = new System.Drawing.Point(270, 9);
             this.SpeedGarminRadioButton.Name = "SpeedGarminRadioButton";
-            this.SpeedGarminRadioButton.Size = new System.Drawing.Size(58, 17);
+            this.SpeedGarminRadioButton.Size = new System.Drawing.Size(85, 24);
             this.SpeedGarminRadioButton.TabIndex = 1;
             this.SpeedGarminRadioButton.Text = "Garmin";
             this.SpeedGarminRadioButton.UseVisualStyleBackColor = true;
@@ -125,9 +117,11 @@ namespace GarminFitnessPlugin.View
             // PowerGarminRadioButton
             // 
             this.PowerGarminRadioButton.AutoSize = true;
-            this.PowerGarminRadioButton.Location = new System.Drawing.Point(262, 13);
+            this.PowerGarminRadioButton.Checked = true;
+            this.PowerGarminRadioButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.PowerGarminRadioButton.Location = new System.Drawing.Point(270, 9);
             this.PowerGarminRadioButton.Name = "PowerGarminRadioButton";
-            this.PowerGarminRadioButton.Size = new System.Drawing.Size(58, 17);
+            this.PowerGarminRadioButton.Size = new System.Drawing.Size(85, 24);
             this.PowerGarminRadioButton.TabIndex = 1;
             this.PowerGarminRadioButton.TabStop = true;
             this.PowerGarminRadioButton.Text = "Garmin";
@@ -137,9 +131,10 @@ namespace GarminFitnessPlugin.View
             // PowerSportTracksRadioButton
             // 
             this.PowerSportTracksRadioButton.AutoSize = true;
-            this.PowerSportTracksRadioButton.Location = new System.Drawing.Point(394, 13);
+            this.PowerSportTracksRadioButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.PowerSportTracksRadioButton.Location = new System.Drawing.Point(384, 9);
             this.PowerSportTracksRadioButton.Name = "PowerSportTracksRadioButton";
-            this.PowerSportTracksRadioButton.Size = new System.Drawing.Size(83, 17);
+            this.PowerSportTracksRadioButton.Size = new System.Drawing.Size(124, 24);
             this.PowerSportTracksRadioButton.TabIndex = 1;
             this.PowerSportTracksRadioButton.TabStop = true;
             this.PowerSportTracksRadioButton.Text = "SportTracks";
@@ -150,9 +145,10 @@ namespace GarminFitnessPlugin.View
             // 
             this.HRGarminRadioButton.AutoSize = true;
             this.HRGarminRadioButton.Checked = true;
-            this.HRGarminRadioButton.Location = new System.Drawing.Point(262, 13);
+            this.HRGarminRadioButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.HRGarminRadioButton.Location = new System.Drawing.Point(270, 9);
             this.HRGarminRadioButton.Name = "HRGarminRadioButton";
-            this.HRGarminRadioButton.Size = new System.Drawing.Size(58, 17);
+            this.HRGarminRadioButton.Size = new System.Drawing.Size(85, 24);
             this.HRGarminRadioButton.TabIndex = 1;
             this.HRGarminRadioButton.TabStop = true;
             this.HRGarminRadioButton.Text = "Garmin";
@@ -162,65 +158,73 @@ namespace GarminFitnessPlugin.View
             // DefaultHeartRateZonesLabel
             // 
             this.DefaultHeartRateZonesLabel.AutoSize = true;
-            this.DefaultHeartRateZonesLabel.Location = new System.Drawing.Point(6, 16);
+            this.DefaultHeartRateZonesLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.DefaultHeartRateZonesLabel.Location = new System.Drawing.Point(4, 9);
             this.DefaultHeartRateZonesLabel.Name = "DefaultHeartRateZonesLabel";
-            this.DefaultHeartRateZonesLabel.Size = new System.Drawing.Size(152, 13);
+            this.DefaultHeartRateZonesLabel.Size = new System.Drawing.Size(260, 20);
             this.DefaultHeartRateZonesLabel.TabIndex = 0;
             this.DefaultHeartRateZonesLabel.Text = "Use the heart rate zones from :";
-            // 
-            // HRSettingsGroupBox
-            // 
-            this.HRSettingsGroupBox.Controls.Add(this.DefaultHeartRateZonesLabel);
-            this.HRSettingsGroupBox.Controls.Add(this.HRGarminRadioButton);
-            this.HRSettingsGroupBox.Controls.Add(this.HRSportTracksRadioButton);
-            this.HRSettingsGroupBox.Location = new System.Drawing.Point(3, 93);
-            this.HRSettingsGroupBox.Name = "HRSettingsGroupBox";
-            this.HRSettingsGroupBox.Size = new System.Drawing.Size(513, 37);
-            this.HRSettingsGroupBox.TabIndex = 6;
-            this.HRSettingsGroupBox.TabStop = false;
-            this.HRSettingsGroupBox.Text = "Heart Rate Settings";
             // 
             // HRSportTracksRadioButton
             // 
             this.HRSportTracksRadioButton.AutoSize = true;
-            this.HRSportTracksRadioButton.Location = new System.Drawing.Point(394, 13);
+            this.HRSportTracksRadioButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.HRSportTracksRadioButton.Location = new System.Drawing.Point(384, 9);
             this.HRSportTracksRadioButton.Name = "HRSportTracksRadioButton";
-            this.HRSportTracksRadioButton.Size = new System.Drawing.Size(83, 17);
+            this.HRSportTracksRadioButton.Size = new System.Drawing.Size(124, 24);
             this.HRSportTracksRadioButton.TabIndex = 1;
             this.HRSportTracksRadioButton.Text = "SportTracks";
             this.HRSportTracksRadioButton.UseVisualStyleBackColor = true;
             this.HRSportTracksRadioButton.CheckedChanged += new System.EventHandler(this.HRSportTracksRadioButton_CheckedChanged);
             // 
-            // PowerSettingsGroupBox
+            // panel1
             // 
-            this.PowerSettingsGroupBox.Controls.Add(this.DefaultPowerZonesLabel);
-            this.PowerSettingsGroupBox.Controls.Add(this.PowerGarminRadioButton);
-            this.PowerSettingsGroupBox.Controls.Add(this.PowerSportTracksRadioButton);
-            this.PowerSettingsGroupBox.Location = new System.Drawing.Point(3, 188);
-            this.PowerSettingsGroupBox.Name = "PowerSettingsGroupBox";
-            this.PowerSettingsGroupBox.Size = new System.Drawing.Size(513, 37);
-            this.PowerSettingsGroupBox.TabIndex = 8;
-            this.PowerSettingsGroupBox.TabStop = false;
-            this.PowerSettingsGroupBox.Text = "Power Settings";
+            this.panel1.Controls.Add(this.DefaultHeartRateZonesLabel);
+            this.panel1.Controls.Add(this.HRGarminRadioButton);
+            this.panel1.Controls.Add(this.HRSportTracksRadioButton);
+            this.panel1.Location = new System.Drawing.Point(0, 91);
+            this.panel1.Name = "panel1";
+            this.panel1.Size = new System.Drawing.Size(520, 40);
+            this.panel1.TabIndex = 4;
+            // 
+            // panel2
+            // 
+            this.panel2.Controls.Add(this.SpeedSportTracksRadioButton);
+            this.panel2.Controls.Add(this.DefaultSpeedZoneLabel);
+            this.panel2.Controls.Add(this.SpeedGarminRadioButton);
+            this.panel2.Location = new System.Drawing.Point(0, 131);
+            this.panel2.Name = "panel2";
+            this.panel2.Size = new System.Drawing.Size(520, 40);
+            this.panel2.TabIndex = 4;
+            // 
+            // panel3
+            // 
+            this.panel3.Controls.Add(this.DefaultPowerZonesLabel);
+            this.panel3.Controls.Add(this.PowerGarminRadioButton);
+            this.panel3.Controls.Add(this.PowerSportTracksRadioButton);
+            this.panel3.Location = new System.Drawing.Point(0, 171);
+            this.panel3.Name = "panel3";
+            this.panel3.Size = new System.Drawing.Size(520, 40);
+            this.panel3.TabIndex = 4;
             // 
             // SetupWizardSetupSTGarminZonesControl
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.Controls.Add(this.SpeedSettingsGroupBox);
-            this.Controls.Add(this.HRSettingsGroupBox);
-            this.Controls.Add(this.PowerSettingsGroupBox);
             this.Controls.Add(this.pictureBox1);
             this.Controls.Add(this.ExplanationLabel);
+            this.Controls.Add(this.panel3);
+            this.Controls.Add(this.panel2);
+            this.Controls.Add(this.panel1);
             this.Name = "SetupWizardSetupSTGarminZonesControl";
-            this.Size = new System.Drawing.Size(520, 229);
+            this.Size = new System.Drawing.Size(520, 215);
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
-            this.SpeedSettingsGroupBox.ResumeLayout(false);
-            this.SpeedSettingsGroupBox.PerformLayout();
-            this.HRSettingsGroupBox.ResumeLayout(false);
-            this.HRSettingsGroupBox.PerformLayout();
-            this.PowerSettingsGroupBox.ResumeLayout(false);
-            this.PowerSettingsGroupBox.PerformLayout();
+            this.panel1.ResumeLayout(false);
+            this.panel1.PerformLayout();
+            this.panel2.ResumeLayout(false);
+            this.panel2.PerformLayout();
+            this.panel3.ResumeLayout(false);
+            this.panel3.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -230,7 +234,6 @@ namespace GarminFitnessPlugin.View
         private System.Windows.Forms.PictureBox pictureBox1;
         private System.Windows.Forms.Label ExplanationLabel;
         private System.Windows.Forms.Label DefaultPowerZonesLabel;
-        private System.Windows.Forms.GroupBox SpeedSettingsGroupBox;
         private System.Windows.Forms.RadioButton SpeedSportTracksRadioButton;
         private System.Windows.Forms.Label DefaultSpeedZoneLabel;
         private System.Windows.Forms.RadioButton SpeedGarminRadioButton;
@@ -238,8 +241,9 @@ namespace GarminFitnessPlugin.View
         private System.Windows.Forms.RadioButton PowerSportTracksRadioButton;
         private System.Windows.Forms.RadioButton HRGarminRadioButton;
         private System.Windows.Forms.Label DefaultHeartRateZonesLabel;
-        private System.Windows.Forms.GroupBox HRSettingsGroupBox;
         private System.Windows.Forms.RadioButton HRSportTracksRadioButton;
-        private System.Windows.Forms.GroupBox PowerSettingsGroupBox;
+        private System.Windows.Forms.Panel panel1;
+        private System.Windows.Forms.Panel panel2;
+        private System.Windows.Forms.Panel panel3;
     }
 }

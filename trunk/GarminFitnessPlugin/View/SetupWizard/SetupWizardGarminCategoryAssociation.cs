@@ -46,11 +46,11 @@ namespace GarminFitnessPlugin.View
             get { return true; }
         }
 
-        public override System.Windows.Forms.Control CreatePageControl()
+        public override ExtendedWizardPageControl CreatePageControl(ExtendedWizard wizard)
         {
             if (m_Control == null)
             {
-                m_Control = new SetupWizardCompletedControl();
+                m_Control = new SetupWizardGarminCategoryAssociationControl(wizard);
             }
 
             return m_Control;
@@ -81,7 +81,7 @@ namespace GarminFitnessPlugin.View
 
         public override string Title
         {
-            get { return "GarminCategoryAssociation"; }
+            get { return GarminFitnessView.GetLocalizedString("CategoryAssociationText"); }
         }
 
         public override void UICultureChanged(System.Globalization.CultureInfo culture)
@@ -92,6 +92,6 @@ namespace GarminFitnessPlugin.View
 
 #endregion
 
-        SetupWizardCompletedControl m_Control = null;
+        SetupWizardGarminCategoryAssociationControl m_Control = null;
     }
 }

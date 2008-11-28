@@ -55,11 +55,11 @@ namespace GarminFitnessPlugin.View
             get { return true; }
         }
 
-        public override System.Windows.Forms.Control CreatePageControl()
+        public override ExtendedWizardPageControl CreatePageControl(ExtendedWizard wizard)
         {
             if (m_Control == null)
             {
-                m_Control = new SetupWizardSetupSTGarminZonesControl();
+                m_Control = new SetupWizardSetupSTGarminZonesControl(wizard);
             }
 
             return m_Control;
@@ -90,7 +90,7 @@ namespace GarminFitnessPlugin.View
 
         public override string Title
         {
-            get { return "SetupSTGarminZones"; }
+            get { return GarminFitnessView.GetLocalizedString("SetupGarminOrSTZonesText"); }
         }
 
         public override void UICultureChanged(System.Globalization.CultureInfo culture)
