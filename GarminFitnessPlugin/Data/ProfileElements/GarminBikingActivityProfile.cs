@@ -48,7 +48,7 @@ namespace GarminFitnessPlugin.Data
             base.Serialize(stream);
 
             // Power zones
-            for (int i = 0; i < m_PowerZones.Count; ++i)
+            for (int i = 0; i < Constants.GarminPowerZoneCount; ++i)
             {
                 // Low bound
                 stream.Write(BitConverter.GetBytes(m_PowerZones[i].Lower), 0, sizeof(UInt16));
@@ -62,6 +62,9 @@ namespace GarminFitnessPlugin.Data
             {
                 m_Bikes[i].Serialize(stream);
             }
+
+            // FTP
+            stream.Write(BitConverter.GetBytes(FTP), 0, sizeof(UInt16));
         }
 
         public new void Deserialize_V8(Stream stream, DataVersion version)
@@ -71,7 +74,7 @@ namespace GarminFitnessPlugin.Data
 
             byte[] intBuffer = new byte[sizeof(UInt16)];
 
-            for (int i = 0; i < m_PowerZones.Count; ++i)
+            for (int i = 0; i < Constants.GarminPowerZoneCount; ++i)
             {
                 // Lower limit
                 stream.Read(intBuffer, 0, sizeof(UInt16));
@@ -87,6 +90,19 @@ namespace GarminFitnessPlugin.Data
             {
                 m_Bikes[i].Deserialize(stream, version);
             }
+        }
+
+        public void Deserialize_V9(Stream stream, DataVersion version)
+        {
+            // Call base deserialization
+            Deserialize_V8(stream, version);
+
+            // FTP has been forgotten in V8
+            byte[] intBuffer = new byte[sizeof(UInt16)];
+
+            // FTP
+            stream.Read(intBuffer, 0, sizeof(UInt16));
+            FTP = BitConverter.ToUInt16(intBuffer, 0);
         }
 
         public override void Serialize(XmlNode parentNode, XmlDocument document)
@@ -269,6 +285,7 @@ namespace GarminFitnessPlugin.Data
             GarminActivityProfile clone = new GarminBikingActivityProfile(Category);
 
             Serialize(stream);
+            stream.Position = 0;
             clone.Deserialize(stream, Constants.CurrentVersion);
 
             return clone;
