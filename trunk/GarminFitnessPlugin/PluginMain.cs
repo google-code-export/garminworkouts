@@ -166,6 +166,8 @@ namespace GarminFitnessPlugin
                             MessageBox.Show(GarminFitnessView.GetLocalizedString("DataTooRecentErrorText"),
                                             GarminFitnessView.GetLocalizedString("ErrorText"),
                                             MessageBoxButtons.OK, MessageBoxIcon.Error);
+
+                            return;
                         }
                     }
                     else
