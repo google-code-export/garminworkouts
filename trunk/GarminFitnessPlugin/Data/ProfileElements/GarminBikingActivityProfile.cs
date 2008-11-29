@@ -20,7 +20,7 @@ namespace GarminFitnessPlugin.Data
             // Power Zones
             UInt16 currentPower = 100;
             UInt16 powerStep = 50;
-            for (int i = 0; i < Constants.GarminSpeedZoneCount; ++i)
+            for (int i = 0; i < Constants.GarminPowerZoneCount; ++i)
             {
                 m_PowerZones.Add(new GarminFitnessValueRange<UInt16>(currentPower, (UInt16)(currentPower + powerStep)));
 
@@ -85,6 +85,10 @@ namespace GarminFitnessPlugin.Data
                 m_PowerZones[i].Upper = BitConverter.ToUInt16(intBuffer, 0);
             }
 
+            // Wow we serialize too much stuff in V8, 10 power zones instead of 7
+            //  skip the remaining 3
+            stream.Position += 12;
+
             // Bike profiles
             for (int i = 0; i < Constants.GarminBikeProfileCount; ++i)
             {
@@ -95,12 +99,28 @@ namespace GarminFitnessPlugin.Data
         public void Deserialize_V9(Stream stream, DataVersion version)
         {
             // Call base deserialization
-            Deserialize_V8(stream, version);
+            Deserialize(typeof(GarminActivityProfile), stream, version);
 
-            // FTP has been forgotten in V8
             byte[] intBuffer = new byte[sizeof(UInt16)];
 
-            // FTP
+            for (int i = 0; i < Constants.GarminPowerZoneCount; ++i)
+            {
+                // Lower limit
+                stream.Read(intBuffer, 0, sizeof(UInt16));
+                m_PowerZones[i].Lower = BitConverter.ToUInt16(intBuffer, 0);
+
+                // Upper limit
+                stream.Read(intBuffer, 0, sizeof(UInt16));
+                m_PowerZones[i].Upper = BitConverter.ToUInt16(intBuffer, 0);
+            }
+
+            // Bike profiles
+            for (int i = 0; i < Constants.GarminBikeProfileCount; ++i)
+            {
+                m_Bikes[i].Deserialize(stream, version);
+            }
+
+            // FTP (was forgotten in V8)
             stream.Read(intBuffer, 0, sizeof(UInt16));
             FTP = BitConverter.ToUInt16(intBuffer, 0);
         }
