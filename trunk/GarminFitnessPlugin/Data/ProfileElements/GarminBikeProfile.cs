@@ -33,8 +33,8 @@ namespace GarminFitnessPlugin.Data
             stream.Write(BitConverter.GetBytes(m_AutoWheelSize), 0, sizeof(bool));
 
             // Name
-            stream.Write(BitConverter.GetBytes(Encoding.UTF8.GetByteCount(m_Name)), 0, sizeof(Int32));
-            stream.Write(Encoding.UTF8.GetBytes(m_Name), 0, Encoding.UTF8.GetByteCount(m_Name));
+            stream.Write(BitConverter.GetBytes(Encoding.UTF8.GetByteCount(Name)), 0, sizeof(Int32));
+            stream.Write(Encoding.UTF8.GetBytes(Name), 0, Encoding.UTF8.GetByteCount(Name));
 
             // Odometer
             stream.Write(BitConverter.GetBytes(m_OdometerInMeters), 0, sizeof(double));
