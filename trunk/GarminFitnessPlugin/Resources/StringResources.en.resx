@@ -637,9 +637,21 @@
     <value>Biking profile</value>
   </data>
   <data name="BikeProfileExplanationText" xml:space="preserve">
-    <value>Some of the data in the profile in biking specific.  This data includes the different power zones as well as the bike profiles.  If you don't have a biking compatible unit you can skip this section.</value>
+    <value>Some of the data in the profile is biking specific.  This data includes the different power zones as well as the bike profiles.  If you don't have a biking compatible unit you can skip this section.</value>
   </data>
   <data name="CompletedText" xml:space="preserve">
     <value>Completed</value>
+  </data>
+  <data name="RepetitionPropertiesGroupText" xml:space="preserve">
+    <value>Repetition Properties</value>
+  </data>
+  <data name="NewNameLabelText" xml:space="preserve">
+    <value>New name :</value>
+  </data>
+  <data name="RenameLabelText" xml:space="preserve">
+    <value>Rename</value>
+  </data>
+  <data name="ReplaceLabelText" xml:space="preserve">
+    <value>Replace</value>
   </data>
 </root>

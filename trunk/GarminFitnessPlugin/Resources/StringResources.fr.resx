@@ -142,13 +142,13 @@
     <value>Naviguer…</value>
   </data>
   <data name="CadenceRangeTargetDescriptionText" xml:space="preserve">
-    <value>Tenter de garder ma cadence entre {0} et {1} {2}.</value>
+    <value>Essayer de maintenir ma cadence entre {0} et {1} {2}.</value>
   </data>
   <data name="CadenceSettingsGroupBoxText" xml:space="preserve">
     <value>Paramètres de cadence</value>
   </data>
   <data name="CadenceTargetComboBoxText" xml:space="preserve">
-    <value>Tenter de garder ma cadence dans une certaine plage</value>
+    <value>Essayer de maintenir ma cadence dans une certaine plage</value>
   </data>
   <data name="CadenceZoneSelectionLabelText" xml:space="preserve">
     <value>Utiliser ces zones de cadence pour mes entraînements :</value>
@@ -160,7 +160,7 @@
     <value>Lorsque j'ai brûlé un certain nombre de calories</value>
   </data>
   <data name="CaloriesDurationDescriptionText" xml:space="preserve">
-    <value>Continuer jusqu'à ce que j'aie brûlé {0} calories.</value>
+    <value>Continuer jusqu'à ce que j'ai brûlé {0} calories.</value>
   </data>
   <data name="CaloriesDurationLabelText" xml:space="preserve">
     <value>Combien de calories?</value>
@@ -217,7 +217,7 @@
     <value>Lorsque j'aurai parcouru une certaine distance</value>
   </data>
   <data name="DistanceDurationDescriptionText" xml:space="preserve">
-    <value>Parcourir {0:0.00} {1}.</value>
+    <value>Continuer jusqu'à ce que j'ai parcouru {0:0.00} {1}.</value>
   </data>
   <data name="DistanceDurationLabelText" xml:space="preserve">
     <value>Quelle distance?</value>
@@ -259,7 +259,7 @@
     <value>Une erreur s'est produite lors de l'export de vos entraînements</value>
   </data>
   <data name="ExportWorkoutsSuccessText" xml:space="preserve">
-    <value>Vos entraînements on été correctement exportés vers votre unité.</value>
+    <value>Vos entraînements on été correctement exportés vers votre appareil.</value>
   </data>
   <data name="FemaleText" xml:space="preserve">
     <value>Femme</value>
@@ -271,7 +271,7 @@
     <value>Pour configurer le plugin plus tard, cliquez sur "Terminer"</value>
   </data>
   <data name="FromDeviceText" xml:space="preserve">
-    <value>À partir de l'unité</value>
+    <value>À partir de l'appareil</value>
   </data>
   <data name="FromFileText" xml:space="preserve">
     <value>À partir d'un fichier</value>
@@ -370,7 +370,7 @@
     <value>Plages de fréquence cardiaque</value>
   </data>
   <data name="ImportEditExplanationText" xml:space="preserve">
-    <value>Pour que vos entraînements utilisent les bonnes plages, nous devons les configurer.  Même si vous utilisez le plugin en mode SportTracks, votre profile est utilisé pour l'affichage (BPM vs. &amp; max FC et vitesse vs. rythme) donc il est important de bien les configurer.  Vous pouvez soit les importer de votre unité ou les éditer manuellement.</value>
+    <value>Pour que vos entraînements utilisent les bonnes plages, nous devons les configurer.  Même si vous utilisez le plugin en mode SportTracks, votre profile est utilisé pour l'affichage (BPM vs. &amp; max FC et vitesse vs. rythme) donc il est important de bien les configurer.  Vous pouvez soit les importer de votre appareil ou les éditer manuellement.</value>
   </data>
   <data name="ImportOrEditProfileText" xml:space="preserve">
     <value>Importer ou éditer votre profil</value>
@@ -379,7 +379,7 @@
     <value>Une erreur s'est produite lord de l'import de votre profile.</value>
   </data>
   <data name="ImportRadioButtonText" xml:space="preserve">
-    <value>Importer le profil de mon unité.</value>
+    <value>Importer le profil de mon appareil.</value>
   </data>
   <data name="ImportWorkoutsErrorText" xml:space="preserve">
     <value>Une erreur s'est produite lors de l'import de vos entraînements</value>
@@ -435,6 +435,9 @@
   <data name="NeverExportedText" xml:space="preserve">
     <value>Jamais exporté</value>
   </data>
+  <data name="NewNameLabelText" xml:space="preserve">
+    <value>Nouveau nom :</value>
+  </data>
   <data name="NotesLabelText" xml:space="preserve">
     <value>Notes :</value>
   </data>
@@ -487,10 +490,13 @@
     <value>Profil</value>
   </data>
   <data name="RefreshButtonText" xml:space="preserve">
-    <value>Rafraîichir les unités</value>
+    <value>Rafraîichir les appareils</value>
   </data>
   <data name="RenameExplanationLabelText" xml:space="preserve">
     <value>Choisir cette option va utiliser le nom suivant pour l'entraînement.</value>
+  </data>
+  <data name="RenameLabelText" xml:space="preserve">
+    <value>Renommer</value>
   </data>
   <data name="RepeatStepDescriptionText" xml:space="preserve">
     <value>Répéter les phases ci-dessous {0} fois :</value>
@@ -498,8 +504,14 @@
   <data name="RepetitionCountLabelText" xml:space="preserve">
     <value>Combien de répétitions voulez-vous effectuer?</value>
   </data>
+  <data name="RepetitionPropertiesGroupText" xml:space="preserve">
+    <value>Propriétés de répétition</value>
+  </data>
   <data name="ReplaceExplanationLabelText" xml:space="preserve">
     <value>Choisir cette option va remplacer l'entraînement ayant actuellement le même nom.</value>
+  </data>
+  <data name="ReplaceLabelText" xml:space="preserve">
+    <value>Remplacer</value>
   </data>
   <data name="ReplaceRenameIntroLabelText" xml:space="preserve">
     <value>Il existe déjèa un entraînement avec le même nom.  Vous pouvez ou bien remplacer l'entraînement actuel ou renommer le nouvel entraînement.</value>
@@ -529,10 +541,10 @@
     <value>Sélectionnez une date</value>
   </data>
   <data name="SelectDeviceIntroText" xml:space="preserve">
-    <value>Sélectionnez votre unité ci-dessous.  Si votre unité n'apparait pas, veuillez vous assurer qu'elle est bien branchée dans votre PC et appuyez sur le bouton de rafraîchissement.</value>
+    <value>Sélectionnez votre appareil ci-dessous.  Si votre appareil n'apparait pas, veuillez vous assurer qu'il est bien branché et appuyez sur le bouton de rafraîchissement.</value>
   </data>
   <data name="SelectDeviceText" xml:space="preserve">
-    <value>Sélectionner votre unité</value>
+    <value>Sélectionner votre appareil</value>
   </data>
   <data name="SettingsPageNameText" xml:space="preserve">
     <value>Paramètres Garmin Fitness</value>
@@ -589,7 +601,7 @@
     <value>Lorsqu'un certain temps se sera écoulé</value>
   </data>
   <data name="TimeDurationDescriptionText" xml:space="preserve">
-    <value>Courir pendant {0:00}:{1:00}:{2:00}</value>
+    <value>Continuer pendant {0:00}:{1:00}:{2:00}</value>
   </data>
   <data name="TimeDurationLabelText" xml:space="preserve">
     <value>Combien de temps?</value>
