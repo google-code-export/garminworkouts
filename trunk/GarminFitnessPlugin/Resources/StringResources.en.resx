@@ -636,4 +636,10 @@
   <data name="EditBikingProfileText" xml:space="preserve">
     <value>Biking profile</value>
   </data>
+  <data name="BikeProfileExplanationText" xml:space="preserve">
+    <value>Some of the data in the profile in biking specific.  This data includes the different power zones as well as the bike profiles.  If you don't have a biking compatible unit you can skip this section.</value>
+  </data>
+  <data name="CompletedText" xml:space="preserve">
+    <value>Completed</value>
+  </data>
 </root>

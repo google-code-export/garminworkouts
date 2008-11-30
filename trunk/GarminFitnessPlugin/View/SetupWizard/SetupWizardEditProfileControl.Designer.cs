@@ -96,7 +96,7 @@ namespace GarminFitnessPlugin.View
             // 
             this.ExplanationLabel.Location = new System.Drawing.Point(193, 6);
             this.ExplanationLabel.Name = "ExplanationLabel";
-            this.ExplanationLabel.Size = new System.Drawing.Size(323, 68);
+            this.ExplanationLabel.Size = new System.Drawing.Size(401, 68);
             this.ExplanationLabel.TabIndex = 2;
             this.ExplanationLabel.Text = resources.GetString("ExplanationLabel.Text");
             // 
@@ -127,24 +127,24 @@ namespace GarminFitnessPlugin.View
             // splitContainer1.Panel2
             // 
             this.splitContainer1.Panel2.Controls.Add(this.ActivitiesPanel);
-            this.splitContainer1.Size = new System.Drawing.Size(516, 408);
+            this.splitContainer1.Size = new System.Drawing.Size(597, 408);
             this.splitContainer1.SplitterDistance = 84;
             this.splitContainer1.TabIndex = 4;
             // 
             // BirthDateTimePicker
             // 
             this.BirthDateTimePicker.Format = System.Windows.Forms.DateTimePickerFormat.Custom;
-            this.BirthDateTimePicker.Location = new System.Drawing.Point(359, 28);
+            this.BirthDateTimePicker.Location = new System.Drawing.Point(472, 28);
             this.BirthDateTimePicker.MinDate = new System.DateTime(1900, 1, 1, 0, 0, 0, 0);
             this.BirthDateTimePicker.Name = "BirthDateTimePicker";
-            this.BirthDateTimePicker.Size = new System.Drawing.Size(154, 20);
+            this.BirthDateTimePicker.Size = new System.Drawing.Size(112, 20);
             this.BirthDateTimePicker.TabIndex = 4;
             this.BirthDateTimePicker.Validated += new System.EventHandler(this.BirthDateTimePicker_Validated);
             // 
             // RestBPMLabel
             // 
             this.RestBPMLabel.AutoSize = true;
-            this.RestBPMLabel.Location = new System.Drawing.Point(483, 59);
+            this.RestBPMLabel.Location = new System.Drawing.Point(524, 59);
             this.RestBPMLabel.Name = "RestBPMLabel";
             this.RestBPMLabel.Size = new System.Drawing.Size(30, 13);
             this.RestBPMLabel.TabIndex = 5;
@@ -161,14 +161,14 @@ namespace GarminFitnessPlugin.View
             // 
             // RestHRTextBox
             // 
-            this.RestHRTextBox.Location = new System.Drawing.Point(417, 56);
+            this.RestHRTextBox.Location = new System.Drawing.Point(472, 56);
             this.RestHRTextBox.MaxLength = 3;
             this.RestHRTextBox.Name = "RestHRTextBox";
-            this.RestHRTextBox.Size = new System.Drawing.Size(60, 20);
+            this.RestHRTextBox.Size = new System.Drawing.Size(44, 20);
             this.RestHRTextBox.TabIndex = 5;
             this.RestHRTextBox.Validated += new System.EventHandler(this.RestHRTextBox_Validated);
-            this.RestHRTextBox.Validating += new System.ComponentModel.CancelEventHandler(this.RestHRTextBox_Validating);
             this.RestHRTextBox.KeyDown += new System.Windows.Forms.KeyEventHandler(this.OnValidatedKeyDown);
+            this.RestHRTextBox.Validating += new System.ComponentModel.CancelEventHandler(this.RestHRTextBox_Validating);
             // 
             // WeightTextBox
             // 
@@ -177,8 +177,8 @@ namespace GarminFitnessPlugin.View
             this.WeightTextBox.Size = new System.Drawing.Size(64, 20);
             this.WeightTextBox.TabIndex = 3;
             this.WeightTextBox.Validated += new System.EventHandler(this.WeightTextBox_Validated);
-            this.WeightTextBox.Validating += new System.ComponentModel.CancelEventHandler(this.WeightTextBox_Validating);
             this.WeightTextBox.KeyDown += new System.Windows.Forms.KeyEventHandler(this.OnValidatedKeyDown);
+            this.WeightTextBox.Validating += new System.ComponentModel.CancelEventHandler(this.WeightTextBox_Validating);
             // 
             // FemaleRadioButton
             // 
@@ -207,7 +207,7 @@ namespace GarminFitnessPlugin.View
             // BirthDateLabel
             // 
             this.BirthDateLabel.AutoSize = true;
-            this.BirthDateLabel.Location = new System.Drawing.Point(283, 32);
+            this.BirthDateLabel.Location = new System.Drawing.Point(301, 32);
             this.BirthDateLabel.Name = "BirthDateLabel";
             this.BirthDateLabel.Size = new System.Drawing.Size(60, 13);
             this.BirthDateLabel.TabIndex = 2;
@@ -216,7 +216,7 @@ namespace GarminFitnessPlugin.View
             // RestingHeartRateLabel
             // 
             this.RestingHeartRateLabel.AutoSize = true;
-            this.RestingHeartRateLabel.Location = new System.Drawing.Point(283, 59);
+            this.RestingHeartRateLabel.Location = new System.Drawing.Point(301, 59);
             this.RestingHeartRateLabel.Name = "RestingHeartRateLabel";
             this.RestingHeartRateLabel.Size = new System.Drawing.Size(104, 13);
             this.RestingHeartRateLabel.TabIndex = 2;
@@ -254,7 +254,7 @@ namespace GarminFitnessPlugin.View
             // 
             this.NameTextBox.Location = new System.Drawing.Point(63, 5);
             this.NameTextBox.Name = "NameTextBox";
-            this.NameTextBox.Size = new System.Drawing.Size(450, 20);
+            this.NameTextBox.Size = new System.Drawing.Size(521, 20);
             this.NameTextBox.TabIndex = 0;
             this.NameTextBox.Validated += new System.EventHandler(this.NameTextBox_Validated);
             this.NameTextBox.KeyDown += new System.Windows.Forms.KeyEventHandler(this.OnValidatedKeyDown);
@@ -266,7 +266,7 @@ namespace GarminFitnessPlugin.View
             this.ActivitiesPanel.Dock = System.Windows.Forms.DockStyle.Fill;
             this.ActivitiesPanel.Location = new System.Drawing.Point(0, 0);
             this.ActivitiesPanel.Name = "ActivitiesPanel";
-            this.ActivitiesPanel.Size = new System.Drawing.Size(516, 320);
+            this.ActivitiesPanel.Size = new System.Drawing.Size(597, 320);
             this.ActivitiesPanel.TabIndex = 1;
             // 
             // ActivityPanel
@@ -282,7 +282,7 @@ namespace GarminFitnessPlugin.View
             this.ActivityPanel.Dock = System.Windows.Forms.DockStyle.Fill;
             this.ActivityPanel.Location = new System.Drawing.Point(0, 31);
             this.ActivityPanel.Name = "ActivityPanel";
-            this.ActivityPanel.Size = new System.Drawing.Size(516, 289);
+            this.ActivityPanel.Size = new System.Drawing.Size(597, 289);
             this.ActivityPanel.TabIndex = 1;
             // 
             // SpeedZonesGroupBox
@@ -298,7 +298,7 @@ namespace GarminFitnessPlugin.View
             this.SpeedZonesGroupBox.Controls.Add(this.SpeedZonesTreeList);
             this.SpeedZonesGroupBox.Location = new System.Drawing.Point(10, 166);
             this.SpeedZonesGroupBox.Name = "SpeedZonesGroupBox";
-            this.SpeedZonesGroupBox.Size = new System.Drawing.Size(503, 119);
+            this.SpeedZonesGroupBox.Size = new System.Drawing.Size(584, 119);
             this.SpeedZonesGroupBox.TabIndex = 3;
             this.SpeedZonesGroupBox.TabStop = false;
             this.SpeedZonesGroupBox.Text = "Speed Zones";
@@ -329,7 +329,7 @@ namespace GarminFitnessPlugin.View
             // 
             // SpeedNameTextBox
             // 
-            this.SpeedNameTextBox.Location = new System.Drawing.Point(368, 94);
+            this.SpeedNameTextBox.Location = new System.Drawing.Point(396, 91);
             this.SpeedNameTextBox.MaxLength = 15;
             this.SpeedNameTextBox.Name = "SpeedNameTextBox";
             this.SpeedNameTextBox.Size = new System.Drawing.Size(129, 20);
@@ -339,18 +339,18 @@ namespace GarminFitnessPlugin.View
             // 
             // HighSpeedTextBox
             // 
-            this.HighSpeedTextBox.Location = new System.Drawing.Point(368, 68);
+            this.HighSpeedTextBox.Location = new System.Drawing.Point(396, 65);
             this.HighSpeedTextBox.Name = "HighSpeedTextBox";
             this.HighSpeedTextBox.Size = new System.Drawing.Size(129, 20);
             this.HighSpeedTextBox.TabIndex = 3;
             this.HighSpeedTextBox.Validated += new System.EventHandler(this.HighSpeedTextBox_Validated);
-            this.HighSpeedTextBox.Validating += new System.ComponentModel.CancelEventHandler(this.HighSpeedTextBox_Validating);
             this.HighSpeedTextBox.KeyDown += new System.Windows.Forms.KeyEventHandler(this.OnValidatedKeyDown);
+            this.HighSpeedTextBox.Validating += new System.ComponentModel.CancelEventHandler(this.HighSpeedTextBox_Validating);
             // 
             // NameSpeedLabel
             // 
             this.NameSpeedLabel.AutoSize = true;
-            this.NameSpeedLabel.Location = new System.Drawing.Point(311, 97);
+            this.NameSpeedLabel.Location = new System.Drawing.Point(339, 94);
             this.NameSpeedLabel.Name = "NameSpeedLabel";
             this.NameSpeedLabel.Size = new System.Drawing.Size(41, 13);
             this.NameSpeedLabel.TabIndex = 2;
@@ -358,18 +358,18 @@ namespace GarminFitnessPlugin.View
             // 
             // LowSpeedTextBox
             // 
-            this.LowSpeedTextBox.Location = new System.Drawing.Point(368, 42);
+            this.LowSpeedTextBox.Location = new System.Drawing.Point(396, 39);
             this.LowSpeedTextBox.Name = "LowSpeedTextBox";
             this.LowSpeedTextBox.Size = new System.Drawing.Size(129, 20);
             this.LowSpeedTextBox.TabIndex = 2;
             this.LowSpeedTextBox.Validated += new System.EventHandler(this.LowSpeedTextBox_Validated);
-            this.LowSpeedTextBox.Validating += new System.ComponentModel.CancelEventHandler(this.LowSpeedTextBox_Validating);
             this.LowSpeedTextBox.KeyDown += new System.Windows.Forms.KeyEventHandler(this.OnValidatedKeyDown);
+            this.LowSpeedTextBox.Validating += new System.ComponentModel.CancelEventHandler(this.LowSpeedTextBox_Validating);
             // 
             // HighSpeedLabel
             // 
             this.HighSpeedLabel.AutoSize = true;
-            this.HighSpeedLabel.Location = new System.Drawing.Point(311, 71);
+            this.HighSpeedLabel.Location = new System.Drawing.Point(339, 68);
             this.HighSpeedLabel.Name = "HighSpeedLabel";
             this.HighSpeedLabel.Size = new System.Drawing.Size(35, 13);
             this.HighSpeedLabel.TabIndex = 2;
@@ -378,7 +378,7 @@ namespace GarminFitnessPlugin.View
             // LowSpeedLabel
             // 
             this.LowSpeedLabel.AutoSize = true;
-            this.LowSpeedLabel.Location = new System.Drawing.Point(311, 45);
+            this.LowSpeedLabel.Location = new System.Drawing.Point(339, 42);
             this.LowSpeedLabel.Name = "LowSpeedLabel";
             this.LowSpeedLabel.Size = new System.Drawing.Size(33, 13);
             this.LowSpeedLabel.TabIndex = 1;
@@ -422,7 +422,7 @@ namespace GarminFitnessPlugin.View
             this.HRZonesGroupBox.Controls.Add(this.HRZonesTreeList);
             this.HRZonesGroupBox.Location = new System.Drawing.Point(10, 39);
             this.HRZonesGroupBox.Name = "HRZonesGroupBox";
-            this.HRZonesGroupBox.Size = new System.Drawing.Size(503, 121);
+            this.HRZonesGroupBox.Size = new System.Drawing.Size(584, 121);
             this.HRZonesGroupBox.TabIndex = 2;
             this.HRZonesGroupBox.TabStop = false;
             this.HRZonesGroupBox.Text = "Heart Rate Zones";
@@ -453,30 +453,30 @@ namespace GarminFitnessPlugin.View
             // 
             // HighHRTextBox
             // 
-            this.HighHRTextBox.Location = new System.Drawing.Point(368, 68);
+            this.HighHRTextBox.Location = new System.Drawing.Point(396, 65);
             this.HighHRTextBox.MaxLength = 3;
             this.HighHRTextBox.Name = "HighHRTextBox";
             this.HighHRTextBox.Size = new System.Drawing.Size(129, 20);
             this.HighHRTextBox.TabIndex = 3;
             this.HighHRTextBox.Validated += new System.EventHandler(this.HighHRTextBox_Validated);
-            this.HighHRTextBox.Validating += new System.ComponentModel.CancelEventHandler(this.HighHRTextBox_Validating);
             this.HighHRTextBox.KeyDown += new System.Windows.Forms.KeyEventHandler(this.OnValidatedKeyDown);
+            this.HighHRTextBox.Validating += new System.ComponentModel.CancelEventHandler(this.HighHRTextBox_Validating);
             // 
             // LowHRTextBox
             // 
-            this.LowHRTextBox.Location = new System.Drawing.Point(368, 42);
+            this.LowHRTextBox.Location = new System.Drawing.Point(396, 39);
             this.LowHRTextBox.MaxLength = 3;
             this.LowHRTextBox.Name = "LowHRTextBox";
             this.LowHRTextBox.Size = new System.Drawing.Size(129, 20);
             this.LowHRTextBox.TabIndex = 2;
             this.LowHRTextBox.Validated += new System.EventHandler(this.LowHRTextBox_Validated);
-            this.LowHRTextBox.Validating += new System.ComponentModel.CancelEventHandler(this.LowHRTextBox_Validating);
             this.LowHRTextBox.KeyDown += new System.Windows.Forms.KeyEventHandler(this.OnValidatedKeyDown);
+            this.LowHRTextBox.Validating += new System.ComponentModel.CancelEventHandler(this.LowHRTextBox_Validating);
             // 
             // HighHRLabel
             // 
             this.HighHRLabel.AutoSize = true;
-            this.HighHRLabel.Location = new System.Drawing.Point(311, 71);
+            this.HighHRLabel.Location = new System.Drawing.Point(339, 68);
             this.HighHRLabel.Name = "HighHRLabel";
             this.HighHRLabel.Size = new System.Drawing.Size(35, 13);
             this.HighHRLabel.TabIndex = 2;
@@ -485,7 +485,7 @@ namespace GarminFitnessPlugin.View
             // LowHRLabel
             // 
             this.LowHRLabel.AutoSize = true;
-            this.LowHRLabel.Location = new System.Drawing.Point(311, 45);
+            this.LowHRLabel.Location = new System.Drawing.Point(339, 42);
             this.LowHRLabel.Name = "LowHRLabel";
             this.LowHRLabel.Size = new System.Drawing.Size(33, 13);
             this.LowHRLabel.TabIndex = 1;
@@ -530,7 +530,7 @@ namespace GarminFitnessPlugin.View
             // MaxHRBPMLabel
             // 
             this.MaxHRBPMLabel.AutoSize = true;
-            this.MaxHRBPMLabel.Location = new System.Drawing.Point(175, 12);
+            this.MaxHRBPMLabel.Location = new System.Drawing.Point(221, 12);
             this.MaxHRBPMLabel.Name = "MaxHRBPMLabel";
             this.MaxHRBPMLabel.Size = new System.Drawing.Size(30, 13);
             this.MaxHRBPMLabel.TabIndex = 5;
@@ -539,7 +539,7 @@ namespace GarminFitnessPlugin.View
             // GearWeightUnitLabel
             // 
             this.GearWeightUnitLabel.AutoSize = true;
-            this.GearWeightUnitLabel.Location = new System.Drawing.Point(483, 12);
+            this.GearWeightUnitLabel.Location = new System.Drawing.Point(560, 12);
             this.GearWeightUnitLabel.Name = "GearWeightUnitLabel";
             this.GearWeightUnitLabel.Size = new System.Drawing.Size(15, 13);
             this.GearWeightUnitLabel.TabIndex = 5;
@@ -547,29 +547,29 @@ namespace GarminFitnessPlugin.View
             // 
             // MaxHRTextBox
             // 
-            this.MaxHRTextBox.Location = new System.Drawing.Point(125, 9);
+            this.MaxHRTextBox.Location = new System.Drawing.Point(171, 9);
             this.MaxHRTextBox.MaxLength = 3;
             this.MaxHRTextBox.Name = "MaxHRTextBox";
             this.MaxHRTextBox.Size = new System.Drawing.Size(44, 20);
             this.MaxHRTextBox.TabIndex = 0;
             this.MaxHRTextBox.Validated += new System.EventHandler(this.MaxHRTextBox_Validated);
-            this.MaxHRTextBox.Validating += new System.ComponentModel.CancelEventHandler(this.MaxHRTextBox_Validating);
             this.MaxHRTextBox.KeyDown += new System.Windows.Forms.KeyEventHandler(this.OnValidatedKeyDown);
+            this.MaxHRTextBox.Validating += new System.ComponentModel.CancelEventHandler(this.MaxHRTextBox_Validating);
             // 
             // GearWeightTextBox
             // 
-            this.GearWeightTextBox.Location = new System.Drawing.Point(384, 9);
+            this.GearWeightTextBox.Location = new System.Drawing.Point(494, 9);
             this.GearWeightTextBox.Name = "GearWeightTextBox";
-            this.GearWeightTextBox.Size = new System.Drawing.Size(93, 20);
+            this.GearWeightTextBox.Size = new System.Drawing.Size(60, 20);
             this.GearWeightTextBox.TabIndex = 1;
             this.GearWeightTextBox.Validated += new System.EventHandler(this.GearWeightTextBox_Validated);
-            this.GearWeightTextBox.Validating += new System.ComponentModel.CancelEventHandler(this.GearWeightTextBox_Validating);
             this.GearWeightTextBox.KeyDown += new System.Windows.Forms.KeyEventHandler(this.OnValidatedKeyDown);
+            this.GearWeightTextBox.Validating += new System.ComponentModel.CancelEventHandler(this.GearWeightTextBox_Validating);
             // 
             // GearWeightLabel
             // 
             this.GearWeightLabel.AutoSize = true;
-            this.GearWeightLabel.Location = new System.Drawing.Point(283, 12);
+            this.GearWeightLabel.Location = new System.Drawing.Point(349, 12);
             this.GearWeightLabel.Name = "GearWeightLabel";
             this.GearWeightLabel.Size = new System.Drawing.Size(73, 13);
             this.GearWeightLabel.TabIndex = 2;
@@ -583,7 +583,7 @@ namespace GarminFitnessPlugin.View
             this.GarminActivityBanner.Location = new System.Drawing.Point(0, 0);
             this.GarminActivityBanner.Name = "GarminActivityBanner";
             this.GarminActivityBanner.RightToLeft = System.Windows.Forms.RightToLeft.No;
-            this.GarminActivityBanner.Size = new System.Drawing.Size(516, 31);
+            this.GarminActivityBanner.Size = new System.Drawing.Size(597, 31);
             this.GarminActivityBanner.Style = ZoneFiveSoftware.Common.Visuals.ActionBanner.BannerStyle.Header1;
             this.GarminActivityBanner.TabIndex = 0;
             this.GarminActivityBanner.Text = "Running";
@@ -598,7 +598,7 @@ namespace GarminFitnessPlugin.View
             this.Controls.Add(this.pictureBox1);
             this.Controls.Add(this.ExplanationLabel);
             this.Name = "SetupWizardEditProfileControl";
-            this.Size = new System.Drawing.Size(520, 509);
+            this.Size = new System.Drawing.Size(600, 509);
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             this.splitContainer1.Panel1.ResumeLayout(false);
             this.splitContainer1.Panel1.PerformLayout();

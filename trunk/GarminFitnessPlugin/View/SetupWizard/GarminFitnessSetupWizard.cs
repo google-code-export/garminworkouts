@@ -37,36 +37,36 @@ namespace GarminFitnessPlugin.View
             // 
             // btnCancel
             // 
-            this.btnCancel.Location = new System.Drawing.Point(452, 367);
+            this.btnCancel.Location = new System.Drawing.Point(532, 367);
             this.btnCancel.Visible = false;
             // 
             // btnNext
             // 
-            this.btnNext.Location = new System.Drawing.Point(371, 367);
+            this.btnNext.Location = new System.Drawing.Point(451, 367);
             // 
             // panelMain
             // 
             this.panelMain.Location = new System.Drawing.Point(10, 47);
-            this.panelMain.Size = new System.Drawing.Size(520, 300);
+            this.panelMain.Size = new System.Drawing.Size(600, 300);
             // 
             // btnPrev
             // 
-            this.btnPrev.Location = new System.Drawing.Point(287, 367);
+            this.btnPrev.Location = new System.Drawing.Point(367, 367);
             // 
             // btnFinish
             // 
-            this.btnFinish.Location = new System.Drawing.Point(452, 367);
+            this.btnFinish.Location = new System.Drawing.Point(532, 367);
             // 
             // bannerPage
             // 
-            this.bannerPage.Size = new System.Drawing.Size(534, 40);
+            this.bannerPage.Size = new System.Drawing.Size(614, 40);
             // 
             // GarminFitnessSetupWizard
             // 
             this.AcceptButton = null;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.CancelButton = null;
-            this.ClientSize = new System.Drawing.Size(539, 395);
+            this.ClientSize = new System.Drawing.Size(619, 395);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.Name = "GarminFitnessSetupWizard";
             this.ResumeLayout(false);

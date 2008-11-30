@@ -52,7 +52,7 @@ namespace GarminFitnessPlugin.View
             // 
             this.ExplanationLabel.Location = new System.Drawing.Point(193, 6);
             this.ExplanationLabel.Name = "ExplanationLabel";
-            this.ExplanationLabel.Size = new System.Drawing.Size(323, 70);
+            this.ExplanationLabel.Size = new System.Drawing.Size(404, 82);
             this.ExplanationLabel.TabIndex = 4;
             this.ExplanationLabel.Text = resources.GetString("ExplanationLabel.Text");
             // 
@@ -60,9 +60,9 @@ namespace GarminFitnessPlugin.View
             // 
             this.CadenceZoneComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.CadenceZoneComboBox.FormattingEnabled = true;
-            this.CadenceZoneComboBox.Location = new System.Drawing.Point(342, 101);
+            this.CadenceZoneComboBox.Location = new System.Drawing.Point(303, 123);
             this.CadenceZoneComboBox.Name = "CadenceZoneComboBox";
-            this.CadenceZoneComboBox.Size = new System.Drawing.Size(174, 21);
+            this.CadenceZoneComboBox.Size = new System.Drawing.Size(294, 21);
             this.CadenceZoneComboBox.TabIndex = 8;
             this.CadenceZoneComboBox.SelectedIndexChanged += new System.EventHandler(this.CadenceZoneComboBox_SelectedIndexChanged);
             // 
@@ -70,9 +70,9 @@ namespace GarminFitnessPlugin.View
             // 
             this.PowerZoneComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.PowerZoneComboBox.FormattingEnabled = true;
-            this.PowerZoneComboBox.Location = new System.Drawing.Point(342, 140);
+            this.PowerZoneComboBox.Location = new System.Drawing.Point(303, 189);
             this.PowerZoneComboBox.Name = "PowerZoneComboBox";
-            this.PowerZoneComboBox.Size = new System.Drawing.Size(174, 21);
+            this.PowerZoneComboBox.Size = new System.Drawing.Size(294, 21);
             this.PowerZoneComboBox.TabIndex = 9;
             this.PowerZoneComboBox.SelectedIndexChanged += new System.EventHandler(this.PowerZoneComboBox_SelectedIndexChanged);
             // 
@@ -80,7 +80,7 @@ namespace GarminFitnessPlugin.View
             // 
             this.PowerZoneSelectionLabel.AutoSize = true;
             this.PowerZoneSelectionLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.PowerZoneSelectionLabel.Location = new System.Drawing.Point(3, 140);
+            this.PowerZoneSelectionLabel.Location = new System.Drawing.Point(3, 166);
             this.PowerZoneSelectionLabel.Name = "PowerZoneSelectionLabel";
             this.PowerZoneSelectionLabel.Size = new System.Drawing.Size(313, 20);
             this.PowerZoneSelectionLabel.TabIndex = 6;
@@ -107,7 +107,7 @@ namespace GarminFitnessPlugin.View
             this.Controls.Add(this.pictureBox1);
             this.Controls.Add(this.ExplanationLabel);
             this.Name = "SetupWizardSportTracksZonesControl";
-            this.Size = new System.Drawing.Size(520, 171);
+            this.Size = new System.Drawing.Size(600, 226);
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();

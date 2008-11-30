@@ -48,7 +48,7 @@ namespace GarminFitnessPlugin.View
             // 
             this.ExplanationLabel.Location = new System.Drawing.Point(193, 6);
             this.ExplanationLabel.Name = "ExplanationLabel";
-            this.ExplanationLabel.Size = new System.Drawing.Size(323, 70);
+            this.ExplanationLabel.Size = new System.Drawing.Size(404, 70);
             this.ExplanationLabel.TabIndex = 2;
             this.ExplanationLabel.Text = "You have completed the setup wizard successfully.  The plugin is now available fr" +
                 "om the \"Views\" menu.  Note that all the settings are always available in the Gar" +
@@ -56,10 +56,11 @@ namespace GarminFitnessPlugin.View
             // 
             // FinishLabel
             // 
+            this.FinishLabel.AutoSize = true;
             this.FinishLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.FinishLabel.Location = new System.Drawing.Point(3, 100);
             this.FinishLabel.Name = "FinishLabel";
-            this.FinishLabel.Size = new System.Drawing.Size(514, 25);
+            this.FinishLabel.Size = new System.Drawing.Size(295, 20);
             this.FinishLabel.TabIndex = 4;
             this.FinishLabel.Text = "To close the wizard click on \"Finish\"";
             // 
@@ -71,9 +72,10 @@ namespace GarminFitnessPlugin.View
             this.Controls.Add(this.pictureBox1);
             this.Controls.Add(this.ExplanationLabel);
             this.Name = "SetupWizardCompletedControl";
-            this.Size = new System.Drawing.Size(520, 132);
+            this.Size = new System.Drawing.Size(600, 132);
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 

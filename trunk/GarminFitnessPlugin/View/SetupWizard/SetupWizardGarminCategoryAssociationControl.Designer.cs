@@ -61,8 +61,8 @@ namespace GarminFitnessPlugin.View
             // splitContainer1.Panel2
             // 
             this.splitContainer1.Panel2.Controls.Add(this.CategorySelectionPanel);
-            this.splitContainer1.Size = new System.Drawing.Size(513, 155);
-            this.splitContainer1.SplitterDistance = 307;
+            this.splitContainer1.Size = new System.Drawing.Size(594, 155);
+            this.splitContainer1.SplitterDistance = 275;
             this.splitContainer1.TabIndex = 6;
             // 
             // ActivityCategoryList
@@ -90,7 +90,7 @@ namespace GarminFitnessPlugin.View
             this.ActivityCategoryList.RowSeparatorLines = true;
             this.ActivityCategoryList.ShowLines = false;
             this.ActivityCategoryList.ShowPlusMinus = false;
-            this.ActivityCategoryList.Size = new System.Drawing.Size(307, 155);
+            this.ActivityCategoryList.Size = new System.Drawing.Size(275, 155);
             this.ActivityCategoryList.TabIndex = 5;
             this.ActivityCategoryList.TabStop = false;
             this.ActivityCategoryList.SelectedChanged += new System.EventHandler(this.ActivityCategoryList_SelectedChanged);
@@ -104,7 +104,7 @@ namespace GarminFitnessPlugin.View
             this.CategorySelectionPanel.Enabled = false;
             this.CategorySelectionPanel.Location = new System.Drawing.Point(0, 0);
             this.CategorySelectionPanel.Name = "CategorySelectionPanel";
-            this.CategorySelectionPanel.Size = new System.Drawing.Size(202, 155);
+            this.CategorySelectionPanel.Size = new System.Drawing.Size(315, 155);
             this.CategorySelectionPanel.TabIndex = 0;
             // 
             // GarminCategoriesPanel
@@ -117,7 +117,7 @@ namespace GarminFitnessPlugin.View
             this.GarminCategoriesPanel.Controls.Add(this.RunningRadioButton);
             this.GarminCategoriesPanel.Location = new System.Drawing.Point(12, 62);
             this.GarminCategoriesPanel.Name = "GarminCategoriesPanel";
-            this.GarminCategoriesPanel.Size = new System.Drawing.Size(187, 90);
+            this.GarminCategoriesPanel.Size = new System.Drawing.Size(300, 90);
             this.GarminCategoriesPanel.TabIndex = 2;
             // 
             // OtherRadioButton
@@ -198,7 +198,7 @@ namespace GarminFitnessPlugin.View
             // 
             this.ExplanationLabel.Location = new System.Drawing.Point(193, 6);
             this.ExplanationLabel.Name = "ExplanationLabel";
-            this.ExplanationLabel.Size = new System.Drawing.Size(323, 70);
+            this.ExplanationLabel.Size = new System.Drawing.Size(401, 70);
             this.ExplanationLabel.TabIndex = 9;
             this.ExplanationLabel.Text = resources.GetString("ExplanationLabel.Text");
             // 
@@ -210,7 +210,7 @@ namespace GarminFitnessPlugin.View
             this.Controls.Add(this.pictureBox1);
             this.Controls.Add(this.ExplanationLabel);
             this.Name = "SetupWizardGarminCategoryAssociationControl";
-            this.Size = new System.Drawing.Size(520, 251);
+            this.Size = new System.Drawing.Size(600, 251);
             this.splitContainer1.Panel1.ResumeLayout(false);
             this.splitContainer1.Panel2.ResumeLayout(false);
             this.splitContainer1.ResumeLayout(false);
