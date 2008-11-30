@@ -76,7 +76,7 @@ namespace GarminFitnessPlugin.View
             // 
             this.ExplanationLabel.Location = new System.Drawing.Point(193, 6);
             this.ExplanationLabel.Name = "ExplanationLabel";
-            this.ExplanationLabel.Size = new System.Drawing.Size(323, 70);
+            this.ExplanationLabel.Size = new System.Drawing.Size(404, 79);
             this.ExplanationLabel.TabIndex = 2;
             this.ExplanationLabel.Text = resources.GetString("ExplanationLabel.Text");
             // 
@@ -89,7 +89,7 @@ namespace GarminFitnessPlugin.View
             this.Controls.Add(this.EditProfileRadioButton);
             this.Controls.Add(this.ImportProfileRadioButton);
             this.Name = "SetupWizardImportOrEditProfileControl";
-            this.Size = new System.Drawing.Size(520, 177);
+            this.Size = new System.Drawing.Size(600, 177);
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();

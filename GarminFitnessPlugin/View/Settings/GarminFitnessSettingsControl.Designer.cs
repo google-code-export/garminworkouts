@@ -103,7 +103,7 @@ namespace GarminFitnessPlugin.View
             // 
             this.HRGarminRadioButton.AutoSize = true;
             this.HRGarminRadioButton.Checked = true;
-            this.HRGarminRadioButton.Location = new System.Drawing.Point(183, 13);
+            this.HRGarminRadioButton.Location = new System.Drawing.Point(251, 12);
             this.HRGarminRadioButton.Name = "HRGarminRadioButton";
             this.HRGarminRadioButton.Size = new System.Drawing.Size(58, 17);
             this.HRGarminRadioButton.TabIndex = 1;
@@ -115,7 +115,7 @@ namespace GarminFitnessPlugin.View
             // HRSportTracksRadioButton
             // 
             this.HRSportTracksRadioButton.AutoSize = true;
-            this.HRSportTracksRadioButton.Location = new System.Drawing.Point(276, 13);
+            this.HRSportTracksRadioButton.Location = new System.Drawing.Point(369, 12);
             this.HRSportTracksRadioButton.Name = "HRSportTracksRadioButton";
             this.HRSportTracksRadioButton.Size = new System.Drawing.Size(83, 17);
             this.HRSportTracksRadioButton.TabIndex = 1;
@@ -126,7 +126,7 @@ namespace GarminFitnessPlugin.View
             // SpeedGarminRadioButton
             // 
             this.SpeedGarminRadioButton.AutoSize = true;
-            this.SpeedGarminRadioButton.Location = new System.Drawing.Point(183, 13);
+            this.SpeedGarminRadioButton.Location = new System.Drawing.Point(251, 12);
             this.SpeedGarminRadioButton.Name = "SpeedGarminRadioButton";
             this.SpeedGarminRadioButton.Size = new System.Drawing.Size(58, 17);
             this.SpeedGarminRadioButton.TabIndex = 1;
@@ -138,7 +138,7 @@ namespace GarminFitnessPlugin.View
             // 
             this.SpeedSportTracksRadioButton.AutoSize = true;
             this.SpeedSportTracksRadioButton.Checked = true;
-            this.SpeedSportTracksRadioButton.Location = new System.Drawing.Point(276, 13);
+            this.SpeedSportTracksRadioButton.Location = new System.Drawing.Point(369, 12);
             this.SpeedSportTracksRadioButton.Name = "SpeedSportTracksRadioButton";
             this.SpeedSportTracksRadioButton.Size = new System.Drawing.Size(83, 17);
             this.SpeedSportTracksRadioButton.TabIndex = 1;
@@ -150,7 +150,7 @@ namespace GarminFitnessPlugin.View
             // PowerGarminRadioButton
             // 
             this.PowerGarminRadioButton.AutoSize = true;
-            this.PowerGarminRadioButton.Location = new System.Drawing.Point(183, 15);
+            this.PowerGarminRadioButton.Location = new System.Drawing.Point(251, 12);
             this.PowerGarminRadioButton.Name = "PowerGarminRadioButton";
             this.PowerGarminRadioButton.Size = new System.Drawing.Size(58, 17);
             this.PowerGarminRadioButton.TabIndex = 1;
@@ -162,7 +162,7 @@ namespace GarminFitnessPlugin.View
             // PowerSportTracksRadioButton
             // 
             this.PowerSportTracksRadioButton.AutoSize = true;
-            this.PowerSportTracksRadioButton.Location = new System.Drawing.Point(277, 15);
+            this.PowerSportTracksRadioButton.Location = new System.Drawing.Point(369, 12);
             this.PowerSportTracksRadioButton.Name = "PowerSportTracksRadioButton";
             this.PowerSportTracksRadioButton.Size = new System.Drawing.Size(83, 17);
             this.PowerSportTracksRadioButton.TabIndex = 1;
@@ -178,7 +178,7 @@ namespace GarminFitnessPlugin.View
             this.HRSettingsGroupBox.Controls.Add(this.HRSportTracksRadioButton);
             this.HRSettingsGroupBox.Location = new System.Drawing.Point(6, 3);
             this.HRSettingsGroupBox.Name = "HRSettingsGroupBox";
-            this.HRSettingsGroupBox.Size = new System.Drawing.Size(383, 37);
+            this.HRSettingsGroupBox.Size = new System.Drawing.Size(491, 37);
             this.HRSettingsGroupBox.TabIndex = 2;
             this.HRSettingsGroupBox.TabStop = false;
             this.HRSettingsGroupBox.Text = "Heart Rate Settings";
@@ -190,7 +190,7 @@ namespace GarminFitnessPlugin.View
             this.SpeedSettingsGroupBox.Controls.Add(this.SpeedGarminRadioButton);
             this.SpeedSettingsGroupBox.Location = new System.Drawing.Point(6, 47);
             this.SpeedSettingsGroupBox.Name = "SpeedSettingsGroupBox";
-            this.SpeedSettingsGroupBox.Size = new System.Drawing.Size(383, 37);
+            this.SpeedSettingsGroupBox.Size = new System.Drawing.Size(491, 37);
             this.SpeedSettingsGroupBox.TabIndex = 3;
             this.SpeedSettingsGroupBox.TabStop = false;
             this.SpeedSettingsGroupBox.Text = "Speed Settings";
@@ -201,18 +201,19 @@ namespace GarminFitnessPlugin.View
             this.CadenceSettingsGroupBox.Controls.Add(this.CadenceZoneSelectionLabel);
             this.CadenceSettingsGroupBox.Location = new System.Drawing.Point(6, 91);
             this.CadenceSettingsGroupBox.Name = "CadenceSettingsGroupBox";
-            this.CadenceSettingsGroupBox.Size = new System.Drawing.Size(383, 37);
+            this.CadenceSettingsGroupBox.Size = new System.Drawing.Size(491, 37);
             this.CadenceSettingsGroupBox.TabIndex = 4;
             this.CadenceSettingsGroupBox.TabStop = false;
             this.CadenceSettingsGroupBox.Text = "Cadence Settings";
             // 
             // CadenceZoneComboBox
             // 
+            this.CadenceZoneComboBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.CadenceZoneComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.CadenceZoneComboBox.FormattingEnabled = true;
-            this.CadenceZoneComboBox.Location = new System.Drawing.Point(212, 11);
+            this.CadenceZoneComboBox.Location = new System.Drawing.Point(291, 11);
             this.CadenceZoneComboBox.Name = "CadenceZoneComboBox";
-            this.CadenceZoneComboBox.Size = new System.Drawing.Size(147, 21);
+            this.CadenceZoneComboBox.Size = new System.Drawing.Size(194, 21);
             this.CadenceZoneComboBox.TabIndex = 1;
             this.CadenceZoneComboBox.SelectionChangeCommitted += new System.EventHandler(this.CadenceZoneComboBox_SelectionChangedCommited);
             // 
@@ -234,18 +235,19 @@ namespace GarminFitnessPlugin.View
             this.PowerSettingsGroupBox.Controls.Add(this.PowerSportTracksRadioButton);
             this.PowerSettingsGroupBox.Location = new System.Drawing.Point(6, 134);
             this.PowerSettingsGroupBox.Name = "PowerSettingsGroupBox";
-            this.PowerSettingsGroupBox.Size = new System.Drawing.Size(383, 70);
+            this.PowerSettingsGroupBox.Size = new System.Drawing.Size(491, 70);
             this.PowerSettingsGroupBox.TabIndex = 5;
             this.PowerSettingsGroupBox.TabStop = false;
             this.PowerSettingsGroupBox.Text = "Power Settings";
             // 
             // PowerZoneComboBox
             // 
+            this.PowerZoneComboBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.PowerZoneComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.PowerZoneComboBox.FormattingEnabled = true;
-            this.PowerZoneComboBox.Location = new System.Drawing.Point(212, 39);
+            this.PowerZoneComboBox.Location = new System.Drawing.Point(291, 39);
             this.PowerZoneComboBox.Name = "PowerZoneComboBox";
-            this.PowerZoneComboBox.Size = new System.Drawing.Size(147, 21);
+            this.PowerZoneComboBox.Size = new System.Drawing.Size(194, 21);
             this.PowerZoneComboBox.TabIndex = 1;
             this.PowerZoneComboBox.SelectionChangeCommitted += new System.EventHandler(this.PowerZoneComboBox_SelectionChangedCommited);
             // 
@@ -264,7 +266,7 @@ namespace GarminFitnessPlugin.View
             this.ExportDirectoryGroupBox.Controls.Add(this.ExportDirectoryTextBox);
             this.ExportDirectoryGroupBox.Location = new System.Drawing.Point(6, 368);
             this.ExportDirectoryGroupBox.Name = "ExportDirectoryGroupBox";
-            this.ExportDirectoryGroupBox.Size = new System.Drawing.Size(383, 50);
+            this.ExportDirectoryGroupBox.Size = new System.Drawing.Size(491, 50);
             this.ExportDirectoryGroupBox.TabIndex = 6;
             this.ExportDirectoryGroupBox.TabStop = false;
             this.ExportDirectoryGroupBox.Text = "Default Export Directory";
@@ -272,7 +274,7 @@ namespace GarminFitnessPlugin.View
             // BrowseButton
             // 
             this.BrowseButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.BrowseButton.Location = new System.Drawing.Point(301, 17);
+            this.BrowseButton.Location = new System.Drawing.Point(409, 17);
             this.BrowseButton.Name = "BrowseButton";
             this.BrowseButton.Size = new System.Drawing.Size(76, 23);
             this.BrowseButton.TabIndex = 1;
@@ -287,7 +289,7 @@ namespace GarminFitnessPlugin.View
             this.ExportDirectoryTextBox.Location = new System.Drawing.Point(6, 19);
             this.ExportDirectoryTextBox.Name = "ExportDirectoryTextBox";
             this.ExportDirectoryTextBox.ReadOnly = true;
-            this.ExportDirectoryTextBox.Size = new System.Drawing.Size(289, 20);
+            this.ExportDirectoryTextBox.Size = new System.Drawing.Size(397, 20);
             this.ExportDirectoryTextBox.TabIndex = 0;
             // 
             // CategoriesGroupBox
@@ -295,7 +297,7 @@ namespace GarminFitnessPlugin.View
             this.CategoriesGroupBox.Controls.Add(this.splitContainer1);
             this.CategoriesGroupBox.Location = new System.Drawing.Point(6, 210);
             this.CategoriesGroupBox.Name = "CategoriesGroupBox";
-            this.CategoriesGroupBox.Size = new System.Drawing.Size(383, 152);
+            this.CategoriesGroupBox.Size = new System.Drawing.Size(491, 152);
             this.CategoriesGroupBox.TabIndex = 7;
             this.CategoriesGroupBox.TabStop = false;
             this.CategoriesGroupBox.Text = "Categories";
@@ -314,8 +316,8 @@ namespace GarminFitnessPlugin.View
             // splitContainer1.Panel2
             // 
             this.splitContainer1.Panel2.Controls.Add(this.CategorySelectionPanel);
-            this.splitContainer1.Size = new System.Drawing.Size(377, 133);
-            this.splitContainer1.SplitterDistance = 238;
+            this.splitContainer1.Size = new System.Drawing.Size(485, 133);
+            this.splitContainer1.SplitterDistance = 284;
             this.splitContainer1.TabIndex = 6;
             // 
             // ActivityCategoryList
@@ -343,7 +345,7 @@ namespace GarminFitnessPlugin.View
             this.ActivityCategoryList.RowSeparatorLines = true;
             this.ActivityCategoryList.ShowLines = false;
             this.ActivityCategoryList.ShowPlusMinus = false;
-            this.ActivityCategoryList.Size = new System.Drawing.Size(238, 133);
+            this.ActivityCategoryList.Size = new System.Drawing.Size(284, 133);
             this.ActivityCategoryList.TabIndex = 5;
             this.ActivityCategoryList.TabStop = false;
             this.ActivityCategoryList.SelectedChanged += new System.EventHandler(this.ActivityCategoryList_SelectedChanged);
@@ -357,7 +359,7 @@ namespace GarminFitnessPlugin.View
             this.CategorySelectionPanel.Enabled = false;
             this.CategorySelectionPanel.Location = new System.Drawing.Point(0, 0);
             this.CategorySelectionPanel.Name = "CategorySelectionPanel";
-            this.CategorySelectionPanel.Size = new System.Drawing.Size(135, 133);
+            this.CategorySelectionPanel.Size = new System.Drawing.Size(197, 133);
             this.CategorySelectionPanel.TabIndex = 0;
             // 
             // GarminCategoriesPanel
@@ -370,7 +372,7 @@ namespace GarminFitnessPlugin.View
             this.GarminCategoriesPanel.Controls.Add(this.RunningRadioButton);
             this.GarminCategoriesPanel.Location = new System.Drawing.Point(12, 52);
             this.GarminCategoriesPanel.Name = "GarminCategoriesPanel";
-            this.GarminCategoriesPanel.Size = new System.Drawing.Size(120, 78);
+            this.GarminCategoriesPanel.Size = new System.Drawing.Size(182, 78);
             this.GarminCategoriesPanel.TabIndex = 2;
             // 
             // OtherRadioButton
@@ -438,7 +440,7 @@ namespace GarminFitnessPlugin.View
             this.RunWizardLinkLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F);
             this.RunWizardLinkLabel.Location = new System.Drawing.Point(0, 447);
             this.RunWizardLinkLabel.Name = "RunWizardLinkLabel";
-            this.RunWizardLinkLabel.Size = new System.Drawing.Size(400, 23);
+            this.RunWizardLinkLabel.Size = new System.Drawing.Size(500, 23);
             this.RunWizardLinkLabel.TabIndex = 8;
             this.RunWizardLinkLabel.TabStop = true;
             this.RunWizardLinkLabel.Text = "Run setup wizard...";
@@ -455,9 +457,9 @@ namespace GarminFitnessPlugin.View
             this.Controls.Add(this.SpeedSettingsGroupBox);
             this.Controls.Add(this.HRSettingsGroupBox);
             this.Controls.Add(this.PowerSettingsGroupBox);
-            this.MaximumSize = new System.Drawing.Size(400, 470);
+            this.MaximumSize = new System.Drawing.Size(500, 470);
             this.Name = "GarminFitnessSettingsControl";
-            this.Size = new System.Drawing.Size(400, 470);
+            this.Size = new System.Drawing.Size(500, 470);
             this.HRSettingsGroupBox.ResumeLayout(false);
             this.HRSettingsGroupBox.PerformLayout();
             this.SpeedSettingsGroupBox.ResumeLayout(false);

@@ -277,8 +277,8 @@ namespace GarminFitnessPlugin.View
             ActivityCategoryList.RowData = categories;
             ActivityCategoryList.Columns.Clear();
             ActivityCategoryList.Columns.Add(new TreeList.Column("Name", GarminFitnessView.GetLocalizedString("CategoryText"),
-                                                                 140, StringAlignment.Near));
-            ActivityCategoryList.Columns.Add(new TreeList.Column("GarminCategory", "", 75, StringAlignment.Near));
+                                                                 150, StringAlignment.Near));
+            ActivityCategoryList.Columns.Add(new TreeList.Column("GarminCategory", "", 110, StringAlignment.Near));
 
             // Update options since we modified the different lists and combo boxes
             UpdateOptionsUI();

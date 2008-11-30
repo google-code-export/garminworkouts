@@ -89,7 +89,7 @@ namespace GarminFitnessPlugin.View
 
         public override string Title
         {
-            get { return "Completed"; }
+            get { return GarminFitnessView.GetLocalizedString("CompletedText"); }
         }
 
         public override void UICultureChanged(System.Globalization.CultureInfo culture)

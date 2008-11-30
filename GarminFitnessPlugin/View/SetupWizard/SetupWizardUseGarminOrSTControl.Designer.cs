@@ -51,7 +51,7 @@ namespace GarminFitnessPlugin.View
             // 
             this.ExplanationLabel.Location = new System.Drawing.Point(194, 6);
             this.ExplanationLabel.Name = "ExplanationLabel";
-            this.ExplanationLabel.Size = new System.Drawing.Size(323, 84);
+            this.ExplanationLabel.Size = new System.Drawing.Size(403, 84);
             this.ExplanationLabel.TabIndex = 2;
             this.ExplanationLabel.Text = resources.GetString("ExplanationLabel.Text");
             // 
@@ -104,7 +104,7 @@ namespace GarminFitnessPlugin.View
             this.Controls.Add(this.pictureBox1);
             this.Controls.Add(this.ExplanationLabel);
             this.Name = "SetupWizardUseGarminOrSTControl";
-            this.Size = new System.Drawing.Size(520, 214);
+            this.Size = new System.Drawing.Size(600, 214);
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();

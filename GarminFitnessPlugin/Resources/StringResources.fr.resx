@@ -118,522 +118,528 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="AndText" xml:space="preserve">
-    <value>and</value>
+    <value>et</value>
+  </data>
+  <data name="AutoText" xml:space="preserve">
+    <value>Auto</value>
   </data>
   <data name="BetweenText" xml:space="preserve">
-    <value>Between</value>
+    <value>Entre</value>
+  </data>
+  <data name="BikeProfileExplanationText" xml:space="preserve">
+    <value>Certaines données du profil sont spécifiques au cyclisme.  Ces données inclues les différentes plages de puissance et les profils de vélos.  Si vous n'avez pas un appareil compatible avec les fonctionnallités spécifiques au cyclisme, vous pouvez ignorer cette section.</value>
+  </data>
+  <data name="BikeProfileMenuItemText" xml:space="preserve">
+    <value>Vélo {0} ({1})</value>
   </data>
   <data name="BikingText" xml:space="preserve">
-    <value>Biking</value>
+    <value>Cyclisme</value>
   </data>
   <data name="BirthDateLabelText" xml:space="preserve">
-    <value>Birth Date :</value>
+    <value>Date de naissance :</value>
   </data>
   <data name="BrowseButtonText" xml:space="preserve">
-    <value>Browse...</value>
+    <value>Naviguer…</value>
   </data>
   <data name="CadenceRangeTargetDescriptionText" xml:space="preserve">
-    <value>Try to keep my cadence between {0} and {1} {2}.</value>
+    <value>Tenter de garder ma cadence entre {0} et {1} {2}.</value>
   </data>
   <data name="CadenceSettingsGroupBoxText" xml:space="preserve">
-    <value>Cadence Settings</value>
+    <value>Paramètres de cadence</value>
   </data>
   <data name="CadenceTargetComboBoxText" xml:space="preserve">
-    <value>Try to keep my cadence in a certain zone</value>
+    <value>Tenter de garder ma cadence dans une certaine plage</value>
   </data>
   <data name="CadenceZoneSelectionLabelText" xml:space="preserve">
-    <value>Use this cadence zone for my workouts :</value>
+    <value>Utiliser ces zones de cadence pour mes entraînements :</value>
   </data>
   <data name="CadenceZoneTargetDescriptionText" xml:space="preserve">
-    <value>Try to keep my cadence in zone {0}.</value>
+    <value>Essayer de maintenir ma cadence dans la plage {0}.</value>
   </data>
   <data name="CaloriesDurationComboBoxText" xml:space="preserve">
-    <value>After I have burned a certain number of calories</value>
+    <value>Lorsque j'ai brûlé un certain nombre de calories</value>
   </data>
   <data name="CaloriesDurationDescriptionText" xml:space="preserve">
-    <value>Go until I burn {0} calories.</value>
+    <value>Continuer jusqu'à ce que j'aie brûlé {0} calories.</value>
   </data>
   <data name="CaloriesDurationLabelText" xml:space="preserve">
-    <value>How many calories?</value>
+    <value>Combien de calories?</value>
   </data>
   <data name="CategoriesText" xml:space="preserve">
-    <value>Categories</value>
+    <value>Catégories</value>
+  </data>
+  <data name="CategoryAssociationExplanationText" xml:space="preserve">
+    <value>Pour que vos entraînements soient correctement catégorisés sur votre appareil, vous devez associer chaque catégorie d'activité SportTracks à son équivalent chez Garmin.  Ceci vous permet à vos entraînements d'utiliser les bonnes zones cardiaques et de vitessse telles que définies dans votre profil.</value>
+  </data>
+  <data name="CategoryAssociationText" xml:space="preserve">
+    <value>Association de catégories Garmin</value>
   </data>
   <data name="CategoryText" xml:space="preserve">
-    <value>Category</value>
+    <value>Catégorie</value>
+  </data>
+  <data name="CompletedExplanationText" xml:space="preserve">
+    <value>Vous avez terminé l'assistant de configuration avec succès.  Le plugin est mainteant disponible à partir du menu "Choix de la vue".  Prenez note que tous les paramètres sont disponibles en tout temps dans la section "Réglages" et sous la vue "Profil".</value>
+  </data>
+  <data name="CompletedLabelText" xml:space="preserve">
+    <value>Pour terminer l'assistant de configuration, cliquez sur "Terminer"</value>
+  </data>
+  <data name="CompletedText" xml:space="preserve">
+    <value>Complété</value>
+  </data>
+  <data name="ContinueLabelText" xml:space="preserve">
+    <value>Pour configurer le plugin, cliquez sur "Suivant"</value>
   </data>
   <data name="CustomText" xml:space="preserve">
-    <value>Custom</value>
+    <value>Personnallisée</value>
   </data>
   <data name="DataTooRecentErrorText" xml:space="preserve">
-    <value>Cannot open this data with this version of the Garmin Fitness Plugin, please update to the latest version.</value>
+    <value>Vous ne pouvez ouvrir ce logbook avec votre version actuelle du plugin Garmin Fitness, veuillez installer la dernière version.</value>
   </data>
   <data name="DefaultExportDirectoryGroupBoxText" xml:space="preserve">
-    <value>Default Export Directory</value>
+    <value>Répertoire d'export par défaut</value>
   </data>
   <data name="DefaultHeartRateZoneLabelText" xml:space="preserve">
-    <value>Use the heart rate zones from :</value>
+    <value>Utiliser les plages de fréquence cardiaque de :</value>
   </data>
   <data name="DefaultPowerZoneLabelText" xml:space="preserve">
-    <value>Use the power zones from :</value>
+    <value>Utiliser les plages de puissance de :</value>
   </data>
   <data name="DefaultSpeedZoneLabelText" xml:space="preserve">
-    <value>Use the speed zones from :</value>
+    <value>Utiliser les plages de vitesse de :</value>
   </data>
   <data name="DetailsText" xml:space="preserve">
-    <value>Details</value>
+    <value>Détails</value>
   </data>
   <data name="DeviceCommunicationErrorText" xml:space="preserve">
-    <value>Unable to load the Garmin Cummunicator Plugin.  Please make sure you have SportTracks version 2.0.3170 or later and Garmin Cummunicator Plugin installed and activated in Internet Explorer.</value>
+    <value>Il est impossible de charger le plugin Garmin Communicator.  Veuillez vous assurer que vous avez bien la versio 2.0.3170 de SportTracks of une plus récente et que le plugin Garmin Coommunicator est bien installé et activé dans Internet Explorer.</value>
   </data>
   <data name="DistanceDurationComboBoxText" xml:space="preserve">
-    <value>After I go a certain distance</value>
+    <value>Lorsque j'aurai parcouru une certaine distance</value>
   </data>
   <data name="DistanceDurationDescriptionText" xml:space="preserve">
-    <value>Go {0:0.00} {1}.</value>
+    <value>Parcourir {0:0.00} {1}.</value>
   </data>
   <data name="DistanceDurationLabelText" xml:space="preserve">
-    <value>How far?</value>
+    <value>Quelle distance?</value>
   </data>
   <data name="DoubleRangeValidationText" xml:space="preserve">
-    <value>Value must be a decimal number between {0:0.00} and {1:0.00}</value>
+    <value>La valeur doit être un nombre décimal entre {0:0.00} et {1:0.00}</value>
+  </data>
+  <data name="EditBikingProfileText" xml:space="preserve">
+    <value>Profil cycliste</value>
+  </data>
+  <data name="EditProfileExplanationText" xml:space="preserve">
+    <value>Sur cette page vous pouvez éditer vos informations personnelles qui seront stoquées dans votre profil.  Prenez note que l'affichage des vos entraînements sera affecté par la façon dont vous choisissez d'éditer vos zones (BPM vs. % max FC et vitesse vs. rythme) et que ces zones sont différentes pour chaque sport.</value>
+  </data>
+  <data name="EditProfileText" xml:space="preserve">
+    <value>Édition du profile</value>
+  </data>
+  <data name="EditRadioButtonText" xml:space="preserve">
+    <value>Éditer mon profil manuellement</value>
   </data>
   <data name="ErrorText" xml:space="preserve">
-    <value>Error</value>
+    <value>Erreur</value>
   </data>
   <data name="ExportAllText" xml:space="preserve">
-    <value>Export All</value>
+    <value>Exporter tous</value>
   </data>
-  <data name="ExportWorkoutsFailedText" xml:space="preserve">
-    <value>There was an error while exporting workouts</value>
+  <data name="ExportProfileFailedText" xml:space="preserve">
+    <value>Une erreur s'est produite lors de l'export de votre profile</value>
+  </data>
+  <data name="ExportProfileSuccessText" xml:space="preserve">
+    <value>Le profile a été exporté avec succès</value>
   </data>
   <data name="ExportSelectedText" xml:space="preserve">
-    <value>Export Selected</value>
+    <value>Exporter la sélection</value>
+  </data>
+  <data name="ExportText" xml:space="preserve">
+    <value>Exporter</value>
+  </data>
+  <data name="ExportWorkoutsFailedText" xml:space="preserve">
+    <value>Une erreur s'est produite lors de l'export de vos entraînements</value>
   </data>
   <data name="ExportWorkoutsSuccessText" xml:space="preserve">
-    <value>Workouts have been successfully exported to the device.</value>
+    <value>Vos entraînements on été correctement exportés vers votre unité.</value>
   </data>
   <data name="FemaleText" xml:space="preserve">
-    <value>Female</value>
+    <value>Femme</value>
   </data>
   <data name="FileDescriptionText" xml:space="preserve">
-    <value>Workout Files</value>
+    <value>Fichiers d'entraînement</value>
+  </data>
+  <data name="FinishLabelText" xml:space="preserve">
+    <value>Pour configurer le plugin plus tard, cliquez sur "Terminer"</value>
   </data>
   <data name="FromDeviceText" xml:space="preserve">
-    <value>From Device</value>
+    <value>À partir de l'unité</value>
   </data>
   <data name="FromFileText" xml:space="preserve">
-    <value>From File</value>
+    <value>À partir d'un fichier</value>
+  </data>
+  <data name="FTPLabelText" xml:space="preserve">
+    <value>Niveau de puissance fonctionnelle :</value>
   </data>
   <data name="GarminFitnessText" xml:space="preserve">
     <value>Garmin Fitness</value>
+  </data>
+  <data name="GarminModeRadioButtonText" xml:space="preserve">
+    <value>Je veux utiliser le mode Garmin</value>
+  </data>
+  <data name="GarminOrSTText" xml:space="preserve">
+    <value>Mode Garmin ou SportTracks</value>
   </data>
   <data name="GarminText" xml:space="preserve">
     <value>Garmin</value>
   </data>
   <data name="GearWeightLabelText" xml:space="preserve">
-    <value>Gear Weight :</value>
+    <value>Poids de l'équipement :</value>
   </data>
   <data name="GenderLabelText" xml:space="preserve">
-    <value>Gender :</value>
+    <value>Sexe :</value>
   </data>
   <data name="GTCSpeedZone10Text" xml:space="preserve">
-    <value>10 - Max Speed</value>
+    <value>10 - Vitesse Maximale</value>
   </data>
   <data name="GTCSpeedZone1Text" xml:space="preserve">
-    <value>1 - Climb 4</value>
+    <value>1 - Côte 4</value>
   </data>
   <data name="GTCSpeedZone2Text" xml:space="preserve">
-    <value>2 - Climb 3</value>
+    <value>2 - Côte 3</value>
   </data>
   <data name="GTCSpeedZone3Text" xml:space="preserve">
-    <value>3 - Climb 2</value>
+    <value>3 - Côte 2</value>
   </data>
   <data name="GTCSpeedZone4Text" xml:space="preserve">
-    <value>4 - Climb 1</value>
+    <value>4 - Côte 1</value>
   </data>
   <data name="GTCSpeedZone5Text" xml:space="preserve">
-    <value>5 - Flat 3</value>
+    <value>5 - Terrain plat 3</value>
   </data>
   <data name="GTCSpeedZone6Text" xml:space="preserve">
-    <value>6 - Flat 2</value>
+    <value>6 - Terrain plat 2</value>
   </data>
   <data name="GTCSpeedZone7Text" xml:space="preserve">
-    <value>7 - Flat 1</value>
+    <value>7 - Terrain plat 1</value>
   </data>
   <data name="GTCSpeedZone8Text" xml:space="preserve">
-    <value>8 - Descent</value>
+    <value>8 - Descente</value>
   </data>
   <data name="GTCSpeedZone9Text" xml:space="preserve">
     <value>9 - Sprint</value>
   </data>
+  <data name="HasCadenceText" xml:space="preserve">
+    <value>Utilise un senseur de cadence</value>
+  </data>
+  <data name="HasPowerText" xml:space="preserve">
+    <value>Utilise un senseur de puissance</value>
+  </data>
   <data name="HeartRateAboveDurationComboBoxText" xml:space="preserve">
-    <value>When my heart rate gets above a certain level</value>
+    <value>Lorsque ma fréquence cardiaque dépasse un certain seuil</value>
   </data>
   <data name="HeartRateAboveDurationDescriptionText" xml:space="preserve">
-    <value>Go until me heart rate gets above {0} {1}.</value>
+    <value>Continuer jusqu'à ce que ma fréquence cardiaque dépasse {0} {1}.</value>
   </data>
   <data name="HeartRateBelowDurationComboBoxText" xml:space="preserve">
-    <value>When my heart rate gets below a certain level</value>
+    <value>Lorsque ma fréquence cardiaque passe en dessous d'un certain seuil</value>
   </data>
   <data name="HeartRateBelowDurationDescriptionText" xml:space="preserve">
-    <value>Go until me heart rate gets below {0} {1}.</value>
+    <value>Continuer jusqu'à ce que ma fréquence cardiaque passe en dessous de {0} {1}.</value>
   </data>
   <data name="HeartRateDurationLabelText" xml:space="preserve">
-    <value>What heart rate level?</value>
+    <value>Quel niveau de fréquence cardiaque?</value>
   </data>
   <data name="HeartRateRangeTargetDescriptionText" xml:space="preserve">
-    <value>Try to keep my heart rate between {0} and {1} {2}.</value>
+    <value>Essayer de maintenir mon rythme cardiaque entre {0} et {1} {2}.</value>
   </data>
   <data name="HeartRateTargetComboBoxText" xml:space="preserve">
-    <value>Try to keep my heart rate in a certain zone</value>
+    <value>Essayer de maintenir mon rythme cardiaque dans une certaine plage.</value>
   </data>
   <data name="HeartRateZoneTargetDescriptionText" xml:space="preserve">
-    <value>Try to keep my heart rate in zone {0}.</value>
+    <value>Essayer de maintenir mon rythme cardiaque dans la plage {0}.</value>
   </data>
   <data name="HighLabelText" xml:space="preserve">
-    <value>High :</value>
+    <value>Haute :</value>
+  </data>
+  <data name="HighText" xml:space="preserve">
+    <value>Haute :</value>
   </data>
   <data name="HRSettingsGroupBoxText" xml:space="preserve">
-    <value>Heart Rate Settings</value>
+    <value>Paramètres de fréquence cardiaque</value>
   </data>
   <data name="HRZonesGroupBoxText" xml:space="preserve">
-    <value>Heart Rate Zones</value>
+    <value>Plages de fréquence cardiaque</value>
+  </data>
+  <data name="ImportEditExplanationText" xml:space="preserve">
+    <value>Pour que vos entraînements utilisent les bonnes plages, nous devons les configurer.  Même si vous utilisez le plugin en mode SportTracks, votre profile est utilisé pour l'affichage (BPM vs. &amp; max FC et vitesse vs. rythme) donc il est important de bien les configurer.  Vous pouvez soit les importer de votre unité ou les éditer manuellement.</value>
+  </data>
+  <data name="ImportOrEditProfileText" xml:space="preserve">
+    <value>Importer ou éditer votre profil</value>
+  </data>
+  <data name="ImportProfileErrorText" xml:space="preserve">
+    <value>Une erreur s'est produite lord de l'import de votre profile.</value>
+  </data>
+  <data name="ImportRadioButtonText" xml:space="preserve">
+    <value>Importer le profil de mon unité.</value>
   </data>
   <data name="ImportWorkoutsErrorText" xml:space="preserve">
-    <value>There was an error while importing the workouts</value>
+    <value>Une erreur s'est produite lors de l'import de vos entraînements</value>
+  </data>
+  <data name="IndependentModeRadioButtonText" xml:space="preserve">
+    <value>Je veux configurer les zones indépendemment</value>
   </data>
   <data name="IntegerRangeValidationText" xml:space="preserve">
-    <value>Value must be an integer between {0} and {1}</value>
+    <value>La valeur doit être un nombre entier entre {0:0.00} et {1:0.00}</value>
   </data>
   <data name="InvalidWorkoutNameText" xml:space="preserve">
-    <value>The entered workout name is invalid.  The name must be unique and cannot be empty.</value>
+    <value>Le nom entré est invalide.  Le nom de votre entraînement doit être unique et non-vide.</value>
   </data>
   <data name="LapButtonDurationComboBoxText" xml:space="preserve">
-    <value>When I press the 'Lap' button on my device</value>
+    <value>Lorsque j'appuie sur le bouton 'Circuit' sur mon appareil.</value>
   </data>
   <data name="LapButtonDurationDescriptionText" xml:space="preserve">
-    <value>Go until I press the 'lap' button on my device.</value>
+    <value>Continuer jusqu'à ce que j'appuie sur le bouton 'Circuit' de mon appareil.</value>
   </data>
   <data name="LastExportDateText" xml:space="preserve">
-    <value>Last export date :</value>
+    <value>Date du dernier export :</value>
   </data>
   <data name="LowLabelText" xml:space="preserve">
-    <value>Low :</value>
+    <value>Basse :</value>
+  </data>
+  <data name="LowText" xml:space="preserve">
+    <value>Basse</value>
   </data>
   <data name="MaleText" xml:space="preserve">
-    <value>Male</value>
+    <value>Homme</value>
+  </data>
+  <data name="ManualSTGarminZonesExplanationText" xml:space="preserve">
+    <value>Vous avez choisi de configurer l'utilisation de chaque zone manuellement.  Veuillez sélectionner le mode à utiliser pour chaque type de zone disponible dans le plugin.</value>
   </data>
   <data name="MaxHRLabelText" xml:space="preserve">
-    <value>Maximum Heart Rate :</value>
+    <value>Fréquence cardiaque maximale :</value>
+  </data>
+  <data name="MillimeterText" xml:space="preserve">
+    <value>mm</value>
   </data>
   <data name="MinuteAbbrText" xml:space="preserve">
-    <value>min</value>
+    <value>min.</value>
+  </data>
+  <data name="ModeExplanationText" xml:space="preserve">
+    <value>Une des choses que le plugin Garmin Fitness permet est une meilleure intégration dans SportTracks.  Ceci signifie qu'il est possible d'utiliser les différentes plages de rythme cardiaque, vitesse et puissance définies dans SportTracks au lieu de celles définies par Garmin.  Vous pouvez aussi choisir de configurer le mode à utiliser indépendemment pour chaque type de plage.</value>
   </data>
   <data name="NameLabelText" xml:space="preserve">
-    <value>Name :</value>
+    <value>Nom :</value>
+  </data>
+  <data name="NameText" xml:space="preserve">
+    <value>Nom</value>
   </data>
   <data name="NeverExportedText" xml:space="preserve">
-    <value>Never exported</value>
+    <value>Jamais exporté</value>
   </data>
   <data name="NotesLabelText" xml:space="preserve">
     <value>Notes :</value>
   </data>
   <data name="NullTargetComboBoxText" xml:space="preserve">
-    <value>I don't have a specific target for this step</value>
+    <value>Je n'ai pas d'objectif spécifique pour cette phase</value>
   </data>
   <data name="NullTargetDescriptionText" xml:space="preserve">
     <value />
   </data>
+  <data name="NumberText" xml:space="preserve">
+    <value>Numéro</value>
+  </data>
+  <data name="OdometerLabelText" xml:space="preserve">
+    <value>Odomètre :</value>
+  </data>
   <data name="OpenFileText" xml:space="preserve">
-    <value>Import Workout</value>
+    <value>Import d'entraînement</value>
   </data>
   <data name="OtherText" xml:space="preserve">
-    <value>Other</value>
+    <value>Autre</value>
   </data>
   <data name="PaceRangeTargetDescriptionText" xml:space="preserve">
-    <value>Try to keep my pace between {0:00}:{1:00} and {2:00}:{3:00} min/{4}.</value>
+    <value>Essayer de maintenir mon rythme entre {0:00}:{1:00} et {2:00}:{3:00} min/{4}.</value>
   </data>
   <data name="PasteStepErrorText" xml:space="preserve">
-    <value>Unable to paste the steps, your workout cannot contain that many steps.  The maximum number of steps in a workout is 20.</value>
+    <value>Impossible de coller les phases.  Votre entraînement ne peut pas contenir autant de phases.  Le nombre maximal de phases par entraînement est de 20.</value>
   </data>
   <data name="PerHourText" xml:space="preserve">
     <value>/h</value>
   </data>
   <data name="PowerRangeTargetDescriptionText" xml:space="preserve">
-    <value>Try to keep my power between {0} and {1} watts.</value>
+    <value>Essayer de maintenir ma puissance entre {0} et {1} watts.</value>
   </data>
   <data name="PowerSettingsGroupBoxText" xml:space="preserve">
-    <value>Power Settings</value>
+    <value>Paramètres de puissance</value>
   </data>
   <data name="PowerTargetComboBoxText" xml:space="preserve">
-    <value>Try to keep my power in a certain zone</value>
+    <value>Essayer de maintenir ma puissance dans une certaine plage</value>
   </data>
   <data name="PowerZoneSelectionLabelText" xml:space="preserve">
-    <value>Use this power zone for my workouts :</value>
+    <value>Utiliser ces zones de puissance pour mes entraînements :</value>
   </data>
   <data name="PowerZonesGroupBoxText" xml:space="preserve">
-    <value>Power Zones</value>
+    <value>Plages de puissance</value>
   </data>
   <data name="PowerZoneTargetDescriptionText" xml:space="preserve">
-    <value>Try to keep my power in zone {0}.</value>
+    <value>Essayer de maintenir ma puissance dans la plage {0}</value>
   </data>
   <data name="ProfileText" xml:space="preserve">
-    <value>Profile</value>
+    <value>Profil</value>
   </data>
   <data name="RefreshButtonText" xml:space="preserve">
-    <value>Refresh devices</value>
+    <value>Rafraîichir les unités</value>
   </data>
   <data name="RenameExplanationLabelText" xml:space="preserve">
-    <value>Selecting this option will use the following name for the workout.</value>
+    <value>Choisir cette option va utiliser le nom suivant pour l'entraînement.</value>
   </data>
   <data name="RepeatStepDescriptionText" xml:space="preserve">
-    <value>Repeat the steps below {0} times:</value>
+    <value>Répéter les phases ci-dessous {0} fois :</value>
   </data>
   <data name="RepetitionCountLabelText" xml:space="preserve">
-    <value>How many repetitions do you want to do?</value>
+    <value>Combien de répétitions voulez-vous effectuer?</value>
   </data>
   <data name="ReplaceExplanationLabelText" xml:space="preserve">
-    <value>Selecting this option will overwrite the current workout that has the same name.</value>
+    <value>Choisir cette option va remplacer l'entraînement ayant actuellement le même nom.</value>
   </data>
   <data name="ReplaceRenameIntroLabelText" xml:space="preserve">
-    <value>There is already a workout present that has the same name.  You can either replace the current workout or rename the new one.</value>
+    <value>Il existe déjèa un entraînement avec le même nom.  Vous pouvez ou bien remplacer l'entraînement actuel ou renommer le nouvel entraînement.</value>
   </data>
   <data name="RestingCheckBoxText" xml:space="preserve">
-    <value>Resting step</value>
+    <value>Phase de repos</value>
   </data>
   <data name="RestingHeartRateLabelText" xml:space="preserve">
-    <value>Resting Heart Rate :</value>
+    <value>Fréquence cardiaque au repos :</value>
   </data>
   <data name="RestText" xml:space="preserve">
-    <value>Rest</value>
+    <value>Repos</value>
   </data>
   <data name="RunningText" xml:space="preserve">
-    <value>Running</value>
+    <value>Course à pied</value>
+  </data>
+  <data name="RunWizardText" xml:space="preserve">
+    <value>Exécuter l'assistant de configuration…</value>
   </data>
   <data name="ScheduleBannerText" xml:space="preserve">
-    <value>Schedule</value>
+    <value>Planifier</value>
   </data>
   <data name="SelectCategoryDialogText" xml:space="preserve">
-    <value>Select category for workout </value>
+    <value>Sélectionner la catégorie pour l'entraînement</value>
   </data>
   <data name="SelectDateText" xml:space="preserve">
-    <value>Select a date</value>
+    <value>Sélectionnez une date</value>
   </data>
   <data name="SelectDeviceIntroText" xml:space="preserve">
-    <value>Select your device below.  If your device doesn't appear, make sure it is connected to your PC and hit the refresh button.</value>
+    <value>Sélectionnez votre unité ci-dessous.  Si votre unité n'apparait pas, veuillez vous assurer qu'elle est bien branchée dans votre PC et appuyez sur le bouton de rafraîchissement.</value>
   </data>
   <data name="SelectDeviceText" xml:space="preserve">
-    <value>Select device</value>
+    <value>Sélectionner votre unité</value>
   </data>
   <data name="SettingsPageNameText" xml:space="preserve">
-    <value>Garmin Fitness Settings</value>
+    <value>Paramètres Garmin Fitness</value>
+  </data>
+  <data name="SetupGarminOrSTZonesText" xml:space="preserve">
+    <value>Configurer les zones indépendemment</value>
   </data>
   <data name="SpeedRangeTargetDescriptionText" xml:space="preserve">
-    <value>Try to keep my speed between {0:0.00} {2}/h and {1:0.00} {2}/h.</value>
+    <value>Essayer de maintenir ma vitesse entre {0:0.00} {2}/h et {1:0.00} {2}/h.</value>
   </data>
   <data name="SpeedSettingsGroupBoxText" xml:space="preserve">
-    <value>Speed Settings</value>
+    <value>Paramètres de vitesse</value>
   </data>
   <data name="SpeedTargetComboBoxText" xml:space="preserve">
-    <value>Try to keep my speed in a certain zone</value>
+    <value>Essayer de maintenir ma vitesse dans une certaine plage</value>
   </data>
   <data name="SpeedZonesGroupBoxText" xml:space="preserve">
-    <value>Speed Zones</value>
+    <value>Plages de vitesse</value>
   </data>
   <data name="SpeedZoneTargetDescriptionText" xml:space="preserve">
-    <value>Try to keep my speed in zone {0}</value>
+    <value>Essayer de maintenir ma vitesse dans la plage {0}</value>
   </data>
   <data name="SportTracksText" xml:space="preserve">
     <value>SportTracks</value>
   </data>
   <data name="StepDetailsText" xml:space="preserve">
-    <value>Step</value>
+    <value>Phase</value>
   </data>
   <data name="StepDurationGroupText" xml:space="preserve">
-    <value>Step Duration</value>
+    <value>Durée de la phase</value>
   </data>
   <data name="StepDurationLabelText" xml:space="preserve">
-    <value>When will this step end?</value>
+    <value>Quand est-ce que cette phase se termine?</value>
   </data>
   <data name="StepNameLabelText" xml:space="preserve">
-    <value>Custom step name:</value>
+    <value>Nom de la phase :</value>
   </data>
   <data name="StepTargetGroupText" xml:space="preserve">
-    <value>Step Target</value>
+    <value>Objectif de la phase</value>
   </data>
   <data name="StepTargetLabelText" xml:space="preserve">
-    <value>What's your target for this step?</value>
-  </data>
-  <data name="SuccessText" xml:space="preserve">
-    <value>Success</value>
-  </data>
-  <data name="TimeDurationComboBoxText" xml:space="preserve">
-    <value>After I go a certain amount of time</value>
-  </data>
-  <data name="TimeDurationDescriptionText" xml:space="preserve">
-    <value>Go for {0:00}:{1:00}:{2:00}</value>
-  </data>
-  <data name="TimeDurationLabelText" xml:space="preserve">
-    <value>How much time?</value>
-  </data>
-  <data name="TimeRangeValidationText" xml:space="preserve">
-    <value>Value must be a duration between {0:00}:{1:00} and {2:00}:{3:00}</value>
-  </data>
-  <data name="ToDeviceText" xml:space="preserve">
-    <value>To Device</value>
-  </data>
-  <data name="ToFileText" xml:space="preserve">
-    <value>To File</value>
-  </data>
-  <data name="ToLabelText" xml:space="preserve">
-    <value>to</value>
-  </data>
-  <data name="TooRecentDataText" xml:space="preserve">
-    <value>Data is too recent for the version of the plugin installed.  Please install the latest version of the plugin.</value>
-  </data>
-  <data name="UseCustomCategoryText" xml:space="preserve">
-    <value>Use custom category</value>
-  </data>
-  <data name="UseParentCategoryText" xml:space="preserve">
-    <value>Use parent category</value>
-  </data>
-  <data name="ValueValidationTitleText" xml:space="preserve">
-    <value>Invalid value</value>
-  </data>
-  <data name="WeightLabelText" xml:space="preserve">
-    <value>Weight :</value>
-  </data>
-  <data name="WhichZoneText" xml:space="preserve">
-    <value>Which zone?</value>
-  </data>
-  <data name="WorkoutsText" xml:space="preserve">
-    <value>Workouts</value>
-  </data>
-  <data name="ExportProfileFailedText" xml:space="preserve">
-    <value>There was an error while exporting the profile</value>
-  </data>
-  <data name="ExportText" xml:space="preserve">
-    <value>Export</value>
-  </data>
-  <data name="ExportProfileSuccessText" xml:space="preserve">
-    <value>The profile has been successfully exported to the device.</value>
-  </data>
-  <data name="ContinueLabelText" xml:space="preserve">
-    <value>To set up the plugin, click on "Next"</value>
-  </data>
-  <data name="FinishLabelText" xml:space="preserve">
-    <value>To set up the plugin later, click on "Finish"</value>
-  </data>
-  <data name="GarminModeRadioButtonText" xml:space="preserve">
-    <value>I want to use the Garmin mode</value>
-  </data>
-  <data name="GarminOrSTText" xml:space="preserve">
-    <value>Garmin or SportTracks mode</value>
-  </data>
-  <data name="IndependentModeRadioButtonText" xml:space="preserve">
-    <value>I want to configure the zones independently</value>
-  </data>
-  <data name="ModeExplanationText" xml:space="preserve">
-    <value>One of the things that the Garmin Fitness Plugin allows is a better integration with SportTracks.  What this means is that it is possible to use the SportTracks defined heart rate, speed and power zones instead of the ones defined by Garmin.  This choice can also be customized per zone type.</value>
+    <value>Quel est votre objectif pour cette phase?</value>
   </data>
   <data name="STModeRadioButtonText" xml:space="preserve">
-    <value>I want to use the SportTracks mode</value>
-  </data>
-  <data name="WelcomeLabelText" xml:space="preserve">
-    <value>Welcome to the Garmin Fitness Plugin setup wizard.  This will help you setup the plugin for your logbook.  At any time, you can click on the "Finish" button to quit the wizard.  Also note that this wizard is always available from the plugin's "Settings" page so if you wish to configure the plugin later on, feel free to do so.</value>
-  </data>
-  <data name="WelcomeText" xml:space="preserve">
-    <value>Welcome</value>
-  </data>
-  <data name="ManualSTGarminZonesExplanationText" xml:space="preserve">
-    <value>You have chosen to configure your zone usage manually.  Please select the mode to use for each type of zone available in the plugin.</value>
-  </data>
-  <data name="ImportProfileErrorText" xml:space="preserve">
-    <value>There was an error while importing the profile</value>
-  </data>
-  <data name="AutoText" xml:space="preserve">
-    <value>Auto</value>
-  </data>
-  <data name="BikeProfileMenuItemText" xml:space="preserve">
-    <value>Bike {0} ({1})</value>
-  </data>
-  <data name="FTPLabelText" xml:space="preserve">
-    <value>Functional Threshold Power :</value>
-  </data>
-  <data name="HasCadenceText" xml:space="preserve">
-    <value>Has cadence sensor</value>
-  </data>
-  <data name="HasPowerText" xml:space="preserve">
-    <value>Has power sensor</value>
-  </data>
-  <data name="MillimeterText" xml:space="preserve">
-    <value>mm</value>
-  </data>
-  <data name="OdometerLabelText" xml:space="preserve">
-    <value>Odometer :</value>
-  </data>
-  <data name="WheelSizeGroupBoxText" xml:space="preserve">
-    <value>Wheel size</value>
-  </data>
-  <data name="WheelSizeLabelText" xml:space="preserve">
-    <value>Wheel size :</value>
-  </data>
-  <data name="RunWizardText" xml:space="preserve">
-    <value>Run setup wizard...</value>
+    <value>Je veux utiliser le mode SportTracks</value>
   </data>
   <data name="STZonesExplanationText" xml:space="preserve">
-    <value>When using SportTracks zones, the plugin uses the heart rate and speed zones as defined in the category in which the workout is classified.  The SportTracks activity categories don't have cadence or power zones, this is why these must be defined independently.</value>
+    <value>Lorsque vous utilisez les zones SportTracks, le plugin utilise les plages de rythme cardiaque et de vitesse qui sont définies dans la catégorie à laquelle l'entraînement est associé.  Ces catégories ne contiennent pas de spécification pour les zones de cadence et de puissance à utiliser.  Pour cette raison, il faut spécifier quelles zones utiliser dans vos entraînements manuellement.</value>
   </data>
-  <data name="CategoryAssociationExplanationText" xml:space="preserve">
-    <value>For your workouts to be correctly categorized on your unit you must associate every SportTracks activity category with it's corresponding Garmin activity category.  Doing so allows your workouts to use the right heart rate zones and speed zones as setup in your profile.</value>
+  <data name="SuccessText" xml:space="preserve">
+    <value>Succès</value>
   </data>
-  <data name="CategoryAssociationText" xml:space="preserve">
-    <value>Garmin category association</value>
+  <data name="TimeDurationComboBoxText" xml:space="preserve">
+    <value>Lorsqu'un certain temps se sera écoulé</value>
   </data>
-  <data name="SetupGarminOrSTZonesText" xml:space="preserve">
-    <value>Setup zones individually</value>
+  <data name="TimeDurationDescriptionText" xml:space="preserve">
+    <value>Courir pendant {0:00}:{1:00}:{2:00}</value>
+  </data>
+  <data name="TimeDurationLabelText" xml:space="preserve">
+    <value>Combien de temps?</value>
+  </data>
+  <data name="TimeRangeValidationText" xml:space="preserve">
+    <value>La valeur doit être une durée entre {0:00}:{1:00} et {2:00}:{3:00}</value>
+  </data>
+  <data name="ToDeviceText" xml:space="preserve">
+    <value>Vers l'appareil</value>
+  </data>
+  <data name="ToFileText" xml:space="preserve">
+    <value>Vers un fichier</value>
+  </data>
+  <data name="ToLabelText" xml:space="preserve">
+    <value>vers</value>
+  </data>
+  <data name="TooRecentDataText" xml:space="preserve">
+    <value>Les données sont trop récentes pour la version du plugin installée.  Veuillez installer la dernière version du plugin..</value>
+  </data>
+  <data name="UseCustomCategoryText" xml:space="preserve">
+    <value>Utiliser une catégorie personnalisée</value>
+  </data>
+  <data name="UseParentCategoryText" xml:space="preserve">
+    <value>Utiliser la catégorie de mon parent</value>
+  </data>
+  <data name="ValueValidationTitleText" xml:space="preserve">
+    <value>Valeur invalide</value>
+  </data>
+  <data name="WeightLabelText" xml:space="preserve">
+    <value>Poids :</value>
+  </data>
+  <data name="WelcomeLabelText" xml:space="preserve">
+    <value>Bienvenue dans l'assistant de configuration du plugin Garmin Fitness.  Cet assistant vous aidera à configurer le plugin pour votre logbook.  À n'importe quel moment vous pouvez terminer l'assistant en cliquant sur le bouton "Terminer".  Notez aussi que cet assistant est toujours disponible à partir des réglages du plugin.  Vous pouvez donc configurer le plugin plus tard si vosu en avez envie.</value>
+  </data>
+  <data name="WelcomeText" xml:space="preserve">
+    <value>Bienvenue</value>
+  </data>
+  <data name="WheelSizeGroupBoxText" xml:space="preserve">
+    <value>Diamètre de la roue</value>
+  </data>
+  <data name="WheelSizeLabelText" xml:space="preserve">
+    <value>Diamètre de la roue :</value>
+  </data>
+  <data name="WhichZoneText" xml:space="preserve">
+    <value>Quelle plage?</value>
   </data>
   <data name="WizardSTZonesText" xml:space="preserve">
-    <value>SportTracks zones</value>
+    <value>Zones SportTracks</value>
   </data>
-  <data name="CompletedExplanationText" xml:space="preserve">
-    <value>You have completed the setup wizard successfully.  The plugin is now available from the "Select view" menu.  Note that all the settings are always available in the Garmin Fitness Plugin "Settings" page and in the "Profile" view.</value>
-  </data>
-  <data name="CompletedLabelText" xml:space="preserve">
-    <value>To close the wizard click on "Finish"</value>
-  </data>
-  <data name="EditRadioButtonText" xml:space="preserve">
-    <value>Edit my profile manually</value>
-  </data>
-  <data name="ImportEditExplanationText" xml:space="preserve">
-    <value>In order for your workouts to use the right zones, we must setup these zones.  Even if you setup the plugin in SportTracks mode, your profile in used for the display (speed vs. pace, BPM vs. % max HR) so it is important to setup your profile.  You can either import you profile from your unit or you can edit it manually.</value>
-  </data>
-  <data name="ImportOrEditProfileText" xml:space="preserve">
-    <value>Import or edit profile</value>
-  </data>
-  <data name="ImportRadioButtonText" xml:space="preserve">
-    <value>Import my profile from my unit</value>
-  </data>
-  <data name="HighText" xml:space="preserve">
-    <value>High</value>
-  </data>
-  <data name="LowText" xml:space="preserve">
-    <value>Low</value>
-  </data>
-  <data name="NameText" xml:space="preserve">
-    <value>Name</value>
-  </data>
-  <data name="NumberText" xml:space="preserve">
-    <value>Number</value>
-  </data>
-  <data name="EditProfileText" xml:space="preserve">
-    <value>Edit profile</value>
-  </data>
-  <data name="EditProfileExplanationText" xml:space="preserve">
-    <value>On this page you can edit your personal information that will be stored in your profile.  Take note that the display of your workouts is affected by the way you choose to edit your zones (BPM vs. % max HR and speed vs. pace) and that these zones are different for every sport.</value>
-  </data>
-  <data name="EditBikingProfileText" xml:space="preserve">
-    <value>Biking profile</value>
+  <data name="WorkoutsText" xml:space="preserve">
+    <value>Entraînements</value>
   </data>
 </root>

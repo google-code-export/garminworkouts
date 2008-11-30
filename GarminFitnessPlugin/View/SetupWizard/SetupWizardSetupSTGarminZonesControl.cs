@@ -18,6 +18,10 @@ namespace GarminFitnessPlugin.View
 
             ExplanationLabel.Text = GarminFitnessView.GetLocalizedString("ManualSTGarminZonesExplanationText");
 
+            DefaultHeartRateZonesLabel.Text = GarminFitnessView.GetLocalizedString("DefaultHeartRateZoneLabelText");
+            DefaultSpeedZoneLabel.Text = GarminFitnessView.GetLocalizedString("DefaultSpeedZoneLabelText");
+            DefaultPowerZonesLabel.Text = GarminFitnessView.GetLocalizedString("DefaultPowerZoneLabelText");
+
             HRGarminRadioButton.Text = GarminFitnessView.GetLocalizedString("GarminText");
             HRSportTracksRadioButton.Text = GarminFitnessView.GetLocalizedString("SportTracksText");
             SpeedGarminRadioButton.Text = GarminFitnessView.GetLocalizedString("GarminText");

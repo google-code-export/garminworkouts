@@ -40,7 +40,7 @@ namespace GarminFitnessPlugin.View
             // 
             this.WelcomeLabel.Location = new System.Drawing.Point(194, 6);
             this.WelcomeLabel.Name = "WelcomeLabel";
-            this.WelcomeLabel.Size = new System.Drawing.Size(323, 70);
+            this.WelcomeLabel.Size = new System.Drawing.Size(403, 70);
             this.WelcomeLabel.TabIndex = 0;
             this.WelcomeLabel.Text = resources.GetString("WelcomeLabel.Text");
             // 
@@ -56,19 +56,21 @@ namespace GarminFitnessPlugin.View
             // 
             // ContinueLabel
             // 
+            this.ContinueLabel.AutoSize = true;
             this.ContinueLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.ContinueLabel.Location = new System.Drawing.Point(3, 100);
             this.ContinueLabel.Name = "ContinueLabel";
-            this.ContinueLabel.Size = new System.Drawing.Size(514, 25);
+            this.ContinueLabel.Size = new System.Drawing.Size(293, 20);
             this.ContinueLabel.TabIndex = 2;
             this.ContinueLabel.Text = "To set up the plugin, click on \"Next\"";
             // 
             // FinishLabel
             // 
+            this.FinishLabel.AutoSize = true;
             this.FinishLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.FinishLabel.Location = new System.Drawing.Point(3, 140);
             this.FinishLabel.Name = "FinishLabel";
-            this.FinishLabel.Size = new System.Drawing.Size(514, 25);
+            this.FinishLabel.Size = new System.Drawing.Size(346, 20);
             this.FinishLabel.TabIndex = 2;
             this.FinishLabel.Text = "To set up the plugin later, click on \"Finish\"";
             // 
@@ -81,9 +83,10 @@ namespace GarminFitnessPlugin.View
             this.Controls.Add(this.pictureBox1);
             this.Controls.Add(this.WelcomeLabel);
             this.Name = "SetupWizardWelcomeControl";
-            this.Size = new System.Drawing.Size(520, 179);
+            this.Size = new System.Drawing.Size(600, 179);
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 
