@@ -32,7 +32,7 @@ namespace GarminFitnessPlugin.View
             StepsList.RowDataRenderer = new StepRowDataRenderer(StepsList);
             StepsList.LabelProvider = new StepIconLabelProvider();
 
-            m_DurationPanels = new ZoneFiveSoftware.Common.Visuals.Panel[]
+            m_DurationPanels = new System.Windows.Forms.Panel[]
             {
                 null,
                 DistanceDurationPanel,
@@ -1727,8 +1727,11 @@ namespace GarminFitnessPlugin.View
             ZoneLabel.Text = GarminFitnessView.GetLocalizedString("WhichZoneText");
             LowRangeTargetLabel.Text = GarminFitnessView.GetLocalizedString("BetweenText");
             MiddleRangeTargetLabel.Text = GarminFitnessView.GetLocalizedString("AndText");
+            RepetitionPropertiesGroup.Text = GarminFitnessView.GetLocalizedString("RepetitionPropertiesGroupText");
             RepetitionCountLabel.Text = GarminFitnessView.GetLocalizedString("RepetitionCountLabelText");
             ExportDateTextLabel.Text = GarminFitnessView.GetLocalizedString("LastExportDateText");
+
+            
 
             // Update duration heart rate reference combo box text
             HeartRateDurationReferenceComboBox.Items.Clear();
@@ -3171,8 +3174,8 @@ namespace GarminFitnessPlugin.View
             Time
         }
 
-        private ZoneFiveSoftware.Common.Visuals.Panel m_CurrentDurationPanel;
-        private readonly ZoneFiveSoftware.Common.Visuals.Panel[] m_DurationPanels;
+        private System.Windows.Forms.Panel m_CurrentDurationPanel;
+        private readonly System.Windows.Forms.Panel[] m_DurationPanels;
         private const int CTRL_KEY_CODE = 8;
 
         private List<Workout> m_SelectedWorkouts = new List<Workout>();
