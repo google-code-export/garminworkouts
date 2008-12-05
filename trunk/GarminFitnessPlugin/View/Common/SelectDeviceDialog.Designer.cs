@@ -37,7 +37,7 @@ namespace GarminFitnessPlugin.View
             // 
             // OKButton
             // 
-            this.OKButton.Location = new System.Drawing.Point(33, 136);
+            this.OKButton.Location = new System.Drawing.Point(52, 162);
             this.OKButton.Name = "OKButton";
             this.OKButton.Size = new System.Drawing.Size(75, 23);
             this.OKButton.TabIndex = 0;
@@ -48,7 +48,7 @@ namespace GarminFitnessPlugin.View
             // Cancel_Button
             // 
             this.Cancel_Button.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.Cancel_Button.Location = new System.Drawing.Point(114, 136);
+            this.Cancel_Button.Location = new System.Drawing.Point(133, 162);
             this.Cancel_Button.Name = "Cancel_Button";
             this.Cancel_Button.Size = new System.Drawing.Size(75, 23);
             this.Cancel_Button.TabIndex = 1;
@@ -59,24 +59,26 @@ namespace GarminFitnessPlugin.View
             // DevicesComboBox
             // 
             this.DevicesComboBox.FormattingEnabled = true;
-            this.DevicesComboBox.Location = new System.Drawing.Point(12, 70);
+            this.DevicesComboBox.Location = new System.Drawing.Point(38, 89);
             this.DevicesComboBox.Name = "DevicesComboBox";
-            this.DevicesComboBox.Size = new System.Drawing.Size(200, 21);
+            this.DevicesComboBox.Size = new System.Drawing.Size(184, 21);
             this.DevicesComboBox.TabIndex = 2;
             this.DevicesComboBox.SelectionChangeCommitted += new System.EventHandler(this.DevicesComboBox_SelectionChangeCommitted);
             // 
             // IntroLabel
             // 
-            this.IntroLabel.Location = new System.Drawing.Point(12, 12);
+            this.IntroLabel.Location = new System.Drawing.Point(12, 9);
             this.IntroLabel.Name = "IntroLabel";
-            this.IntroLabel.Size = new System.Drawing.Size(200, 55);
+            this.IntroLabel.Size = new System.Drawing.Size(237, 77);
             this.IntroLabel.TabIndex = 3;
             this.IntroLabel.Text = "Select your device below.  If your device doesn\'t appear, make sure it is connect" +
                 "ed to your PC and hit the refresh button.";
             // 
             // RefreshButton
             // 
-            this.RefreshButton.Location = new System.Drawing.Point(64, 97);
+            this.RefreshButton.AutoSize = true;
+            this.RefreshButton.DialogResult = System.Windows.Forms.DialogResult.No;
+            this.RefreshButton.Location = new System.Drawing.Point(83, 116);
             this.RefreshButton.Name = "RefreshButton";
             this.RefreshButton.Size = new System.Drawing.Size(94, 23);
             this.RefreshButton.TabIndex = 4;
@@ -90,16 +92,17 @@ namespace GarminFitnessPlugin.View
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.Cancel_Button;
-            this.ClientSize = new System.Drawing.Size(223, 171);
-            this.Controls.Add(this.RefreshButton);
+            this.ClientSize = new System.Drawing.Size(261, 197);
             this.Controls.Add(this.IntroLabel);
             this.Controls.Add(this.DevicesComboBox);
             this.Controls.Add(this.Cancel_Button);
+            this.Controls.Add(this.RefreshButton);
             this.Controls.Add(this.OKButton);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.Name = "SelectDeviceDialog";
             this.Text = "Select Device";
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 

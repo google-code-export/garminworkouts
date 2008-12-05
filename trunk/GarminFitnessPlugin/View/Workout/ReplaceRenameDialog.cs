@@ -26,6 +26,7 @@ namespace GarminFitnessPlugin.View
             RenameExplanationLabel.Click += new EventHandler(RenamePanel_Click);
             NewNameLabel.Click += new EventHandler(RenamePanel_Click);
 
+            this.Text = GarminFitnessView.GetLocalizedString("ReplaceRenameDialogText");
             ReplaceRenameIntroLabel.Text = GarminFitnessView.GetLocalizedString("ReplaceRenameIntroLabelText");
             ReplaceLabel.Text = GarminFitnessView.GetLocalizedString("ReplaceLabelText");
             ReplaceExplanationLabel.Text = GarminFitnessView.GetLocalizedString("ReplaceExplanationLabelText");
@@ -33,6 +34,8 @@ namespace GarminFitnessPlugin.View
             RenameExplanationLabel.Text = GarminFitnessView.GetLocalizedString("RenameExplanationLabelText");
             NewNameLabel.Text = GarminFitnessView.GetLocalizedString("NewNameLabelText");
             NewNameTextBox.Text = newName;
+
+            this.DialogResult = DialogResult.No;
         }
 
         private void ReplacePanel_Click(object sender, EventArgs e)
