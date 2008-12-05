@@ -403,7 +403,7 @@
     <value>Resting step</value>
   </data>
   <data name="RestingHeartRateLabelText" xml:space="preserve">
-    <value>Resting Heart Rate :</value>
+    <value>Resting heart rate :</value>
   </data>
   <data name="RestText" xml:space="preserve">
     <value>Rest</value>
@@ -653,5 +653,8 @@
   </data>
   <data name="ReplaceLabelText" xml:space="preserve">
     <value>Replace</value>
+  </data>
+  <data name="ReplaceRenameDialogText" xml:space="preserve">
+    <value>Replace or rename?</value>
   </data>
 </root>

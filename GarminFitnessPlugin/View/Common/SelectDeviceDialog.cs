@@ -1,4 +1,5 @@
 using System.Diagnostics;
+using System.Drawing;
 using System.Globalization;
 using System.Reflection;
 using System.Resources;
@@ -24,6 +25,8 @@ namespace GarminFitnessPlugin.View
             RefreshButton.Text = GarminFitnessView.GetLocalizedString("RefreshButtonText");
             Cancel_Button.Text = CommonResources.Text.ActionCancel;
             OKButton.Text = CommonResources.Text.ActionOk;
+
+            RefreshButton.Location = new Point((this.Width - RefreshButton.Width) / 2, RefreshButton.Location.Y);
 
             RefreshDeviceComboBox();
         }

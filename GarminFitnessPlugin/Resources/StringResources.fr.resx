@@ -199,7 +199,7 @@
     <value>Répertoire d'export par défaut</value>
   </data>
   <data name="DefaultHeartRateZoneLabelText" xml:space="preserve">
-    <value>Utiliser les plages de fréquence cardiaque de :</value>
+    <value>Utiliser les plages de FC de :</value>
   </data>
   <data name="DefaultPowerZoneLabelText" xml:space="preserve">
     <value>Utiliser les plages de puissance de :</value>
@@ -229,7 +229,7 @@
     <value>Profil cycliste</value>
   </data>
   <data name="EditProfileExplanationText" xml:space="preserve">
-    <value>Sur cette page vous pouvez éditer vos informations personnelles qui seront stoquées dans votre profil.  Prenez note que l'affichage des vos entraînements sera affecté par la façon dont vous choisissez d'éditer vos zones (BPM vs. % max FC et vitesse vs. rythme) et que ces zones sont différentes pour chaque sport.</value>
+    <value>Sur cette page vous pouvez éditer vos informations personnelles qui seront stoquées dans votre profil.  Prenez note que l'affichage de vos entraînements sera affecté par la façon dont vous choisissez d'éditer vos zones (BPM vs. % max FC et vitesse vs. rythme) et que ces zones sont différentes pour chaque sport.</value>
   </data>
   <data name="EditProfileText" xml:space="preserve">
     <value>Édition du profile</value>
@@ -250,7 +250,7 @@
     <value>Le profile a été exporté avec succès</value>
   </data>
   <data name="ExportSelectedText" xml:space="preserve">
-    <value>Exporter la sélection</value>
+    <value>Exporter sél.</value>
   </data>
   <data name="ExportText" xml:space="preserve">
     <value>Exporter</value>
@@ -328,46 +328,46 @@
     <value>9 - Sprint</value>
   </data>
   <data name="HasCadenceText" xml:space="preserve">
-    <value>Utilise un senseur de cadence</value>
+    <value>Capteur de cadence</value>
   </data>
   <data name="HasPowerText" xml:space="preserve">
-    <value>Utilise un senseur de puissance</value>
+    <value>Capteur de puissance</value>
   </data>
   <data name="HeartRateAboveDurationComboBoxText" xml:space="preserve">
-    <value>Lorsque ma fréquence cardiaque dépasse un certain seuil</value>
+    <value>Lorsque ma FC dépasse un certain seuil</value>
   </data>
   <data name="HeartRateAboveDurationDescriptionText" xml:space="preserve">
-    <value>Continuer jusqu'à ce que ma fréquence cardiaque dépasse {0} {1}.</value>
+    <value>Continuer jusqu'à ce que ma FC dépasse {0} {1}.</value>
   </data>
   <data name="HeartRateBelowDurationComboBoxText" xml:space="preserve">
-    <value>Lorsque ma fréquence cardiaque passe en dessous d'un certain seuil</value>
+    <value>Lorsque ma FC passe en dessous d'un certain seuil</value>
   </data>
   <data name="HeartRateBelowDurationDescriptionText" xml:space="preserve">
-    <value>Continuer jusqu'à ce que ma fréquence cardiaque passe en dessous de {0} {1}.</value>
+    <value>Continuer jusqu'à ce que ma FC passe en dessous de {0} {1}.</value>
   </data>
   <data name="HeartRateDurationLabelText" xml:space="preserve">
-    <value>Quel niveau de fréquence cardiaque?</value>
+    <value>Quel niveau de FC?</value>
   </data>
   <data name="HeartRateRangeTargetDescriptionText" xml:space="preserve">
-    <value>Essayer de maintenir mon rythme cardiaque entre {0} et {1} {2}.</value>
+    <value>Essayer de maintenir ma FC entre {0} et {1} {2}.</value>
   </data>
   <data name="HeartRateTargetComboBoxText" xml:space="preserve">
-    <value>Essayer de maintenir mon rythme cardiaque dans une certaine plage.</value>
+    <value>Essayer de maintenir ma FC dans une certaine plage.</value>
   </data>
   <data name="HeartRateZoneTargetDescriptionText" xml:space="preserve">
-    <value>Essayer de maintenir mon rythme cardiaque dans la plage {0}.</value>
+    <value>Essayer de maintenir ma FC dans la plage {0}.</value>
   </data>
   <data name="HighLabelText" xml:space="preserve">
     <value>Haute :</value>
   </data>
   <data name="HighText" xml:space="preserve">
-    <value>Haute :</value>
+    <value>Haute</value>
   </data>
   <data name="HRSettingsGroupBoxText" xml:space="preserve">
-    <value>Paramètres de fréquence cardiaque</value>
+    <value>Paramètres de FC</value>
   </data>
   <data name="HRZonesGroupBoxText" xml:space="preserve">
-    <value>Plages de fréquence cardiaque</value>
+    <value>Plages de FC</value>
   </data>
   <data name="ImportEditExplanationText" xml:space="preserve">
     <value>Pour que vos entraînements utilisent les bonnes plages, nous devons les configurer.  Même si vous utilisez le plugin en mode SportTracks, votre profile est utilisé pour l'affichage (BPM vs. &amp; max FC et vitesse vs. rythme) donc il est important de bien les configurer.  Vous pouvez soit les importer de votre appareil ou les éditer manuellement.</value>
@@ -415,7 +415,7 @@
     <value>Vous avez choisi de configurer l'utilisation de chaque zone manuellement.  Veuillez sélectionner le mode à utiliser pour chaque type de zone disponible dans le plugin.</value>
   </data>
   <data name="MaxHRLabelText" xml:space="preserve">
-    <value>Fréquence cardiaque maximale :</value>
+    <value>FC maximale :</value>
   </data>
   <data name="MillimeterText" xml:space="preserve">
     <value>mm</value>
@@ -424,7 +424,7 @@
     <value>min.</value>
   </data>
   <data name="ModeExplanationText" xml:space="preserve">
-    <value>Une des choses que le plugin Garmin Fitness permet est une meilleure intégration dans SportTracks.  Ceci signifie qu'il est possible d'utiliser les différentes plages de rythme cardiaque, vitesse et puissance définies dans SportTracks au lieu de celles définies par Garmin.  Vous pouvez aussi choisir de configurer le mode à utiliser indépendemment pour chaque type de plage.</value>
+    <value>Une des choses que le plugin Garmin Fitness permet est une meilleure intégration dans SportTracks.  Ceci signifie qu'il est possible d'utiliser les différentes plages de fréquence cardiaque, vitesse et puissance définies dans SportTracks au lieu de celles définies par Garmin.  Vous pouvez aussi choisir de configurer le mode à utiliser indépendemment pour chaque type de plage.</value>
   </data>
   <data name="NameLabelText" xml:space="preserve">
     <value>Nom :</value>
@@ -513,6 +513,9 @@
   <data name="ReplaceLabelText" xml:space="preserve">
     <value>Remplacer</value>
   </data>
+  <data name="ReplaceRenameDialogText" xml:space="preserve">
+    <value>Remplacer ou renommer?</value>
+  </data>
   <data name="ReplaceRenameIntroLabelText" xml:space="preserve">
     <value>Il existe déjèa un entraînement avec le même nom.  Vous pouvez ou bien remplacer l'entraînement actuel ou renommer le nouvel entraînement.</value>
   </data>
@@ -520,7 +523,7 @@
     <value>Phase de repos</value>
   </data>
   <data name="RestingHeartRateLabelText" xml:space="preserve">
-    <value>Fréquence cardiaque au repos :</value>
+    <value>FC au repos :</value>
   </data>
   <data name="RestText" xml:space="preserve">
     <value>Repos</value>
@@ -592,7 +595,7 @@
     <value>Je veux utiliser le mode SportTracks</value>
   </data>
   <data name="STZonesExplanationText" xml:space="preserve">
-    <value>Lorsque vous utilisez les zones SportTracks, le plugin utilise les plages de rythme cardiaque et de vitesse qui sont définies dans la catégorie à laquelle l'entraînement est associé.  Ces catégories ne contiennent pas de spécification pour les zones de cadence et de puissance à utiliser.  Pour cette raison, il faut spécifier quelles zones utiliser dans vos entraînements manuellement.</value>
+    <value>Lorsque vous utilisez les zones SportTracks, le plugin utilise les plages de fréquence cardiaque et de vitesse qui sont définies dans la catégorie à laquelle l'entraînement est associé.  Ces catégories ne contiennent pas de spécification pour les zones de cadence et de puissance à utiliser.  Pour cette raison, il faut spécifier quelles zones utiliser dans vos entraînements manuellement.</value>
   </data>
   <data name="SuccessText" xml:space="preserve">
     <value>Succès</value>
@@ -643,7 +646,7 @@
     <value>Diamètre de la roue</value>
   </data>
   <data name="WheelSizeLabelText" xml:space="preserve">
-    <value>Diamètre de la roue :</value>
+    <value>Diamètre :</value>
   </data>
   <data name="WhichZoneText" xml:space="preserve">
     <value>Quelle plage?</value>
