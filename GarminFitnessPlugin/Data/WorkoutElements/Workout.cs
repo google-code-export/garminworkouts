@@ -128,60 +128,9 @@ namespace GarminFitnessPlugin.Data
         {
             byte[] intBuffer = new byte[sizeof(Int32)];
             byte[] dateBuffer = new byte[sizeof(long)];
-            byte[] stringBuffer;
-            Int32 stringLength;
-            Int32 stepCount;
             Int32 scheduledDatesCount;
 
-            // Name
-            stream.Read(intBuffer, 0, sizeof(Int32));
-            stringLength = BitConverter.ToInt32(intBuffer, 0);
-            stringBuffer = new byte[stringLength];
-            stream.Read(stringBuffer, 0, stringLength);
-            Name = Encoding.UTF8.GetString(stringBuffer);
-
-            // Notes
-            stream.Read(intBuffer, 0, sizeof(Int32));
-            stringLength = BitConverter.ToInt32(intBuffer, 0);
-
-            if (stringLength > 0)
-            {
-                stringBuffer = new byte[stringLength];
-                stream.Read(stringBuffer, 0, stringLength);
-                Notes = Encoding.UTF8.GetString(stringBuffer);
-            }
-            else
-            {
-                Notes = String.Empty;
-            }
-
-            // Category
-            stream.Read(intBuffer, 0, sizeof(Int32));
-            stringLength = BitConverter.ToInt32(intBuffer, 0);
-            stringBuffer = new byte[stringLength];
-            stream.Read(stringBuffer, 0, stringLength);
-            Category = Utils.FindCategoryByIDSafe(Encoding.UTF8.GetString(stringBuffer));
-
-            // Steps
-            stream.Read(intBuffer, 0, sizeof(Int32));
-            stepCount = BitConverter.ToInt32(intBuffer, 0);
-            Steps.Clear();
-            for (int i = 0; i < stepCount; ++i)
-            {
-                IStep.StepType type;
-
-                stream.Read(intBuffer, 0, sizeof(Int32));
-                type = (IStep.StepType)BitConverter.ToInt32(intBuffer, 0);
-
-                if (type == IStep.StepType.Regular)
-                {
-                    AddNewStep(new RegularStep(stream, version, this));
-                }
-                else
-                {
-                    AddNewStep(new RepeatStep(stream, version, this));
-                }
-            }
+            Deserialize_V0(stream, version);
 
             // Scheduled dates
             stream.Read(intBuffer, 0, sizeof(Int32));
@@ -203,79 +152,9 @@ namespace GarminFitnessPlugin.Data
 
         public void Deserialize_V5(Stream stream, DataVersion version)
         {
-            byte[] intBuffer = new byte[sizeof(Int32)];
             byte[] dateBuffer = new byte[sizeof(long)];
-            byte[] stringBuffer;
-            Int32 stringLength;
-            Int32 stepCount;
-            Int32 scheduledDatesCount;
 
-            // Name
-            stream.Read(intBuffer, 0, sizeof(Int32));
-            stringLength = BitConverter.ToInt32(intBuffer, 0);
-            stringBuffer = new byte[stringLength];
-            stream.Read(stringBuffer, 0, stringLength);
-            Name = Encoding.UTF8.GetString(stringBuffer);
-
-            // Notes
-            stream.Read(intBuffer, 0, sizeof(Int32));
-            stringLength = BitConverter.ToInt32(intBuffer, 0);
-
-            if (stringLength > 0)
-            {
-                stringBuffer = new byte[stringLength];
-                stream.Read(stringBuffer, 0, stringLength);
-                Notes = Encoding.UTF8.GetString(stringBuffer);
-            }
-            else
-            {
-                Notes = String.Empty;
-            }
-
-            // Category
-            stream.Read(intBuffer, 0, sizeof(Int32));
-            stringLength = BitConverter.ToInt32(intBuffer, 0);
-            stringBuffer = new byte[stringLength];
-            stream.Read(stringBuffer, 0, stringLength);
-            Category = Utils.FindCategoryByIDSafe(Encoding.UTF8.GetString(stringBuffer));
-
-            // Steps
-            stream.Read(intBuffer, 0, sizeof(Int32));
-            stepCount = BitConverter.ToInt32(intBuffer, 0);
-            Steps.Clear();
-            for (int i = 0; i < stepCount; ++i)
-            {
-                IStep.StepType type;
-
-                stream.Read(intBuffer, 0, sizeof(Int32));
-                type = (IStep.StepType)BitConverter.ToInt32(intBuffer, 0);
-
-                if (type == IStep.StepType.Regular)
-                {
-                    AddNewStep(new RegularStep(stream, version, this));
-                }
-                else
-                {
-                    AddNewStep(new RepeatStep(stream, version, this));
-                }
-            }
-
-            // Scheduled dates
-            stream.Read(intBuffer, 0, sizeof(Int32));
-            scheduledDatesCount = BitConverter.ToInt32(intBuffer, 0);
-            ScheduledDates.Clear();
-            for (int i = 0; i < scheduledDatesCount; ++i)
-            {
-                long scheduledDateInTicks;
-
-                stream.Read(dateBuffer, 0, sizeof(long));
-                scheduledDateInTicks = BitConverter.ToInt64(dateBuffer, 0);
-
-                if (scheduledDateInTicks >= DateTime.Today.Ticks)
-                {
-                    ScheduledDates.Add(new DateTime(scheduledDateInTicks));
-                }
-            }
+            Deserialize_V4(stream, version);
 
             // Last export date
             stream.Read(dateBuffer, 0, sizeof(long));
