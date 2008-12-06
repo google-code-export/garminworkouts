@@ -1,4 +1,4 @@
-The Garmin Fitness plugin is an open source plugin project for !SportTracks.  If you are a developer and want to contribute to this plugin, feel free to contact me by e-mail or on the [http://www.zonefivesoftware.com/SportTracks/Forums/ SportTracks forum].  Once we get in touch I can create you an SVN account so we can contribute.
+The Garmin Fitness plugin is an open source plugin project for !SportTracks.  If you are a developer and want to contribute to this plugin, feel free to contact me by e-mail or on the [http://www.zonefivesoftware.com/SportTracks/Forums/ SportTracks forum] (username PissedOffCil).  Once we get in touch I can create you an SVN account so we can work together.
 
 If you only want to peek into the code, feel free to do so using to command below in you SVN client.
 
