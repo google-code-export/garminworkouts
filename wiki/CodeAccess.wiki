@@ -8,4 +8,4 @@ svn checkout http://garminworkouts.googlecode.com/svn/trunk/ garminworkouts-read
 
 If you are not familiar with SVN and still want to see the code, you can head to the [http://code.google.com/p/garminworkouts/source/browse/trunk depot view] where you can view all the files in the project.
 
-Finally, you can also follow the project's progression by heading to the [http://code.google.com/p/garminworkouts/source/list changes page].  You will find the list of all submitted changelists with their comments so you can see what has been done and what bugs we're fixed.
+Finally, you can also follow the project's progression by heading to the [http://code.google.com/p/garminworkouts/source/list changes page].  You will find the list of all submitted changelists with their comments so you can see what has been done and what bugs were fixed.
