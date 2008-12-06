@@ -14,7 +14,7 @@ namespace GarminFitnessPlugin.Data
         public PowerZoneSTTarget(BasePowerTarget baseTarget)
             : base(PowerTargetType.ZoneST, baseTarget)
         {
-            Trace.Assert(Options.Instance.PowerZoneCategory.Zones.Count > 0);
+            Debug.Assert(Options.Instance.PowerZoneCategory.Zones.Count > 0);
 
             Zone = Options.Instance.PowerZoneCategory.Zones[0];
         }
@@ -76,7 +76,7 @@ namespace GarminFitnessPlugin.Data
             }
             else
             {
-                Trace.Assert(zones.Zones.Count > 0);
+                Debug.Assert(zones.Zones.Count > 0);
                 Zone = zones.Zones[0];
             }
         }
@@ -115,7 +115,7 @@ namespace GarminFitnessPlugin.Data
             }
             else
             {
-                Trace.Assert(zones.Zones.Count > 0);
+                Debug.Assert(zones.Zones.Count > 0);
                 Zone = zones.Zones[0];
 
                 // We can't find saved zone, force dirty
@@ -189,7 +189,7 @@ namespace GarminFitnessPlugin.Data
         public override bool Deserialize(XmlNode parentNode)
         {
             // We should not end up here, the Xml deserialization should pass by extensions
-            Trace.Assert(false);
+            Debug.Assert(false);
 
             return false;
         }

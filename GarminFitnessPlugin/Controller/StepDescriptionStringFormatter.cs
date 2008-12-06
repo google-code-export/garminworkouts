@@ -48,7 +48,7 @@ namespace GarminFitnessPlugin.Controller
                     }
                 default:
                     {
-                        Trace.Assert(false);
+                        Debug.Assert(false);
                         result = String.Empty;
                         break;
                     }
@@ -128,7 +128,7 @@ namespace GarminFitnessPlugin.Controller
                     }
                 default:
                     {
-                        Trace.Assert(false);
+                        Debug.Assert(false);
                         result = String.Empty;
                         break;
                     }
@@ -183,7 +183,7 @@ namespace GarminFitnessPlugin.Controller
                     }
                 default:
                     {
-                        Trace.Assert(false);
+                        Debug.Assert(false);
                         result = String.Empty;
                         break;
                     }
@@ -220,7 +220,7 @@ namespace GarminFitnessPlugin.Controller
                     }
                 default:
                     {
-                        Trace.Assert(false);
+                        Debug.Assert(false);
                         result = String.Empty;
                         break;
                     }
@@ -272,7 +272,7 @@ namespace GarminFitnessPlugin.Controller
                     }
                 default:
                     {
-                        Trace.Assert(false);
+                        Debug.Assert(false);
                         result = String.Empty;
                         break;
                     }
@@ -334,7 +334,7 @@ namespace GarminFitnessPlugin.Controller
                     }
                 default:
                     {
-                        Trace.Assert(false);
+                        Debug.Assert(false);
                         result = String.Empty;
                         break;
                     }
@@ -377,7 +377,7 @@ namespace GarminFitnessPlugin.Controller
                     }
                 default:
                     {
-                        Trace.Assert(false);
+                        Debug.Assert(false);
                         result = String.Empty;
                         break;
                     }

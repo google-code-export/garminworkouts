@@ -125,7 +125,7 @@
     <Compile Include="GUIDs.cs" />
     <Compile Include="PluginMain.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Properties\Resources.Designer.cs">
+    <Compile Include="Resources\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
@@ -291,64 +291,82 @@
     <Compile Include="View\Workout\WorkoutWrapper.cs" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Properties\Resources.resx">
+    <EmbeddedResource Include="Resources\Resources.resx">
       <SubType>Designer</SubType>
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Include="Resources\StringResources.cs.resx">
       <SubType>Designer</SubType>
+      <DependentUpon>Resources.resx</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Resources\StringResources.zh-CN.resx">
       <SubType>Designer</SubType>
+      <DependentUpon>Resources.resx</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Resources\StringResources.da.resx">
       <SubType>Designer</SubType>
+      <DependentUpon>Resources.resx</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Resources\StringResources.de.resx">
       <SubType>Designer</SubType>
+      <DependentUpon>Resources.resx</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Resources\StringResources.en.resx">
       <SubType>Designer</SubType>
+      <DependentUpon>Resources.resx</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Resources\StringResources.es.resx">
       <SubType>Designer</SubType>
+      <DependentUpon>Resources.resx</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Resources\StringResources.fi.resx">
       <SubType>Designer</SubType>
+      <DependentUpon>Resources.resx</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Resources\StringResources.fr.resx">
       <SubType>Designer</SubType>
+      <DependentUpon>Resources.resx</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Resources\StringResources.he.resx">
       <SubType>Designer</SubType>
+      <DependentUpon>Resources.resx</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Resources\StringResources.it.resx">
       <SubType>Designer</SubType>
+      <DependentUpon>Resources.resx</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Resources\StringResources.ja.resx">
       <SubType>Designer</SubType>
+      <DependentUpon>Resources.resx</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Resources\StringResources.nl.resx">
       <SubType>Designer</SubType>
+      <DependentUpon>Resources.resx</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Resources\StringResources.no.resx">
       <SubType>Designer</SubType>
+      <DependentUpon>Resources.resx</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Resources\StringResources.pl.resx">
       <SubType>Designer</SubType>
+      <DependentUpon>Resources.resx</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Resources\StringResources.pt.resx">
       <SubType>Designer</SubType>
+      <DependentUpon>Resources.resx</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Resources\StringResources.ru.resx">
       <SubType>Designer</SubType>
+      <DependentUpon>Resources.resx</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Resources\StringResources.sk.resx">
       <SubType>Designer</SubType>
+      <DependentUpon>Resources.resx</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Resources\StringResources.sv.resx">
       <SubType>Designer</SubType>
+      <DependentUpon>Resources.resx</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="View\Common\GarminFitnessMainControl.resx">
       <SubType>Designer</SubType>

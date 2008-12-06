@@ -168,11 +168,11 @@ namespace GarminFitnessPlugin.Data
         {
             if(isPercentageMaxHeartRate)
             {
-                Trace.Assert(maxHeartRate >= Constants.MinHRInPercentMax && maxHeartRate <= Constants.MaxHRInPercentMax);
+                Debug.Assert(maxHeartRate >= Constants.MinHRInPercentMax && maxHeartRate <= Constants.MaxHRInPercentMax);
             }
             else
             {
-                Trace.Assert(maxHeartRate >= Constants.MinHRInBPM && maxHeartRate <= Constants.MaxHRInBPM);
+                Debug.Assert(maxHeartRate >= Constants.MinHRInBPM && maxHeartRate <= Constants.MaxHRInBPM);
             }
         }
 

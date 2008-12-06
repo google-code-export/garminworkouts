@@ -41,7 +41,7 @@ namespace GarminFitnessPlugin.Controller
                     }
                 default:
                     {
-                        Trace.Assert(false);
+                        Debug.Assert(false);
                         newTarget = null;
                         break;
                     }
@@ -85,7 +85,7 @@ namespace GarminFitnessPlugin.Controller
                     }
                 default:
                     {
-                        Trace.Assert(false);
+                        Debug.Assert(false);
                         newTarget = null;
                         break;
                     }
@@ -129,7 +129,7 @@ namespace GarminFitnessPlugin.Controller
                     }
                 default:
                     {
-                        Trace.Assert(false);
+                        Debug.Assert(false);
                         newTarget = null;
                         break;
                     }

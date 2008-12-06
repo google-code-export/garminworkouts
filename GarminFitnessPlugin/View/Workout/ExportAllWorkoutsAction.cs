@@ -35,7 +35,7 @@ namespace GarminFitnessPlugin.View
         {
             get
             {
-                return global::GarminFitnessPlugin.Properties.Resources.Export;
+                return global::GarminFitnessPlugin.Resources.Resources.Export;
             }
         }
 
@@ -68,7 +68,7 @@ namespace GarminFitnessPlugin.View
         {
             get
             {
-                Trace.Assert(PluginMain.GetApplication().ActiveView.GetType() == typeof(GarminFitnessView));
+                Debug.Assert(PluginMain.GetApplication().ActiveView.GetType() == typeof(GarminFitnessView));
 
                 return GarminFitnessView.GetLocalizedString("ExportAllText");
             }

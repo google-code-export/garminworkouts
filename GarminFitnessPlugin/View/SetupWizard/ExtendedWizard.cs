@@ -99,14 +99,14 @@ namespace GarminFitnessPlugin.View
 
         public new void GoNext()
         {
-            Trace.Assert((ActivePageNum + 1) < Pages.Count);
+            Debug.Assert((ActivePageNum + 1) < Pages.Count);
 
             ShowPage(Pages[ActivePageNum + 1]);
         }
 
         public new void GoPrev()
         {
-            Trace.Assert((ActivePageNum - 1) >= 0);
+            Debug.Assert((ActivePageNum - 1) >= 0);
 
             ShowPage(Pages[ActivePageNum - 1]);
         }

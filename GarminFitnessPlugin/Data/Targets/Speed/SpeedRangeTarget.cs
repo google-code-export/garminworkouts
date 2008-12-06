@@ -400,7 +400,7 @@ namespace GarminFitnessPlugin.Data
         public override bool IsDirty
         {
             get { return false; }
-            set { Trace.Assert(false); }
+            set { Debug.Assert(false); }
         }
 
         private double m_MinUnitsPerSecond;

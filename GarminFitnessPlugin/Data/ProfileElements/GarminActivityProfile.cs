@@ -345,7 +345,7 @@ namespace GarminFitnessPlugin.Data
 
         private bool ReadHRZone(int index, XmlNode parentNode)
         {
-            Trace.Assert(index >= 0 && index < Constants.GarminHRZoneCount);
+            Debug.Assert(index >= 0 && index < Constants.GarminHRZoneCount);
 
             bool viewAsRead = false;
             bool lowRead = false;
@@ -406,7 +406,7 @@ namespace GarminFitnessPlugin.Data
 
         private bool ReadSpeedZone(int index, XmlNode parentNode)
         {
-            Trace.Assert(index >= 0 && index < Constants.GarminSpeedZoneCount);
+            Debug.Assert(index >= 0 && index < Constants.GarminSpeedZoneCount);
 
             bool nameRead = false;
             bool viewAsRead = false;
@@ -548,7 +548,7 @@ namespace GarminFitnessPlugin.Data
 
         public Byte GetHeartRateLowLimit(int index)
         {
-            Trace.Assert(index >= 0 && index < Constants.GarminHRZoneCount);
+            Debug.Assert(index >= 0 && index < Constants.GarminHRZoneCount);
 
             float value = m_HeartRateZones[index].Lower;
 
@@ -564,7 +564,7 @@ namespace GarminFitnessPlugin.Data
 
         public Byte GetHeartRateHighLimit(int index)
         {
-            Trace.Assert(index >= 0 && index < Constants.GarminHRZoneCount);
+            Debug.Assert(index >= 0 && index < Constants.GarminHRZoneCount);
 
             float value = m_HeartRateZones[index].Upper;
 
@@ -580,7 +580,7 @@ namespace GarminFitnessPlugin.Data
 
         public void SetHeartRateLowLimit(int index, Byte value)
         {
-            Trace.Assert(index >= 0 && index < Constants.GarminHRZoneCount);
+            Debug.Assert(index >= 0 && index < Constants.GarminHRZoneCount);
 
             float percentValue;
 
@@ -604,7 +604,7 @@ namespace GarminFitnessPlugin.Data
 
         public void SetHeartRateHighLimit(int index, Byte value)
         {
-            Trace.Assert(index >= 0 && index < Constants.GarminHRZoneCount);
+            Debug.Assert(index >= 0 && index < Constants.GarminHRZoneCount);
 
             float percentValue;
 
@@ -628,14 +628,14 @@ namespace GarminFitnessPlugin.Data
 
         public string GetSpeedZoneName(int index)
         {
-            Trace.Assert(index >= 0 && index < Constants.GarminSpeedZoneCount);
+            Debug.Assert(index >= 0 && index < Constants.GarminSpeedZoneCount);
 
             return m_SpeedZones[index].Name;
         }
 
         public double GetSpeedLowLimit(int index)
         {
-            Trace.Assert(index >= 0 && index < Constants.GarminSpeedZoneCount);
+            Debug.Assert(index >= 0 && index < Constants.GarminSpeedZoneCount);
 
             double speedValue = Length.Convert(m_SpeedZones[index].Low, Length.Units.Kilometer, BaseSpeedUnit);
 
@@ -651,7 +651,7 @@ namespace GarminFitnessPlugin.Data
 
         public double GetSpeedHighLimit(int index)
         {
-            Trace.Assert(index >= 0 && index < Constants.GarminSpeedZoneCount);
+            Debug.Assert(index >= 0 && index < Constants.GarminSpeedZoneCount);
 
             double speedValue = Length.Convert(m_SpeedZones[index].High, Length.Units.Kilometer, BaseSpeedUnit);
 

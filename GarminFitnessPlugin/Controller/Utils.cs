@@ -50,7 +50,7 @@ namespace GarminFitnessPlugin.Controller
             }
 
             // We didn't find the old category, place it in the first one
-            Trace.Assert(PluginMain.GetApplication().Logbook.ActivityCategories.Count > 0);
+            Debug.Assert(PluginMain.GetApplication().Logbook.ActivityCategories.Count > 0);
             return GetDefaultCategory();
         }
 
@@ -255,7 +255,7 @@ namespace GarminFitnessPlugin.Controller
 
         public static int FindIndexForZone(IList<INamedLowHighZone> list, INamedLowHighZone zone)
         {
-            Trace.Assert(list.Count > 0);
+            Debug.Assert(list.Count > 0);
 
             for (int i = 0; i < list.Count; ++i)
             {
@@ -270,7 +270,7 @@ namespace GarminFitnessPlugin.Controller
 
         public static int FindIndexForZoneCategory(IList<IZoneCategory> list, IZoneCategory zone)
         {
-            Trace.Assert(list.Count > 0);
+            Debug.Assert(list.Count > 0);
 
             for (int i = 0; i < list.Count; ++i)
             {

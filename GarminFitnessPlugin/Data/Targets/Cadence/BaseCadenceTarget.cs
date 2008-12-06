@@ -14,7 +14,7 @@ namespace GarminFitnessPlugin.Data
         {
             public IConcreteCadenceTarget(CadenceTargetType type, BaseCadenceTarget baseTarget)
             {
-                Trace.Assert(type != CadenceTargetType.CadenceTargetTypeCount);
+                Debug.Assert(type != CadenceTargetType.CadenceTargetTypeCount);
 
                 m_Type = type;
                 m_BaseTarget = baseTarget;
@@ -126,7 +126,7 @@ namespace GarminFitnessPlugin.Data
                     }
                 default:
                     {
-                        Trace.Assert(false);
+                        Debug.Assert(false);
                         break;
                     }
             }
@@ -157,7 +157,7 @@ namespace GarminFitnessPlugin.Data
         public override void HandleTargetOverride(XmlNode extensionNode)
         {
             // We got here so our target must be a range
-            Trace.Assert(ConcreteTarget.Type == BaseCadenceTarget.IConcreteCadenceTarget.CadenceTargetType.Range);
+            Debug.Assert(ConcreteTarget.Type == BaseCadenceTarget.IConcreteCadenceTarget.CadenceTargetType.Range);
 
             IZoneCategory referenceZones = Options.Instance.CadenceZoneCategory;
             string zoneReferenceId = null;
@@ -203,7 +203,7 @@ namespace GarminFitnessPlugin.Data
         public override bool IsDirty
         {
             get { return ConcreteTarget.IsDirty; }
-            set { Trace.Assert(false); }
+            set { Debug.Assert(false); }
         }
 
         private BaseCadenceTarget.IConcreteCadenceTarget m_ConcreteTarget = null;

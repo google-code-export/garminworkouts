@@ -567,7 +567,7 @@ namespace GarminFitnessPlugin.Data
                             childNode.Attributes[0].Name == "xsi:type" &&
                             childNode.Attributes[0].Value == Constants.TargetTypeTCXString[(int)ITarget.TargetType.Power])
                         {
-                            Trace.Assert(step != null && step.Type == IStep.StepType.Regular);
+                            Debug.Assert(step != null && step.Type == IStep.StepType.Regular);
                             RegularStep concreteStep = (RegularStep)step;
 
                             TargetFactory.Create(ITarget.TargetType.Power, childNode, concreteStep);
@@ -621,7 +621,7 @@ namespace GarminFitnessPlugin.Data
 
                         if(step != null)
                         {
-                            Trace.Assert(step.Type == IStep.StepType.Regular);
+                            Debug.Assert(step.Type == IStep.StepType.Regular);
 
                             RegularStep concreteStep = (RegularStep)step;
 
@@ -704,7 +704,7 @@ namespace GarminFitnessPlugin.Data
 
         void OnDurationChanged(IStep modifiedStep, IDuration durationChanged, PropertyChangedEventArgs changedProperty)
         {
-            Trace.Assert(modifiedStep.Type == IStep.StepType.Regular);
+            Debug.Assert(modifiedStep.Type == IStep.StepType.Regular);
 
             if (StepDurationChanged != null)
             {
@@ -714,7 +714,7 @@ namespace GarminFitnessPlugin.Data
 
         void OnTargetChanged(IStep modifiedStep, ITarget targetChanged, PropertyChangedEventArgs changedProperty)
         {
-            Trace.Assert(modifiedStep.Type == IStep.StepType.Regular);
+            Debug.Assert(modifiedStep.Type == IStep.StepType.Regular);
 
             if (StepTargetChanged != null)
             {
@@ -922,7 +922,7 @@ namespace GarminFitnessPlugin.Data
 
         public bool InsertStepsAfterStep(List<IStep> stepsToAdd, IStep previousStep)
         {
-            Trace.Assert(previousStep != null);
+            Debug.Assert(previousStep != null);
 
             int insertStepsCount = 0;
 
@@ -954,7 +954,7 @@ namespace GarminFitnessPlugin.Data
                 for (int i = 0; i < stepsToAdd.Count; ++i)
                 {
                     // Make sure we don't duplicate the step in the list
-                    Trace.Assert(!Utils.GetStepInfo(stepsToAdd[i], Steps, out tempList, out tempPosition));
+                    Debug.Assert(!Utils.GetStepInfo(stepsToAdd[i], Steps, out tempList, out tempPosition));
 
                     RegisterStep(stepsToAdd[i]);
 
@@ -972,7 +972,7 @@ namespace GarminFitnessPlugin.Data
             else
             {
                 // We haven't found the right step, this shouldn't happen
-                Trace.Assert(false);
+                Debug.Assert(false);
             }
 
             return false;
@@ -998,7 +998,7 @@ namespace GarminFitnessPlugin.Data
 
         public bool InsertStepsBeforeStep(List<IStep> stepsToAdd, IStep nextStep)
         {
-            Trace.Assert(nextStep != null);
+            Debug.Assert(nextStep != null);
 
             int insertStepsCount = 0;
 
@@ -1030,7 +1030,7 @@ namespace GarminFitnessPlugin.Data
                 for (int i = 0; i < stepsToAdd.Count; ++i)
                 {
                     // Make sure we don't duplicate the step in the list
-                    Trace.Assert(!Utils.GetStepInfo(stepsToAdd[i], Steps, out tempList, out tempPosition));
+                    Debug.Assert(!Utils.GetStepInfo(stepsToAdd[i], Steps, out tempList, out tempPosition));
 
                     RegisterStep(stepsToAdd[i]);
 
@@ -1048,7 +1048,7 @@ namespace GarminFitnessPlugin.Data
             else
             {
                 // We haven't found the right step, this shouldn't happen
-                Trace.Assert(false);
+                Debug.Assert(false);
             }
 
             return false;
@@ -1266,7 +1266,7 @@ namespace GarminFitnessPlugin.Data
 
             if (Utils.GetStepInfo(step, Steps, out selectedList, out selectedPosition))
             {
-                Trace.Assert(selectedPosition > 0);
+                Debug.Assert(selectedPosition > 0);
 
                 selectedList.Reverse(selectedPosition - 1, 2);
 
@@ -1281,7 +1281,7 @@ namespace GarminFitnessPlugin.Data
 
             if (Utils.GetStepInfo(step, Steps, out selectedList, out selectedPosition))
             {
-                Trace.Assert(selectedPosition < selectedList.Count - 1);
+                Debug.Assert(selectedPosition < selectedList.Count - 1);
 
                 selectedList.Reverse(selectedPosition, 2);
 
@@ -1328,7 +1328,7 @@ namespace GarminFitnessPlugin.Data
             {
                 if (m_Category != value)
                 {
-                    Trace.Assert(value != null);
+                    Debug.Assert(value != null);
                     m_Category = value;
 
                     TriggerWorkoutChangedEvent(new PropertyChangedEventArgs("Category"));
@@ -1343,7 +1343,7 @@ namespace GarminFitnessPlugin.Data
             {
                 if (m_Name != value)
                 {
-                    Trace.Assert(value.Length > 0 && value.Length <= 15);
+                    Debug.Assert(value.Length > 0 && value.Length <= 15);
                     m_Name = value;
 
                     TriggerWorkoutChangedEvent(new PropertyChangedEventArgs("Name"));
@@ -1358,7 +1358,7 @@ namespace GarminFitnessPlugin.Data
             {
                 if (m_Notes != value)
                 {
-                    Trace.Assert(value.Length <= 30000);
+                    Debug.Assert(value.Length <= 30000);
                     m_Notes = value;
 
                     TriggerWorkoutChangedEvent(new PropertyChangedEventArgs("Notes"));
@@ -1380,7 +1380,7 @@ namespace GarminFitnessPlugin.Data
 
                 return false;
             }
-            set { Trace.Assert(false); }
+            set { Debug.Assert(false); }
         }
 
         public delegate void WorkoutChangedEventHandler(Workout modifiedWorkout, PropertyChangedEventArgs changedProperty);

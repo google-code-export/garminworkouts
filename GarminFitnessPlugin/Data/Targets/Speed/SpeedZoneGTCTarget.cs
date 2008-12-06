@@ -87,7 +87,7 @@ namespace GarminFitnessPlugin.Data
             {
                 if (m_Zone != value)
                 {
-                    Trace.Assert(value <= 10);
+                    Debug.Assert(value <= 10);
                     m_Zone = value;
 
                     TriggerTargetChangedEvent(this, new PropertyChangedEventArgs("Zone"));
@@ -98,7 +98,7 @@ namespace GarminFitnessPlugin.Data
         public override bool IsDirty
         {
             get { return false; }
-            set { Trace.Assert(false); }
+            set { Debug.Assert(false); }
         }
 
         private Byte m_Zone;

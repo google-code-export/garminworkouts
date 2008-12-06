@@ -20,14 +20,14 @@ namespace GarminFitnessPlugin.View
 
                 if (((Workout)wrapper.Element).IsDirty)
                 {
-                    return global::GarminFitnessPlugin.Properties.Resources.WorkoutDirtyIcon;
+                    return global::GarminFitnessPlugin.Resources.Resources.WorkoutDirtyIcon;
                 }
 
-                return global::GarminFitnessPlugin.Properties.Resources.WorkoutIcon;
+                return global::GarminFitnessPlugin.Resources.Resources.WorkoutIcon;
             }
             else if (element.GetType() == typeof(ActivityCategoryWrapper))
             {
-                return global::GarminFitnessPlugin.Properties.Resources.CategoryIcon;
+                return global::GarminFitnessPlugin.Resources.Resources.CategoryIcon;
             }
 
             return base.GetImage(element, column);

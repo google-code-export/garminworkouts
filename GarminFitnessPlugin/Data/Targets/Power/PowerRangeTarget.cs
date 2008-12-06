@@ -169,9 +169,9 @@ namespace GarminFitnessPlugin.Data
 
         private void ValidateValue(UInt16 minPower, UInt16 maxPower)
         {
-            Trace.Assert(minPower >= Constants.MinPower && minPower <= Constants.MaxPower);
-            Trace.Assert(maxPower >= Constants.MinPower && maxPower <= Constants.MaxPower);
-            Trace.Assert(minPower <= maxPower);
+            Debug.Assert(minPower >= Constants.MinPower && minPower <= Constants.MaxPower);
+            Debug.Assert(maxPower >= Constants.MinPower && maxPower <= Constants.MaxPower);
+            Debug.Assert(minPower <= maxPower);
         }
 
         public UInt16 MinPower
@@ -205,7 +205,7 @@ namespace GarminFitnessPlugin.Data
         public override bool IsDirty
         {
             get { return false; }
-            set { Trace.Assert(false); }
+            set { Debug.Assert(false); }
         }
 
         private UInt16 m_MinPower;

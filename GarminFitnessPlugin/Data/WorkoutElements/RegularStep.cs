@@ -421,7 +421,7 @@ namespace GarminFitnessPlugin.Data
             {
                 if (m_Name != value)
                 {
-                    Trace.Assert(value.Length <= 15);
+                    Debug.Assert(value.Length <= 15);
 
                     m_Name = value;
 
@@ -433,7 +433,7 @@ namespace GarminFitnessPlugin.Data
         public override bool IsDirty
         {
             get { return Target.IsDirty; }
-            set { Trace.Assert(false); }
+            set { Debug.Assert(false); }
         }
 
         public bool IsRestingStep

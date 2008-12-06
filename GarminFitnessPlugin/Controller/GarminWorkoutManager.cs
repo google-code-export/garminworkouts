@@ -406,7 +406,7 @@ namespace GarminFitnessPlugin.Controller
 
                 while (!IsWorkoutNameAvailable(baseName + workoutNumber.ToString()))
                 {
-                    Trace.Assert(workoutNumber < 10000);
+                    Debug.Assert(workoutNumber < 10000);
 
                     workoutNumber++;
 

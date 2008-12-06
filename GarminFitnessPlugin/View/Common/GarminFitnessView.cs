@@ -48,7 +48,7 @@ namespace GarminFitnessPlugin.View
                         }
                 }
 
-                Trace.Assert(false);
+                Debug.Assert(false);
                 return null;
             }
         }
@@ -74,7 +74,7 @@ namespace GarminFitnessPlugin.View
                         }
                     default:
                         {
-                            Trace.Assert(false);
+                            Debug.Assert(false);
                             return "";
                         }
                 }
@@ -231,7 +231,7 @@ namespace GarminFitnessPlugin.View
                     m_CurrentView = PluginViews.Workouts;
                     break;
                 default:
-                    Trace.Assert(false);
+                    Debug.Assert(false);
                     break;
             }
 
@@ -260,7 +260,16 @@ namespace GarminFitnessPlugin.View
 
         public static string GetLocalizedString(string name)
         {
-            return ResourceManager.GetString(name);
+            try
+            {
+                return ResourceManager.GetString(name);
+            }
+            catch
+            {
+                Debug.Assert(false, "Unable to find string resource named " + name);
+
+                return String.Empty;
+            }
         }
 
         public static ResourceManager ResourceManager

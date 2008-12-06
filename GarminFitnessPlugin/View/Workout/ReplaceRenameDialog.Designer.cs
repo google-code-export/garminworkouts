@@ -86,7 +86,7 @@ namespace GarminFitnessPlugin.View
             // 
             // ReplaceArrowPictureBox
             // 
-            this.ReplaceArrowPictureBox.Image = global::GarminFitnessPlugin.Properties.Resources.Arrow;
+            this.ReplaceArrowPictureBox.Image = global::GarminFitnessPlugin.Resources.Resources.Arrow;
             this.ReplaceArrowPictureBox.InitialImage = null;
             this.ReplaceArrowPictureBox.Location = new System.Drawing.Point(4, 4);
             this.ReplaceArrowPictureBox.Name = "ReplaceArrowPictureBox";
@@ -145,7 +145,7 @@ namespace GarminFitnessPlugin.View
             // 
             // RenameArrowPictureBox
             // 
-            this.RenameArrowPictureBox.Image = global::GarminFitnessPlugin.Properties.Resources.Arrow;
+            this.RenameArrowPictureBox.Image = global::GarminFitnessPlugin.Resources.Resources.Arrow;
             this.RenameArrowPictureBox.InitialImage = null;
             this.RenameArrowPictureBox.Location = new System.Drawing.Point(4, 4);
             this.RenameArrowPictureBox.Name = "RenameArrowPictureBox";

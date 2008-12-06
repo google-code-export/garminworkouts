@@ -15,7 +15,7 @@ namespace GarminFitnessPlugin.Data
         {
             public IConcreteSpeedTarget(SpeedTargetType type, BaseSpeedTarget baseTarget)
             {
-                Trace.Assert(type != SpeedTargetType.SpeedTargetTypeCount);
+                Debug.Assert(type != SpeedTargetType.SpeedTargetTypeCount);
 
                 m_Type = type;
                 m_BaseTarget = baseTarget;
@@ -146,7 +146,7 @@ namespace GarminFitnessPlugin.Data
                     }
                 default:
                     {
-                        Trace.Assert(false);
+                        Debug.Assert(false);
                         break;
                     }
             }
@@ -202,7 +202,7 @@ namespace GarminFitnessPlugin.Data
         public override void HandleTargetOverride(XmlNode extensionNode)
         {
             // We got here so our target must be a range
-            Trace.Assert(ConcreteTarget.Type == BaseSpeedTarget.IConcreteSpeedTarget.SpeedTargetType.Range);
+            Debug.Assert(ConcreteTarget.Type == BaseSpeedTarget.IConcreteSpeedTarget.SpeedTargetType.Range);
 
             IZoneCategory referenceZones = ParentStep.ParentWorkout.Category.SpeedZone;
             string zoneReferenceId = null;
@@ -248,7 +248,7 @@ namespace GarminFitnessPlugin.Data
         public override bool IsDirty
         {
             get { return ConcreteTarget.IsDirty; }
-            set { Trace.Assert(false); }
+            set { Debug.Assert(false); }
         }
 
         private BaseSpeedTarget.IConcreteSpeedTarget m_ConcreteTarget = null;

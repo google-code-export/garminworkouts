@@ -537,7 +537,7 @@ namespace GarminFitnessPlugin.View
 
         private void LowPowerTextBox_Validated(object sender, EventArgs e)
         {
-            Trace.Assert(m_CurrentProfile.GetType() == typeof(GarminBikingActivityProfile));
+            Debug.Assert(m_CurrentProfile.GetType() == typeof(GarminBikingActivityProfile));
 
             GarminBikingActivityProfile concreteProfile = (GarminBikingActivityProfile)m_CurrentProfile;
 
@@ -562,7 +562,7 @@ namespace GarminFitnessPlugin.View
 
         private void HighPowerTextBox_Validated(object sender, EventArgs e)
         {
-            Trace.Assert(m_CurrentProfile.GetType() == typeof(GarminBikingActivityProfile));
+            Debug.Assert(m_CurrentProfile.GetType() == typeof(GarminBikingActivityProfile));
 
             GarminBikingActivityProfile concreteProfile = (GarminBikingActivityProfile)m_CurrentProfile;
 

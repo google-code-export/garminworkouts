@@ -10,7 +10,7 @@ namespace GarminFitnessPlugin.Data
         public void Deserialize(Stream stream, DataVersion version)
         {
             MethodInfo deserializeMethod = GetLatestDeserializeMethod(this.GetType(), version);
-            Trace.Assert(deserializeMethod != null);
+            Debug.Assert(deserializeMethod != null);
 
             deserializeMethod.Invoke(this, new object[] { stream, version });
         }
@@ -18,7 +18,7 @@ namespace GarminFitnessPlugin.Data
         protected void Deserialize(Type forcedType, Stream stream, DataVersion version)
         {
             MethodInfo deserializeMethod = GetLatestDeserializeMethod(forcedType, version);
-            Trace.Assert(deserializeMethod != null);
+            Debug.Assert(deserializeMethod != null);
 
             deserializeMethod.Invoke(this, new object[] { stream, version });
         }
@@ -45,7 +45,7 @@ namespace GarminFitnessPlugin.Data
                     catch
                     {
                         // Too big version for Byte?????
-                        Trace.Assert(false);
+                        Debug.Assert(false);
                     }
 
                     if (currentMethodVersionNumber > bestVersionNumber && currentMethodVersionNumber <= version.VersionNumber)

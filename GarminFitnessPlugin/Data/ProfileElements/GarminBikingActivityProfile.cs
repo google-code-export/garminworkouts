@@ -248,7 +248,7 @@ namespace GarminFitnessPlugin.Data
 
         private bool ReadPowerZone(int index, XmlNode parentNode)
         {
-            Trace.Assert(index >= 0 && index < Constants.GarminPowerZoneCount);
+            Debug.Assert(index >= 0 && index < Constants.GarminPowerZoneCount);
 
             bool lowRead = false;
             bool highRead = false;
@@ -313,21 +313,21 @@ namespace GarminFitnessPlugin.Data
 
         public UInt16 GetPowerLowLimit(int index)
         {
-            Trace.Assert(index >= 0 && index < Constants.GarminPowerZoneCount);
+            Debug.Assert(index >= 0 && index < Constants.GarminPowerZoneCount);
 
             return m_PowerZones[index].Lower;
         }
 
         public UInt16 GetPowerHighLimit(int index)
         {
-            Trace.Assert(index >= 0 && index < Constants.GarminPowerZoneCount);
+            Debug.Assert(index >= 0 && index < Constants.GarminPowerZoneCount);
 
             return m_PowerZones[index].Upper;
         }
 
         public void SetPowerLowLimit(int index, UInt16 value)
         {
-            Trace.Assert(index >= 0 && index < Constants.GarminPowerZoneCount);
+            Debug.Assert(index >= 0 && index < Constants.GarminPowerZoneCount);
 
             if (m_PowerZones[index].Lower != value)
             {
@@ -339,7 +339,7 @@ namespace GarminFitnessPlugin.Data
 
         public void SetPowerHighLimit(int index, UInt16 value)
         {
-            Trace.Assert(index >= 0 && index < Constants.GarminPowerZoneCount);
+            Debug.Assert(index >= 0 && index < Constants.GarminPowerZoneCount);
 
             if (m_PowerZones[index].Upper != value)
             {
@@ -351,14 +351,14 @@ namespace GarminFitnessPlugin.Data
 
         public string GetBikeName(int index)
         {
-            Trace.Assert(index >= 0 && index <= Constants.GarminBikeProfileCount);
+            Debug.Assert(index >= 0 && index <= Constants.GarminBikeProfileCount);
 
             return m_Bikes[index].Name;
         }
 
         public GarminBikeProfile GetBikeProfile(int index)
         {
-            Trace.Assert(index >= 0 && index <= Constants.GarminBikeProfileCount);
+            Debug.Assert(index >= 0 && index <= Constants.GarminBikeProfileCount);
 
             return m_Bikes[index];
         }
@@ -370,7 +370,7 @@ namespace GarminFitnessPlugin.Data
             {
                 if (m_FTP != value)
                 {
-                    Trace.Assert(value >= Constants.MinPower && value <= Constants.MaxPower);
+                    Debug.Assert(value >= Constants.MinPower && value <= Constants.MaxPower);
 
                     m_FTP = value;
 

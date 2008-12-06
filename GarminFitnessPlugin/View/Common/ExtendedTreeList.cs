@@ -202,13 +202,13 @@ namespace GarminFitnessPlugin.View
         {
             get
             {
-                Trace.Assert(typeof(ExtendedRowDataRenderer).IsInstanceOfType(base.RowDataRenderer));
+                Debug.Assert(typeof(ExtendedRowDataRenderer).IsInstanceOfType(base.RowDataRenderer));
 
                 return base.RowDataRenderer;
             }
             set
             {
-                Trace.Assert(typeof(ExtendedRowDataRenderer).IsInstanceOfType(value));
+                Debug.Assert(typeof(ExtendedRowDataRenderer).IsInstanceOfType(value));
 
                 base.RowDataRenderer = value;
             }

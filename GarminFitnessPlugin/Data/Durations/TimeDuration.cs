@@ -83,7 +83,7 @@ namespace GarminFitnessPlugin.Data
             {
                 if (TimeInSeconds != value)
                 {
-                    Trace.Assert(value <= Constants.MaxTime);
+                    Debug.Assert(value <= Constants.MaxTime);
                     m_TimeInSeconds = value;
 
                     TriggerDurationChangedEvent(new PropertyChangedEventArgs("TimeInSeconds"));
