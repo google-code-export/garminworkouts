@@ -205,13 +205,13 @@
     <value>Export All</value>
   </data>
   <data name="ExportWorkoutsFailedText" xml:space="preserve">
-    <value>There was an error while exporting workouts</value>
+    <value>There was an error while exporting workouts.</value>
   </data>
   <data name="ExportSelectedText" xml:space="preserve">
     <value>Export Selected</value>
   </data>
   <data name="ExportWorkoutsSuccessText" xml:space="preserve">
-    <value>Workouts have been successfully exported to the device.</value>
+    <value>Workouts have been successfully exported.</value>
   </data>
   <data name="FemaleText" xml:space="preserve">
     <value>Female</value>
@@ -301,7 +301,7 @@
     <value>Heart Rate Zones</value>
   </data>
   <data name="ImportWorkoutsErrorText" xml:space="preserve">
-    <value>There was an error while importing the workouts</value>
+    <value>There was an error while importing the workouts.</value>
   </data>
   <data name="IntegerRangeValidationText" xml:space="preserve">
     <value>Value must be an integer between {0} and {1}</value>
@@ -511,7 +511,7 @@
     <value>Workouts</value>
   </data>
   <data name="ExportProfileFailedText" xml:space="preserve">
-    <value>There was an error while exporting the profile</value>
+    <value>There was an error while exporting the profile.</value>
   </data>
   <data name="ExportText" xml:space="preserve">
     <value>Export</value>
@@ -550,7 +550,7 @@
     <value>You have chosen to configure your zone usage manually.  Please select the mode to use for each type of zone available in the plugin.</value>
   </data>
   <data name="ImportProfileErrorText" xml:space="preserve">
-    <value>There was an error while importing the profile</value>
+    <value>There was an error while importing the profile.</value>
   </data>
   <data name="AutoText" xml:space="preserve">
     <value>Auto</value>

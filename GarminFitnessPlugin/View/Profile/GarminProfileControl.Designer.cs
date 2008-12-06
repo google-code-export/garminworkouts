@@ -65,6 +65,7 @@ namespace GarminFitnessPlugin.View
             this.LowPowerTextBox = new System.Windows.Forms.TextBox();
             this.HighPowerLabel = new System.Windows.Forms.Label();
             this.LowPowerLabel = new System.Windows.Forms.Label();
+            this.PowerZonesTreeList = new GarminFitnessPlugin.View.ExtendedTreeList();
             this.SpeedZonesGroupBox = new System.Windows.Forms.GroupBox();
             this.PaceRadioButton = new System.Windows.Forms.RadioButton();
             this.SpeedRadioButton = new System.Windows.Forms.RadioButton();
@@ -74,6 +75,7 @@ namespace GarminFitnessPlugin.View
             this.LowSpeedTextBox = new System.Windows.Forms.TextBox();
             this.HighSpeedLabel = new System.Windows.Forms.Label();
             this.LowSpeedLabel = new System.Windows.Forms.Label();
+            this.SpeedZonesTreeList = new GarminFitnessPlugin.View.ExtendedTreeList();
             this.HRZonesGroupBox = new System.Windows.Forms.GroupBox();
             this.PercentMaxRadioButton = new System.Windows.Forms.RadioButton();
             this.BPMRadioButton = new System.Windows.Forms.RadioButton();
@@ -81,26 +83,25 @@ namespace GarminFitnessPlugin.View
             this.LowHRTextBox = new System.Windows.Forms.TextBox();
             this.HighHRLabel = new System.Windows.Forms.Label();
             this.LowHRLabel = new System.Windows.Forms.Label();
+            this.HRZonesTreeList = new GarminFitnessPlugin.View.ExtendedTreeList();
             this.GarminActivityBanner = new ZoneFiveSoftware.Common.Visuals.ActionBanner();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.flowLayoutPanel3 = new System.Windows.Forms.FlowLayoutPanel();
-            this.FemaleRadioButton = new System.Windows.Forms.RadioButton();
             this.GenderLabel = new System.Windows.Forms.Label();
             this.MaleRadioButton = new System.Windows.Forms.RadioButton();
+            this.FemaleRadioButton = new System.Windows.Forms.RadioButton();
             this.WeightLabel = new System.Windows.Forms.Label();
             this.WeightTextBox = new System.Windows.Forms.TextBox();
             this.WeightUnitLabel = new System.Windows.Forms.Label();
             this.flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
-            this.BirthDateTimePicker = new System.Windows.Forms.DateTimePicker();
             this.BirthDateLabel = new System.Windows.Forms.Label();
+            this.BirthDateTimePicker = new System.Windows.Forms.DateTimePicker();
             this.RestingHeartRateLabel = new System.Windows.Forms.Label();
             this.RestHRTextBox = new System.Windows.Forms.TextBox();
             this.RestBPMLabel = new System.Windows.Forms.Label();
             this.ProfileNameLabel = new System.Windows.Forms.Label();
             this.NameTextBox = new System.Windows.Forms.TextBox();
-            this.PowerZonesTreeList = new GarminFitnessPlugin.View.ExtendedTreeList();
-            this.SpeedZonesTreeList = new GarminFitnessPlugin.View.ExtendedTreeList();
-            this.HRZonesTreeList = new GarminFitnessPlugin.View.ExtendedTreeList();
+            this.flowLayoutPanel2 = new System.Windows.Forms.FlowLayoutPanel();
             this.ActivitiesPanel.SuspendLayout();
             this.ActivityPanel.SuspendLayout();
             this.flowLayoutPanel5.SuspendLayout();
@@ -117,6 +118,7 @@ namespace GarminFitnessPlugin.View
             this.splitContainer1.SuspendLayout();
             this.flowLayoutPanel3.SuspendLayout();
             this.flowLayoutPanel1.SuspendLayout();
+            this.flowLayoutPanel2.SuspendLayout();
             this.SuspendLayout();
             // 
             // ActivitiesPanel
@@ -481,7 +483,7 @@ namespace GarminFitnessPlugin.View
             // 
             // HighPowerTextBox
             // 
-            this.HighPowerTextBox.Location = new System.Drawing.Point(368, 69);
+            this.HighPowerTextBox.Location = new System.Drawing.Point(383, 69);
             this.HighPowerTextBox.MaxLength = 3;
             this.HighPowerTextBox.Name = "HighPowerTextBox";
             this.HighPowerTextBox.Size = new System.Drawing.Size(104, 20);
@@ -492,7 +494,7 @@ namespace GarminFitnessPlugin.View
             // 
             // LowPowerTextBox
             // 
-            this.LowPowerTextBox.Location = new System.Drawing.Point(368, 43);
+            this.LowPowerTextBox.Location = new System.Drawing.Point(383, 43);
             this.LowPowerTextBox.MaxLength = 3;
             this.LowPowerTextBox.Name = "LowPowerTextBox";
             this.LowPowerTextBox.Size = new System.Drawing.Size(104, 20);
@@ -504,7 +506,7 @@ namespace GarminFitnessPlugin.View
             // HighPowerLabel
             // 
             this.HighPowerLabel.AutoSize = true;
-            this.HighPowerLabel.Location = new System.Drawing.Point(311, 72);
+            this.HighPowerLabel.Location = new System.Drawing.Point(326, 72);
             this.HighPowerLabel.Name = "HighPowerLabel";
             this.HighPowerLabel.Size = new System.Drawing.Size(35, 13);
             this.HighPowerLabel.TabIndex = 2;
@@ -513,11 +515,38 @@ namespace GarminFitnessPlugin.View
             // LowPowerLabel
             // 
             this.LowPowerLabel.AutoSize = true;
-            this.LowPowerLabel.Location = new System.Drawing.Point(311, 46);
+            this.LowPowerLabel.Location = new System.Drawing.Point(326, 46);
             this.LowPowerLabel.Name = "LowPowerLabel";
             this.LowPowerLabel.Size = new System.Drawing.Size(33, 13);
             this.LowPowerLabel.TabIndex = 1;
             this.LowPowerLabel.Text = "Low :";
+            // 
+            // PowerZonesTreeList
+            // 
+            this.PowerZonesTreeList.BackColor = System.Drawing.Color.Transparent;
+            this.PowerZonesTreeList.Border = ZoneFiveSoftware.Common.Visuals.ControlBorder.Style.SmallRoundShadow;
+            this.PowerZonesTreeList.CheckBoxes = false;
+            this.PowerZonesTreeList.DefaultIndent = 15;
+            this.PowerZonesTreeList.DefaultRowHeight = -1;
+            this.PowerZonesTreeList.DragAutoScrollSize = ((byte)(20));
+            this.PowerZonesTreeList.HeaderRowHeight = 21;
+            this.PowerZonesTreeList.Location = new System.Drawing.Point(6, 43);
+            this.PowerZonesTreeList.MultiSelect = false;
+            this.PowerZonesTreeList.Name = "PowerZonesTreeList";
+            this.PowerZonesTreeList.NumHeaderRows = ZoneFiveSoftware.Common.Visuals.TreeList.HeaderRows.One;
+            this.PowerZonesTreeList.NumLockedColumns = 0;
+            this.PowerZonesTreeList.RowAlternatingColors = true;
+            this.PowerZonesTreeList.RowHotlightColor = System.Drawing.Color.FromArgb(((int)(((byte)(200)))), ((int)(((byte)(10)))), ((int)(((byte)(36)))), ((int)(((byte)(106)))));
+            this.PowerZonesTreeList.RowHotlightColorText = System.Drawing.SystemColors.HighlightText;
+            this.PowerZonesTreeList.RowHotlightMouse = true;
+            this.PowerZonesTreeList.RowSelectedColor = System.Drawing.SystemColors.Highlight;
+            this.PowerZonesTreeList.RowSelectedColorText = System.Drawing.SystemColors.HighlightText;
+            this.PowerZonesTreeList.RowSeparatorLines = true;
+            this.PowerZonesTreeList.ShowLines = false;
+            this.PowerZonesTreeList.ShowPlusMinus = false;
+            this.PowerZonesTreeList.Size = new System.Drawing.Size(298, 72);
+            this.PowerZonesTreeList.TabIndex = 1;
+            this.PowerZonesTreeList.SelectedChanged += new System.EventHandler(this.PowerZonesTreeList_SelectedChanged);
             // 
             // SpeedZonesGroupBox
             // 
@@ -563,7 +592,7 @@ namespace GarminFitnessPlugin.View
             // 
             // SpeedNameTextBox
             // 
-            this.SpeedNameTextBox.Location = new System.Drawing.Point(368, 94);
+            this.SpeedNameTextBox.Location = new System.Drawing.Point(383, 94);
             this.SpeedNameTextBox.MaxLength = 15;
             this.SpeedNameTextBox.Name = "SpeedNameTextBox";
             this.SpeedNameTextBox.Size = new System.Drawing.Size(104, 20);
@@ -573,7 +602,7 @@ namespace GarminFitnessPlugin.View
             // 
             // HighSpeedTextBox
             // 
-            this.HighSpeedTextBox.Location = new System.Drawing.Point(368, 68);
+            this.HighSpeedTextBox.Location = new System.Drawing.Point(383, 68);
             this.HighSpeedTextBox.Name = "HighSpeedTextBox";
             this.HighSpeedTextBox.Size = new System.Drawing.Size(104, 20);
             this.HighSpeedTextBox.TabIndex = 3;
@@ -584,7 +613,7 @@ namespace GarminFitnessPlugin.View
             // NameSpeedLabel
             // 
             this.NameSpeedLabel.AutoSize = true;
-            this.NameSpeedLabel.Location = new System.Drawing.Point(311, 97);
+            this.NameSpeedLabel.Location = new System.Drawing.Point(326, 97);
             this.NameSpeedLabel.Name = "NameSpeedLabel";
             this.NameSpeedLabel.Size = new System.Drawing.Size(41, 13);
             this.NameSpeedLabel.TabIndex = 2;
@@ -592,7 +621,7 @@ namespace GarminFitnessPlugin.View
             // 
             // LowSpeedTextBox
             // 
-            this.LowSpeedTextBox.Location = new System.Drawing.Point(368, 42);
+            this.LowSpeedTextBox.Location = new System.Drawing.Point(383, 42);
             this.LowSpeedTextBox.Name = "LowSpeedTextBox";
             this.LowSpeedTextBox.Size = new System.Drawing.Size(104, 20);
             this.LowSpeedTextBox.TabIndex = 2;
@@ -603,7 +632,7 @@ namespace GarminFitnessPlugin.View
             // HighSpeedLabel
             // 
             this.HighSpeedLabel.AutoSize = true;
-            this.HighSpeedLabel.Location = new System.Drawing.Point(311, 71);
+            this.HighSpeedLabel.Location = new System.Drawing.Point(326, 71);
             this.HighSpeedLabel.Name = "HighSpeedLabel";
             this.HighSpeedLabel.Size = new System.Drawing.Size(35, 13);
             this.HighSpeedLabel.TabIndex = 2;
@@ -612,11 +641,38 @@ namespace GarminFitnessPlugin.View
             // LowSpeedLabel
             // 
             this.LowSpeedLabel.AutoSize = true;
-            this.LowSpeedLabel.Location = new System.Drawing.Point(311, 45);
+            this.LowSpeedLabel.Location = new System.Drawing.Point(326, 45);
             this.LowSpeedLabel.Name = "LowSpeedLabel";
             this.LowSpeedLabel.Size = new System.Drawing.Size(33, 13);
             this.LowSpeedLabel.TabIndex = 1;
             this.LowSpeedLabel.Text = "Low :";
+            // 
+            // SpeedZonesTreeList
+            // 
+            this.SpeedZonesTreeList.BackColor = System.Drawing.Color.Transparent;
+            this.SpeedZonesTreeList.Border = ZoneFiveSoftware.Common.Visuals.ControlBorder.Style.SmallRoundShadow;
+            this.SpeedZonesTreeList.CheckBoxes = false;
+            this.SpeedZonesTreeList.DefaultIndent = 15;
+            this.SpeedZonesTreeList.DefaultRowHeight = -1;
+            this.SpeedZonesTreeList.DragAutoScrollSize = ((byte)(20));
+            this.SpeedZonesTreeList.HeaderRowHeight = 21;
+            this.SpeedZonesTreeList.Location = new System.Drawing.Point(6, 42);
+            this.SpeedZonesTreeList.MultiSelect = false;
+            this.SpeedZonesTreeList.Name = "SpeedZonesTreeList";
+            this.SpeedZonesTreeList.NumHeaderRows = ZoneFiveSoftware.Common.Visuals.TreeList.HeaderRows.One;
+            this.SpeedZonesTreeList.NumLockedColumns = 0;
+            this.SpeedZonesTreeList.RowAlternatingColors = true;
+            this.SpeedZonesTreeList.RowHotlightColor = System.Drawing.Color.FromArgb(((int)(((byte)(200)))), ((int)(((byte)(10)))), ((int)(((byte)(36)))), ((int)(((byte)(106)))));
+            this.SpeedZonesTreeList.RowHotlightColorText = System.Drawing.SystemColors.HighlightText;
+            this.SpeedZonesTreeList.RowHotlightMouse = true;
+            this.SpeedZonesTreeList.RowSelectedColor = System.Drawing.SystemColors.Highlight;
+            this.SpeedZonesTreeList.RowSelectedColorText = System.Drawing.SystemColors.HighlightText;
+            this.SpeedZonesTreeList.RowSeparatorLines = true;
+            this.SpeedZonesTreeList.ShowLines = false;
+            this.SpeedZonesTreeList.ShowPlusMinus = false;
+            this.SpeedZonesTreeList.Size = new System.Drawing.Size(298, 72);
+            this.SpeedZonesTreeList.TabIndex = 1;
+            this.SpeedZonesTreeList.SelectedChanged += new System.EventHandler(this.SpeedZonesTreeList_SelectedChanged);
             // 
             // HRZonesGroupBox
             // 
@@ -660,7 +716,7 @@ namespace GarminFitnessPlugin.View
             // 
             // HighHRTextBox
             // 
-            this.HighHRTextBox.Location = new System.Drawing.Point(368, 68);
+            this.HighHRTextBox.Location = new System.Drawing.Point(383, 68);
             this.HighHRTextBox.MaxLength = 3;
             this.HighHRTextBox.Name = "HighHRTextBox";
             this.HighHRTextBox.Size = new System.Drawing.Size(104, 20);
@@ -671,7 +727,7 @@ namespace GarminFitnessPlugin.View
             // 
             // LowHRTextBox
             // 
-            this.LowHRTextBox.Location = new System.Drawing.Point(368, 42);
+            this.LowHRTextBox.Location = new System.Drawing.Point(383, 42);
             this.LowHRTextBox.MaxLength = 3;
             this.LowHRTextBox.Name = "LowHRTextBox";
             this.LowHRTextBox.Size = new System.Drawing.Size(104, 20);
@@ -683,7 +739,7 @@ namespace GarminFitnessPlugin.View
             // HighHRLabel
             // 
             this.HighHRLabel.AutoSize = true;
-            this.HighHRLabel.Location = new System.Drawing.Point(311, 71);
+            this.HighHRLabel.Location = new System.Drawing.Point(326, 71);
             this.HighHRLabel.Name = "HighHRLabel";
             this.HighHRLabel.Size = new System.Drawing.Size(35, 13);
             this.HighHRLabel.TabIndex = 2;
@@ -692,11 +748,38 @@ namespace GarminFitnessPlugin.View
             // LowHRLabel
             // 
             this.LowHRLabel.AutoSize = true;
-            this.LowHRLabel.Location = new System.Drawing.Point(311, 45);
+            this.LowHRLabel.Location = new System.Drawing.Point(326, 45);
             this.LowHRLabel.Name = "LowHRLabel";
             this.LowHRLabel.Size = new System.Drawing.Size(33, 13);
             this.LowHRLabel.TabIndex = 1;
             this.LowHRLabel.Text = "Low :";
+            // 
+            // HRZonesTreeList
+            // 
+            this.HRZonesTreeList.BackColor = System.Drawing.Color.Transparent;
+            this.HRZonesTreeList.Border = ZoneFiveSoftware.Common.Visuals.ControlBorder.Style.SmallRoundShadow;
+            this.HRZonesTreeList.CheckBoxes = false;
+            this.HRZonesTreeList.DefaultIndent = 15;
+            this.HRZonesTreeList.DefaultRowHeight = -1;
+            this.HRZonesTreeList.DragAutoScrollSize = ((byte)(20));
+            this.HRZonesTreeList.HeaderRowHeight = 21;
+            this.HRZonesTreeList.Location = new System.Drawing.Point(6, 42);
+            this.HRZonesTreeList.MultiSelect = false;
+            this.HRZonesTreeList.Name = "HRZonesTreeList";
+            this.HRZonesTreeList.NumHeaderRows = ZoneFiveSoftware.Common.Visuals.TreeList.HeaderRows.One;
+            this.HRZonesTreeList.NumLockedColumns = 0;
+            this.HRZonesTreeList.RowAlternatingColors = true;
+            this.HRZonesTreeList.RowHotlightColor = System.Drawing.Color.FromArgb(((int)(((byte)(200)))), ((int)(((byte)(10)))), ((int)(((byte)(36)))), ((int)(((byte)(106)))));
+            this.HRZonesTreeList.RowHotlightColorText = System.Drawing.SystemColors.HighlightText;
+            this.HRZonesTreeList.RowHotlightMouse = true;
+            this.HRZonesTreeList.RowSelectedColor = System.Drawing.SystemColors.Highlight;
+            this.HRZonesTreeList.RowSelectedColorText = System.Drawing.SystemColors.HighlightText;
+            this.HRZonesTreeList.RowSeparatorLines = true;
+            this.HRZonesTreeList.ShowLines = false;
+            this.HRZonesTreeList.ShowPlusMinus = false;
+            this.HRZonesTreeList.Size = new System.Drawing.Size(298, 72);
+            this.HRZonesTreeList.TabIndex = 1;
+            this.HRZonesTreeList.SelectedChanged += new System.EventHandler(this.HRZonesTreeList_SelectedChanged);
             // 
             // GarminActivityBanner
             // 
@@ -724,10 +807,9 @@ namespace GarminFitnessPlugin.View
             // 
             // splitContainer1.Panel1
             // 
+            this.splitContainer1.Panel1.Controls.Add(this.flowLayoutPanel2);
             this.splitContainer1.Panel1.Controls.Add(this.flowLayoutPanel3);
             this.splitContainer1.Panel1.Controls.Add(this.flowLayoutPanel1);
-            this.splitContainer1.Panel1.Controls.Add(this.ProfileNameLabel);
-            this.splitContainer1.Panel1.Controls.Add(this.NameTextBox);
             // 
             // splitContainer1.Panel2
             // 
@@ -748,19 +830,6 @@ namespace GarminFitnessPlugin.View
             this.flowLayoutPanel3.Name = "flowLayoutPanel3";
             this.flowLayoutPanel3.Size = new System.Drawing.Size(285, 52);
             this.flowLayoutPanel3.TabIndex = 8;
-            // 
-            // FemaleRadioButton
-            // 
-            this.FemaleRadioButton.AutoSize = true;
-            this.flowLayoutPanel3.SetFlowBreak(this.FemaleRadioButton, true);
-            this.FemaleRadioButton.Location = new System.Drawing.Point(111, 3);
-            this.FemaleRadioButton.Name = "FemaleRadioButton";
-            this.FemaleRadioButton.Size = new System.Drawing.Size(59, 17);
-            this.FemaleRadioButton.TabIndex = 2;
-            this.FemaleRadioButton.TabStop = true;
-            this.FemaleRadioButton.Text = "Female";
-            this.FemaleRadioButton.UseVisualStyleBackColor = true;
-            this.FemaleRadioButton.CheckedChanged += new System.EventHandler(this.FemaleRadioButton_CheckedChanged);
             // 
             // GenderLabel
             // 
@@ -784,6 +853,19 @@ namespace GarminFitnessPlugin.View
             this.MaleRadioButton.Text = "Male";
             this.MaleRadioButton.UseVisualStyleBackColor = true;
             this.MaleRadioButton.CheckedChanged += new System.EventHandler(this.MaleRadioButton_CheckedChanged);
+            // 
+            // FemaleRadioButton
+            // 
+            this.FemaleRadioButton.AutoSize = true;
+            this.flowLayoutPanel3.SetFlowBreak(this.FemaleRadioButton, true);
+            this.FemaleRadioButton.Location = new System.Drawing.Point(111, 3);
+            this.FemaleRadioButton.Name = "FemaleRadioButton";
+            this.FemaleRadioButton.Size = new System.Drawing.Size(59, 17);
+            this.FemaleRadioButton.TabIndex = 2;
+            this.FemaleRadioButton.TabStop = true;
+            this.FemaleRadioButton.Text = "Female";
+            this.FemaleRadioButton.UseVisualStyleBackColor = true;
+            this.FemaleRadioButton.CheckedChanged += new System.EventHandler(this.FemaleRadioButton_CheckedChanged);
             // 
             // WeightLabel
             // 
@@ -829,17 +911,6 @@ namespace GarminFitnessPlugin.View
             this.flowLayoutPanel1.Size = new System.Drawing.Size(278, 55);
             this.flowLayoutPanel1.TabIndex = 6;
             // 
-            // BirthDateTimePicker
-            // 
-            this.flowLayoutPanel1.SetFlowBreak(this.BirthDateTimePicker, true);
-            this.BirthDateTimePicker.Format = System.Windows.Forms.DateTimePickerFormat.Custom;
-            this.BirthDateTimePicker.Location = new System.Drawing.Point(69, 3);
-            this.BirthDateTimePicker.MinDate = new System.DateTime(1900, 1, 1, 0, 0, 0, 0);
-            this.BirthDateTimePicker.Name = "BirthDateTimePicker";
-            this.BirthDateTimePicker.Size = new System.Drawing.Size(89, 20);
-            this.BirthDateTimePicker.TabIndex = 4;
-            this.BirthDateTimePicker.Validated += new System.EventHandler(this.BirthDateTimePicker_Validated);
-            // 
             // BirthDateLabel
             // 
             this.BirthDateLabel.AutoSize = true;
@@ -850,6 +921,17 @@ namespace GarminFitnessPlugin.View
             this.BirthDateLabel.TabIndex = 2;
             this.BirthDateLabel.Text = "Birth Date :";
             this.BirthDateLabel.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // BirthDateTimePicker
+            // 
+            this.flowLayoutPanel1.SetFlowBreak(this.BirthDateTimePicker, true);
+            this.BirthDateTimePicker.Format = System.Windows.Forms.DateTimePickerFormat.Custom;
+            this.BirthDateTimePicker.Location = new System.Drawing.Point(69, 3);
+            this.BirthDateTimePicker.MinDate = new System.DateTime(1900, 1, 1, 0, 0, 0, 0);
+            this.BirthDateTimePicker.Name = "BirthDateTimePicker";
+            this.BirthDateTimePicker.Size = new System.Drawing.Size(89, 20);
+            this.BirthDateTimePicker.TabIndex = 4;
+            this.BirthDateTimePicker.Validated += new System.EventHandler(this.BirthDateTimePicker_Validated);
             // 
             // RestingHeartRateLabel
             // 
@@ -887,102 +969,31 @@ namespace GarminFitnessPlugin.View
             // ProfileNameLabel
             // 
             this.ProfileNameLabel.AutoSize = true;
-            this.ProfileNameLabel.Location = new System.Drawing.Point(4, 7);
+            this.ProfileNameLabel.Location = new System.Drawing.Point(3, 0);
+            this.ProfileNameLabel.MinimumSize = new System.Drawing.Size(0, 20);
             this.ProfileNameLabel.Name = "ProfileNameLabel";
-            this.ProfileNameLabel.Size = new System.Drawing.Size(41, 13);
+            this.ProfileNameLabel.Size = new System.Drawing.Size(41, 20);
             this.ProfileNameLabel.TabIndex = 1;
             this.ProfileNameLabel.Text = "Name :";
             this.ProfileNameLabel.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // NameTextBox
             // 
-            this.NameTextBox.Location = new System.Drawing.Point(63, 4);
+            this.NameTextBox.Location = new System.Drawing.Point(50, 3);
             this.NameTextBox.Name = "NameTextBox";
             this.NameTextBox.Size = new System.Drawing.Size(169, 20);
             this.NameTextBox.TabIndex = 0;
             this.NameTextBox.Validated += new System.EventHandler(this.NameTextBox_Validated);
             this.NameTextBox.KeyDown += new System.Windows.Forms.KeyEventHandler(this.OnValidatedKeyDown);
             // 
-            // PowerZonesTreeList
+            // flowLayoutPanel2
             // 
-            this.PowerZonesTreeList.BackColor = System.Drawing.Color.Transparent;
-            this.PowerZonesTreeList.Border = ZoneFiveSoftware.Common.Visuals.ControlBorder.Style.SmallRoundShadow;
-            this.PowerZonesTreeList.CheckBoxes = false;
-            this.PowerZonesTreeList.DefaultIndent = 15;
-            this.PowerZonesTreeList.DefaultRowHeight = -1;
-            this.PowerZonesTreeList.DragAutoScrollSize = ((byte)(20));
-            this.PowerZonesTreeList.HeaderRowHeight = 21;
-            this.PowerZonesTreeList.Location = new System.Drawing.Point(6, 43);
-            this.PowerZonesTreeList.MultiSelect = false;
-            this.PowerZonesTreeList.Name = "PowerZonesTreeList";
-            this.PowerZonesTreeList.NumHeaderRows = ZoneFiveSoftware.Common.Visuals.TreeList.HeaderRows.One;
-            this.PowerZonesTreeList.NumLockedColumns = 0;
-            this.PowerZonesTreeList.RowAlternatingColors = true;
-            this.PowerZonesTreeList.RowHotlightColor = System.Drawing.Color.FromArgb(((int)(((byte)(200)))), ((int)(((byte)(10)))), ((int)(((byte)(36)))), ((int)(((byte)(106)))));
-            this.PowerZonesTreeList.RowHotlightColorText = System.Drawing.SystemColors.HighlightText;
-            this.PowerZonesTreeList.RowHotlightMouse = true;
-            this.PowerZonesTreeList.RowSelectedColor = System.Drawing.SystemColors.Highlight;
-            this.PowerZonesTreeList.RowSelectedColorText = System.Drawing.SystemColors.HighlightText;
-            this.PowerZonesTreeList.RowSeparatorLines = true;
-            this.PowerZonesTreeList.ShowLines = false;
-            this.PowerZonesTreeList.ShowPlusMinus = false;
-            this.PowerZonesTreeList.Size = new System.Drawing.Size(298, 72);
-            this.PowerZonesTreeList.TabIndex = 1;
-            this.PowerZonesTreeList.SelectedChanged += new System.EventHandler(this.PowerZonesTreeList_SelectedChanged);
-            // 
-            // SpeedZonesTreeList
-            // 
-            this.SpeedZonesTreeList.BackColor = System.Drawing.Color.Transparent;
-            this.SpeedZonesTreeList.Border = ZoneFiveSoftware.Common.Visuals.ControlBorder.Style.SmallRoundShadow;
-            this.SpeedZonesTreeList.CheckBoxes = false;
-            this.SpeedZonesTreeList.DefaultIndent = 15;
-            this.SpeedZonesTreeList.DefaultRowHeight = -1;
-            this.SpeedZonesTreeList.DragAutoScrollSize = ((byte)(20));
-            this.SpeedZonesTreeList.HeaderRowHeight = 21;
-            this.SpeedZonesTreeList.Location = new System.Drawing.Point(6, 42);
-            this.SpeedZonesTreeList.MultiSelect = false;
-            this.SpeedZonesTreeList.Name = "SpeedZonesTreeList";
-            this.SpeedZonesTreeList.NumHeaderRows = ZoneFiveSoftware.Common.Visuals.TreeList.HeaderRows.One;
-            this.SpeedZonesTreeList.NumLockedColumns = 0;
-            this.SpeedZonesTreeList.RowAlternatingColors = true;
-            this.SpeedZonesTreeList.RowHotlightColor = System.Drawing.Color.FromArgb(((int)(((byte)(200)))), ((int)(((byte)(10)))), ((int)(((byte)(36)))), ((int)(((byte)(106)))));
-            this.SpeedZonesTreeList.RowHotlightColorText = System.Drawing.SystemColors.HighlightText;
-            this.SpeedZonesTreeList.RowHotlightMouse = true;
-            this.SpeedZonesTreeList.RowSelectedColor = System.Drawing.SystemColors.Highlight;
-            this.SpeedZonesTreeList.RowSelectedColorText = System.Drawing.SystemColors.HighlightText;
-            this.SpeedZonesTreeList.RowSeparatorLines = true;
-            this.SpeedZonesTreeList.ShowLines = false;
-            this.SpeedZonesTreeList.ShowPlusMinus = false;
-            this.SpeedZonesTreeList.Size = new System.Drawing.Size(298, 72);
-            this.SpeedZonesTreeList.TabIndex = 1;
-            this.SpeedZonesTreeList.SelectedChanged += new System.EventHandler(this.SpeedZonesTreeList_SelectedChanged);
-            // 
-            // HRZonesTreeList
-            // 
-            this.HRZonesTreeList.BackColor = System.Drawing.Color.Transparent;
-            this.HRZonesTreeList.Border = ZoneFiveSoftware.Common.Visuals.ControlBorder.Style.SmallRoundShadow;
-            this.HRZonesTreeList.CheckBoxes = false;
-            this.HRZonesTreeList.DefaultIndent = 15;
-            this.HRZonesTreeList.DefaultRowHeight = -1;
-            this.HRZonesTreeList.DragAutoScrollSize = ((byte)(20));
-            this.HRZonesTreeList.HeaderRowHeight = 21;
-            this.HRZonesTreeList.Location = new System.Drawing.Point(6, 42);
-            this.HRZonesTreeList.MultiSelect = false;
-            this.HRZonesTreeList.Name = "HRZonesTreeList";
-            this.HRZonesTreeList.NumHeaderRows = ZoneFiveSoftware.Common.Visuals.TreeList.HeaderRows.One;
-            this.HRZonesTreeList.NumLockedColumns = 0;
-            this.HRZonesTreeList.RowAlternatingColors = true;
-            this.HRZonesTreeList.RowHotlightColor = System.Drawing.Color.FromArgb(((int)(((byte)(200)))), ((int)(((byte)(10)))), ((int)(((byte)(36)))), ((int)(((byte)(106)))));
-            this.HRZonesTreeList.RowHotlightColorText = System.Drawing.SystemColors.HighlightText;
-            this.HRZonesTreeList.RowHotlightMouse = true;
-            this.HRZonesTreeList.RowSelectedColor = System.Drawing.SystemColors.Highlight;
-            this.HRZonesTreeList.RowSelectedColorText = System.Drawing.SystemColors.HighlightText;
-            this.HRZonesTreeList.RowSeparatorLines = true;
-            this.HRZonesTreeList.ShowLines = false;
-            this.HRZonesTreeList.ShowPlusMinus = false;
-            this.HRZonesTreeList.Size = new System.Drawing.Size(298, 72);
-            this.HRZonesTreeList.TabIndex = 1;
-            this.HRZonesTreeList.SelectedChanged += new System.EventHandler(this.HRZonesTreeList_SelectedChanged);
+            this.flowLayoutPanel2.Controls.Add(this.ProfileNameLabel);
+            this.flowLayoutPanel2.Controls.Add(this.NameTextBox);
+            this.flowLayoutPanel2.Location = new System.Drawing.Point(3, 3);
+            this.flowLayoutPanel2.Name = "flowLayoutPanel2";
+            this.flowLayoutPanel2.Size = new System.Drawing.Size(569, 20);
+            this.flowLayoutPanel2.TabIndex = 9;
             // 
             // GarminProfileControl
             // 
@@ -1013,13 +1024,14 @@ namespace GarminFitnessPlugin.View
             this.HRZonesGroupBox.ResumeLayout(false);
             this.HRZonesGroupBox.PerformLayout();
             this.splitContainer1.Panel1.ResumeLayout(false);
-            this.splitContainer1.Panel1.PerformLayout();
             this.splitContainer1.Panel2.ResumeLayout(false);
             this.splitContainer1.ResumeLayout(false);
             this.flowLayoutPanel3.ResumeLayout(false);
             this.flowLayoutPanel3.PerformLayout();
             this.flowLayoutPanel1.ResumeLayout(false);
             this.flowLayoutPanel1.PerformLayout();
+            this.flowLayoutPanel2.ResumeLayout(false);
+            this.flowLayoutPanel2.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -1099,6 +1111,7 @@ namespace GarminFitnessPlugin.View
         private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel5;
         private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel4;
         private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel6;
+        private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel2;
 
 
 

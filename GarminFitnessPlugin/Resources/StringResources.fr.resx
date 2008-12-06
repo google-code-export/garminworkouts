@@ -244,10 +244,10 @@
     <value>Exporter tous</value>
   </data>
   <data name="ExportProfileFailedText" xml:space="preserve">
-    <value>Une erreur s'est produite lors de l'export de votre profile</value>
+    <value>Une erreur s'est produite lors de l'export de votre profile.</value>
   </data>
   <data name="ExportProfileSuccessText" xml:space="preserve">
-    <value>Le profile a été exporté avec succès</value>
+    <value>Le profile a été exporté avec succès.</value>
   </data>
   <data name="ExportSelectedText" xml:space="preserve">
     <value>Exporter sél.</value>
@@ -256,10 +256,10 @@
     <value>Exporter</value>
   </data>
   <data name="ExportWorkoutsFailedText" xml:space="preserve">
-    <value>Une erreur s'est produite lors de l'export de vos entraînements</value>
+    <value>Une erreur s'est produite lors de l'export de vos entraînements.</value>
   </data>
   <data name="ExportWorkoutsSuccessText" xml:space="preserve">
-    <value>Vos entraînements on été correctement exportés vers votre appareil.</value>
+    <value>Vos entraînements ont été correctement exportés.</value>
   </data>
   <data name="FemaleText" xml:space="preserve">
     <value>Femme</value>
@@ -382,7 +382,7 @@
     <value>Importer le profil de mon appareil.</value>
   </data>
   <data name="ImportWorkoutsErrorText" xml:space="preserve">
-    <value>Une erreur s'est produite lors de l'import de vos entraînements</value>
+    <value>Une erreur s'est produite lors de l'import de vos entraînements.</value>
   </data>
   <data name="IndependentModeRadioButtonText" xml:space="preserve">
     <value>Je veux configurer les zones indépendemment</value>
