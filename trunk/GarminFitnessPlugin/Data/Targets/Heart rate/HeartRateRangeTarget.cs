@@ -214,16 +214,16 @@ namespace GarminFitnessPlugin.Data
         {
             if (isPercentageMaxHeartRate)
             {
-                Trace.Assert(minHeartRate >= Constants.MinHRInPercentMax && minHeartRate <= Constants.MaxHRInPercentMax);
-                Trace.Assert(maxHeartRate >= Constants.MinHRInPercentMax && maxHeartRate <= Constants.MaxHRInPercentMax);
+                Debug.Assert(minHeartRate >= Constants.MinHRInPercentMax && minHeartRate <= Constants.MaxHRInPercentMax);
+                Debug.Assert(maxHeartRate >= Constants.MinHRInPercentMax && maxHeartRate <= Constants.MaxHRInPercentMax);
             }
             else
             {
-                Trace.Assert(minHeartRate >= Constants.MinHRInBPM && minHeartRate <= Constants.MaxHRInBPM);
-                Trace.Assert(maxHeartRate >= Constants.MinHRInBPM && maxHeartRate <= Constants.MaxHRInBPM);
+                Debug.Assert(minHeartRate >= Constants.MinHRInBPM && minHeartRate <= Constants.MaxHRInBPM);
+                Debug.Assert(maxHeartRate >= Constants.MinHRInBPM && maxHeartRate <= Constants.MaxHRInBPM);
             }
 
-            Trace.Assert(minHeartRate <= maxHeartRate);
+            Debug.Assert(minHeartRate <= maxHeartRate);
         }
 
         public bool IsPercentageMaxHeartRate
@@ -272,7 +272,7 @@ namespace GarminFitnessPlugin.Data
         public override bool IsDirty
         {
             get { return false; }
-            set { Trace.Assert(false); }
+            set { Debug.Assert(false); }
         }
 
         private Byte m_MinHeartRate;

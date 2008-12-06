@@ -11,7 +11,7 @@ namespace GarminFitnessPlugin.Data
     {
         protected ITarget(TargetType type, IStep parent)
         {
-            Trace.Assert(type != TargetType.TargetTypeCount);
+            Debug.Assert(type != TargetType.TargetTypeCount);
             m_Type = type;
             m_ParentStep = parent;
         }

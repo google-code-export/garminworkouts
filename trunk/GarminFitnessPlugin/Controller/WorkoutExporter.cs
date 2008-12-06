@@ -27,7 +27,7 @@ namespace GarminFitnessPlugin.Controller
 
         public static void ExportWorkout(List<Workout> workouts, Stream exportStream, bool skipExtensions)
         {
-            Trace.Assert(exportStream.CanWrite && exportStream.Length == 0);
+            Debug.Assert(exportStream.CanWrite && exportStream.Length == 0);
             XmlDocument document = new XmlDocument();
             XmlNode database;
             XmlAttribute attribute;

@@ -40,14 +40,14 @@ namespace GarminFitnessPlugin.View
 
         private void CadenceZoneComboBox_SelectedIndexChanged(object sender, EventArgs e)
         {
-            Trace.Assert(PluginMain.GetApplication().Logbook.CadenceZones.Count > CadenceZoneComboBox.SelectedIndex);
+            Debug.Assert(PluginMain.GetApplication().Logbook.CadenceZones.Count > CadenceZoneComboBox.SelectedIndex);
 
             Options.Instance.CadenceZoneCategory = PluginMain.GetApplication().Logbook.CadenceZones[CadenceZoneComboBox.SelectedIndex];
         }
 
         private void PowerZoneComboBox_SelectedIndexChanged(object sender, EventArgs e)
         {
-            Trace.Assert(PluginMain.GetApplication().Logbook.PowerZones.Count > PowerZoneComboBox.SelectedIndex);
+            Debug.Assert(PluginMain.GetApplication().Logbook.PowerZones.Count > PowerZoneComboBox.SelectedIndex);
 
             Options.Instance.PowerZoneCategory = PluginMain.GetApplication().Logbook.PowerZones[PowerZoneComboBox.SelectedIndex];
         }

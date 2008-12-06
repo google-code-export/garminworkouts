@@ -105,14 +105,14 @@ namespace GarminFitnessPlugin.Data
                 distanceToGo = Length.Convert(distanceToGo, distanceUnit, Length.Units.Mile);
                 distanceUnit = Length.Units.Mile;
 
-                Trace.Assert(distanceToGo >= Constants.MinDistance && distanceToGo <= Constants.MaxDistanceStatute);
+                Debug.Assert(distanceToGo >= Constants.MinDistance && distanceToGo <= Constants.MaxDistanceStatute);
             }
             else
             {
                 distanceToGo = Length.Convert(distanceToGo, distanceUnit, Length.Units.Kilometer);
                 distanceUnit = Length.Units.Kilometer;
 
-                Trace.Assert(distanceToGo >= Constants.MinDistance && distanceToGo <= Constants.MaxDistanceMetric);
+                Debug.Assert(distanceToGo >= Constants.MinDistance && distanceToGo <= Constants.MaxDistanceMetric);
             }
 
             DistanceUnit = distanceUnit;
@@ -129,7 +129,7 @@ namespace GarminFitnessPlugin.Data
             get { return m_DistanceUnit; }
             set
             {
-                Trace.Assert(value == Length.Units.Kilometer || value == Length.Units.Mile);
+                Debug.Assert(value == Length.Units.Kilometer || value == Length.Units.Mile);
 
                 if (DistanceUnit != value)
                 {

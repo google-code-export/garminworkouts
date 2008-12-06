@@ -19,7 +19,7 @@ namespace GarminFitnessPlugin.Data
         public RepeatStep(Byte numRepeats, Workout parent)
             : base(StepType.Repeat, parent)
         {
-            Trace.Assert(numRepeats <= 99);
+            Debug.Assert(numRepeats <= 99);
             m_RepetitionCount = numRepeats;
 
             ParentWorkout.AddNewStep(new RegularStep(parent), this);
@@ -309,7 +309,7 @@ namespace GarminFitnessPlugin.Data
 
                 return false;
             }
-            set { Trace.Assert(false); }
+            set { Debug.Assert(false); }
         }
 
         private Byte m_RepetitionCount;

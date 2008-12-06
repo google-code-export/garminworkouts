@@ -118,8 +118,8 @@ namespace GarminFitnessPlugin.Data
 
         public void ValidateValues(Byte min, Byte max)
         {
-            Trace.Assert(min <= max);
-            Trace.Assert(max <= Constants.MaxCadence);
+            Debug.Assert(min <= max);
+            Debug.Assert(max <= Constants.MaxCadence);
         }
 
         public void SetMinCadence(Byte min)
@@ -175,7 +175,7 @@ namespace GarminFitnessPlugin.Data
         public override bool IsDirty
         {
             get { return false; }
-            set { Trace.Assert(false); }
+            set { Debug.Assert(false); }
         }
 
         private Byte m_MinCadence;

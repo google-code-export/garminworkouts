@@ -16,7 +16,7 @@ namespace GarminFitnessPlugin.View
 
                 if (((IStep)wrapper.Element).IsDirty)
                 {
-                    return global::GarminFitnessPlugin.Properties.Resources.DirtyWarning;
+                    return global::GarminFitnessPlugin.Resources.Resources.DirtyWarning;
                 }
             }
 

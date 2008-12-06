@@ -110,8 +110,8 @@ namespace GarminFitnessPlugin.Controller
 
         private void StartNextTask()
         {
-            Trace.Assert(m_TaskQueue.Count > 0);
-            Trace.Assert(m_TaskQueue[0].Type == BasicTask.TaskTypes.TaskType_Initialize || IsInitialized);
+            Debug.Assert(m_TaskQueue.Count > 0);
+            Debug.Assert(m_TaskQueue[0].Type == BasicTask.TaskTypes.TaskType_Initialize || IsInitialized);
 
             m_TaskQueue[0].ExecuteTask(m_Controller, m_OperatingDevice);
             m_TimeoutTimer.Start();

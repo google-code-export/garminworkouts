@@ -11,7 +11,7 @@ namespace GarminFitnessPlugin.Data
     {
         protected IDuration(DurationType type, IStep parent)
         {
-            Trace.Assert(type != DurationType.DurationTypeCount);
+            Debug.Assert(type != DurationType.DurationTypeCount);
             m_Type = type;
             m_ParentStep = parent;
         }

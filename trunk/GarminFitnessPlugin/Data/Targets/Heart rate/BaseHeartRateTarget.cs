@@ -14,7 +14,7 @@ namespace GarminFitnessPlugin.Data
         {
             public IConcreteHeartRateTarget(HeartRateTargetType type, BaseHeartRateTarget baseTarget)
             {
-                Trace.Assert(type != HeartRateTargetType.HeartRateTargetTypeCount);
+                Debug.Assert(type != HeartRateTargetType.HeartRateTargetTypeCount);
 
                 m_Type = type;
                 m_BaseTarget = baseTarget;
@@ -141,7 +141,7 @@ namespace GarminFitnessPlugin.Data
                     }
                 default:
                     {
-                        Trace.Assert(false);
+                        Debug.Assert(false);
                         break;
                     }
             }
@@ -197,7 +197,7 @@ namespace GarminFitnessPlugin.Data
         public override void HandleTargetOverride(XmlNode extensionNode)
         {
             // We got here so our target must be a range
-            Trace.Assert(ConcreteTarget.Type == IConcreteHeartRateTarget.HeartRateTargetType.Range);
+            Debug.Assert(ConcreteTarget.Type == IConcreteHeartRateTarget.HeartRateTargetType.Range);
 
             IZoneCategory referenceZones = ParentStep.ParentWorkout.Category.HeartRateZone;
             string zoneReferenceId = null;
@@ -243,7 +243,7 @@ namespace GarminFitnessPlugin.Data
         public override bool IsDirty
         {
             get { return ConcreteTarget.IsDirty; }
-            set { Trace.Assert(false); }
+            set { Debug.Assert(false); }
         }
 
         private IConcreteHeartRateTarget m_ConcreteTarget = null;

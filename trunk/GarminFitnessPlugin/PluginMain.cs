@@ -83,7 +83,7 @@ namespace GarminFitnessPlugin
 
             if (referenceList != null)
             {
-                Trace.Assert(referenceList.Count == 1);
+                Debug.Assert(referenceList.Count == 1);
 
                 if (referenceList[0].GetType().FullName == "ZoneFiveSoftware.SportTracks.Data.ZoneCategory")
                 {

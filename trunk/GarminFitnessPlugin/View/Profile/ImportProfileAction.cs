@@ -34,7 +34,7 @@ namespace GarminFitnessPlugin.View
         {
             get
             {
-                return global::GarminFitnessPlugin.Properties.Resources.Import;
+                return global::GarminFitnessPlugin.Resources.Resources.Import;
             }
         }
 

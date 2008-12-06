@@ -14,7 +14,7 @@ namespace GarminFitnessPlugin.Data
         {
             public IConcretePowerTarget(PowerTargetType type, BasePowerTarget baseTarget)
             {
-                Trace.Assert(type != PowerTargetType.HeartRateTargetTypeCount);
+                Debug.Assert(type != PowerTargetType.HeartRateTargetTypeCount);
 
                 m_Type = type;
                 m_BaseTarget = baseTarget;
@@ -140,7 +140,7 @@ namespace GarminFitnessPlugin.Data
                     }
                 default:
                     {
-                        Trace.Assert(false);
+                        Debug.Assert(false);
                         break;
                     }
             }
@@ -196,7 +196,7 @@ namespace GarminFitnessPlugin.Data
         public override void HandleTargetOverride(XmlNode extensionNode)
         {
             // We got here so our target must be a range
-            Trace.Assert(ConcreteTarget.Type == IConcretePowerTarget.PowerTargetType.Range);
+            Debug.Assert(ConcreteTarget.Type == IConcretePowerTarget.PowerTargetType.Range);
 
             IZoneCategory referenceZones = Options.Instance.PowerZoneCategory;
             string zoneReferenceId = null;
@@ -242,7 +242,7 @@ namespace GarminFitnessPlugin.Data
         public override bool IsDirty
         {
             get { return ConcreteTarget.IsDirty; }
-            set { Trace.Assert(false); }
+            set { Debug.Assert(false); }
         }
 
         private  BasePowerTarget.IConcretePowerTarget m_ConcreteTarget = null;

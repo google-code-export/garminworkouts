@@ -206,7 +206,7 @@ namespace GarminFitnessPlugin.View
 
         private void DurationComboBox_SelectionChangedCommited(object sender, EventArgs e)
         {
-            Trace.Assert(SelectedStep != null && SelectedStep.Type == IStep.StepType.Regular);
+            Debug.Assert(SelectedStep != null && SelectedStep.Type == IStep.StepType.Regular);
             RegularStep concreteStep = (RegularStep)SelectedStep;
             IDuration.DurationType newType = (IDuration.DurationType)DurationComboBox.SelectedIndex;
 
@@ -218,7 +218,7 @@ namespace GarminFitnessPlugin.View
 
         private void TargetComboBox_SelectionChangedCommited(object sender, EventArgs e)
         {
-            Trace.Assert(SelectedStep != null && SelectedStep.Type == IStep.StepType.Regular);
+            Debug.Assert(SelectedStep != null && SelectedStep.Type == IStep.StepType.Regular);
             RegularStep concreteStep = (RegularStep)SelectedStep;
             ITarget.TargetType newType = (ITarget.TargetType)TargetComboBox.SelectedIndex;
 
@@ -230,7 +230,7 @@ namespace GarminFitnessPlugin.View
 
         private void NewWorkoutButton_Click(object sender, EventArgs e)
         {
-            Trace.Assert(SelectedCategory != null);
+            Debug.Assert(SelectedCategory != null);
 
             SelectedWorkout = GarminWorkoutManager.Instance.CreateWorkout(SelectedCategory);
             SelectedCategory = null;
@@ -315,8 +315,8 @@ namespace GarminFitnessPlugin.View
 
         private void StepNameText_Validated(object sender, EventArgs e)
         {
-            Trace.Assert(SelectedStep != null && SelectedStep.Type == IStep.StepType.Regular);
-            Trace.Assert(StepNameText.Text.Length <= 15);
+            Debug.Assert(SelectedStep != null && SelectedStep.Type == IStep.StepType.Regular);
+            Debug.Assert(StepNameText.Text.Length <= 15);
             RegularStep concreteStep = (RegularStep)SelectedStep;
 
             concreteStep.Name = StepNameText.Text;
@@ -324,7 +324,7 @@ namespace GarminFitnessPlugin.View
 
         private void RestingCheckBox_CheckedChanged(object sender, EventArgs e)
         {
-            Trace.Assert(SelectedStep != null && SelectedStep.Type == IStep.StepType.Regular);
+            Debug.Assert(SelectedStep != null && SelectedStep.Type == IStep.StepType.Regular);
             RegularStep concreteStep = (RegularStep)SelectedStep;
 
             concreteStep.IsRestingStep = RestingCheckBox.Checked;
@@ -332,9 +332,9 @@ namespace GarminFitnessPlugin.View
 
         private void HeartRateDurationReferenceComboBox_SelectionChangedCommited(object sender, EventArgs e)
         {
-            Trace.Assert(SelectedStep != null && SelectedStep.Type == IStep.StepType.Regular);
+            Debug.Assert(SelectedStep != null && SelectedStep.Type == IStep.StepType.Regular);
             RegularStep concreteStep = (RegularStep)SelectedStep;
-            Trace.Assert(concreteStep.Duration != null);
+            Debug.Assert(concreteStep.Duration != null);
             bool isPercentMax = HeartRateDurationReferenceComboBox.SelectedIndex == 1;
 
             if (concreteStep.Duration.Type == IDuration.DurationType.HeartRateAbove)
@@ -369,15 +369,15 @@ namespace GarminFitnessPlugin.View
             }
             else
             {
-                Trace.Assert(false);
+                Debug.Assert(false);
             }
         }
 
         private void HeartRateDurationText_Validating(object sender, CancelEventArgs e)
         {
-            Trace.Assert(SelectedStep != null && SelectedStep.Type == IStep.StepType.Regular);
+            Debug.Assert(SelectedStep != null && SelectedStep.Type == IStep.StepType.Regular);
             RegularStep concreteStep = (RegularStep)SelectedStep;
-            Trace.Assert(concreteStep.Duration != null && (concreteStep.Duration.Type == IDuration.DurationType.HeartRateAbove || concreteStep.Duration.Type == IDuration.DurationType.HeartRateBelow));
+            Debug.Assert(concreteStep.Duration != null && (concreteStep.Duration.Type == IDuration.DurationType.HeartRateAbove || concreteStep.Duration.Type == IDuration.DurationType.HeartRateBelow));
             bool isPercentMax;
             UInt16 oldValue, minRange, maxRange;
 
@@ -421,9 +421,9 @@ namespace GarminFitnessPlugin.View
 
         private void HeartRateDurationText_Validated(object sender, EventArgs e)
         {
-            Trace.Assert(SelectedStep != null && SelectedStep.Type == IStep.StepType.Regular);
+            Debug.Assert(SelectedStep != null && SelectedStep.Type == IStep.StepType.Regular);
             RegularStep concreteStep = (RegularStep)SelectedStep;
-            Trace.Assert(concreteStep.Duration != null && (concreteStep.Duration.Type == IDuration.DurationType.HeartRateAbove || concreteStep.Duration.Type == IDuration.DurationType.HeartRateBelow));
+            Debug.Assert(concreteStep.Duration != null && (concreteStep.Duration.Type == IDuration.DurationType.HeartRateAbove || concreteStep.Duration.Type == IDuration.DurationType.HeartRateBelow));
 
             if (concreteStep.Duration.Type == IDuration.DurationType.HeartRateAbove)
             {
@@ -439,15 +439,15 @@ namespace GarminFitnessPlugin.View
             }
             else
             {
-                Trace.Assert(false);
+                Debug.Assert(false);
             }
         }
 
         private void DistanceDurationText_Validating(object sender, CancelEventArgs e)
         {
-            Trace.Assert(SelectedStep != null && SelectedStep.Type == IStep.StepType.Regular);
+            Debug.Assert(SelectedStep != null && SelectedStep.Type == IStep.StepType.Regular);
             RegularStep concreteStep = (RegularStep)SelectedStep;
-            Trace.Assert(concreteStep.Duration != null && concreteStep.Duration.Type == IDuration.DurationType.Distance);
+            Debug.Assert(concreteStep.Duration != null && concreteStep.Duration.Type == IDuration.DurationType.Distance);
             DistanceDuration concreteDuration = (DistanceDuration)concreteStep.Duration;
             double maxDistance;
 
@@ -474,9 +474,9 @@ namespace GarminFitnessPlugin.View
 
         private void DistanceDurationText_Validated(object sender, EventArgs e)
         {
-            Trace.Assert(SelectedStep != null && SelectedStep.Type == IStep.StepType.Regular);
+            Debug.Assert(SelectedStep != null && SelectedStep.Type == IStep.StepType.Regular);
             RegularStep concreteStep = (RegularStep)SelectedStep;
-            Trace.Assert(concreteStep.Duration != null && concreteStep.Duration.Type == IDuration.DurationType.Distance);
+            Debug.Assert(concreteStep.Duration != null && concreteStep.Duration.Type == IDuration.DurationType.Distance);
             DistanceDuration concreteDuration = (DistanceDuration)concreteStep.Duration;
 
             concreteDuration.SetDistanceInBaseUnit(double.Parse(DistanceDurationText.Text));
@@ -484,9 +484,9 @@ namespace GarminFitnessPlugin.View
 
         private void TimeDurationUpDown_Validated(object sender, EventArgs e)
         {
-            Trace.Assert(SelectedStep != null && SelectedStep.Type == IStep.StepType.Regular);
+            Debug.Assert(SelectedStep != null && SelectedStep.Type == IStep.StepType.Regular);
             RegularStep concreteStep = (RegularStep)SelectedStep;
-            Trace.Assert(concreteStep.Duration != null && concreteStep.Duration.Type == IDuration.DurationType.Time);
+            Debug.Assert(concreteStep.Duration != null && concreteStep.Duration.Type == IDuration.DurationType.Time);
             TimeDuration concreteDuration = (TimeDuration)concreteStep.Duration;
 
             concreteDuration.TimeInSeconds = TimeDurationUpDown.Duration;
@@ -494,9 +494,9 @@ namespace GarminFitnessPlugin.View
 
         private void CaloriesDurationText_Validating(object sender, CancelEventArgs e)
         {
-            Trace.Assert(SelectedStep != null && SelectedStep.Type == IStep.StepType.Regular);
+            Debug.Assert(SelectedStep != null && SelectedStep.Type == IStep.StepType.Regular);
             RegularStep concreteStep = (RegularStep)SelectedStep;
-            Trace.Assert(concreteStep.Duration != null && concreteStep.Duration.Type == IDuration.DurationType.Calories);
+            Debug.Assert(concreteStep.Duration != null && concreteStep.Duration.Type == IDuration.DurationType.Calories);
             CaloriesDuration concreteDuration = (CaloriesDuration)concreteStep.Duration;
 
             e.Cancel = !Utils.IsTextIntegerInRange(CaloriesDurationText.Text, Constants.MinCalories, Constants.MaxCalories);
@@ -513,9 +513,9 @@ namespace GarminFitnessPlugin.View
 
         private void CaloriesDurationText_Validated(object sender, EventArgs e)
         {
-            Trace.Assert(SelectedStep != null && SelectedStep.Type == IStep.StepType.Regular);
+            Debug.Assert(SelectedStep != null && SelectedStep.Type == IStep.StepType.Regular);
             RegularStep concreteStep = (RegularStep)SelectedStep;
-            Trace.Assert(concreteStep.Duration != null && concreteStep.Duration.Type == IDuration.DurationType.Calories);
+            Debug.Assert(concreteStep.Duration != null && concreteStep.Duration.Type == IDuration.DurationType.Calories);
             CaloriesDuration concreteDuration = (CaloriesDuration)concreteStep.Duration;
 
             concreteDuration.CaloriesToSpend = UInt16.Parse(CaloriesDurationText.Text);
@@ -523,9 +523,9 @@ namespace GarminFitnessPlugin.View
 
         private void ZoneComboBox_SelectionChangedCommited(object sender, EventArgs e)
         {
-            Trace.Assert(SelectedStep != null && SelectedStep.Type == IStep.StepType.Regular);
+            Debug.Assert(SelectedStep != null && SelectedStep.Type == IStep.StepType.Regular);
             RegularStep concreteStep = (RegularStep)SelectedStep;
-            Trace.Assert(concreteStep.Target != null && concreteStep.Target.Type != ITarget.TargetType.Null);
+            Debug.Assert(concreteStep.Target != null && concreteStep.Target.Type != ITarget.TargetType.Null);
             int selectedIndex = ZoneComboBox.SelectedIndex;
 
             switch (concreteStep.Target.Type)
@@ -563,9 +563,9 @@ namespace GarminFitnessPlugin.View
         {
             if (SelectedStep != null)
             {
-                Trace.Assert(SelectedStep.Type == IStep.StepType.Regular);
+                Debug.Assert(SelectedStep.Type == IStep.StepType.Regular);
                 RegularStep concreteStep = (RegularStep)SelectedStep;
-                Trace.Assert(concreteStep.Target != null);
+                Debug.Assert(concreteStep.Target != null);
 
                 if (concreteStep.Target.Type != ITarget.TargetType.Null)
                 {
@@ -581,7 +581,7 @@ namespace GarminFitnessPlugin.View
                         case ITarget.TargetType.HeartRate:
                             {
                                 BaseHeartRateTarget baseTarget = (BaseHeartRateTarget)concreteStep.Target;
-                                Trace.Assert(baseTarget.ConcreteTarget != null && baseTarget.ConcreteTarget.Type == BaseHeartRateTarget.IConcreteHeartRateTarget.HeartRateTargetType.Range);
+                                Debug.Assert(baseTarget.ConcreteTarget != null && baseTarget.ConcreteTarget.Type == BaseHeartRateTarget.IConcreteHeartRateTarget.HeartRateTargetType.Range);
                                 HeartRateRangeTarget concreteTarget = (HeartRateRangeTarget)baseTarget.ConcreteTarget;
 
                                 oldValue = concreteTarget.MinHeartRate.ToString();
@@ -602,7 +602,7 @@ namespace GarminFitnessPlugin.View
                         case ITarget.TargetType.Cadence:
                             {
                                 BaseCadenceTarget baseTarget = (BaseCadenceTarget)concreteStep.Target;
-                                Trace.Assert(baseTarget.ConcreteTarget != null && baseTarget.ConcreteTarget.Type == BaseCadenceTarget.IConcreteCadenceTarget.CadenceTargetType.Range);
+                                Debug.Assert(baseTarget.ConcreteTarget != null && baseTarget.ConcreteTarget.Type == BaseCadenceTarget.IConcreteCadenceTarget.CadenceTargetType.Range);
                                 CadenceRangeTarget concreteTarget = (CadenceRangeTarget)baseTarget.ConcreteTarget;
 
                                 oldValue = concreteTarget.MinCadence.ToString();
@@ -615,7 +615,7 @@ namespace GarminFitnessPlugin.View
                         case ITarget.TargetType.Speed:
                             {
                                 BaseSpeedTarget baseTarget = (BaseSpeedTarget)concreteStep.Target;
-                                Trace.Assert(baseTarget.ConcreteTarget != null && baseTarget.ConcreteTarget.Type == BaseSpeedTarget.IConcreteSpeedTarget.SpeedTargetType.Range);
+                                Debug.Assert(baseTarget.ConcreteTarget != null && baseTarget.ConcreteTarget.Type == BaseSpeedTarget.IConcreteSpeedTarget.SpeedTargetType.Range);
                                 SpeedRangeTarget concreteTarget = (SpeedRangeTarget)baseTarget.ConcreteTarget;
 
                                 if (concreteTarget.ViewAsPace)
@@ -658,7 +658,7 @@ namespace GarminFitnessPlugin.View
                         case ITarget.TargetType.Power:
                             {
                                 BasePowerTarget baseTarget = (BasePowerTarget)concreteStep.Target;
-                                Trace.Assert(baseTarget.ConcreteTarget != null && baseTarget.ConcreteTarget.Type == BasePowerTarget.IConcretePowerTarget.PowerTargetType.Range);
+                                Debug.Assert(baseTarget.ConcreteTarget != null && baseTarget.ConcreteTarget.Type == BasePowerTarget.IConcretePowerTarget.PowerTargetType.Range);
                                 PowerRangeTarget concreteTarget = (PowerRangeTarget)baseTarget.ConcreteTarget;
 
                                 oldValue = concreteTarget.MinPower.ToString();
@@ -670,7 +670,7 @@ namespace GarminFitnessPlugin.View
                             }
                         default:
                             {
-                                Trace.Assert(false);
+                                Debug.Assert(false);
                                 break;
                             }
                     }
@@ -737,9 +737,9 @@ namespace GarminFitnessPlugin.View
 
         private void LowRangeTargetText_Validated(object sender, EventArgs e)
         {
-            Trace.Assert(SelectedStep != null && SelectedStep.Type == IStep.StepType.Regular);
+            Debug.Assert(SelectedStep != null && SelectedStep.Type == IStep.StepType.Regular);
             RegularStep concreteStep = (RegularStep)SelectedStep;
-            Trace.Assert(concreteStep.Target != null);
+            Debug.Assert(concreteStep.Target != null);
             bool forceSelectHighTargetText = false;
 
             if (concreteStep.Target.Type != ITarget.TargetType.Null)
@@ -749,7 +749,7 @@ namespace GarminFitnessPlugin.View
                     case ITarget.TargetType.HeartRate:
                         {
                             BaseHeartRateTarget baseTarget = (BaseHeartRateTarget)concreteStep.Target;
-                            Trace.Assert(baseTarget.ConcreteTarget != null && baseTarget.ConcreteTarget.Type == BaseHeartRateTarget.IConcreteHeartRateTarget.HeartRateTargetType.Range);
+                            Debug.Assert(baseTarget.ConcreteTarget != null && baseTarget.ConcreteTarget.Type == BaseHeartRateTarget.IConcreteHeartRateTarget.HeartRateTargetType.Range);
                             HeartRateRangeTarget concreteTarget = (HeartRateRangeTarget)baseTarget.ConcreteTarget;
                             Byte newValue = Byte.Parse(LowRangeTargetText.Text);
 
@@ -767,7 +767,7 @@ namespace GarminFitnessPlugin.View
                     case ITarget.TargetType.Cadence:
                         {
                             BaseCadenceTarget baseTarget = (BaseCadenceTarget)concreteStep.Target;
-                            Trace.Assert(baseTarget.ConcreteTarget != null && baseTarget.ConcreteTarget.Type == BaseCadenceTarget.IConcreteCadenceTarget.CadenceTargetType.Range);
+                            Debug.Assert(baseTarget.ConcreteTarget != null && baseTarget.ConcreteTarget.Type == BaseCadenceTarget.IConcreteCadenceTarget.CadenceTargetType.Range);
                             CadenceRangeTarget concreteTarget = (CadenceRangeTarget)baseTarget.ConcreteTarget;
                             Byte newValue = Byte.Parse(LowRangeTargetText.Text);
 
@@ -785,7 +785,7 @@ namespace GarminFitnessPlugin.View
                     case ITarget.TargetType.Speed:
                         {
                             BaseSpeedTarget baseTarget = (BaseSpeedTarget)concreteStep.Target;
-                            Trace.Assert(baseTarget.ConcreteTarget != null && baseTarget.ConcreteTarget.Type == BaseSpeedTarget.IConcreteSpeedTarget.SpeedTargetType.Range);
+                            Debug.Assert(baseTarget.ConcreteTarget != null && baseTarget.ConcreteTarget.Type == BaseSpeedTarget.IConcreteSpeedTarget.SpeedTargetType.Range);
                             SpeedRangeTarget concreteTarget = (SpeedRangeTarget)baseTarget.ConcreteTarget;
 
                             if (concreteTarget.ViewAsPace)
@@ -821,7 +821,7 @@ namespace GarminFitnessPlugin.View
                     case ITarget.TargetType.Power:
                         {
                             BasePowerTarget baseTarget = (BasePowerTarget)concreteStep.Target;
-                            Trace.Assert(baseTarget.ConcreteTarget != null && baseTarget.ConcreteTarget.Type == BasePowerTarget.IConcretePowerTarget.PowerTargetType.Range);
+                            Debug.Assert(baseTarget.ConcreteTarget != null && baseTarget.ConcreteTarget.Type == BasePowerTarget.IConcretePowerTarget.PowerTargetType.Range);
                             PowerRangeTarget concreteTarget = (PowerRangeTarget)baseTarget.ConcreteTarget;
                             UInt16 newValue = UInt16.Parse(LowRangeTargetText.Text);
 
@@ -838,7 +838,7 @@ namespace GarminFitnessPlugin.View
                         }
                     default:
                         {
-                            Trace.Assert(false);
+                            Debug.Assert(false);
                             break;
                         }
                 }
@@ -855,9 +855,9 @@ namespace GarminFitnessPlugin.View
         {
             if (SelectedStep != null)
             {
-                Trace.Assert(SelectedStep.Type == IStep.StepType.Regular);
+                Debug.Assert(SelectedStep.Type == IStep.StepType.Regular);
                 RegularStep concreteStep = (RegularStep)SelectedStep;
-                Trace.Assert(concreteStep.Target != null);
+                Debug.Assert(concreteStep.Target != null);
 
                 if (concreteStep.Target.Type != ITarget.TargetType.Null)
                 {
@@ -873,7 +873,7 @@ namespace GarminFitnessPlugin.View
                         case ITarget.TargetType.HeartRate:
                             {
                                 BaseHeartRateTarget baseTarget = (BaseHeartRateTarget)concreteStep.Target;
-                                Trace.Assert(baseTarget.ConcreteTarget != null && baseTarget.ConcreteTarget.Type == BaseHeartRateTarget.IConcreteHeartRateTarget.HeartRateTargetType.Range);
+                                Debug.Assert(baseTarget.ConcreteTarget != null && baseTarget.ConcreteTarget.Type == BaseHeartRateTarget.IConcreteHeartRateTarget.HeartRateTargetType.Range);
                                 HeartRateRangeTarget concreteTarget = (HeartRateRangeTarget)baseTarget.ConcreteTarget;
 
                                 oldValue = concreteTarget.MaxHeartRate.ToString();
@@ -894,7 +894,7 @@ namespace GarminFitnessPlugin.View
                         case ITarget.TargetType.Cadence:
                             {
                                 BaseCadenceTarget baseTarget = (BaseCadenceTarget)concreteStep.Target;
-                                Trace.Assert(baseTarget.ConcreteTarget != null && baseTarget.ConcreteTarget.Type == BaseCadenceTarget.IConcreteCadenceTarget.CadenceTargetType.Range);
+                                Debug.Assert(baseTarget.ConcreteTarget != null && baseTarget.ConcreteTarget.Type == BaseCadenceTarget.IConcreteCadenceTarget.CadenceTargetType.Range);
                                 CadenceRangeTarget concreteTarget = (CadenceRangeTarget)baseTarget.ConcreteTarget;
 
                                 oldValue = concreteTarget.MaxCadence.ToString();
@@ -907,7 +907,7 @@ namespace GarminFitnessPlugin.View
                         case ITarget.TargetType.Speed:
                             {
                                 BaseSpeedTarget baseTarget = (BaseSpeedTarget)concreteStep.Target;
-                                Trace.Assert(baseTarget.ConcreteTarget != null && baseTarget.ConcreteTarget.Type == BaseSpeedTarget.IConcreteSpeedTarget.SpeedTargetType.Range);
+                                Debug.Assert(baseTarget.ConcreteTarget != null && baseTarget.ConcreteTarget.Type == BaseSpeedTarget.IConcreteSpeedTarget.SpeedTargetType.Range);
                                 SpeedRangeTarget concreteTarget = (SpeedRangeTarget)baseTarget.ConcreteTarget;
 
                                 if (concreteTarget.ViewAsPace)
@@ -950,7 +950,7 @@ namespace GarminFitnessPlugin.View
                         case ITarget.TargetType.Power:
                             {
                                 BasePowerTarget baseTarget = (BasePowerTarget)concreteStep.Target;
-                                Trace.Assert(baseTarget.ConcreteTarget != null && baseTarget.ConcreteTarget.Type == BasePowerTarget.IConcretePowerTarget.PowerTargetType.Range);
+                                Debug.Assert(baseTarget.ConcreteTarget != null && baseTarget.ConcreteTarget.Type == BasePowerTarget.IConcretePowerTarget.PowerTargetType.Range);
                                 PowerRangeTarget concreteTarget = (PowerRangeTarget)baseTarget.ConcreteTarget;
 
                                 oldValue = concreteTarget.MaxPower.ToString();
@@ -962,7 +962,7 @@ namespace GarminFitnessPlugin.View
                             }
                         default:
                             {
-                                Trace.Assert(false);
+                                Debug.Assert(false);
                                 break;
                             }
                     }
@@ -1029,9 +1029,9 @@ namespace GarminFitnessPlugin.View
 
         private void HighRangeTargetText_Validated(object sender, EventArgs e)
         {
-            Trace.Assert(SelectedStep != null && SelectedStep.Type == IStep.StepType.Regular);
+            Debug.Assert(SelectedStep != null && SelectedStep.Type == IStep.StepType.Regular);
             RegularStep concreteStep = (RegularStep)SelectedStep;
-            Trace.Assert(concreteStep.Target != null);
+            Debug.Assert(concreteStep.Target != null);
             bool forceSelectLowTargetText = false;
 
             if (concreteStep.Target.Type != ITarget.TargetType.Null)
@@ -1041,7 +1041,7 @@ namespace GarminFitnessPlugin.View
                     case ITarget.TargetType.HeartRate:
                         {
                             BaseHeartRateTarget baseTarget = (BaseHeartRateTarget)concreteStep.Target;
-                            Trace.Assert(baseTarget.ConcreteTarget != null && baseTarget.ConcreteTarget.Type == BaseHeartRateTarget.IConcreteHeartRateTarget.HeartRateTargetType.Range);
+                            Debug.Assert(baseTarget.ConcreteTarget != null && baseTarget.ConcreteTarget.Type == BaseHeartRateTarget.IConcreteHeartRateTarget.HeartRateTargetType.Range);
                             HeartRateRangeTarget concreteTarget = (HeartRateRangeTarget)baseTarget.ConcreteTarget;
                             Byte newValue = Byte.Parse(HighRangeTargetText.Text);
 
@@ -1059,7 +1059,7 @@ namespace GarminFitnessPlugin.View
                     case ITarget.TargetType.Cadence:
                         {
                             BaseCadenceTarget baseTarget = (BaseCadenceTarget)concreteStep.Target;
-                            Trace.Assert(baseTarget.ConcreteTarget != null && baseTarget.ConcreteTarget.Type == BaseCadenceTarget.IConcreteCadenceTarget.CadenceTargetType.Range);
+                            Debug.Assert(baseTarget.ConcreteTarget != null && baseTarget.ConcreteTarget.Type == BaseCadenceTarget.IConcreteCadenceTarget.CadenceTargetType.Range);
                             CadenceRangeTarget concreteTarget = (CadenceRangeTarget)baseTarget.ConcreteTarget;
                             Byte newValue = Byte.Parse(HighRangeTargetText.Text);
 
@@ -1077,7 +1077,7 @@ namespace GarminFitnessPlugin.View
                     case ITarget.TargetType.Speed:
                         {
                             BaseSpeedTarget baseTarget = (BaseSpeedTarget)concreteStep.Target;
-                            Trace.Assert(baseTarget.ConcreteTarget != null && baseTarget.ConcreteTarget.Type == BaseSpeedTarget.IConcreteSpeedTarget.SpeedTargetType.Range);
+                            Debug.Assert(baseTarget.ConcreteTarget != null && baseTarget.ConcreteTarget.Type == BaseSpeedTarget.IConcreteSpeedTarget.SpeedTargetType.Range);
                             SpeedRangeTarget concreteTarget = (SpeedRangeTarget)baseTarget.ConcreteTarget;
 
                             if (concreteTarget.ViewAsPace)
@@ -1113,7 +1113,7 @@ namespace GarminFitnessPlugin.View
                     case ITarget.TargetType.Power:
                         {
                             BasePowerTarget baseTarget = (BasePowerTarget)concreteStep.Target;
-                            Trace.Assert(baseTarget.ConcreteTarget != null && baseTarget.ConcreteTarget.Type == BasePowerTarget.IConcretePowerTarget.PowerTargetType.Range);
+                            Debug.Assert(baseTarget.ConcreteTarget != null && baseTarget.ConcreteTarget.Type == BasePowerTarget.IConcretePowerTarget.PowerTargetType.Range);
                             PowerRangeTarget concreteTarget = (PowerRangeTarget)baseTarget.ConcreteTarget;
                             UInt16 newValue = UInt16.Parse(HighRangeTargetText.Text);
 
@@ -1130,7 +1130,7 @@ namespace GarminFitnessPlugin.View
                         }
                     default:
                         {
-                            Trace.Assert(false);
+                            Debug.Assert(false);
                             break;
                         }
                 }
@@ -1145,7 +1145,7 @@ namespace GarminFitnessPlugin.View
 
         private void RepetitionCountText_Validating(object sender, CancelEventArgs e)
         {
-            Trace.Assert(SelectedStep != null && SelectedStep.Type == IStep.StepType.Repeat);
+            Debug.Assert(SelectedStep != null && SelectedStep.Type == IStep.StepType.Repeat);
             RepeatStep concreteStep = (RepeatStep)SelectedStep;
 
             e.Cancel = !Utils.IsTextIntegerInRange(RepetitionCountText.Text, Constants.MinRepeats, Constants.MaxRepeats);
@@ -1163,7 +1163,7 @@ namespace GarminFitnessPlugin.View
 
         private void RepetitionCountText_Validated(object sender, EventArgs e)
         {
-            Trace.Assert(SelectedStep != null && SelectedStep.Type == IStep.StepType.Repeat);
+            Debug.Assert(SelectedStep != null && SelectedStep.Type == IStep.StepType.Repeat);
             RepeatStep concreteStep = (RepeatStep)SelectedStep;
 
             concreteStep.RepetitionCount = Byte.Parse(RepetitionCountText.Text);
@@ -1171,14 +1171,14 @@ namespace GarminFitnessPlugin.View
 
         private void WorkoutNotesText_Validated(object sender, EventArgs e)
         {
-            Trace.Assert(SelectedWorkout != null);
+            Debug.Assert(SelectedWorkout != null);
 
             SelectedWorkout.Notes = WorkoutNotesText.Text;
         }
 
         private void StepNotesText_Validated(object sender, EventArgs e)
         {
-            Trace.Assert(SelectedStep != null);
+            Debug.Assert(SelectedStep != null);
 
             SelectedStep.Notes = StepNotesText.Text;
         }
@@ -1199,18 +1199,18 @@ namespace GarminFitnessPlugin.View
 
         private void WorkoutNameText_Validated(object sender, EventArgs e)
         {
-            Trace.Assert(SelectedWorkout != null);
+            Debug.Assert(SelectedWorkout != null);
 
             SelectedWorkout.Name = WorkoutNameText.Text;
         }
 
         private void HRRangeReferenceComboBox_SelectionChangedCommited(object sender, EventArgs e)
         {
-            Trace.Assert(SelectedStep != null && SelectedStep.Type == IStep.StepType.Regular);
+            Debug.Assert(SelectedStep != null && SelectedStep.Type == IStep.StepType.Regular);
             RegularStep concreteStep = (RegularStep)SelectedStep;
-            Trace.Assert(concreteStep.Target != null && concreteStep.Target.Type == ITarget.TargetType.HeartRate);
+            Debug.Assert(concreteStep.Target != null && concreteStep.Target.Type == ITarget.TargetType.HeartRate);
             BaseHeartRateTarget baseTarget = (BaseHeartRateTarget)concreteStep.Target;
-            Trace.Assert(baseTarget.ConcreteTarget != null && baseTarget.ConcreteTarget.Type == BaseHeartRateTarget.IConcreteHeartRateTarget.HeartRateTargetType.Range);
+            Debug.Assert(baseTarget.ConcreteTarget != null && baseTarget.ConcreteTarget.Type == BaseHeartRateTarget.IConcreteHeartRateTarget.HeartRateTargetType.Range);
             HeartRateRangeTarget concreteTarget = (HeartRateRangeTarget)baseTarget.ConcreteTarget;
             bool isPercentMax = HRRangeReferenceComboBox.SelectedIndex == 1;
             Byte newMin = concreteTarget.MinHeartRate;
@@ -1332,7 +1332,7 @@ namespace GarminFitnessPlugin.View
                 else
                 {
                     // What is this doing here?
-                    Trace.Assert(false);
+                    Debug.Assert(false);
                 }
 
                 if (e.Effect == DragDropEffects.Copy)
@@ -1645,7 +1645,7 @@ namespace GarminFitnessPlugin.View
 
         private void MoveUpButton_Click(object sender, EventArgs e)
         {
-            Trace.Assert(SelectedWorkout != null && SelectedStep != null);
+            Debug.Assert(SelectedWorkout != null && SelectedStep != null);
 
             SelectedWorkout.MoveStepUp(SelectedStep);
 
@@ -1655,7 +1655,7 @@ namespace GarminFitnessPlugin.View
 
         private void MoveDownButton_Click(object sender, EventArgs e)
         {
-            Trace.Assert(SelectedWorkout != null && SelectedStep != null);
+            Debug.Assert(SelectedWorkout != null && SelectedStep != null);
 
             SelectedWorkout.MoveStepDown(SelectedStep);
 
@@ -1780,7 +1780,7 @@ namespace GarminFitnessPlugin.View
 
         private void UpdateDurationPanelVisibility()
         {
-            Trace.Assert(SelectedWorkout != null && SelectedStep != null && SelectedStep.Type == IStep.StepType.Regular);
+            Debug.Assert(SelectedWorkout != null && SelectedStep != null && SelectedStep.Type == IStep.StepType.Regular);
             RegularStep concreteStep = (RegularStep)SelectedStep;
             IDuration duration = concreteStep.Duration;
 
@@ -1799,7 +1799,7 @@ namespace GarminFitnessPlugin.View
 
         private void UpdateTargetPanelVisibility()
         {
-            Trace.Assert(SelectedWorkout != null && SelectedStep != null && SelectedStep.Type == IStep.StepType.Regular);
+            Debug.Assert(SelectedWorkout != null && SelectedStep != null && SelectedStep.Type == IStep.StepType.Regular);
             RegularStep concreteStep = (RegularStep)SelectedStep;
             ITarget target = concreteStep.Target;
 
@@ -1860,7 +1860,7 @@ namespace GarminFitnessPlugin.View
                     }
                 default:
                     {
-                        Trace.Assert(false);
+                        Debug.Assert(false);
                         break;
                     }
             }
@@ -1932,7 +1932,7 @@ namespace GarminFitnessPlugin.View
                 UInt16 selectedPosition = 0;
                 List<IStep> selectedList = null;
 
-                Trace.Assert(Utils.GetStepInfo(SelectedStep, SelectedWorkout.Steps, out selectedList, out selectedPosition));
+                Debug.Assert(Utils.GetStepInfo(SelectedStep, SelectedWorkout.Steps, out selectedList, out selectedPosition));
 
                 StepNotesText.Text = SelectedStep.Notes;
 
@@ -1989,7 +1989,7 @@ namespace GarminFitnessPlugin.View
                         }
                     default:
                         {
-                            Trace.Assert(false);
+                            Debug.Assert(false);
                             break;
                         }
                 }
@@ -1998,7 +1998,7 @@ namespace GarminFitnessPlugin.View
 
         private void UpdateUIFromDuration()
         {
-            Trace.Assert(SelectedWorkout != null && SelectedStep != null && SelectedStep.Type == IStep.StepType.Regular);
+            Debug.Assert(SelectedWorkout != null && SelectedStep != null && SelectedStep.Type == IStep.StepType.Regular);
             RegularStep concreteStep = (RegularStep)SelectedStep;
             IDuration duration = concreteStep.Duration;
 
@@ -2044,7 +2044,7 @@ namespace GarminFitnessPlugin.View
                     }
                 default:
                     {
-                        Trace.Assert(false);
+                        Debug.Assert(false);
                         break;
                     }
             }
@@ -2052,7 +2052,7 @@ namespace GarminFitnessPlugin.View
 
         private void UpdateUIFromTarget()
         {
-            Trace.Assert(SelectedWorkout != null && SelectedStep != null && SelectedStep.Type == IStep.StepType.Regular);
+            Debug.Assert(SelectedWorkout != null && SelectedStep != null && SelectedStep.Type == IStep.StepType.Regular);
             RegularStep concreteStep = (RegularStep)SelectedStep;
             ITarget target = concreteStep.Target;
 
@@ -2209,7 +2209,7 @@ namespace GarminFitnessPlugin.View
                     }
                 default:
                     {
-                        Trace.Assert(false);
+                        Debug.Assert(false);
                         break;
                     }
             }
@@ -2460,7 +2460,7 @@ namespace GarminFitnessPlugin.View
 
         private void AddNewStep(IStep newStep)
         {
-            Trace.Assert(SelectedWorkout != null);
+            Debug.Assert(SelectedWorkout != null);
             bool succeeded = false;
 
             if (SelectedStep != null)

@@ -116,7 +116,7 @@ namespace GarminFitnessPlugin.Data
 
         protected void TriggerDurationChangedEvent(IDuration duration, PropertyChangedEventArgs args)
         {
-            Trace.Assert(Type == StepType.Regular);
+            Debug.Assert(Type == StepType.Regular);
 
             if (DurationChanged != null)
             {
@@ -126,7 +126,7 @@ namespace GarminFitnessPlugin.Data
 
         protected void TriggerTargetChangedEvent(ITarget target, PropertyChangedEventArgs args)
         {
-            Trace.Assert(Type == StepType.Regular);
+            Debug.Assert(Type == StepType.Regular);
 
             if (TargetChanged != null)
             {
