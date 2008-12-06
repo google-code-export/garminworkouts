@@ -245,33 +245,11 @@ namespace GarminFitnessPlugin.Controller
         public void Deserialize_V7(Stream stream, DataVersion version)
         {
             byte[] intBuffer = new byte[sizeof(Int32)];
-            byte[] boolBuffer = new byte[sizeof(bool)];
             byte[] stringBuffer;
             int mappingCount;
             int stringLength;
 
-            // Read options that are stored in logbook
-            // Cadence zone
-            stream.Read(intBuffer, 0, sizeof(int));
-            stringLength = BitConverter.ToInt32(intBuffer, 0);
-            stringBuffer = new byte[stringLength];
-            stream.Read(stringBuffer, 0, stringLength);
-            CadenceZoneCategory = Utils.FindZoneCategoryByID(PluginMain.GetApplication().Logbook.CadenceZones, Encoding.UTF8.GetString(stringBuffer));
-
-            // Cadence dirty flag
-            stream.Read(boolBuffer, 0, sizeof(bool));
-            IsCadenceZoneDirty = BitConverter.ToBoolean(boolBuffer, 0);
-
-            // Power zone
-            stream.Read(intBuffer, 0, sizeof(int));
-            stringLength = BitConverter.ToInt32(intBuffer, 0);
-            stringBuffer = new byte[stringLength];
-            stream.Read(stringBuffer, 0, stringLength);
-            PowerZoneCategory = Utils.FindZoneCategoryByID(PluginMain.GetApplication().Logbook.PowerZones, Encoding.UTF8.GetString(stringBuffer));
-
-            // Power dirty flag
-            stream.Read(boolBuffer, 0, sizeof(bool));
-            IsPowerZoneDirty = BitConverter.ToBoolean(boolBuffer, 0);
+            Deserialize_V3(stream, version);
 
             // Load Garmin to ST category map
             stream.Read(intBuffer, 0, sizeof(int));
