@@ -132,6 +132,12 @@ namespace GarminFitnessPlugin.Data
             // Get the right parent, which was created in the base class
             parentNode = parentNode.LastChild;
 
+            // Change the xsi:type to "BikeProfileActivity_t"
+            if (parentNode.Attributes.GetNamedItem("xsi:type") != null)
+            {
+                parentNode.Attributes.GetNamedItem("xsi:type").Value = "BikeProfileActivity_t";
+            }
+
             XmlAttribute attributeNode;
             XmlNode currentChild;
 
@@ -176,7 +182,7 @@ namespace GarminFitnessPlugin.Data
             // Bike profiles
             for (int i = 0; i < Constants.GarminBikeProfileCount; ++i)
             {
-                //m_Bikes[i].Serialize(parentNode, document);
+                m_Bikes[i].Serialize(parentNode, document);
             }
         }
 
