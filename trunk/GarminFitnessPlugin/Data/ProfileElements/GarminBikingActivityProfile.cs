@@ -211,7 +211,7 @@ namespace GarminFitnessPlugin.Data
                                 powerChild.ChildNodes.Count == 1 &&
                                 powerChild.FirstChild.GetType() == typeof(XmlText))
                             {
-                                if (!Utils.IsTextIntegerInRange(powerChild.FirstChild.Value, Constants.MinPower, Constants.MaxPower))
+                                if (!Utils.IsTextIntegerInRange(powerChild.FirstChild.Value, Constants.MinPower, Constants.MaxPowerProfile))
                                 {
                                     return false;
                                 }
@@ -270,7 +270,7 @@ namespace GarminFitnessPlugin.Data
                     currentChild.FirstChild.GetType() == typeof(XmlText))
                 {
                     if (!Utils.IsTextIntegerInRange(currentChild.FirstChild.Value,
-                                                    Constants.MinPower, Constants.MaxPower))
+                                                    Constants.MinPower, Constants.MaxPowerProfile))
                     {
                         return false;
                     }
@@ -283,7 +283,7 @@ namespace GarminFitnessPlugin.Data
                          currentChild.FirstChild.GetType() == typeof(XmlText))
                 {
                     if (!Utils.IsTextIntegerInRange(currentChild.FirstChild.Value,
-                                                    Constants.MinPower, Constants.MaxPower))
+                                                    Constants.MinPower, Constants.MaxPowerProfile))
                     {
                         return false;
                     }
@@ -376,7 +376,7 @@ namespace GarminFitnessPlugin.Data
             {
                 if (m_FTP != value)
                 {
-                    Debug.Assert(value >= Constants.MinPower && value <= Constants.MaxPower);
+                    Debug.Assert(value >= Constants.MinPower && value <= Constants.MaxPowerProfile);
 
                     m_FTP = value;
 

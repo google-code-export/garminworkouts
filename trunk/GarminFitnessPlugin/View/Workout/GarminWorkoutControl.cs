@@ -663,7 +663,7 @@ namespace GarminFitnessPlugin.View
 
                                 oldValue = concreteTarget.MinPower.ToString();
                                 intMin = Constants.MinPower;
-                                intMax = Constants.MaxPower;
+                                intMax = Constants.MaxPowerWorkout;
                                 inputType = RangeValidationInputType.Integer;
 
                                 break;
@@ -955,7 +955,7 @@ namespace GarminFitnessPlugin.View
 
                                 oldValue = concreteTarget.MaxPower.ToString();
                                 intMin = Constants.MinPower;
-                                intMax = Constants.MaxPower;
+                                intMax = Constants.MaxPowerWorkout;
                                 inputType = RangeValidationInputType.Integer;
 
                                 break;
