@@ -105,7 +105,7 @@ namespace GarminFitnessPlugin.Data
 
                         if (valueNode.ChildNodes.Count == 1 && valueNode.FirstChild.GetType() == typeof(XmlText))
                         {
-                            if (Utils.IsTextIntegerInRange(valueNode.FirstChild.Value, Constants.MinPower, Constants.MaxPower))
+                            if (Utils.IsTextIntegerInRange(valueNode.FirstChild.Value, Constants.MinPower, Constants.MaxPowerWorkout))
                             {
                                 min = UInt16.Parse(valueNode.FirstChild.Value);
                             }
@@ -118,7 +118,7 @@ namespace GarminFitnessPlugin.Data
 
                         if (valueNode.ChildNodes.Count == 1 && valueNode.FirstChild.GetType() == typeof(XmlText))
                         {
-                            if (Utils.IsTextIntegerInRange(valueNode.FirstChild.Value, Constants.MinPower, Constants.MaxPower))
+                            if (Utils.IsTextIntegerInRange(valueNode.FirstChild.Value, Constants.MinPower, Constants.MaxPowerWorkout))
                             {
                                 max = UInt16.Parse(valueNode.FirstChild.Value);
                             }
@@ -169,8 +169,8 @@ namespace GarminFitnessPlugin.Data
 
         private void ValidateValue(UInt16 minPower, UInt16 maxPower)
         {
-            Debug.Assert(minPower >= Constants.MinPower && minPower <= Constants.MaxPower);
-            Debug.Assert(maxPower >= Constants.MinPower && maxPower <= Constants.MaxPower);
+            Debug.Assert(minPower >= Constants.MinPower && minPower <= Constants.MaxPowerWorkout);
+            Debug.Assert(maxPower >= Constants.MinPower && maxPower <= Constants.MaxPowerWorkout);
             Debug.Assert(minPower <= maxPower);
         }
 

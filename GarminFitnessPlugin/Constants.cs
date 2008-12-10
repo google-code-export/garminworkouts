@@ -54,7 +54,8 @@ namespace GarminFitnessPlugin
 
         // Power limits
         public static readonly UInt16 MinPower = 20;
-        public static readonly UInt16 MaxPower = 999;
+        public static readonly UInt16 MaxPowerWorkout = 999;
+        public static readonly UInt16 MaxPowerProfile = 3999;
 
         // Repeat limits
         public static readonly Byte MinRepeats = 2;
