@@ -86,6 +86,9 @@ namespace GarminFitnessPlugin.View
             this.HRZonesTreeList = new GarminFitnessPlugin.View.ExtendedTreeList();
             this.GarminActivityBanner = new ZoneFiveSoftware.Common.Visuals.ActionBanner();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
+            this.flowLayoutPanel2 = new System.Windows.Forms.FlowLayoutPanel();
+            this.ProfileNameLabel = new System.Windows.Forms.Label();
+            this.NameTextBox = new System.Windows.Forms.TextBox();
             this.flowLayoutPanel3 = new System.Windows.Forms.FlowLayoutPanel();
             this.GenderLabel = new System.Windows.Forms.Label();
             this.MaleRadioButton = new System.Windows.Forms.RadioButton();
@@ -99,9 +102,6 @@ namespace GarminFitnessPlugin.View
             this.RestingHeartRateLabel = new System.Windows.Forms.Label();
             this.RestHRTextBox = new System.Windows.Forms.TextBox();
             this.RestBPMLabel = new System.Windows.Forms.Label();
-            this.ProfileNameLabel = new System.Windows.Forms.Label();
-            this.NameTextBox = new System.Windows.Forms.TextBox();
-            this.flowLayoutPanel2 = new System.Windows.Forms.FlowLayoutPanel();
             this.ActivitiesPanel.SuspendLayout();
             this.ActivityPanel.SuspendLayout();
             this.flowLayoutPanel5.SuspendLayout();
@@ -116,9 +116,9 @@ namespace GarminFitnessPlugin.View
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
             this.splitContainer1.SuspendLayout();
+            this.flowLayoutPanel2.SuspendLayout();
             this.flowLayoutPanel3.SuspendLayout();
             this.flowLayoutPanel1.SuspendLayout();
-            this.flowLayoutPanel2.SuspendLayout();
             this.SuspendLayout();
             // 
             // ActivitiesPanel
@@ -462,7 +462,7 @@ namespace GarminFitnessPlugin.View
             // FTPTextBox
             // 
             this.FTPTextBox.Location = new System.Drawing.Point(154, 3);
-            this.FTPTextBox.MaxLength = 3;
+            this.FTPTextBox.MaxLength = 4;
             this.FTPTextBox.Name = "FTPTextBox";
             this.FTPTextBox.Size = new System.Drawing.Size(49, 20);
             this.FTPTextBox.TabIndex = 0;
@@ -484,7 +484,7 @@ namespace GarminFitnessPlugin.View
             // HighPowerTextBox
             // 
             this.HighPowerTextBox.Location = new System.Drawing.Point(383, 69);
-            this.HighPowerTextBox.MaxLength = 3;
+            this.HighPowerTextBox.MaxLength = 4;
             this.HighPowerTextBox.Name = "HighPowerTextBox";
             this.HighPowerTextBox.Size = new System.Drawing.Size(104, 20);
             this.HighPowerTextBox.TabIndex = 3;
@@ -495,7 +495,7 @@ namespace GarminFitnessPlugin.View
             // LowPowerTextBox
             // 
             this.LowPowerTextBox.Location = new System.Drawing.Point(383, 43);
-            this.LowPowerTextBox.MaxLength = 3;
+            this.LowPowerTextBox.MaxLength = 4;
             this.LowPowerTextBox.Name = "LowPowerTextBox";
             this.LowPowerTextBox.Size = new System.Drawing.Size(104, 20);
             this.LowPowerTextBox.TabIndex = 2;
@@ -818,6 +818,35 @@ namespace GarminFitnessPlugin.View
             this.splitContainer1.SplitterDistance = 84;
             this.splitContainer1.TabIndex = 2;
             // 
+            // flowLayoutPanel2
+            // 
+            this.flowLayoutPanel2.Controls.Add(this.ProfileNameLabel);
+            this.flowLayoutPanel2.Controls.Add(this.NameTextBox);
+            this.flowLayoutPanel2.Location = new System.Drawing.Point(3, 3);
+            this.flowLayoutPanel2.Name = "flowLayoutPanel2";
+            this.flowLayoutPanel2.Size = new System.Drawing.Size(569, 20);
+            this.flowLayoutPanel2.TabIndex = 9;
+            // 
+            // ProfileNameLabel
+            // 
+            this.ProfileNameLabel.AutoSize = true;
+            this.ProfileNameLabel.Location = new System.Drawing.Point(3, 0);
+            this.ProfileNameLabel.MinimumSize = new System.Drawing.Size(0, 20);
+            this.ProfileNameLabel.Name = "ProfileNameLabel";
+            this.ProfileNameLabel.Size = new System.Drawing.Size(41, 20);
+            this.ProfileNameLabel.TabIndex = 1;
+            this.ProfileNameLabel.Text = "Name :";
+            this.ProfileNameLabel.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // NameTextBox
+            // 
+            this.NameTextBox.Location = new System.Drawing.Point(50, 3);
+            this.NameTextBox.Name = "NameTextBox";
+            this.NameTextBox.Size = new System.Drawing.Size(169, 20);
+            this.NameTextBox.TabIndex = 0;
+            this.NameTextBox.Validated += new System.EventHandler(this.NameTextBox_Validated);
+            this.NameTextBox.KeyDown += new System.Windows.Forms.KeyEventHandler(this.OnValidatedKeyDown);
+            // 
             // flowLayoutPanel3
             // 
             this.flowLayoutPanel3.Controls.Add(this.GenderLabel);
@@ -966,35 +995,6 @@ namespace GarminFitnessPlugin.View
             this.RestBPMLabel.Text = "BPM";
             this.RestBPMLabel.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
-            // ProfileNameLabel
-            // 
-            this.ProfileNameLabel.AutoSize = true;
-            this.ProfileNameLabel.Location = new System.Drawing.Point(3, 0);
-            this.ProfileNameLabel.MinimumSize = new System.Drawing.Size(0, 20);
-            this.ProfileNameLabel.Name = "ProfileNameLabel";
-            this.ProfileNameLabel.Size = new System.Drawing.Size(41, 20);
-            this.ProfileNameLabel.TabIndex = 1;
-            this.ProfileNameLabel.Text = "Name :";
-            this.ProfileNameLabel.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            // 
-            // NameTextBox
-            // 
-            this.NameTextBox.Location = new System.Drawing.Point(50, 3);
-            this.NameTextBox.Name = "NameTextBox";
-            this.NameTextBox.Size = new System.Drawing.Size(169, 20);
-            this.NameTextBox.TabIndex = 0;
-            this.NameTextBox.Validated += new System.EventHandler(this.NameTextBox_Validated);
-            this.NameTextBox.KeyDown += new System.Windows.Forms.KeyEventHandler(this.OnValidatedKeyDown);
-            // 
-            // flowLayoutPanel2
-            // 
-            this.flowLayoutPanel2.Controls.Add(this.ProfileNameLabel);
-            this.flowLayoutPanel2.Controls.Add(this.NameTextBox);
-            this.flowLayoutPanel2.Location = new System.Drawing.Point(3, 3);
-            this.flowLayoutPanel2.Name = "flowLayoutPanel2";
-            this.flowLayoutPanel2.Size = new System.Drawing.Size(569, 20);
-            this.flowLayoutPanel2.TabIndex = 9;
-            // 
             // GarminProfileControl
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -1026,12 +1026,12 @@ namespace GarminFitnessPlugin.View
             this.splitContainer1.Panel1.ResumeLayout(false);
             this.splitContainer1.Panel2.ResumeLayout(false);
             this.splitContainer1.ResumeLayout(false);
+            this.flowLayoutPanel2.ResumeLayout(false);
+            this.flowLayoutPanel2.PerformLayout();
             this.flowLayoutPanel3.ResumeLayout(false);
             this.flowLayoutPanel3.PerformLayout();
             this.flowLayoutPanel1.ResumeLayout(false);
             this.flowLayoutPanel1.PerformLayout();
-            this.flowLayoutPanel2.ResumeLayout(false);
-            this.flowLayoutPanel2.PerformLayout();
             this.ResumeLayout(false);
 
         }
