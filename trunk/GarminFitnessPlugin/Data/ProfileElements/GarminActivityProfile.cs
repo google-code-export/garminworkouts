@@ -188,16 +188,18 @@ namespace GarminFitnessPlugin.Data
                 currentChild.AppendChild(viewAs);
 
                 // Low
+                Byte lowLimit = GetHeartRateLowLimit(i);
                 XmlNode low = document.CreateElement(Constants.LowTCXString);
                 valueNode = document.CreateElement(Constants.ValueTCXString);
-                valueNode.AppendChild(document.CreateTextNode((m_HeartRateZones[i].Lower * MaximumHeartRate).ToString("0")));
+                valueNode.AppendChild(document.CreateTextNode(lowLimit.ToString("0")));
                 low.AppendChild(valueNode);
                 currentChild.AppendChild(low);
 
                 // High
+                Byte highLimit = GetHeartRateHighLimit(i);
                 XmlNode high = document.CreateElement(Constants.HighTCXString);
                 valueNode = document.CreateElement(Constants.ValueTCXString);
-                valueNode.AppendChild(document.CreateTextNode((m_HeartRateZones[i].Upper * MaximumHeartRate).ToString("0")));
+                valueNode.AppendChild(document.CreateTextNode(highLimit.ToString("0")));
                 high.AppendChild(valueNode);
                 currentChild.AppendChild(high);
 
@@ -558,7 +560,9 @@ namespace GarminFitnessPlugin.Data
             }
             else
             {
-                return (Byte)Math.Round(value * MaximumHeartRate, 0, MidpointRounding.AwayFromZero);
+                float lowLimit = Math.Max(Constants.MinHRInBPM, value * MaximumHeartRate);
+
+                return (Byte)Math.Round(lowLimit, 0, MidpointRounding.AwayFromZero);
             }
         }
 
@@ -574,7 +578,9 @@ namespace GarminFitnessPlugin.Data
             }
             else
             {
-                return (Byte)Math.Round(value * MaximumHeartRate, 0, MidpointRounding.AwayFromZero);
+                float highLimit = Math.Max(Constants.MinHRInBPM, value * MaximumHeartRate);
+
+                return (Byte)Math.Round(highLimit, 0, MidpointRounding.AwayFromZero);
             }
         }
 
