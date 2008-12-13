@@ -538,7 +538,7 @@
     <value>Planning</value>
   </data>
   <data name="SelectCategoryDialogText" xml:space="preserve">
-    <value>Selecteer categorie voor training</value>
+    <value>Selecteer categorie voor training </value>
   </data>
   <data name="SelectDateText" xml:space="preserve">
     <value>Selecteer een datum</value>

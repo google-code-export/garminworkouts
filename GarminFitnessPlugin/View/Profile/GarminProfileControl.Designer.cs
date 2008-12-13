@@ -42,10 +42,11 @@ namespace GarminFitnessPlugin.View
             this.panel1 = new System.Windows.Forms.Panel();
             this.BikeProfileActionBanner = new ZoneFiveSoftware.Common.Visuals.ActionBanner();
             this.WheelSizeGroupBox = new System.Windows.Forms.GroupBox();
-            this.AutoWheelSizeCheckBox = new System.Windows.Forms.CheckBox();
+            this.flowLayoutPanel7 = new System.Windows.Forms.FlowLayoutPanel();
             this.WheelSizeLabel = new System.Windows.Forms.Label();
-            this.WheelSizeUnitLabel = new System.Windows.Forms.Label();
             this.WheelSizeTextBox = new System.Windows.Forms.TextBox();
+            this.WheelSizeUnitLabel = new System.Windows.Forms.Label();
+            this.AutoWheelSizeCheckBox = new System.Windows.Forms.CheckBox();
             this.BikeNameLabel = new System.Windows.Forms.Label();
             this.OdometerUnitsLabel = new System.Windows.Forms.Label();
             this.HasCadenceCheckBox = new System.Windows.Forms.CheckBox();
@@ -109,6 +110,7 @@ namespace GarminFitnessPlugin.View
             this.BikingProfilePanel.SuspendLayout();
             this.panel1.SuspendLayout();
             this.WheelSizeGroupBox.SuspendLayout();
+            this.flowLayoutPanel7.SuspendLayout();
             this.PowerZonesGroupBox.SuspendLayout();
             this.flowLayoutPanel6.SuspendLayout();
             this.SpeedZonesGroupBox.SuspendLayout();
@@ -274,16 +276,57 @@ namespace GarminFitnessPlugin.View
             // 
             // WheelSizeGroupBox
             // 
+            this.WheelSizeGroupBox.Controls.Add(this.flowLayoutPanel7);
             this.WheelSizeGroupBox.Controls.Add(this.AutoWheelSizeCheckBox);
-            this.WheelSizeGroupBox.Controls.Add(this.WheelSizeLabel);
-            this.WheelSizeGroupBox.Controls.Add(this.WheelSizeUnitLabel);
-            this.WheelSizeGroupBox.Controls.Add(this.WheelSizeTextBox);
             this.WheelSizeGroupBox.Location = new System.Drawing.Point(237, 70);
             this.WheelSizeGroupBox.Name = "WheelSizeGroupBox";
             this.WheelSizeGroupBox.Size = new System.Drawing.Size(309, 43);
             this.WheelSizeGroupBox.TabIndex = 9;
             this.WheelSizeGroupBox.TabStop = false;
             this.WheelSizeGroupBox.Text = "Wheel size";
+            // 
+            // flowLayoutPanel7
+            // 
+            this.flowLayoutPanel7.Controls.Add(this.WheelSizeLabel);
+            this.flowLayoutPanel7.Controls.Add(this.WheelSizeTextBox);
+            this.flowLayoutPanel7.Controls.Add(this.WheelSizeUnitLabel);
+            this.flowLayoutPanel7.Location = new System.Drawing.Point(92, 14);
+            this.flowLayoutPanel7.Name = "flowLayoutPanel7";
+            this.flowLayoutPanel7.Size = new System.Drawing.Size(211, 24);
+            this.flowLayoutPanel7.TabIndex = 9;
+            // 
+            // WheelSizeLabel
+            // 
+            this.WheelSizeLabel.AutoSize = true;
+            this.WheelSizeLabel.Location = new System.Drawing.Point(3, 0);
+            this.WheelSizeLabel.MinimumSize = new System.Drawing.Size(0, 24);
+            this.WheelSizeLabel.Name = "WheelSizeLabel";
+            this.WheelSizeLabel.Size = new System.Drawing.Size(65, 24);
+            this.WheelSizeLabel.TabIndex = 6;
+            this.WheelSizeLabel.Text = "Wheel size :";
+            this.WheelSizeLabel.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // WheelSizeTextBox
+            // 
+            this.WheelSizeTextBox.Location = new System.Drawing.Point(74, 3);
+            this.WheelSizeTextBox.MaxLength = 4;
+            this.WheelSizeTextBox.Name = "WheelSizeTextBox";
+            this.WheelSizeTextBox.Size = new System.Drawing.Size(47, 20);
+            this.WheelSizeTextBox.TabIndex = 7;
+            this.WheelSizeTextBox.Validated += new System.EventHandler(this.WheelSizeTextBox_Validated);
+            this.WheelSizeTextBox.KeyDown += new System.Windows.Forms.KeyEventHandler(this.OnValidatedKeyDown);
+            this.WheelSizeTextBox.Validating += new System.ComponentModel.CancelEventHandler(this.WheelSizeTextBox_Validating);
+            // 
+            // WheelSizeUnitLabel
+            // 
+            this.WheelSizeUnitLabel.AutoSize = true;
+            this.WheelSizeUnitLabel.Location = new System.Drawing.Point(127, 0);
+            this.WheelSizeUnitLabel.MinimumSize = new System.Drawing.Size(0, 24);
+            this.WheelSizeUnitLabel.Name = "WheelSizeUnitLabel";
+            this.WheelSizeUnitLabel.Size = new System.Drawing.Size(23, 24);
+            this.WheelSizeUnitLabel.TabIndex = 8;
+            this.WheelSizeUnitLabel.Text = "mm";
+            this.WheelSizeUnitLabel.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // AutoWheelSizeCheckBox
             // 
@@ -295,35 +338,6 @@ namespace GarminFitnessPlugin.View
             this.AutoWheelSizeCheckBox.Text = "Auto";
             this.AutoWheelSizeCheckBox.UseVisualStyleBackColor = true;
             this.AutoWheelSizeCheckBox.CheckedChanged += new System.EventHandler(this.AutoWheelSizeCheckBox_CheckedChanged);
-            // 
-            // WheelSizeLabel
-            // 
-            this.WheelSizeLabel.AutoSize = true;
-            this.WheelSizeLabel.Location = new System.Drawing.Point(109, 20);
-            this.WheelSizeLabel.Name = "WheelSizeLabel";
-            this.WheelSizeLabel.Size = new System.Drawing.Size(65, 13);
-            this.WheelSizeLabel.TabIndex = 6;
-            this.WheelSizeLabel.Text = "Wheel size :";
-            // 
-            // WheelSizeUnitLabel
-            // 
-            this.WheelSizeUnitLabel.AutoSize = true;
-            this.WheelSizeUnitLabel.Location = new System.Drawing.Point(232, 20);
-            this.WheelSizeUnitLabel.Name = "WheelSizeUnitLabel";
-            this.WheelSizeUnitLabel.Size = new System.Drawing.Size(23, 13);
-            this.WheelSizeUnitLabel.TabIndex = 8;
-            this.WheelSizeUnitLabel.Text = "mm";
-            // 
-            // WheelSizeTextBox
-            // 
-            this.WheelSizeTextBox.Location = new System.Drawing.Point(181, 16);
-            this.WheelSizeTextBox.MaxLength = 4;
-            this.WheelSizeTextBox.Name = "WheelSizeTextBox";
-            this.WheelSizeTextBox.Size = new System.Drawing.Size(47, 20);
-            this.WheelSizeTextBox.TabIndex = 7;
-            this.WheelSizeTextBox.Validated += new System.EventHandler(this.WheelSizeTextBox_Validated);
-            this.WheelSizeTextBox.KeyDown += new System.Windows.Forms.KeyEventHandler(this.OnValidatedKeyDown);
-            this.WheelSizeTextBox.Validating += new System.ComponentModel.CancelEventHandler(this.WheelSizeTextBox_Validating);
             // 
             // BikeNameLabel
             // 
@@ -1015,6 +1029,8 @@ namespace GarminFitnessPlugin.View
             this.panel1.PerformLayout();
             this.WheelSizeGroupBox.ResumeLayout(false);
             this.WheelSizeGroupBox.PerformLayout();
+            this.flowLayoutPanel7.ResumeLayout(false);
+            this.flowLayoutPanel7.PerformLayout();
             this.PowerZonesGroupBox.ResumeLayout(false);
             this.PowerZonesGroupBox.PerformLayout();
             this.flowLayoutPanel6.ResumeLayout(false);
@@ -1112,6 +1128,7 @@ namespace GarminFitnessPlugin.View
         private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel4;
         private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel6;
         private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel2;
+        private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel7;
 
 
 
