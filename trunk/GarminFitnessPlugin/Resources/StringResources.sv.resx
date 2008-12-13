@@ -538,7 +538,7 @@
     <value>Schemalägg...</value>
   </data>
   <data name="SelectCategoryDialogText" xml:space="preserve">
-    <value>Välj kategori för passet</value>
+    <value>Välj kategori för passet </value>
   </data>
   <data name="SelectDateText" xml:space="preserve">
     <value>Välj datum</value>
