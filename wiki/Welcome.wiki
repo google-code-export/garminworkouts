@@ -24,4 +24,4 @@ If you have a version already installed in [http://www.zonefivesoftware.com/Spor
 
 [AdvancedOperations Advanced operations]
 
-Profile (Under construction)
+[ProfileEditing Profile]
