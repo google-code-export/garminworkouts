@@ -190,61 +190,75 @@ namespace GarminFitnessPlugin.Data
         {
             if (base.Deserialize(parentNode))
             {
-                UInt16 FTPValue = 0;
-                int bikeProfilesRead = 0;
-
-                for (int i = 0; i < parentNode.ChildNodes.Count; ++i)
+                if (parentNode.Attributes.GetNamedItem("xsi:type").Value == "BikeProfileActivity_t")
                 {
-                    XmlNode currentChild = parentNode.ChildNodes[i];
+                    bool FTPRead = false;
+                    UInt16 FTPValue = 0;
+                    int powerZonesRead = 0;
+                    int bikeProfilesRead = 0;
 
-                    if (currentChild.Name == Constants.ExtensionsTCXString &&
-                        currentChild.ChildNodes.Count == 1 &&
-                        currentChild.FirstChild.Name == Constants.PowerZonesTCXString)
+                    for (int i = 0; i < parentNode.ChildNodes.Count; ++i)
                     {
-                        XmlNode powerZonesNode = currentChild.FirstChild;
+                        XmlNode currentChild = parentNode.ChildNodes[i];
 
-                        for (int j = 0; j < powerZonesNode.ChildNodes.Count; ++j)
+                        if (currentChild.Name == Constants.ExtensionsTCXString &&
+                            currentChild.ChildNodes.Count == 1 &&
+                            currentChild.FirstChild.Name == Constants.PowerZonesTCXString)
                         {
-                            XmlNode powerChild = powerZonesNode.ChildNodes[j];
+                            XmlNode powerZonesNode = currentChild.FirstChild;
 
-                            if (powerChild.Name == Constants.FTPTCXString &&
-                                powerChild.ChildNodes.Count == 1 &&
-                                powerChild.FirstChild.GetType() == typeof(XmlText))
+                            for (int j = 0; j < powerZonesNode.ChildNodes.Count; ++j)
                             {
-                                if (!Utils.IsTextIntegerInRange(powerChild.FirstChild.Value, Constants.MinPower, Constants.MaxPowerProfile))
-                                {
-                                    return false;
-                                }
+                                XmlNode powerChild = powerZonesNode.ChildNodes[j];
 
-                                FTPValue = UInt16.Parse(powerChild.FirstChild.Value);
-                            }
-                            else if (powerChild.Name == Constants.PowerZoneTCXString)
-                            {
-                                int zoneIndex = PeekZoneNumber(powerChild);
-
-                                if (zoneIndex != -1)
+                                if (powerChild.Name == Constants.FTPTCXString &&
+                                    powerChild.ChildNodes.Count == 1 &&
+                                    powerChild.FirstChild.GetType() == typeof(XmlText))
                                 {
-                                    if (!ReadPowerZone(zoneIndex, powerChild))
+                                    if (!Utils.IsTextIntegerInRange(powerChild.FirstChild.Value, Constants.MinPower, Constants.MaxPowerProfile))
                                     {
                                         return false;
+                                    }
+
+                                    FTPValue = UInt16.Parse(powerChild.FirstChild.Value);
+                                    FTPRead = true;
+                                }
+                                else if (powerChild.Name == Constants.PowerZoneTCXString)
+                                {
+                                    int zoneIndex = PeekZoneNumber(powerChild);
+
+                                    if (zoneIndex != -1)
+                                    {
+                                        if (!ReadPowerZone(zoneIndex, powerChild))
+                                        {
+                                            return false;
+                                        }
+
+                                        powerZonesRead++;
                                     }
                                 }
                             }
                         }
-                    }
-                    else if (currentChild.Name == Constants.BikeTCXString)
-                    {
-                        if (!m_Bikes[bikeProfilesRead].Deserialize(currentChild))
+                        else if (currentChild.Name == Constants.BikeTCXString)
                         {
-                            return false;
+                            if (!m_Bikes[bikeProfilesRead].Deserialize(currentChild))
+                            {
+                                return false;
+                            }
+
+                            bikeProfilesRead++;
                         }
-
-                        bikeProfilesRead++;
                     }
-                }
 
-                // Officialize
-                FTP = FTPValue;
+                    if (!FTPRead || powerZonesRead != Constants.GarminPowerZoneCount ||
+                        bikeProfilesRead != 3)
+                    {
+                        return false;
+                    }
+
+                    // Officialize
+                    FTP = FTPValue;
+                }
 
                 return true;
             }
