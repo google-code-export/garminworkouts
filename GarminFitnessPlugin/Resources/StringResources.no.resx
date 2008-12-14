@@ -160,22 +160,22 @@
     <value>Når jeg har forbrent et gitt antall kalorier</value>
   </data>
   <data name="CaloriesDurationDescriptionText" xml:space="preserve">
-    <value>Når jeg har fullført en gitt tid</value>
+    <value>Gi på inntil jeg har forbrent {0} kalorier</value>
   </data>
   <data name="CaloriesDurationLabelText" xml:space="preserve">
     <value>Hvor mange kalorier?</value>
   </data>
   <data name="CategoriesText" xml:space="preserve">
-    <value>Når jeg har fullført en gitt distanse</value>
-  </data>
-  <data name="CategoryAssociationExplanationText" xml:space="preserve">
     <value>Kategorier</value>
   </data>
+  <data name="CategoryAssociationExplanationText" xml:space="preserve">
+    <value>For at dine treningsøkter skal bli korrekt på din enhet, er det viktig at du kobler hver enkelt SportTracks aktivitetskategori mot den tilsvarende Garmin aktivitetskategori. På denne måten vil dine treningsøkter benytte riktige pulssoner og fartssoner fra profilen din.</value>
+  </data>
   <data name="CategoryAssociationText" xml:space="preserve">
-    <value>Kategori</value>
+    <value>Garmin kategori kobling</value>
   </data>
   <data name="CategoryText" xml:space="preserve">
-    <value>For at dine treningsøkter skal bli korrekt på din enhet, er det viktig at du kobler hver enkelt SportTracks aktivitetskategori mot den tilsvarende Garmin aktivitetskategori. På denne måten vil dine treningsøkter benytte riktige pulssoner og fartssoner fra profilen din.</value>
+    <value>Kategori</value>
   </data>
   <data name="CompletedExplanationText" xml:space="preserve">
     <value>Du har nå fullført veiviseren. Denne plugin'en er nå tilgjengelig fra "Velg utsnitt"-menyen. Merk at alle innstillinger er tilgjengelig i Garmin Fitness Plugin siden "Innstillinger", og i tillegg til på "Profil" siden. </value>
@@ -214,7 +214,7 @@
     <value>Kan ikke laste Garming Communicator Plugin. Forsikre deg om at du har SportTracks versjon 2.0.3170 eller nyere, og at Garmin Communicator Plugin er installert og aktiviert i Internet Explorer.</value>
   </data>
   <data name="DistanceDurationComboBoxText" xml:space="preserve">
-    <value>Garmin kategori kobling</value>
+    <value>Når jeg har fullført en gitt distanse</value>
   </data>
   <data name="DistanceDurationDescriptionText" xml:space="preserve">
     <value>Fullfør {0:0.00} {1}</value>
@@ -337,13 +337,13 @@
     <value>Når pulsen går over et gitt nivå</value>
   </data>
   <data name="HeartRateAboveDurationDescriptionText" xml:space="preserve">
-    <value>Gi på {0:00}:{1:00}:{2:00}</value>
+    <value>Gi på inntil pulsen går over {0} {1}</value>
   </data>
   <data name="HeartRateBelowDurationComboBoxText" xml:space="preserve">
     <value>Når pulsen faller under et gitt nivå</value>
   </data>
   <data name="HeartRateBelowDurationDescriptionText" xml:space="preserve">
-    <value>Gi på inntil jeg har forbrent {0} kalorier</value>
+    <value>Gi på inntil pulsen faller under {0} {1}</value>
   </data>
   <data name="HeartRateDurationLabelText" xml:space="preserve">
     <value>Hvilket pulsnivå?</value>
@@ -538,7 +538,7 @@
     <value>Timeplan</value>
   </data>
   <data name="SelectCategoryDialogText" xml:space="preserve">
-    <value>Gi på inntil pulsen går over {0} {1}</value>
+    <value>Velg kategori for treningsprogram</value>
   </data>
   <data name="SelectDateText" xml:space="preserve">
     <value>Velg dato</value>
@@ -595,16 +595,16 @@
     <value>Jeg vil benytte SportTracks' innstillinger</value>
   </data>
   <data name="STZonesExplanationText" xml:space="preserve">
-    <value>Gi på inntil pulsen faller under {0} {1}</value>
+    <value>Når du benytter soner fra SportTracks vil pluginen benytte puls og fartssoner som er definert i samme kategorien som treningsprogrammet er lagt under. Da SportTracks' aktivitetskategorier ikke har pedalfrekvens og effektsoner, må disse bli satt opp for seg.</value>
   </data>
   <data name="SuccessText" xml:space="preserve">
     <value>Vellykket</value>
   </data>
   <data name="TimeDurationComboBoxText" xml:space="preserve">
-    <value>Velg kategori for treningsprogram</value>
+    <value>Når jeg har fullført en gitt tid</value>
   </data>
   <data name="TimeDurationDescriptionText" xml:space="preserve">
-    <value>Benytt egen kategori</value>
+    <value>Gi på {0:00}:{1:00}:{2:00}</value>
   </data>
   <data name="TimeDurationLabelText" xml:space="preserve">
     <value>Hvor lang tid?</value>
@@ -625,10 +625,10 @@
     <value>Dataene ser ut til å komme fra en nyere version enn det plugin'en kan håndtere. Du må installere den nyeste versjonen av plugin'en.</value>
   </data>
   <data name="UseCustomCategoryText" xml:space="preserve">
-    <value>Benytt kategorien over</value>
+    <value>Benytt egen kategori</value>
   </data>
   <data name="UseParentCategoryText" xml:space="preserve">
-    <value>Når du benytter soner fra SportTracks vil pluginen benytte puls og fartssoner som er definert i samme kategorien som treningsprogrammet er lagt under. Da SportTracks' aktivitetskategorier ikke har pedalfrekvens og effektsoner, må disse bli satt opp for seg.</value>
+    <value>Benytt kategorien over</value>
   </data>
   <data name="ValueValidationTitleText" xml:space="preserve">
     <value>Ugyldig verdi</value>
