@@ -77,14 +77,20 @@ namespace GarminFitnessPlugin.Data
                     {
                         if (child.ChildNodes.Count == 1 && child.FirstChild.GetType() == typeof(XmlText))
                         {
-                            minCadence = double.Parse(child.FirstChild.Value, culture.NumberFormat);
+                            if (!double.TryParse(child.FirstChild.Value, NumberStyles.Float, culture.NumberFormat, out minCadence))
+                            {
+                                return false;
+                            }
                         }
                     }
                     else if (child.GetType() == typeof(XmlElement) && child.Name == "High")
                     {
                         if (child.ChildNodes.Count == 1 && child.FirstChild.GetType() == typeof(XmlText))
                         {
-                            maxCadence = double.Parse(child.FirstChild.Value, culture.NumberFormat);
+                            if (!double.TryParse(child.FirstChild.Value, NumberStyles.Float, culture.NumberFormat, out maxCadence))
+                            {
+                                return false;
+                            }
                         }
                     }
                 }

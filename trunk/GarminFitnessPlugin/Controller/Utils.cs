@@ -1,12 +1,15 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Windows.Forms;
+using System.Globalization;
 using System.IO;
 using System.Text;
+using System.Threading;
+using System.Windows.Forms;
 using ZoneFiveSoftware.Common.Data.Fitness;
 using ZoneFiveSoftware.Common.Data.Measurement;
 using GarminFitnessPlugin.Data;
+using GarminFitnessPlugin.View;
 
 namespace GarminFitnessPlugin.Controller
 {
@@ -166,9 +169,14 @@ namespace GarminFitnessPlugin.Controller
 
         public static bool IsTextFloatInRange(string text, double minRange, double maxRange)
         {
+            return IsTextFloatInRange(text, minRange, maxRange, GarminFitnessView.UICulture);
+        }
+
+        public static bool IsTextFloatInRange(string text, double minRange, double maxRange, CultureInfo culture)
+        {
             double value;
 
-            if (double.TryParse(text, out value))
+            if (double.TryParse(text, NumberStyles.Float, culture.NumberFormat, out value))
             {
                 if (value >= minRange && value <= maxRange)
                 {

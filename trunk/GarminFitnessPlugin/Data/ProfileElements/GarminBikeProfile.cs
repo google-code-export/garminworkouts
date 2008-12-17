@@ -185,13 +185,17 @@ namespace GarminFitnessPlugin.Data
                          currentChild.ChildNodes.Count == 1 &&
                          currentChild.FirstChild.GetType() == typeof(XmlText))
                 {
-                    odometerRead = double.TryParse(currentChild.FirstChild.Value, out odometer);
+                    CultureInfo culture = new CultureInfo("en-us");
+
+                    odometerRead = double.TryParse(currentChild.FirstChild.Value, NumberStyles.Float, culture.NumberFormat, out odometer);
                 }
                 else if (currentChild.Name == Constants.WeightTCXString &&
                          currentChild.ChildNodes.Count == 1 &&
                          currentChild.FirstChild.GetType() == typeof(XmlText))
                 {
-                    if (!Utils.IsTextFloatInRange(currentChild.FirstChild.Value, Constants.MinWeight, Constants.MaxWeight))
+                    CultureInfo culture = new CultureInfo("en-us");
+
+                    if (!Utils.IsTextFloatInRange(currentChild.FirstChild.Value, Constants.MinWeight, Constants.MaxWeight, culture))
                     {
                         return false;
                     }
