@@ -202,8 +202,9 @@ namespace GarminFitnessPlugin.Controller
                          currentChild.FirstChild.GetType() == typeof(XmlText))
                 {
                     double weight;
+                    CultureInfo culture = new CultureInfo("en-us");
 
-                    if (!Utils.IsTextFloatInRange(currentChild.FirstChild.Value, Constants.MinWeight, Constants.MaxWeight))
+                    if (!Utils.IsTextFloatInRange(currentChild.FirstChild.Value, Constants.MinWeight, Constants.MaxWeight, culture))
                     {
                         return false;
                     }

@@ -157,12 +157,18 @@ namespace GarminFitnessPlugin.Data
                     if (valueNode.Name == Constants.LowInMeterPerSecTCXString &&
                         valueNode.ChildNodes.Count == 1 && valueNode.FirstChild.GetType() == typeof(XmlText))
                     {
-                        minSpeed = double.Parse(valueNode.FirstChild.Value, culture.NumberFormat);
+                        if (!double.TryParse(valueNode.FirstChild.Value, NumberStyles.Float, culture.NumberFormat, out minSpeed))
+                        {
+                            return false;
+                        }
                     }
                     else if (valueNode.Name == Constants.HighInMeterPerSecTCXString &&
                         valueNode.ChildNodes.Count == 1 && valueNode.FirstChild.GetType() == typeof(XmlText))
                     {
-                        maxSpeed = double.Parse(valueNode.FirstChild.Value, culture.NumberFormat);
+                        if (!double.TryParse(valueNode.FirstChild.Value, NumberStyles.Float, culture.NumberFormat, out maxSpeed))
+                        {
+                            return false;
+                        }
                     }
                 }
 

@@ -286,8 +286,9 @@ namespace GarminFitnessPlugin.Data
                          currentChild.FirstChild.GetType() == typeof(XmlText))
                 {
                     double weight;
+                    CultureInfo culture = new CultureInfo("en-us");
 
-                    if (!Utils.IsTextFloatInRange(currentChild.FirstChild.Value, Constants.MinWeight, Constants.MaxWeight))
+                    if (!Utils.IsTextFloatInRange(currentChild.FirstChild.Value, Constants.MinWeight, Constants.MaxWeight, culture))
                     {
                         return false;
                     }
@@ -418,6 +419,7 @@ namespace GarminFitnessPlugin.Data
             double lowLimit = 0;
             double highLimit = 0;
             string name = String.Empty;
+            CultureInfo culture = new CultureInfo("en-us");
 
             for (int i = 0; i < parentNode.ChildNodes.Count; ++i)
             {
@@ -449,14 +451,22 @@ namespace GarminFitnessPlugin.Data
                                  valueChild.ChildNodes.Count == 1 &&
                                  valueChild.FirstChild.GetType() == typeof(XmlText))
                         {
-                            lowLimit = double.Parse(valueChild.FirstChild.Value);
+                            if (!double.TryParse(valueChild.FirstChild.Value, NumberStyles.Float, culture.NumberFormat, out lowLimit))
+                            {
+                                return false;
+                            }
+
                             lowRead = true;
                         }
                         else if (valueChild.Name == Constants.HighInMeterPerSecTCXString &&
                                  valueChild.ChildNodes.Count == 1 &&
                                  valueChild.FirstChild.GetType() == typeof(XmlText))
                         {
-                            highLimit = double.Parse(valueChild.FirstChild.Value);
+                            if (!double.TryParse(valueChild.FirstChild.Value, NumberStyles.Float, culture.NumberFormat, out highLimit))
+                            {
+                                return false;
+                            }
+
                             highRead = true;
                         }
                     }

@@ -61,7 +61,7 @@ namespace GarminFitnessPlugin.Controller
             }
             catch (Exception e)
             {
-                System.Windows.Forms.MessageBox.Show(e.Message + "\n" + e.StackTrace);
+                System.Windows.Forms.MessageBox.Show(e.Message + "\n\n" + e.StackTrace);
                 return false;
             }
         }

@@ -77,7 +77,6 @@ namespace GarminFitnessPlugin.View
             // RefreshButton
             // 
             this.RefreshButton.AutoSize = true;
-            this.RefreshButton.DialogResult = System.Windows.Forms.DialogResult.No;
             this.RefreshButton.Location = new System.Drawing.Point(83, 116);
             this.RefreshButton.Name = "RefreshButton";
             this.RefreshButton.Size = new System.Drawing.Size(94, 23);
@@ -100,6 +99,7 @@ namespace GarminFitnessPlugin.View
             this.Controls.Add(this.OKButton);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.Name = "SelectDeviceDialog";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Select Device";
             this.ResumeLayout(false);
             this.PerformLayout();

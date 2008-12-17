@@ -1,6 +1,7 @@
 using System;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.Globalization;
 using System.IO;
 using System.Xml;
 using ZoneFiveSoftware.Common.Data.Measurement;
@@ -71,8 +72,10 @@ namespace GarminFitnessPlugin.Data
                 if (parentNode.ChildNodes.Count == 1 && parentNode.FirstChild.Name == "Meters")
                 {
                     XmlNode child = parentNode.FirstChild;
+                    CultureInfo culture = new CultureInfo("en-us");
 
-                    if (child.ChildNodes.Count == 1 && child.FirstChild.GetType() == typeof(XmlText) && Utils.IsTextFloatInRange(child.FirstChild.Value, Constants.MinDistanceMeters, Constants.MaxDistanceMeters))
+                    if (child.ChildNodes.Count == 1 && child.FirstChild.GetType() == typeof(XmlText) &&
+                        Utils.IsTextFloatInRange(child.FirstChild.Value, Constants.MinDistanceMeters, Constants.MaxDistanceMeters, culture))
                     {
                         SetDistanceInUnits(UInt16.Parse(child.FirstChild.Value), Length.Units.Meter);
                         return true;
