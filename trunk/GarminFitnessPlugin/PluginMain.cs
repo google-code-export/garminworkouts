@@ -109,7 +109,7 @@ namespace GarminFitnessPlugin
 
         public string Name
         {
-            get { return GetType().Assembly.GetName().Name; }
+            get { return GarminFitnessView.GetLocalizedString("GarminFitnessText"); }
         }
 
         public void ReadOptions(XmlDocument xmlDoc, XmlNamespaceManager nsmgr, XmlElement pluginNode)
