@@ -181,7 +181,7 @@
     <value>Hai completato con successo la procedura guidata. Il plugin è ora disponibile dal menu "Selezionare vista". Nota che tutte le impostazioni sono sempre possibili nella pagina Garmin Fitness Settings e nella vista Profilo. </value>
   </data>
   <data name="CompletedLabelText" xml:space="preserve">
-    <value>Per chiudere la procedura guidata clicca su "Finish"</value>
+    <value>Per chiudere la procedura guidata clicca su "Finito"</value>
   </data>
   <data name="CompletedText" xml:space="preserve">
     <value>Completato</value>
@@ -199,7 +199,7 @@
     <value>Cartella di default di export</value>
   </data>
   <data name="DefaultHeartRateZoneLabelText" xml:space="preserve">
-    <value>Usa le Zone di frequenza cardiache da:</value>
+    <value>Usa le Zone di frequenza cardiaca da:</value>
   </data>
   <data name="DefaultPowerZoneLabelText" xml:space="preserve">
     <value>Usa le Zone di potenza da:</value>
@@ -424,7 +424,7 @@
     <value>min</value>
   </data>
   <data name="ModeExplanationText" xml:space="preserve">
-    <value>Una delle caratteristiche che il Garmin Fitness Plugin consente è un'integrazione migliore con SportTracks. Questo significa che è possibile le zone cardiache, di velocità e di potenza definite in SportTracks al posto di quelle definite nell'unità Garmin. Questa scelta può anche essere perzonalizzata per tipo di zona.</value>
+    <value>Una delle caratteristiche che il Garmin Fitness Plugin consente è un'integrazione migliore con SportTracks. Questo significa che è possibile settare le zone di frequenza cardiaca, di velocità e di potenza definite in SportTracks al posto di quelle definite nell'unità Garmin. Questa scelta può anche essere perzonalizzata per tipo di zona.</value>
   </data>
   <data name="NameLabelText" xml:space="preserve">
     <value>Nome :</value>
@@ -538,7 +538,7 @@
     <value>Pianificazione</value>
   </data>
   <data name="SelectCategoryDialogText" xml:space="preserve">
-    <value>Seleziona la categoria dell'allenamento </value>
+    <value>Seleziona la categoria dell'allenamento</value>
   </data>
   <data name="SelectDateText" xml:space="preserve">
     <value>Seleziona una data</value>
@@ -595,7 +595,7 @@
     <value>Voglio usare la modalità SportTracks</value>
   </data>
   <data name="STZonesExplanationText" xml:space="preserve">
-    <value>Quando vengono usate le zone SportTracks, il plugin usa le zone cardiache e di velocità così come definite nella categoria nella quale l'allenamento è classificato. Le categorie di attività di SportTracks non hanno zone di cadenza e di potenza e quindi devono essere definite indipendentemente.</value>
+    <value>Quando vengono usate le zone SportTracks, il plugin usa le zone di frequenza cardiaca e di velocità così come definite nella categoria nella quale l'allenamento è classificato. Le categorie di attività di SportTracks non hanno zone di cadenza e di potenza e quindi devono essere definite indipendentemente.</value>
   </data>
   <data name="SuccessText" xml:space="preserve">
     <value>Successo</value>
@@ -637,7 +637,7 @@
     <value>Peso :</value>
   </data>
   <data name="WelcomeLabelText" xml:space="preserve">
-    <value>Benvenuto nella procedura assistita per il Garmin Fitness Plugin che ti aiuterà a impostare il plugin. In qualsiasi momento puoi uscire dalla procedura cliccando du "Finish". Nota anche che la procedura assistita è sempre disponibile nella pagina "Configurazioni" di SportTracks così se desideri puoi configurare il plugin in seguito.</value>
+    <value>Benvenuto nella procedura assistita per il Garmin Fitness Plugin che ti aiuterà a impostare il plugin. In qualsiasi momento puoi uscire dalla procedura cliccando du "Finito". Nota anche che la procedura assistita è sempre disponibile nella pagina "Configurazioni" di SportTracks così se desideri puoi configurare il plugin in seguito.</value>
   </data>
   <data name="WelcomeText" xml:space="preserve">
     <value>Benvenuto </value>
