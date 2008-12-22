@@ -27,11 +27,11 @@ namespace GarminFitnessPlugin.View
 
         private void OnTextChanged(object sender, EventArgs e)
         {
-            if (m_LastText != base.Text)
+            if (m_LastText != Text)
             {
-                if (base.Text.Length <= m_MaxLength)
+                if (Text.Length <= m_MaxLength)
                 {
-                    m_LastText = base.Text;
+                    m_LastText = Text;
                 }
                 else
                 {
@@ -42,17 +42,6 @@ namespace GarminFitnessPlugin.View
             }
         }
 
-        public override string Text
-        {
-            get
-            {
-                return m_LastText;
-            }
-            set
-            {
-                base.Text = value;
-            }
-        }
 
         public UInt16 MaxLength
         {
