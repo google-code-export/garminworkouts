@@ -47,7 +47,7 @@ namespace GarminFitnessPlugin.View
             this.PowerZoneSelectionLabel = new System.Windows.Forms.Label();
             this.ExportDirectoryGroupBox = new System.Windows.Forms.GroupBox();
             this.BrowseButton = new System.Windows.Forms.Button();
-            this.ExportDirectoryTextBox = new System.Windows.Forms.TextBox();
+            this.ExportDirectoryTextBox = new GarminFitnessPlugin.View.ExtendedTextBox();
             this.CategoriesGroupBox = new System.Windows.Forms.GroupBox();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.ActivityCategoryList = new GarminFitnessPlugin.View.AutoExpandTreeList();
@@ -503,7 +503,7 @@ namespace GarminFitnessPlugin.View
         private System.Windows.Forms.Label PowerZoneSelectionLabel;
         private System.Windows.Forms.GroupBox ExportDirectoryGroupBox;
         private System.Windows.Forms.Button BrowseButton;
-        private System.Windows.Forms.TextBox ExportDirectoryTextBox;
+        private GarminFitnessPlugin.View.ExtendedTextBox ExportDirectoryTextBox;
         private System.Windows.Forms.GroupBox CategoriesGroupBox;
         private System.Windows.Forms.SplitContainer splitContainer1;
         private GarminFitnessPlugin.View.AutoExpandTreeList ActivityCategoryList;

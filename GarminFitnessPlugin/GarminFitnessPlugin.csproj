@@ -134,6 +134,12 @@
     <Compile Include="View\Common\AutoExpandTreeList.cs">
       <SubType>UserControl</SubType>
     </Compile>
+    <Compile Include="View\Common\ExtendedTextBox.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="View\Common\ExtendedTextBox.Designer.cs">
+      <DependentUpon>ExtendedTextBox.cs</DependentUpon>
+    </Compile>
     <Compile Include="View\Profile\ExportProfileAction.cs" />
     <Compile Include="View\Profile\ImportProfileAction.cs" />
     <Compile Include="View\Profile\GarminPowerZoneWrapper.cs" />
