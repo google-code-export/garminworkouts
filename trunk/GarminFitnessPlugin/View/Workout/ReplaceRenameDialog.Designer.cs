@@ -34,7 +34,7 @@ namespace GarminFitnessPlugin.View
             this.ReplaceLabel = new System.Windows.Forms.Label();
             this.ReplaceArrowPictureBox = new System.Windows.Forms.PictureBox();
             this.RenamePanel = new System.Windows.Forms.Panel();
-            this.NewNameTextBox = new System.Windows.Forms.TextBox();
+            this.NewNameTextBox = new GarminFitnessPlugin.View.ExtendedTextBox();
             this.NewNameLabel = new System.Windows.Forms.Label();
             this.RenameExplanationLabel = new System.Windows.Forms.Label();
             this.RenameLabel = new System.Windows.Forms.Label();
@@ -186,6 +186,6 @@ namespace GarminFitnessPlugin.View
         private System.Windows.Forms.Label RenameExplanationLabel;
         private System.Windows.Forms.Label RenameLabel;
         private System.Windows.Forms.PictureBox RenameArrowPictureBox;
-        private System.Windows.Forms.TextBox NewNameTextBox;
+        private GarminFitnessPlugin.View.ExtendedTextBox NewNameTextBox;
     }
 }

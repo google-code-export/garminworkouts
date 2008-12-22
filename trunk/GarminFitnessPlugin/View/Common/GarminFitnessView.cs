@@ -160,7 +160,6 @@ namespace GarminFitnessPlugin.View
 
         public void UICultureChanged(CultureInfo culture)
         {
-            m_CurrentCulture = culture;
             GetCurrentView().UICultureChanged(culture);
         }
 
@@ -281,14 +280,7 @@ namespace GarminFitnessPlugin.View
         {
             get
             {
-                if (m_CurrentCulture != null)
-                {
-                    return m_CurrentCulture;
-                }
-                else
-                {
-                    return Thread.CurrentThread.CurrentCulture;
-                }
+                return Thread.CurrentThread.CurrentCulture;
             }
         }
 
@@ -311,6 +303,5 @@ namespace GarminFitnessPlugin.View
 
         private static ResourceManager m_ResourceManager = new ResourceManager("GarminFitnessPlugin.Resources.StringResources",
                                                                                Assembly.GetExecutingAssembly());
-        private static CultureInfo m_CurrentCulture;
     }
 }
