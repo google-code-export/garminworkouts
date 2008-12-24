@@ -39,15 +39,14 @@ namespace GarminFitnessPlugin.Data
             IZoneCategory zones = Options.Instance.CadenceZoneCategory;
             String zoneRefID = zones.ReferenceId;
 
-            // Zone category refId
-            stream.Write(BitConverter.GetBytes(Encoding.UTF8.GetByteCount(zoneRefID)), 0, sizeof(Int32));
-            stream.Write(Encoding.UTF8.GetBytes(zoneRefID), 0, Encoding.UTF8.GetByteCount(zoneRefID));
+            GarminFitnessString categoryRefID = new GarminFitnessString(zoneRefID);
+            categoryRefID.Serialize(stream);
 
-            // Zone index
-            stream.Write(BitConverter.GetBytes(Utils.FindIndexForZone(zones.Zones, Zone)), 0, sizeof(Int32));
+            GarminFitnessInt32Range zoneIndex = new GarminFitnessInt32Range(Utils.FindIndexForZone(zones.Zones, Zone));
+            zoneIndex.Serialize(stream);
 
-            // Dirty flag
-            stream.Write(BitConverter.GetBytes(IsDirty), 0, sizeof(bool));
+            GarminFitnessBool dirty = new GarminFitnessBool(IsDirty);
+            dirty.Serialize(stream);
         }
 
         public void Deserialize_V1(Stream stream, DataVersion version)
@@ -56,22 +55,16 @@ namespace GarminFitnessPlugin.Data
             Deserialize(typeof(BaseCadenceTarget.IConcreteCadenceTarget), stream, version);
 
             IZoneCategory zones = Options.Instance.CadenceZoneCategory;
-            byte[] intBuffer = new byte[sizeof(Int32)];
-            byte[] stringBuffer;
-            Int32 stringLength;
-            int zoneIndex;
 
             // RefId
-            stream.Read(intBuffer, 0, sizeof(Int32));
-            stringLength = BitConverter.ToInt32(intBuffer, 0);
-            stringBuffer = new byte[stringLength];
-            stream.Read(stringBuffer, 0, stringLength);
+            GarminFitnessString categoryRefID = new GarminFitnessString();
+            categoryRefID.Deserialize(stream, version);
 
             // Zone index
-            stream.Read(intBuffer, 0, sizeof(Int32));
-            zoneIndex = BitConverter.ToInt32(intBuffer, 0);
+            GarminFitnessInt32Range zoneIndex = new GarminFitnessInt32Range(0);
+            zoneIndex.Deserialize(stream, version);
 
-            if (Encoding.UTF8.GetString(stringBuffer) == zones.ReferenceId && zoneIndex < zones.Zones.Count)
+            if (categoryRefID == zones.ReferenceId && zoneIndex < zones.Zones.Count)
             {
                 Zone = zones.Zones[zoneIndex];
             }
@@ -79,6 +72,9 @@ namespace GarminFitnessPlugin.Data
             {
                 Debug.Assert(zones.Zones.Count > 0);
                 Zone = zones.Zones[0];
+
+                // We can't find saved zone, force dirty
+                IsDirty = true;
             }
         }
 
@@ -88,31 +84,25 @@ namespace GarminFitnessPlugin.Data
             Deserialize(typeof(BaseCadenceTarget.IConcreteCadenceTarget), stream, version);
 
             IZoneCategory zones = Options.Instance.CadenceZoneCategory;
-            byte[] intBuffer = new byte[sizeof(Int32)];
-            byte[] boolBuffer = new byte[sizeof(bool)];
-            byte[] stringBuffer;
-            Int32 stringLength;
-            int zoneIndex;
 
             // RefId
-            stream.Read(intBuffer, 0, sizeof(Int32));
-            stringLength = BitConverter.ToInt32(intBuffer, 0);
-            stringBuffer = new byte[stringLength];
-            stream.Read(stringBuffer, 0, stringLength);
+            GarminFitnessString categoryRefID = new GarminFitnessString();
+            categoryRefID.Deserialize(stream, version);
 
             // Zone index
-            stream.Read(intBuffer, 0, sizeof(Int32));
-            zoneIndex = BitConverter.ToInt32(intBuffer, 0);
+            GarminFitnessInt32Range zoneIndex = new GarminFitnessInt32Range(0);
+            zoneIndex.Deserialize(stream, version);
 
             // Dirty flag
-            stream.Read(boolBuffer, 0, sizeof(bool));
+            GarminFitnessBool dirty = new GarminFitnessBool(IsDirty);
+            dirty.Deserialize(stream, version);
 
-            if (Encoding.UTF8.GetString(stringBuffer) == zones.ReferenceId && zoneIndex < zones.Zones.Count)
+            if (categoryRefID == zones.ReferenceId && zoneIndex < zones.Zones.Count)
             {
                 Zone = zones.Zones[zoneIndex];
 
                 // Was the step dirty on last save?
-                IsDirty = BitConverter.ToBoolean(boolBuffer, 0);
+                IsDirty = dirty;
             }
             else
             {
@@ -129,46 +119,19 @@ namespace GarminFitnessPlugin.Data
             base.Serialize(parentNode, nodeName, document);
 
             CultureInfo culture = new CultureInfo("en-us");
-            XmlNode childNode;
-            XmlNode valueNode;
 
             // Low
-            childNode = document.CreateElement("Low");
-            childNode.AppendChild(document.CreateTextNode(String.Format(culture.NumberFormat, "{0:0.00000}", Zone.Low)));
-            parentNode.AppendChild(childNode);
+            GarminFitnessDoubleRange low = new GarminFitnessDoubleRange(Zone.Low);
+            low.Serialize(parentNode, "Low", document);
 
             // High
-            Byte zoneHigh = (Byte)Math.Min(Constants.MaxCadence, Zone.High);
-            childNode = document.CreateElement("High");
-            childNode.AppendChild(document.CreateTextNode(String.Format(culture.NumberFormat, "{0:0.00000}", zoneHigh)));
-            parentNode.AppendChild(childNode);
+            GarminFitnessDoubleRange high = new GarminFitnessDoubleRange((Byte)Math.Min(Constants.MaxCadence, Zone.High));
+            high.Serialize(parentNode, "High", document);
 
             // Extension
-            for (int i = 0; i < Options.Instance.CadenceZoneCategory.Zones.Count; ++i)
-            {
-                INamedLowHighZone currentZone = Options.Instance.CadenceZoneCategory.Zones[i];
-                
-                if(currentZone == Zone)
-                {
-                    XmlNode extensionNode;
-                    XmlNode categoryNode;
-
-                    extensionNode = document.CreateElement("TargetOverride");
-                    valueNode = document.CreateElement("StepId");
-                    valueNode.AppendChild(document.CreateTextNode(Utils.GetStepExportId(BaseTarget.ParentStep).ToString()));
-                    extensionNode.AppendChild(valueNode);
-                    categoryNode = document.CreateElement("Category");
-                    valueNode = document.CreateElement("Id");
-                    valueNode.AppendChild(document.CreateTextNode(Options.Instance.CadenceZoneCategory.ReferenceId));
-                    categoryNode.AppendChild(valueNode);
-                    valueNode = document.CreateElement("Index");
-                    valueNode.AppendChild(document.CreateTextNode(i.ToString()));
-                    categoryNode.AppendChild(valueNode);
-                    extensionNode.AppendChild(categoryNode);
-
-                    BaseTarget.ParentStep.ParentWorkout.AddSportTracksExtension(extensionNode);
-                }
-            }
+            Utils.SerializeSTZoneInfoXML(BaseTarget.ParentStep,
+                                         Options.Instance.CadenceZoneCategory,
+                                         Zone, document);
         }
 
         public override void Deserialize(XmlNode parentNode)

@@ -6,6 +6,7 @@ using System.IO;
 using System.Text;
 using System.Threading;
 using System.Windows.Forms;
+using System.Xml;
 using ZoneFiveSoftware.Common.Data.Fitness;
 using ZoneFiveSoftware.Common.Data.Measurement;
 using GarminFitnessPlugin.Data;
@@ -145,6 +146,21 @@ namespace GarminFitnessPlugin.Controller
             stream.Close();
         }
 
+        public static bool IsTextIntegerInRange(string text, Int32 minRange, Int32 maxRange)
+        {
+            Int32 value;
+
+            if (Int32.TryParse(text, out value))
+            {
+                if (value >= minRange && value <= maxRange)
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
         public static bool IsTextIntegerInRange(string text, UInt16 minRange, UInt16 maxRange)
         {
             UInt16 value;
@@ -273,7 +289,7 @@ namespace GarminFitnessPlugin.Controller
                 }
             }
 
-            return 0;
+            return -1;
         }
 
         public static int FindIndexForZoneCategory(IList<IZoneCategory> list, IZoneCategory zone)
@@ -352,6 +368,39 @@ namespace GarminFitnessPlugin.Controller
             }
 
             return false;
+        }
+
+        public static void SerializeSTZoneInfoXML(IStep step, IZoneCategory categoryZones, INamedLowHighZone zone, XmlDocument document)
+        {
+            int index = FindIndexForZone(categoryZones.Zones, zone);
+
+            if (index != -1)
+            {
+                XmlNode extensionNode;
+                XmlNode categoryNode;
+                XmlNode valueNode;
+
+                extensionNode = document.CreateElement("TargetOverride");
+
+                // Step Id node
+                valueNode = document.CreateElement("StepId");
+                extensionNode.AppendChild(valueNode);
+                valueNode.AppendChild(document.CreateTextNode(Utils.GetStepExportId(step).ToString()));
+
+                // Category node
+                categoryNode = document.CreateElement("Category");
+                extensionNode.AppendChild(categoryNode);
+
+                // RefId
+                GarminFitnessString categoryRefID = new GarminFitnessString(categoryZones.ReferenceId);
+                categoryRefID.Serialize(categoryNode, "Id", document);
+
+                // Zone index
+                GarminFitnessInt32Range zoneIndex = new GarminFitnessInt32Range(index);
+                zoneIndex.Serialize(categoryNode, "Index", document);
+
+                step.ParentWorkout.AddSportTracksExtension(extensionNode);
+            }
         }
 
         public static string GetWorkoutFilename(Workout workout)

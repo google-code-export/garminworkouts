@@ -38,39 +38,32 @@ namespace GarminFitnessPlugin.Data
             IZoneCategory zones = BaseTarget.ParentStep.ParentWorkout.Category.HeartRateZone;
             String zoneRefID = zones.ReferenceId;
 
-            // Zone categroy refId
-            stream.Write(BitConverter.GetBytes(Encoding.UTF8.GetByteCount(zoneRefID)), 0, sizeof(Int32));
-            stream.Write(Encoding.UTF8.GetBytes(zoneRefID), 0, Encoding.UTF8.GetByteCount(zoneRefID));
+            GarminFitnessString categoryRefID = new GarminFitnessString(zoneRefID);
+            categoryRefID.Serialize(stream);
 
-            // Zone index
-            stream.Write(BitConverter.GetBytes(Utils.FindIndexForZone(zones.Zones, Zone)), 0, sizeof(Int32));
+            GarminFitnessInt32Range zoneIndex = new GarminFitnessInt32Range(Utils.FindIndexForZone(zones.Zones, Zone));
+            zoneIndex.Serialize(stream);
 
-            // Dirty flag
-            stream.Write(BitConverter.GetBytes(IsDirty), 0, sizeof(bool));
+            GarminFitnessBool dirty = new GarminFitnessBool(IsDirty);
+            dirty.Serialize(stream);
         }
 
         public void Deserialize_V1(Stream stream, DataVersion version)
         {
             // Call base deserialization
-            Deserialize(typeof(BaseHeartRateTarget.IConcreteHeartRateTarget), stream, version);
+            Deserialize(typeof(BaseCadenceTarget.IConcreteCadenceTarget), stream, version);
 
             IZoneCategory zones = BaseTarget.ParentStep.ParentWorkout.Category.HeartRateZone;
-            byte[] intBuffer = new byte[sizeof(Int32)];
-            byte[] stringBuffer;
-            Int32 stringLength;
-            int zoneIndex;
 
             // RefId
-            stream.Read(intBuffer, 0, sizeof(Int32));
-            stringLength = BitConverter.ToInt32(intBuffer, 0);
-            stringBuffer = new byte[stringLength];
-            stream.Read(stringBuffer, 0, stringLength);
+            GarminFitnessString categoryRefID = new GarminFitnessString();
+            categoryRefID.Deserialize(stream, version);
 
             // Zone index
-            stream.Read(intBuffer, 0, sizeof(Int32));
-            zoneIndex = BitConverter.ToInt32(intBuffer, 0);
+            GarminFitnessInt32Range zoneIndex = new GarminFitnessInt32Range(0);
+            zoneIndex.Deserialize(stream, version);
 
-            if (Encoding.UTF8.GetString(stringBuffer) == zones.ReferenceId && zoneIndex < zones.Zones.Count)
+            if (categoryRefID == zones.ReferenceId && zoneIndex < zones.Zones.Count)
             {
                 Zone = zones.Zones[zoneIndex];
             }
@@ -78,6 +71,9 @@ namespace GarminFitnessPlugin.Data
             {
                 Debug.Assert(zones.Zones.Count > 0);
                 Zone = zones.Zones[0];
+
+                // We can't find saved zone, force dirty
+                IsDirty = true;
             }
         }
 
@@ -87,31 +83,22 @@ namespace GarminFitnessPlugin.Data
             Deserialize(typeof(BaseHeartRateTarget.IConcreteHeartRateTarget), stream, version);
 
             IZoneCategory zones = BaseTarget.ParentStep.ParentWorkout.Category.HeartRateZone;
-            byte[] intBuffer = new byte[sizeof(Int32)];
-            byte[] boolBuffer = new byte[sizeof(bool)];
-            byte[] stringBuffer;
-            Int32 stringLength;
-            int zoneIndex;
 
-            // RefId
-            stream.Read(intBuffer, 0, sizeof(Int32));
-            stringLength = BitConverter.ToInt32(intBuffer, 0);
-            stringBuffer = new byte[stringLength];
-            stream.Read(stringBuffer, 0, stringLength);
+            GarminFitnessString categoryRefID = new GarminFitnessString();
+            categoryRefID.Deserialize(stream, version);
 
-            // Zone index
-            stream.Read(intBuffer, 0, sizeof(Int32));
-            zoneIndex = BitConverter.ToInt32(intBuffer, 0);
+            GarminFitnessInt32Range zoneIndex = new GarminFitnessInt32Range(0);
+            zoneIndex.Deserialize(stream, version);
 
-            // Dirty flag
-            stream.Read(boolBuffer, 0, sizeof(bool));
+            GarminFitnessBool dirty = new GarminFitnessBool(IsDirty);
+            dirty.Deserialize(stream, version);
 
-            if (Encoding.UTF8.GetString(stringBuffer) == zones.ReferenceId && zoneIndex < zones.Zones.Count)
+            if (categoryRefID == zones.ReferenceId && zoneIndex < zones.Zones.Count)
             {
                 Zone = zones.Zones[zoneIndex];
 
                 // Was the step dirty on last save?
-                IsDirty = BitConverter.ToBoolean(boolBuffer, 0);
+                IsDirty = dirty;
             }
             else
             {
@@ -134,7 +121,6 @@ namespace GarminFitnessPlugin.Data
             float baseMultiplier = ((float)Constants.MaxHRInPercentMax) / lastMaxHR;
             XmlAttribute attribute;
             XmlNode childNode;
-            XmlNode valueNode;
 
             // Type
             attribute = document.CreateAttribute(Constants.XsiTypeTCXString, Constants.xsins);
@@ -142,76 +128,47 @@ namespace GarminFitnessPlugin.Data
             parentNode.Attributes.Append(attribute);
 
             // Low
-            Byte lowValue;
+            GarminFitnessByteRange lowValue = new GarminFitnessByteRange(0);
             childNode = document.CreateElement("Low");
+            parentNode.AppendChild(childNode);
+
             attribute = document.CreateAttribute(Constants.XsiTypeTCXString, Constants.xsins);
+            childNode.Attributes.Append(attribute);
             if (!baseMultiplier.Equals(float.NaN))
             {
-                lowValue = (Byte)Math.Round(Zone.Low * baseMultiplier, 0, MidpointRounding.AwayFromZero);
+                lowValue.Value = (Byte)Math.Round(Zone.Low * baseMultiplier, 0, MidpointRounding.AwayFromZero);
                 attribute.Value = Constants.HeartRateReferenceTCXString[1];
             }
             else
             {
-                lowValue = (Byte)Utils.Clamp(Zone.Low, Constants.MinHRInBPM, Constants.MaxHRInBPM);
+                lowValue.Value = (Byte)Utils.Clamp(Zone.Low, Constants.MinHRInBPM, Constants.MaxHRInBPM);
                 attribute.Value = Constants.HeartRateReferenceTCXString[0];
             }
-            childNode.Attributes.Append(attribute);
-            valueNode = document.CreateElement(Constants.ValueTCXString);
-            valueNode.AppendChild(document.CreateTextNode(lowValue.ToString()));
-            childNode.AppendChild(valueNode);
-            parentNode.AppendChild(childNode);
+            lowValue.Serialize(childNode, Constants.ValueTCXString, document);
 
             // High
-            Byte highValue;
+            GarminFitnessByteRange highValue = new GarminFitnessByteRange(0);
             childNode = document.CreateElement("High");
+            parentNode.AppendChild(childNode);
+
             attribute = document.CreateAttribute(Constants.XsiTypeTCXString, Constants.xsins);
+            childNode.Attributes.Append(attribute);
             if (!baseMultiplier.Equals(float.NaN))
             {
-                highValue = (Byte)Math.Min(Constants.MaxHRInPercentMax, Math.Round(Zone.High * baseMultiplier, 0, MidpointRounding.AwayFromZero));
+                highValue.Value = (Byte)Math.Min(Constants.MaxHRInPercentMax, Math.Round(Zone.High * baseMultiplier, 0, MidpointRounding.AwayFromZero));
                 attribute.Value = Constants.HeartRateReferenceTCXString[1];
             }
             else
             {
-                highValue = (Byte)Utils.Clamp(Zone.High, Constants.MinHRInBPM, Constants.MaxHRInBPM);
+                highValue.Value = (Byte)Utils.Clamp(Zone.High, Constants.MinHRInBPM, Constants.MaxHRInBPM);
                 attribute.Value = Constants.HeartRateReferenceTCXString[0];
             }
-            childNode.Attributes.Append(attribute);
-            valueNode = document.CreateElement(Constants.ValueTCXString);
-            valueNode.AppendChild(document.CreateTextNode(highValue.ToString()));
-            childNode.AppendChild(valueNode);
-            parentNode.AppendChild(childNode);
+            highValue.Serialize(childNode, Constants.ValueTCXString, document);
 
             // Extension
-            XmlNode indexNode = document.CreateElement("Index");
-            for (int i = 0; i < BaseTarget.ParentStep.ParentWorkout.Category.HeartRateZone.Zones.Count; ++i)
-            {
-                INamedLowHighZone currentZone = BaseTarget.ParentStep.ParentWorkout.Category.HeartRateZone.Zones[i];
-                
-                if(currentZone == Zone)
-                {
-                    XmlNode extensionNode;
-                    XmlNode categoryNode;
-
-                    extensionNode = document.CreateElement("TargetOverride");
-                    valueNode = document.CreateElement("StepId");
-                    valueNode.AppendChild(document.CreateTextNode(Utils.GetStepExportId(BaseTarget.ParentStep).ToString()));
-                    extensionNode.AppendChild(valueNode);
-                    categoryNode = document.CreateElement("Category");
-                    valueNode = document.CreateElement("Id");
-                    valueNode.AppendChild(document.CreateTextNode(BaseTarget.ParentStep.ParentWorkout.Category.HeartRateZone.ReferenceId));
-                    categoryNode.AppendChild(valueNode);
-                    valueNode = document.CreateElement("Index");
-                    valueNode.AppendChild(document.CreateTextNode(i.ToString()));
-                    categoryNode.AppendChild(valueNode);
-                    extensionNode.AppendChild(categoryNode);
-
-                    BaseTarget.ParentStep.ParentWorkout.AddSportTracksExtension(extensionNode);
-                }
-            }
-
-            if (indexNode != null)
-            {
-            }
+            Utils.SerializeSTZoneInfoXML(BaseTarget.ParentStep,
+                                         BaseTarget.ParentStep.ParentWorkout.Category.HeartRateZone,
+                                         Zone, document);
         }
 
         public override void Deserialize(XmlNode parentNode)
