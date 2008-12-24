@@ -38,15 +38,14 @@ namespace GarminFitnessPlugin.Data
             IZoneCategory zones = Options.Instance.PowerZoneCategory;
             String zoneRefID = zones.ReferenceId;
 
-            // Zone categroy refId
-            stream.Write(BitConverter.GetBytes(Encoding.UTF8.GetByteCount(zoneRefID)), 0, sizeof(Int32));
-            stream.Write(Encoding.UTF8.GetBytes(zoneRefID), 0, Encoding.UTF8.GetByteCount(zoneRefID));
+            GarminFitnessString categoryRefID = new GarminFitnessString(zoneRefID);
+            categoryRefID.Serialize(stream);
 
-            // Zone index
-            stream.Write(BitConverter.GetBytes(Utils.FindIndexForZone(zones.Zones, Zone)), 0, sizeof(Int32));
+            GarminFitnessInt32Range zoneIndex = new GarminFitnessInt32Range(Utils.FindIndexForZone(zones.Zones, Zone));
+            zoneIndex.Serialize(stream);
 
-            // Dirty flag
-            stream.Write(BitConverter.GetBytes(IsDirty), 0, sizeof(bool));
+            GarminFitnessBool dirty = new GarminFitnessBool(IsDirty);
+            dirty.Serialize(stream);
         }
 
         public void Deserialize_V1(Stream stream, DataVersion version)
@@ -55,22 +54,16 @@ namespace GarminFitnessPlugin.Data
             Deserialize(typeof(BasePowerTarget.IConcretePowerTarget), stream, version);
 
             IZoneCategory zones = Options.Instance.PowerZoneCategory;
-            byte[] intBuffer = new byte[sizeof(Int32)];
-            byte[] stringBuffer;
-            Int32 stringLength;
-            int zoneIndex;
 
             // RefId
-            stream.Read(intBuffer, 0, sizeof(Int32));
-            stringLength = BitConverter.ToInt32(intBuffer, 0);
-            stringBuffer = new byte[stringLength];
-            stream.Read(stringBuffer, 0, stringLength);
+            GarminFitnessString categoryRefID = new GarminFitnessString();
+            categoryRefID.Deserialize(stream, version);
 
             // Zone index
-            stream.Read(intBuffer, 0, sizeof(Int32));
-            zoneIndex = BitConverter.ToInt32(intBuffer, 0);
+            GarminFitnessInt32Range zoneIndex = new GarminFitnessInt32Range(0);
+            zoneIndex.Deserialize(stream, version);
 
-            if (Encoding.UTF8.GetString(stringBuffer) == zones.ReferenceId && zoneIndex < zones.Zones.Count)
+            if (categoryRefID == zones.ReferenceId && zoneIndex < zones.Zones.Count)
             {
                 Zone = zones.Zones[zoneIndex];
             }
@@ -78,6 +71,9 @@ namespace GarminFitnessPlugin.Data
             {
                 Debug.Assert(zones.Zones.Count > 0);
                 Zone = zones.Zones[0];
+
+                // We can't find saved zone, force dirty
+                IsDirty = true;
             }
         }
 
@@ -87,31 +83,22 @@ namespace GarminFitnessPlugin.Data
             Deserialize(typeof(BasePowerTarget.IConcretePowerTarget), stream, version);
 
             IZoneCategory zones = Options.Instance.PowerZoneCategory;
-            byte[] intBuffer = new byte[sizeof(Int32)];
-            byte[] boolBuffer = new byte[sizeof(bool)];
-            byte[] stringBuffer;
-            Int32 stringLength;
-            int zoneIndex;
 
-            // RefId
-            stream.Read(intBuffer, 0, sizeof(Int32));
-            stringLength = BitConverter.ToInt32(intBuffer, 0);
-            stringBuffer = new byte[stringLength];
-            stream.Read(stringBuffer, 0, stringLength);
+            GarminFitnessString categoryRefID = new GarminFitnessString();
+            categoryRefID.Deserialize(stream, version);
 
-            // Zone index
-            stream.Read(intBuffer, 0, sizeof(Int32));
-            zoneIndex = BitConverter.ToInt32(intBuffer, 0);
+            GarminFitnessInt32Range zoneIndex = new GarminFitnessInt32Range(0);
+            zoneIndex.Deserialize(stream, version);
 
-            // Dirty flag
-            stream.Read(boolBuffer, 0, sizeof(bool));
+            GarminFitnessBool dirty = new GarminFitnessBool(IsDirty);
+            dirty.Deserialize(stream, version);
 
-            if (Encoding.UTF8.GetString(stringBuffer) == zones.ReferenceId && zoneIndex < zones.Zones.Count)
+            if (categoryRefID == zones.ReferenceId && zoneIndex < zones.Zones.Count)
             {
                 Zone = zones.Zones[zoneIndex];
 
                 // Was the step dirty on last save?
-                IsDirty = BitConverter.ToBoolean(boolBuffer, 0);
+                IsDirty = dirty;
             }
             else
             {
@@ -132,7 +119,6 @@ namespace GarminFitnessPlugin.Data
 
             XmlAttribute attribute;
             XmlNode childNode;
-            XmlNode valueNode;
 
             // Type
             attribute = document.CreateAttribute(Constants.XsiTypeTCXString, Constants.xsins);
@@ -140,53 +126,31 @@ namespace GarminFitnessPlugin.Data
             parentNode.Attributes.Append(attribute);
 
             // Low
-            UInt16 zoneLow = (UInt16)Utils.Clamp(Zone.Low, Constants.MinPower, Constants.MaxPowerWorkout);
+            GarminFitnessUInt16Range zoneLow = new GarminFitnessUInt16Range((UInt16)Utils.Clamp(Zone.Low, Constants.MinPower, Constants.MaxPowerWorkout));
             childNode = document.CreateElement("Low");
-            attribute = document.CreateAttribute(Constants.XsiTypeTCXString, Constants.xsins);
-            attribute.Value = "PowerInWatts_t";
-            childNode.Attributes.Append(attribute);
-            valueNode = document.CreateElement(Constants.ValueTCXString);
-            valueNode.AppendChild(document.CreateTextNode(zoneLow.ToString()));
-            childNode.AppendChild(valueNode);
             parentNode.AppendChild(childNode);
+
+            attribute = document.CreateAttribute(Constants.XsiTypeTCXString, Constants.xsins);
+            childNode.Attributes.Append(attribute);
+            attribute.Value = "PowerInWatts_t";
+
+            zoneLow.Serialize(childNode, Constants.ValueTCXString, document);
 
             // High
-            UInt16 zoneHigh = (UInt16)Utils.Clamp(Zone.High, Constants.MinPower, Constants.MaxPowerWorkout);
+            GarminFitnessUInt16Range zoneHigh = new GarminFitnessUInt16Range((UInt16)Utils.Clamp(Zone.High, Constants.MinPower, Constants.MaxPowerWorkout));
             childNode = document.CreateElement("High");
-            attribute = document.CreateAttribute(Constants.XsiTypeTCXString, Constants.xsins);
-            attribute.Value = "PowerInWatts_t";
-            childNode.Attributes.Append(attribute);
-            valueNode = document.CreateElement(Constants.ValueTCXString);
-            valueNode.AppendChild(document.CreateTextNode(zoneHigh.ToString()));
-            childNode.AppendChild(valueNode);
             parentNode.AppendChild(childNode);
 
+            attribute = document.CreateAttribute(Constants.XsiTypeTCXString, Constants.xsins);
+            childNode.Attributes.Append(attribute);
+            attribute.Value = "PowerInWatts_t";
+
+            zoneHigh.Serialize(childNode, Constants.ValueTCXString, document);
+
             // Extension
-            for (int i = 0; i < Options.Instance.PowerZoneCategory.Zones.Count; ++i)
-            {
-                INamedLowHighZone currentZone = Options.Instance.PowerZoneCategory.Zones[i];
-                
-                if(currentZone == Zone)
-                {
-                    XmlNode extensionNode;
-                    XmlNode categoryNode;
-
-                    extensionNode = document.CreateElement("TargetOverride");
-                    valueNode = document.CreateElement("StepId");
-                    valueNode.AppendChild(document.CreateTextNode(Utils.GetStepExportId(BaseTarget.ParentStep).ToString()));
-                    extensionNode.AppendChild(valueNode);
-                    categoryNode = document.CreateElement("Category");
-                    valueNode = document.CreateElement("Id");
-                    valueNode.AppendChild(document.CreateTextNode(Options.Instance.PowerZoneCategory.ReferenceId));
-                    categoryNode.AppendChild(valueNode);
-                    valueNode = document.CreateElement("Index");
-                    valueNode.AppendChild(document.CreateTextNode(i.ToString()));
-                    categoryNode.AppendChild(valueNode);
-                    extensionNode.AppendChild(categoryNode);
-
-                    BaseTarget.ParentStep.ParentWorkout.AddSportTracksExtension(extensionNode);
-                }
-            }
+            Utils.SerializeSTZoneInfoXML(BaseTarget.ParentStep,
+                                         Options.Instance.PowerZoneCategory,
+                                         Zone, document);
         }
 
         public override void Deserialize(XmlNode parentNode)

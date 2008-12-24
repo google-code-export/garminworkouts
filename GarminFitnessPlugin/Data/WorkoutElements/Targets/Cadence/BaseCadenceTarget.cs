@@ -173,7 +173,7 @@ namespace GarminFitnessPlugin.Data
                 }
                 else if (childNode.Name == "Index" && childNode.ChildNodes.Count == 1 &&
                     childNode.FirstChild.GetType() == typeof(XmlText) &&
-                    Utils.IsTextIntegerInRange(childNode.FirstChild.Value, 1, (UInt16)referenceZones.Zones.Count))
+                    Utils.IsTextIntegerInRange(childNode.FirstChild.Value, (UInt16)1, (UInt16)referenceZones.Zones.Count))
                 {
                     zoneIndex = int.Parse(childNode.FirstChild.Value);
                 }

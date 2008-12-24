@@ -74,6 +74,7 @@
     <Compile Include="Controller\ProfileImporter.cs" />
     <Compile Include="Controller\GarminCategoryStringProviderAttribute.cs" />
     <Compile Include="Controller\GarminProfileManager.cs" />
+    <Compile Include="Data\BasicTypes\GarminFitnessInt32Range.cs" />
     <Compile Include="Data\BasicTypes\GarminFitnessDoubleRange.cs" />
     <Compile Include="Data\BasicTypes\GarminFitnessDate.cs" />
     <Compile Include="Data\BasicTypes\GarminFitnessByteRange.cs" />
