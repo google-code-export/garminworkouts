@@ -51,7 +51,7 @@ namespace GarminFitnessPlugin.Data
         public void Deserialize_V1(Stream stream, DataVersion version)
         {
             // Call base deserialization
-            Deserialize(typeof(BaseCadenceTarget.IConcreteCadenceTarget), stream, version);
+            Deserialize(typeof(BaseHeartRateTarget.IConcreteHeartRateTarget), stream, version);
 
             IZoneCategory zones = BaseTarget.ParentStep.ParentWorkout.Category.HeartRateZone;
 
