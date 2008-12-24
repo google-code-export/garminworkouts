@@ -158,16 +158,11 @@ namespace GarminFitnessPlugin.Controller
             return CreateWorkout(stream, version, null);
         }
 
-        public Workout CreateWorkout(XmlNode workoutNode)
+        public Workout CreateWorkout(XmlNode workoutNode, IActivityCategory category)
         {
-            IActivityCategory category = Utils.GetDefaultCategory();
-
             Workout result = new Workout("Temp", category);
 
-            if (!result.Deserialize(workoutNode))
-            {
-                return null;
-            }
+            result.Deserialize(workoutNode);
 
             // We must update the name to avoid duplicates
             result.Name = GarminWorkoutManager.Instance.GetUniqueName(result.Name);
@@ -256,10 +251,8 @@ namespace GarminFitnessPlugin.Controller
             {
                 if (m_Workouts.Contains(workoutsToRemove[i]))
                 {
-                    UnregisterWorkout(workoutsToRemove[i]);
-
                     m_Workouts.Remove(workoutsToRemove[i]);
-
+                    UnregisterWorkout(workoutsToRemove[i]);
                     workoutRemoved = true;
                 }
             }

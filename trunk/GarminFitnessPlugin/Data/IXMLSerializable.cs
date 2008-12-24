@@ -1,11 +1,11 @@
-using System.IO;
+using System;
 using System.Xml;
 
 namespace GarminFitnessPlugin.Data
 {
     interface IXMLSerializable
     {
-        void Serialize(XmlNode parentNode, XmlDocument document);
-        bool Deserialize(XmlNode parentNode);
+        void Serialize(XmlNode parentNode, String nodeName, XmlDocument document);
+        void Deserialize(XmlNode parentNode);
     }
 }

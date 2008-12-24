@@ -56,9 +56,14 @@ namespace GarminFitnessPlugin.Controller
 
                 return false;
             }
+            catch (GarminFitnesXmlDeserializationException e)
+            {
+                System.Windows.Forms.MessageBox.Show(e.Message + "\n\n" + e.ErroneousNode.OuterXml);
+                return false;
+            }
             catch (Exception e)
             {
-                System.Windows.Forms.MessageBox.Show(e.Message + "\n" + e.StackTrace);
+                System.Windows.Forms.MessageBox.Show(e.Message + "\n\n" + e.StackTrace);
                 return false;
             }
         }
@@ -90,31 +95,24 @@ namespace GarminFitnessPlugin.Controller
                         {
                             // No = rename
                             name = dlg.NewName;
+
+                            category = PeekWorkoutCategory(child);
                         }
                     }
 
-                    Workout newWorkout = GarminWorkoutManager.Instance.CreateWorkout(child);
-
-                    if (newWorkout != null)
+                    if (category == null)
                     {
-                        newWorkout.Name = name;
+                        SelectCategoryDialog categoryDlg = new SelectCategoryDialog(name);
 
-                        if (category == null)
-                        {
-                            SelectCategoryDialog categoryDlg = new SelectCategoryDialog(newWorkout.Name);
+                        categoryDlg.ShowDialog();
+                        category = categoryDlg.SelectedCategory;
+                    }
 
-                            categoryDlg.ShowDialog();
-                            newWorkout.Category = categoryDlg.SelectedCategory;
-                        }
-                        else
-                        {
-                            newWorkout.Category = category;
-                        }
-                    }
-                    else
-                    {
-                        return false;
-                    }
+                    Workout newWorkout = GarminWorkoutManager.Instance.CreateWorkout(child, category);
+                    newWorkout.Name = name;
+                    newWorkout.Category = category;
+
+                    return (newWorkout != null);
                 }
                 else if (child.Name == "Running" ||
                          child.Name == "Biking" ||
@@ -151,6 +149,55 @@ namespace GarminFitnessPlugin.Controller
             }
 
             return String.Empty;
+        }
+
+        private static IActivityCategory PeekWorkoutCategory(XmlNode workoutNode)
+        {
+            IActivityCategory category = null;
+
+            for (int i = 0; i < workoutNode.ChildNodes.Count; ++i)
+            {
+                XmlNode child = workoutNode.ChildNodes[i];
+
+                if (child.Name == Constants.ExtensionsTCXString)
+                {
+                    for (int j = 0; j < child.ChildNodes.Count; ++j)
+                    {
+                        XmlNode currentNode = child.ChildNodes[j];
+
+                        // This condition remains for backsward compatibility with V0 exports
+                        if (currentNode.Name == "SportTracksCategory" &&
+                            currentNode.FirstChild.ChildNodes.Count == 1 &&
+                            currentNode.FirstChild.GetType() == typeof(XmlText))
+                        {
+                            XmlText categoryNode = (XmlText)child.FirstChild.FirstChild;
+
+                            category = Utils.FindCategoryByID(categoryNode.Value);
+                        }
+                        else if (currentNode.Name == "SportTracksExtensions")
+                        {
+                            for (int k = 0; k < currentNode.ChildNodes.Count; ++k)
+                            {
+                                XmlNode currentExtension = currentNode.ChildNodes[k];
+
+                                if (currentExtension.Name == "SportTracksCategory")
+                                {
+                                    if (currentExtension.ChildNodes.Count == 1 &&
+                                        currentExtension.FirstChild.GetType() == typeof(XmlText))
+                                    {
+                                        XmlText categoryNode = (XmlText)currentExtension.FirstChild;
+
+                                        category = Utils.FindCategoryByID(categoryNode.Value);
+                                        //break;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            return category;
         }
     }
 }

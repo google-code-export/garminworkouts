@@ -67,7 +67,7 @@ namespace GarminFitnessPlugin.Controller
             XmlNode workoutNode = document.CreateElement("Workout");
 
             workout.LastExportDate = DateTime.Now;
-            workout.Serialize(workoutNode, document, skipExtensions);
+            workout.Serialize(workoutNode, "Workout", document, skipExtensions);
             parentNode.AppendChild(workoutNode);
         }
     }

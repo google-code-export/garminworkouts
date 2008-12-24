@@ -56,6 +56,7 @@ namespace GarminFitnessPlugin.View
         {
             // This callback handles creation & deletion of workouts
             BuildWorkoutsList();
+            RefreshWorkoutSelection();
         }
 
         private void OnWorkoutChanged(Workout modifiedWorkout, PropertyChangedEventArgs changedProperty)
@@ -140,13 +141,14 @@ namespace GarminFitnessPlugin.View
         void OnCalendarSelectedChanged(object sender, EventArgs e)
         {
             List<Workout> newSelection = new List<Workout>();
+            GarminFitnessDate selectedDate = new GarminFitnessDate(PluginMain.GetApplication().Calendar.Selected);
 
             // Find the workouts planned on the selected date
             for (int i = 0; i < GarminWorkoutManager.Instance.Workouts.Count; ++i)
             {
                 Workout currentWorkout = GarminWorkoutManager.Instance.Workouts[i];
 
-                if (currentWorkout.ScheduledDates.Contains(PluginMain.GetApplication().Calendar.Selected))
+                if (currentWorkout.ScheduledDates.Contains(selectedDate))
                 {
                     newSelection.Add(currentWorkout);
                 }
@@ -245,10 +247,7 @@ namespace GarminFitnessPlugin.View
         {
             for (int i = 0; i < SelectedWorkouts.Count; ++i)
             {
-                if (!SelectedWorkouts[i].ScheduledDates.Contains(WorkoutCalendar.SelectedDate))
-                {
                     SelectedWorkouts[i].ScheduleWorkout(WorkoutCalendar.SelectedDate);
-                }
             }
         }
 
@@ -587,7 +586,7 @@ namespace GarminFitnessPlugin.View
                                 oldValue = concreteTarget.MinHeartRate.ToString();
                                 inputType = RangeValidationInputType.Integer;
 
-                                if (concreteTarget.IsPercentageMaxHeartRate)
+                                if (concreteTarget.IsPercentMaxHeartRate)
                                 {
                                     intMin = Constants.MinHRInPercentMax;
                                     intMax = Constants.MaxHRInPercentMax;
@@ -759,7 +758,7 @@ namespace GarminFitnessPlugin.View
                             }
                             else
                             {
-                                concreteTarget.SetValues(newValue, newValue, concreteTarget.IsPercentageMaxHeartRate);
+                                concreteTarget.SetValues(newValue, newValue, concreteTarget.IsPercentMaxHeartRate);
                                 forceSelectHighTargetText = true;
                             }
                             break;
@@ -879,7 +878,7 @@ namespace GarminFitnessPlugin.View
                                 oldValue = concreteTarget.MaxHeartRate.ToString();
                                 inputType = RangeValidationInputType.Integer;
 
-                                if (concreteTarget.IsPercentageMaxHeartRate)
+                                if (concreteTarget.IsPercentMaxHeartRate)
                                 {
                                     intMin = Constants.MinHRInPercentMax;
                                     intMax = Constants.MaxHRInPercentMax;
@@ -1051,7 +1050,7 @@ namespace GarminFitnessPlugin.View
                             }
                             else
                             {
-                                concreteTarget.SetValues(newValue, newValue, concreteTarget.IsPercentageMaxHeartRate);
+                                concreteTarget.SetValues(newValue, newValue, concreteTarget.IsPercentMaxHeartRate);
                                 forceSelectLowTargetText = true;
                             }
                             break;
@@ -1687,7 +1686,11 @@ namespace GarminFitnessPlugin.View
         public void UICultureChanged(System.Globalization.CultureInfo culture)
         {
             UpdateUIStrings();
-            BuildWorkoutsList();
+
+            if (PluginMain.GetApplication().Logbook != null)
+            {
+                BuildWorkoutsList();
+            }
         }
 
         public void RefreshUIFromLogbook()
@@ -1697,6 +1700,10 @@ namespace GarminFitnessPlugin.View
             SelectedSteps = null;
 
             RefreshCalendarView();
+            if (PluginMain.GetApplication().Logbook != null)
+            {
+                BuildWorkoutsList();
+            }
 
             if (WorkoutsList.RowData != null)
             {
@@ -2166,7 +2173,7 @@ namespace GarminFitnessPlugin.View
                                     ZoneComboBox.SelectedIndex = 0;
                                     LowRangeTargetText.Text = concreteTarget.MinHeartRate.ToString();
                                     HighRangeTargetText.Text = concreteTarget.MaxHeartRate.ToString();
-                                    HRRangeReferenceComboBox.SelectedIndex = concreteTarget.IsPercentageMaxHeartRate ? 1 : 0;
+                                    HRRangeReferenceComboBox.SelectedIndex = concreteTarget.IsPercentMaxHeartRate ? 1 : 0;
                                     break;
                                 }
                         }
@@ -2290,9 +2297,12 @@ namespace GarminFitnessPlugin.View
             if (type == BaseSpeedTarget.IConcreteSpeedTarget.SpeedTargetType.ZoneGTC ||
                (type == BaseSpeedTarget.IConcreteSpeedTarget.SpeedTargetType.Range && !Options.Instance.UseSportTracksHeartRateZones))
             {
-                for (byte i = 1; i <= Constants.GarminPowerZoneCount; ++i)
+                GarminCategories garminCategory = Options.Instance.GetGarminCategory(target.ParentStep.ParentWorkout.Category);
+                GarminActivityProfile currentProfile = GarminProfileManager.Instance.GetProfileForActivity(garminCategory);
+
+                for (byte i = 0; i < Constants.GarminSpeedZoneCount; ++i)
                 {
-                    ZoneComboBox.Items.Add(GarminFitnessView.GetLocalizedString("GTCSpeedZone" + i.ToString() + "Text"));
+                    ZoneComboBox.Items.Add(currentProfile.GetSpeedZoneName(i));
                 }
             }
             // Use ST zones
@@ -2330,7 +2340,12 @@ namespace GarminFitnessPlugin.View
 
             for (int i = 0; i < SelectedWorkouts.Count; ++i)
             {
-                selection.Add(GetWorkoutWrapper(SelectedWorkouts[i], null));
+                WorkoutWrapper wrapper = GetWorkoutWrapper(SelectedWorkouts[i], null);
+
+                if(wrapper != null)
+                {
+                    selection.Add(wrapper);
+                }
             }
 
             for (int i = 0; i < SelectedCategories.Count; ++i)
@@ -2444,6 +2459,8 @@ namespace GarminFitnessPlugin.View
             }
             else
             {
+                GarminFitnessDate selectedDate = new GarminFitnessDate(WorkoutCalendar.SelectedDate);
+
                 StepSplit.Enabled = true;
                 AddStepButton.Enabled = SelectedWorkout.GetStepCount() < Constants.MaxStepsPerWorkout;
                 AddRepeatButton.Enabled = SelectedWorkout.GetStepCount() < Constants.MaxStepsPerWorkout - 1;
@@ -2453,8 +2470,8 @@ namespace GarminFitnessPlugin.View
                 RemoveWorkoutButton.Enabled = true;
                 ScheduleWorkoutButton.Enabled = true;
 
-                ScheduleWorkoutButton.Enabled = WorkoutCalendar.SelectedDate >= DateTime.Today && !SelectedWorkout.ScheduledDates.Contains(WorkoutCalendar.SelectedDate);
-                RemoveScheduledDateButton.Enabled = SelectedWorkout.ScheduledDates.Contains(WorkoutCalendar.SelectedDate);
+                ScheduleWorkoutButton.Enabled = WorkoutCalendar.SelectedDate >= DateTime.Today && !SelectedWorkout.ScheduledDates.Contains(selectedDate);
+                RemoveScheduledDateButton.Enabled = SelectedWorkout.ScheduledDates.Contains(selectedDate);
             }
         }
 
@@ -2502,19 +2519,22 @@ namespace GarminFitnessPlugin.View
 
         private WorkoutWrapper GetWorkoutWrapper(Workout workout, ActivityCategoryWrapper parent)
         {
-            WorkoutWrapper wrapper;
+            WorkoutWrapper wrapper = null;
 
-            // If we already have a wrapper for this workout, use it
-            if (m_WorkoutWrapperMap.ContainsKey(workout))
+            if(GarminWorkoutManager.Instance.Workouts.Contains(workout))
             {
-                wrapper = m_WorkoutWrapperMap[workout];
-            }
-            else
-            {
-                // Create a new wrapper
-                wrapper = new WorkoutWrapper(parent, workout);
+                // If we already have a wrapper for this workout, use it
+                if (m_WorkoutWrapperMap.ContainsKey(workout))
+                {
+                    wrapper = m_WorkoutWrapperMap[workout];
+                }
+                else
+                {
+                    // Create a new wrapper
+                    wrapper = new WorkoutWrapper(parent, workout);
 
-                m_WorkoutWrapperMap[workout] = wrapper;
+                    m_WorkoutWrapperMap[workout] = wrapper;
+                }
             }
 
             return wrapper;

@@ -12,126 +12,6 @@ namespace GarminFitnessPlugin.Controller
 {
     class Options : IPluginSerializable, IXMLSerializable
     {
-
-        #region IXMLSerializable Members
-
-        public void Serialize(System.Xml.XmlNode parentNode, System.Xml.XmlDocument document)
-        {
-            XmlNode child;
-
-            // Default export directory
-            child = document.CreateElement("DefaultExportDirectory");
-            child.AppendChild(document.CreateTextNode(DefaultExportDirectory));
-            parentNode.AppendChild(child);
-
-            // SplitPanel sizes
-            child = document.CreateElement("CategoriesSplitDistance");
-            child.AppendChild(document.CreateTextNode(CategoriesPanelSplitSize.ToString()));
-            parentNode.AppendChild(child);
-
-            child = document.CreateElement("WorkoutSplitDistance");
-            child.AppendChild(document.CreateTextNode(WorkoutPanelSplitSize.ToString()));
-            parentNode.AppendChild(child);
-
-            child = document.CreateElement("StepSplitDistance");
-            child.AppendChild(document.CreateTextNode(StepPanelSplitSize.ToString()));
-            parentNode.AppendChild(child);
-
-            child = document.CreateElement("CalendarSplitDistance");
-            child.AppendChild(document.CreateTextNode(CalendarPanelSplitSize.ToString()));
-            parentNode.AppendChild(child);
-
-            child = document.CreateElement("StepNotesSplitDistance");
-            child.AppendChild(document.CreateTextNode(StepNotesSplitSize.ToString()));
-            parentNode.AppendChild(child);
-        }
-
-        public bool Deserialize(System.Xml.XmlNode parentNode)
-        {
-            IsDeserializing = true;
-
-            // Set default cadence zone
-            if (Options.Instance.CadenceZoneCategory == null)
-            {
-                Options.Instance.CadenceZoneCategory = PluginMain.GetApplication().Logbook.CadenceZones[0];
-            }
-
-            // Set default power zone
-            if (Options.Instance.PowerZoneCategory == null)
-            {
-                Options.Instance.PowerZoneCategory = PluginMain.GetApplication().Logbook.PowerZones[0];
-            }
-
-            for (int i = 0; i < parentNode.ChildNodes.Count; ++i)
-            {
-                XmlNode child = parentNode.ChildNodes[i];
-
-                ///////////////////////////////////////////////////////////
-                // These are here for backwards compatibility
-                ///////////////////////////////////////////////////////////
-                // HR
-                if (child.Name == "UseSTHeartRateZones")
-                {
-                    Options.Instance.UseSportTracksHeartRateZones = bool.Parse(child.FirstChild.Value);
-                }
-                // Speed
-                else if (child.Name == "UseSTSpeedZones")
-                {
-                    Options.Instance.UseSportTracksSpeedZones = bool.Parse(child.FirstChild.Value);
-                }
-                // Cadence
-                else if (child.Name == "CadenceZoneRefId")
-                {
-                    Options.Instance.CadenceZoneCategory = Utils.FindZoneCategoryByID(PluginMain.GetApplication().Logbook.CadenceZones, child.FirstChild.Value);
-                }
-                // Power
-                else if (child.Name == "UseSTPowerZones")
-                {
-                    Options.Instance.UseSportTracksPowerZones = bool.Parse(child.FirstChild.Value);
-                }
-                else if (child.Name == "PowerZoneRefId")
-                {
-                    Options.Instance.PowerZoneCategory = Utils.FindZoneCategoryByID(PluginMain.GetApplication().Logbook.PowerZones, child.FirstChild.Value);
-                }
-                ///////////////////////////////////////////////////////////
-                // End backwards compatibility
-                ///////////////////////////////////////////////////////////
-
-                // Default export directory
-                else if (child.Name == "DefaultExportDirectory")
-                {
-                    Options.Instance.DefaultExportDirectory = child.FirstChild.Value;
-                }
-                // Split distances
-                else if (child.Name == "CategoriesSplitDistance")
-                {
-                    Options.Instance.CategoriesPanelSplitSize = int.Parse(child.FirstChild.Value);
-                }
-                else if (child.Name == "WorkoutSplitDistance")
-                {
-                    Options.Instance.WorkoutPanelSplitSize = int.Parse(child.FirstChild.Value);
-                }
-                else if (child.Name == "StepSplitDistance")
-                {
-                    Options.Instance.StepPanelSplitSize = int.Parse(child.FirstChild.Value);
-                }
-                else if (child.Name == "CalendarSplitDistance")
-                {
-                    Options.Instance.CalendarPanelSplitSize = int.Parse(child.FirstChild.Value);
-                }
-                else if (child.Name == "StepNotesSplitDistance")
-                {
-                    Options.Instance.StepNotesSplitSize = int.Parse(child.FirstChild.Value);
-                }
-            }
-
-            IsDeserializing = false;
-
-            return true;
-        }
-
-        #endregion
-
         public override void Serialize(Stream stream)
         {
             // Write the different options that are logbook related
@@ -336,6 +216,118 @@ namespace GarminFitnessPlugin.Controller
 
                 STToGarminCategoryMap[Utils.FindCategoryByIDSafe(Encoding.UTF8.GetString(stringBuffer))] = (GarminCategories)garminCategory;
             }
+        }
+        public void Serialize(System.Xml.XmlNode parentNode, String nodeName, System.Xml.XmlDocument document)
+        {
+            XmlNode child;
+
+            // Default export directory
+            child = document.CreateElement("DefaultExportDirectory");
+            child.AppendChild(document.CreateTextNode(DefaultExportDirectory));
+            parentNode.AppendChild(child);
+
+            // SplitPanel sizes
+            child = document.CreateElement("CategoriesSplitDistance");
+            child.AppendChild(document.CreateTextNode(CategoriesPanelSplitSize.ToString()));
+            parentNode.AppendChild(child);
+
+            child = document.CreateElement("WorkoutSplitDistance");
+            child.AppendChild(document.CreateTextNode(WorkoutPanelSplitSize.ToString()));
+            parentNode.AppendChild(child);
+
+            child = document.CreateElement("StepSplitDistance");
+            child.AppendChild(document.CreateTextNode(StepPanelSplitSize.ToString()));
+            parentNode.AppendChild(child);
+
+            child = document.CreateElement("CalendarSplitDistance");
+            child.AppendChild(document.CreateTextNode(CalendarPanelSplitSize.ToString()));
+            parentNode.AppendChild(child);
+
+            child = document.CreateElement("StepNotesSplitDistance");
+            child.AppendChild(document.CreateTextNode(StepNotesSplitSize.ToString()));
+            parentNode.AppendChild(child);
+        }
+
+        public void Deserialize(System.Xml.XmlNode parentNode)
+        {
+            IsDeserializing = true;
+
+            // Set default cadence zone
+            if (Options.Instance.CadenceZoneCategory == null)
+            {
+                Options.Instance.CadenceZoneCategory = PluginMain.GetApplication().Logbook.CadenceZones[0];
+            }
+
+            // Set default power zone
+            if (Options.Instance.PowerZoneCategory == null)
+            {
+                Options.Instance.PowerZoneCategory = PluginMain.GetApplication().Logbook.PowerZones[0];
+            }
+
+            for (int i = 0; i < parentNode.ChildNodes.Count; ++i)
+            {
+                XmlNode child = parentNode.ChildNodes[i];
+
+                ///////////////////////////////////////////////////////////
+                // These are here for backwards compatibility
+                ///////////////////////////////////////////////////////////
+                // HR
+                if (child.Name == "UseSTHeartRateZones")
+                {
+                    Options.Instance.UseSportTracksHeartRateZones = bool.Parse(child.FirstChild.Value);
+                }
+                // Speed
+                else if (child.Name == "UseSTSpeedZones")
+                {
+                    Options.Instance.UseSportTracksSpeedZones = bool.Parse(child.FirstChild.Value);
+                }
+                // Cadence
+                else if (child.Name == "CadenceZoneRefId")
+                {
+                    Options.Instance.CadenceZoneCategory = Utils.FindZoneCategoryByID(PluginMain.GetApplication().Logbook.CadenceZones, child.FirstChild.Value);
+                }
+                // Power
+                else if (child.Name == "UseSTPowerZones")
+                {
+                    Options.Instance.UseSportTracksPowerZones = bool.Parse(child.FirstChild.Value);
+                }
+                else if (child.Name == "PowerZoneRefId")
+                {
+                    Options.Instance.PowerZoneCategory = Utils.FindZoneCategoryByID(PluginMain.GetApplication().Logbook.PowerZones, child.FirstChild.Value);
+                }
+                ///////////////////////////////////////////////////////////
+                // End backwards compatibility
+                ///////////////////////////////////////////////////////////
+
+                // Default export directory
+                else if (child.Name == "DefaultExportDirectory")
+                {
+                    Options.Instance.DefaultExportDirectory = child.FirstChild.Value;
+                }
+                // Split distances
+                else if (child.Name == "CategoriesSplitDistance")
+                {
+                    Options.Instance.CategoriesPanelSplitSize = int.Parse(child.FirstChild.Value);
+                }
+                else if (child.Name == "WorkoutSplitDistance")
+                {
+                    Options.Instance.WorkoutPanelSplitSize = int.Parse(child.FirstChild.Value);
+                }
+                else if (child.Name == "StepSplitDistance")
+                {
+                    Options.Instance.StepPanelSplitSize = int.Parse(child.FirstChild.Value);
+                }
+                else if (child.Name == "CalendarSplitDistance")
+                {
+                    Options.Instance.CalendarPanelSplitSize = int.Parse(child.FirstChild.Value);
+                }
+                else if (child.Name == "StepNotesSplitDistance")
+                {
+                    Options.Instance.StepNotesSplitSize = int.Parse(child.FirstChild.Value);
+                }
+            }
+
+            IsDeserializing = false;
         }
 
         public void OnActivityCategoryChanged(object sender, IActivityCategory categoryChanged)

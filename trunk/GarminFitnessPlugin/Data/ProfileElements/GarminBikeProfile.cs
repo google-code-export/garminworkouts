@@ -13,144 +13,85 @@ namespace GarminFitnessPlugin.Data
     {
         public GarminBikeProfile()
         {
-            SetData(true, false, "Bike", 0, 0, true, 2100);
         }
 
         public GarminBikeProfile(string name)
         {
-            SetData(true, false, name, 0, 0, true, 2100);
+            Name = name;
         }
 
         public override void Serialize(Stream stream)
         {
-            // Has cadence sensor
-            stream.Write(BitConverter.GetBytes(m_HasCadenceSensor), 0, sizeof(bool));
+            m_HasCadenceSensor.Serialize(stream);
 
-            // Has power sensor
-            stream.Write(BitConverter.GetBytes(m_HasPowerSensor), 0, sizeof(bool));
+            m_HasPowerSensor.Serialize(stream);
 
-            // Auto wheel size
-            stream.Write(BitConverter.GetBytes(m_AutoWheelSize), 0, sizeof(bool));
+            m_AutoWheelSize.Serialize(stream);
 
-            // Name
-            stream.Write(BitConverter.GetBytes(Encoding.UTF8.GetByteCount(Name)), 0, sizeof(Int32));
-            stream.Write(Encoding.UTF8.GetBytes(Name), 0, Encoding.UTF8.GetByteCount(Name));
+            m_Name.Serialize(stream);
 
-            // Odometer
-            stream.Write(BitConverter.GetBytes(m_OdometerInMeters), 0, sizeof(double));
+            m_OdometerInMeters.Serialize(stream);
 
-            // Bike weight
-            stream.Write(BitConverter.GetBytes(m_WeightInPounds), 0, sizeof(double));
+            m_WeightInPounds.Serialize(stream);
 
-            // Wheel size
-            stream.Write(BitConverter.GetBytes(m_WheelSize), 0, sizeof(UInt16));
+            m_WheelSize.Serialize(stream);
         }
 
         public void Deserialize_V8(Stream stream, DataVersion version)
         {
             byte[] uintBuffer = new byte[sizeof(UInt16)];
             byte[] intBuffer = new byte[sizeof(Int32)];
-            byte[] boolBuffer = new byte[sizeof(bool)];
             byte[] doubleBuffer = new byte[sizeof(double)];
-            byte[] stringBuffer;
-            Int32 stringLength;
 
-            // Has cadence sensor
-            stream.Read(boolBuffer, 0, sizeof(bool));
-            HasCadenceSensor = BitConverter.ToBoolean(boolBuffer, 0);
+            m_HasCadenceSensor.Deserialize(stream, version);
 
-            // Has power sensor
-            stream.Read(boolBuffer, 0, sizeof(bool));
-            HasPowerSensor = BitConverter.ToBoolean(boolBuffer, 0);
+            m_HasPowerSensor.Deserialize(stream, version);
 
-            // Auto wheel size
-            stream.Read(boolBuffer, 0, sizeof(bool));
-            AutoWheelSize = BitConverter.ToBoolean(boolBuffer, 0);
+            m_AutoWheelSize.Deserialize(stream, version);
 
-            // Name
-            stream.Read(intBuffer, 0, sizeof(Int32));
-            stringLength = BitConverter.ToInt32(intBuffer, 0);
-            stringBuffer = new byte[stringLength];
-            stream.Read(stringBuffer, 0, stringLength);
-            Name = Encoding.UTF8.GetString(stringBuffer);
+            m_Name.Deserialize(stream, version);
 
-            // Odometer
-            stream.Read(doubleBuffer, 0, sizeof(double));
-            OdometerInMeters = BitConverter.ToDouble(doubleBuffer, 0);
+            m_OdometerInMeters.Deserialize(stream, version);
 
-            // Bike weight
-            stream.Read(doubleBuffer, 0, sizeof(double));
-            WeightInPounds = BitConverter.ToDouble(doubleBuffer, 0);
+            m_WeightInPounds.Deserialize(stream, version);
 
-            // Wheel size
-            stream.Read(uintBuffer, 0, sizeof(UInt16));
-            WheelSize = BitConverter.ToUInt16(uintBuffer, 0);
+            m_WheelSize.Deserialize(stream, version);
         }
 
-        public void Serialize(XmlNode parentNode, XmlDocument document)
+        public void Serialize(XmlNode parentNode, String nodeName, XmlDocument document)
         {
-            XmlAttribute attributeNode;
-            XmlNode bikeNode, currentChild;
-            CultureInfo culture = new CultureInfo("en-us");
+            XmlNode bikeNode, wheelInfoChild;
 
-            bikeNode = document.CreateElement(Constants.BikeTCXString);
-
-            // Has cadence sensor
-            attributeNode = document.CreateAttribute(Constants.HasCadenceTCXString);
-            attributeNode.Value = HasCadenceSensor.ToString().ToLower();
-            bikeNode.Attributes.Append(attributeNode);
-
-            // Has power sensor
-            attributeNode = document.CreateAttribute(Constants.HasPowerTCXString);
-            attributeNode.Value = HasPowerSensor.ToString().ToLower();
-            bikeNode.Attributes.Append(attributeNode);
-
-            // Name
-            currentChild = document.CreateElement("Name");
-            currentChild.AppendChild(document.CreateTextNode(Name));
-            bikeNode.AppendChild(currentChild);
-
-            // Odometer
-            currentChild = document.CreateElement(Constants.OdometerTCXString);
-            currentChild.AppendChild(document.CreateTextNode(OdometerInMeters.ToString("0.00000", culture.NumberFormat)));
-            bikeNode.AppendChild(currentChild);
-
-            // Weight
-            currentChild = document.CreateElement(Constants.WeightTCXString);
-            currentChild.AppendChild(document.CreateTextNode(Weight.Convert(WeightInPounds, Weight.Units.Pound, Weight.Units.Kilogram).ToString("0.00000", culture.NumberFormat)));
-            bikeNode.AppendChild(currentChild);
-
-            // Auto wheel size
-            currentChild = document.CreateElement(Constants.WheelSizeTCXString);
-            attributeNode = document.CreateAttribute(Constants.AutoWheelSizeTCXString);
-            attributeNode.Value = AutoWheelSize.ToString().ToLower();
-            currentChild.Attributes.Append(attributeNode);
-
-            // Wheel size
-            XmlNode wheelSizeNode = document.CreateElement(Constants.SizeMillimetersTCXString);
-            wheelSizeNode.AppendChild(document.CreateTextNode(WheelSize.ToString()));
-            currentChild.AppendChild(wheelSizeNode);
-            bikeNode.AppendChild(currentChild);
-
+            bikeNode = document.CreateElement(nodeName);
             parentNode.AppendChild(bikeNode);
+
+            m_HasCadenceSensor.SerializeAttribute(bikeNode, Constants.HasCadenceTCXString, document);
+
+            m_HasPowerSensor.SerializeAttribute(bikeNode, Constants.HasPowerTCXString, document);
+
+            m_Name.Serialize(bikeNode, "Name", document);
+
+            m_OdometerInMeters.Serialize(bikeNode, Constants.OdometerTCXString, document);
+
+            m_WeightInPounds.Serialize(bikeNode, Constants.WeightTCXString, document);
+
+            // Wheel info node
+            wheelInfoChild = document.CreateElement(Constants.WheelSizeTCXString);
+            bikeNode.AppendChild(wheelInfoChild);
+
+            m_AutoWheelSize.SerializeAttribute(wheelInfoChild, Constants.AutoWheelSizeTCXString, document);
+
+            m_WheelSize.Serialize(wheelInfoChild, Constants.SizeMillimetersTCXString, document);
         }
 
-        public bool Deserialize(XmlNode parentNode)
+        public void Deserialize(XmlNode parentNode)
         {
             bool cadenceSensorRead = false;
             bool powerSensorRead = false;
             bool nameRead = false;
             bool odometerRead = false;
             bool weightRead = false;
-            bool autoWheelSizeRead = false;
             bool wheelSizeRead = false;
-            bool hasCadenceSensor = false;
-            bool hasPowerSensor = false;
-            string name = "";
-            double odometer = 0;
-            double weight = 0;
-            bool autoWheelSize = true;
-            UInt16 wheelSize = 2100;
 
             for (int i = 0; i < parentNode.Attributes.Count; ++i)
             {
@@ -158,12 +99,12 @@ namespace GarminFitnessPlugin.Data
 
                 if (currentAtttribute.Name == Constants.HasCadenceTCXString)
                 {
-                    hasCadenceSensor = currentAtttribute.Value == bool.TrueString.ToLower();
+                    HasCadenceSensor = m_HasCadenceSensor.GetTextValue(currentAtttribute.Value);
                     cadenceSensorRead = true;
                 }
                 else if (currentAtttribute.Name == Constants.HasPowerTCXString)
                 {
-                    hasPowerSensor = currentAtttribute.Value == bool.TrueString.ToLower();
+                    HasPowerSensor = m_HasPowerSensor.GetTextValue(currentAtttribute.Value);
                     powerSensorRead = true;
                 }
             }
@@ -174,70 +115,43 @@ namespace GarminFitnessPlugin.Data
 
                 if (currentChild.Name == "Name")
                 {
-                    if (currentChild.ChildNodes.Count == 1 &&
-                    currentChild.FirstChild.GetType() == typeof(XmlText))
-                    {
-                        name = currentChild.FirstChild.Value;
-                    }
+                    m_Name.Deserialize(currentChild);
                     nameRead = true;
                 }
-                else if (currentChild.Name == Constants.OdometerTCXString &&
-                         currentChild.ChildNodes.Count == 1 &&
-                         currentChild.FirstChild.GetType() == typeof(XmlText))
+                else if (currentChild.Name == Constants.OdometerTCXString)
                 {
-                    CultureInfo culture = new CultureInfo("en-us");
-
-                    odometerRead = double.TryParse(currentChild.FirstChild.Value, NumberStyles.Float, culture.NumberFormat, out odometer);
+                    m_OdometerInMeters.Deserialize(currentChild);
+                    odometerRead = true;
                 }
-                else if (currentChild.Name == Constants.WeightTCXString &&
-                         currentChild.ChildNodes.Count == 1 &&
-                         currentChild.FirstChild.GetType() == typeof(XmlText))
+                else if (currentChild.Name == Constants.WeightTCXString)
                 {
-                    CultureInfo culture = new CultureInfo("en-us");
-
-                    if (!Utils.IsTextFloatInRange(currentChild.FirstChild.Value, Constants.MinWeight, Constants.MaxWeight, culture))
-                    {
-                        return false;
-                    }
-
-                    weightRead = double.TryParse(currentChild.FirstChild.Value, out weight);
-                    weight = Weight.Convert(weight, Weight.Units.Kilogram, Weight.Units.Pound);
+                    m_WeightInPounds.Deserialize(currentChild);
+                    WeightInPounds = Weight.Convert(WeightInPounds, Weight.Units.Kilogram, Weight.Units.Pound);
+                    weightRead = true;
                 }
                 else if (currentChild.Name == Constants.WheelSizeTCXString &&
                          currentChild.ChildNodes.Count == 1)
                 {
-                    if (currentChild.Attributes.Count == 1 &&
-                        currentChild.Attributes[0].Name == Constants.AutoWheelSizeTCXString &&
-                        currentChild.ChildNodes.Count == 1 &&
-                        currentChild.FirstChild.Name == Constants.SizeMillimetersTCXString &&
-                        currentChild.FirstChild.ChildNodes.Count == 1 &&
-                        currentChild.FirstChild.FirstChild.GetType() == typeof(XmlText))
+                    if (currentChild.Attributes.Count != 1 ||
+                        currentChild.Attributes[0].Name != Constants.AutoWheelSizeTCXString ||
+                        currentChild.ChildNodes.Count != 1 ||
+                        currentChild.FirstChild.Name != Constants.SizeMillimetersTCXString)
                     {
-                        if (!Utils.IsTextInteger(currentChild.FirstChild.FirstChild.Value))
-                        {
-                            return false;
-                        }
-
-                        autoWheelSize = currentChild.Attributes[0].Value == bool.TrueString.ToLower();
-                        autoWheelSizeRead = true;
-
-                        wheelSizeRead = UInt16.TryParse(currentChild.FirstChild.FirstChild.Value, out wheelSize);
+                        throw new GarminFitnesXmlDeserializationException("Invalid bike wheel size XML node", parentNode);
                     }
+
+                    AutoWheelSize = m_AutoWheelSize.GetTextValue(currentChild.Attributes[0].Value);
+                    m_WheelSize.Deserialize(currentChild.FirstChild);
+                    wheelSizeRead = true;
                 }
             }
 
             // Check if all was read successfully
-            if (!cadenceSensorRead || !powerSensorRead || !nameRead || !odometerRead ||
-                !weightRead || !autoWheelSizeRead || !wheelSizeRead)
+            if (!cadenceSensorRead || !powerSensorRead || !nameRead ||
+                !odometerRead || !weightRead || !wheelSizeRead)
             {
-                return false;
+                throw new GarminFitnesXmlDeserializationException("Missing information in bike profile XML node", parentNode);
             }
-
-            // Officialize
-            SetData(hasCadenceSensor, hasPowerSensor, name,
-                    odometer, weight, autoWheelSize, wheelSize);
-            
-            return true;
         }
 
         private void TriggerBikeProfileChangedEvent(string propertyName)
@@ -268,7 +182,7 @@ namespace GarminFitnessPlugin.Data
             {
                 if (m_HasCadenceSensor != value)
                 {
-                    m_HasCadenceSensor = value;
+                    m_HasCadenceSensor.Value = value;
 
                     TriggerBikeProfileChangedEvent("HasCadenceSensor");
                 }
@@ -282,7 +196,7 @@ namespace GarminFitnessPlugin.Data
             {
                 if (m_HasPowerSensor != value)
                 {
-                    m_HasPowerSensor = value;
+                    m_HasPowerSensor.Value = value;
 
                     TriggerBikeProfileChangedEvent("HasPowerSensor");
                 }
@@ -296,7 +210,7 @@ namespace GarminFitnessPlugin.Data
             {
                 if (m_AutoWheelSize != value)
                 {
-                    m_AutoWheelSize = value;
+                    m_AutoWheelSize.Value = value;
 
                     TriggerBikeProfileChangedEvent("AutoWheelSize");
                 }
@@ -310,7 +224,7 @@ namespace GarminFitnessPlugin.Data
             {
                 if (m_Name != value)
                 {
-                    m_Name = value;
+                    m_Name.Value = value;
 
                     TriggerBikeProfileChangedEvent("Name");
                 }
@@ -324,7 +238,7 @@ namespace GarminFitnessPlugin.Data
             {
                 if (m_OdometerInMeters != value)
                 {
-                    m_OdometerInMeters = value;
+                    m_OdometerInMeters.Value = value;
 
                     TriggerBikeProfileChangedEvent("OdometerInMeters");
                 }
@@ -338,7 +252,7 @@ namespace GarminFitnessPlugin.Data
             {
                 if (m_WeightInPounds != value)
                 {
-                    m_WeightInPounds = value;
+                    m_WeightInPounds.Value = value;
 
                     TriggerBikeProfileChangedEvent("WeightInPounds");
                 }
@@ -352,7 +266,7 @@ namespace GarminFitnessPlugin.Data
             {
                 if (m_WheelSize != value)
                 {
-                    m_WheelSize = value;
+                    m_WheelSize.Value = value;
 
                     TriggerBikeProfileChangedEvent("WheelSize");
                 }
@@ -362,12 +276,12 @@ namespace GarminFitnessPlugin.Data
         public delegate void BikeProfileChangedEventHandler(GarminBikeProfile sender, PropertyChangedEventArgs changedProperty);
         public event BikeProfileChangedEventHandler BikeProfileChanged;
 
-        private bool m_HasCadenceSensor = false;
-        private bool m_HasPowerSensor = false;
-        private bool m_AutoWheelSize = true;
-        private string m_Name = "";
-        private double m_OdometerInMeters = 0;
-        private double m_WeightInPounds = 0;
-        private UInt16 m_WheelSize = 2100;
+        private GarminFitnessBool m_HasCadenceSensor = new GarminFitnessBool(false, true.ToString().ToLower(), false.ToString().ToLower());
+        private GarminFitnessBool m_HasPowerSensor = new GarminFitnessBool(false, true.ToString().ToLower(), false.ToString().ToLower());
+        private GarminFitnessBool m_AutoWheelSize = new GarminFitnessBool(true, true.ToString().ToLower(), false.ToString().ToLower());
+        private GarminFitnessString m_Name = new GarminFitnessString("Bike", 15);
+        private GarminFitnessDoubleRange m_OdometerInMeters = new GarminFitnessDoubleRange(0, Constants.MinOdometer, Constants.MaxOdometerMeters);
+        private GarminFitnessDoubleRange m_WeightInPounds = new GarminFitnessDoubleRange(0, Constants.MinWeight, Constants.MaxWeight);
+        private GarminFitnessUInt16Range m_WheelSize = new GarminFitnessUInt16Range(2100, Constants.MinWheelSize, Constants.MaxWheelSize);
     }
 }

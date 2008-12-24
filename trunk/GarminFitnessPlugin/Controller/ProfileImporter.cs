@@ -50,13 +50,18 @@ namespace GarminFitnessPlugin.Controller
 
                                 if (extensionsNode.ChildNodes.Count == 1 && extensionsNode.FirstChild.Name == Constants.ProfileTCXString)
                                 {
-                                    return GarminProfileManager.Instance.Deserialize(extensionsNode.FirstChild);
+                                    GarminProfileManager.Instance.Deserialize(extensionsNode.FirstChild);
                                 }
                             }
                         }
                     }
                 }
 
+                return true;
+            }
+            catch (GarminFitnesXmlDeserializationException e)
+            {
+                System.Windows.Forms.MessageBox.Show(e.Message + "\n\n" + e.ErroneousNode.OuterXml);
                 return false;
             }
             catch (Exception e)

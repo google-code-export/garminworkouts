@@ -16,7 +16,7 @@ namespace GarminFitnessPlugin.Data
     {
         public Workout(string name, IActivityCategory category)
         {
-            Name = name;
+            m_Name.Value = name;
 
             AddNewStep(new RegularStep(this));
             Category = category;
@@ -29,20 +29,9 @@ namespace GarminFitnessPlugin.Data
 
         public override void Serialize(Stream stream)
         {
-            // Name
-            stream.Write(BitConverter.GetBytes(Encoding.UTF8.GetByteCount(Name)), 0, sizeof(Int32));
-            stream.Write(Encoding.UTF8.GetBytes(Name), 0, Encoding.UTF8.GetByteCount(Name));
+            m_Name.Serialize(stream);
 
-            // Notes
-            if (Notes != null && Notes != String.Empty)
-            {
-                stream.Write(BitConverter.GetBytes(Encoding.UTF8.GetByteCount(Notes)), 0, sizeof(Int32));
-                stream.Write(Encoding.UTF8.GetBytes(Notes), 0, Encoding.UTF8.GetByteCount(Notes));
-            }
-            else
-            {
-                stream.Write(BitConverter.GetBytes((Int32)0), 0, sizeof(Int32));
-            }
+            m_Notes.Serialize(stream);
 
             // Category ID
             stream.Write(BitConverter.GetBytes(Encoding.UTF8.GetByteCount(Category.ReferenceId)), 0, sizeof(Int32));
@@ -59,11 +48,11 @@ namespace GarminFitnessPlugin.Data
             stream.Write(BitConverter.GetBytes(ScheduledDates.Count), 0, sizeof(Int32));
             for (int i = 0; i < ScheduledDates.Count; ++i)
             {
-                stream.Write(BitConverter.GetBytes(ScheduledDates[i].Ticks), 0, sizeof(long));
+                ScheduledDates[i].Serialize(stream);
             }
 
             // Last export date
-            stream.Write(BitConverter.GetBytes(LastExportDate.Ticks), 0, sizeof(long));
+            m_LastExportDate.Serialize(stream);
         }
 
         public void Deserialize_V0(Stream stream, DataVersion version)
@@ -73,27 +62,9 @@ namespace GarminFitnessPlugin.Data
             Int32 stringLength;
             Int32 stepCount;
 
-            // Name
-            stream.Read(intBuffer, 0, sizeof(Int32));
-            stringLength = BitConverter.ToInt32(intBuffer, 0);
-            stringBuffer = new byte[stringLength];
-            stream.Read(stringBuffer, 0, stringLength);
-            Name = Encoding.UTF8.GetString(stringBuffer);
+            m_Name.Deserialize(stream, version);
 
-            // Notes
-            stream.Read(intBuffer, 0, sizeof(Int32));
-            stringLength = BitConverter.ToInt32(intBuffer, 0);
-
-            if (stringLength > 0)
-            {
-                stringBuffer = new byte[stringLength];
-                stream.Read(stringBuffer, 0, stringLength);
-                Notes = Encoding.UTF8.GetString(stringBuffer);
-            }
-            else
-            {
-                Notes = String.Empty;
-            }
+            m_Notes.Deserialize(stream, version);
 
             // Category
             stream.Read(intBuffer, 0, sizeof(Int32));
@@ -138,15 +109,10 @@ namespace GarminFitnessPlugin.Data
             ScheduledDates.Clear();
             for (int i = 0; i < scheduledDatesCount; ++i)
             {
-                long scheduledDateInTicks;
+                GarminFitnessDate newDate = new GarminFitnessDate();
 
-                stream.Read(dateBuffer, 0, sizeof(long));
-                scheduledDateInTicks = BitConverter.ToInt64(dateBuffer, 0);
-
-                if (scheduledDateInTicks >= DateTime.Today.Ticks)
-                {
-                    ScheduledDates.Add(new DateTime(scheduledDateInTicks));
-                }
+                newDate.Deserialize(stream, version);
+                ScheduleWorkout(newDate);
             }
         }
 
@@ -156,17 +122,15 @@ namespace GarminFitnessPlugin.Data
 
             Deserialize_V4(stream, version);
 
-            // Last export date
-            stream.Read(dateBuffer, 0, sizeof(long));
-            LastExportDate = new DateTime(BitConverter.ToInt64(dateBuffer, 0));
+            m_LastExportDate.Deserialize(stream, version);
         }
 
-        public void Serialize(XmlNode parentNode, XmlDocument document)
+        public void Serialize(XmlNode parentNode, String nodeName, XmlDocument document)
         {
-            Serialize(parentNode, document, false);
+            Serialize(parentNode, nodeName, document, false);
         }
 
-        public void Serialize(XmlNode parentNode, XmlDocument document, bool skipExtensions)
+        public void Serialize(XmlNode parentNode, String nodeName, XmlDocument document, bool skipExtensions)
         {
             XmlNode childNode;
             XmlAttribute attribute;
@@ -177,39 +141,34 @@ namespace GarminFitnessPlugin.Data
             parentNode.Attributes.Append(attribute);
 
             // Name
-            childNode = document.CreateElement("Name");
-            childNode.AppendChild(document.CreateTextNode(Name));
-            parentNode.AppendChild(childNode);
+            m_Name.Serialize(parentNode, "Name", document);
 
             // Export all steps
             for (int i = 0; i < Steps.Count; ++i)
             {
                 childNode = document.CreateElement("Step");
 
-                Steps[i].Serialize(childNode, document);
+                Steps[i].Serialize(childNode, "Step", document);
                 parentNode.AppendChild(childNode);
             }
 
             // Scheduled dates
             for (int i = 0; i < ScheduledDates.Count; ++i)
             {
-                childNode = document.CreateElement("ScheduledOn");
-                childNode.AppendChild(document.CreateTextNode(ScheduledDates[i].ToString("yyyy-MM-dd")));
-                parentNode.AppendChild(childNode);
+                ScheduledDates[i].Serialize(parentNode, "ScheduledOn", document);
             }
 
             // Notes
             if (Notes != String.Empty && Notes != null)
             {
-                childNode = document.CreateElement("Notes");
-                childNode.AppendChild(document.CreateTextNode(Notes));
-                parentNode.AppendChild(childNode);
+                m_Notes.Serialize(parentNode, "Notes", document);
             }
 
             // Extensions
             if (!skipExtensions)
             {
                 childNode = document.CreateElement(Constants.ExtensionsTCXString);
+
                 // Steps extensions
                 if (m_StepsExtensions.Count > 0)
                 {
@@ -256,13 +215,12 @@ namespace GarminFitnessPlugin.Data
             }
         }
 
-        public bool Deserialize(XmlNode parentNode)
+        public void Deserialize(XmlNode parentNode)
         {
-            string workoutName = "";
-            IActivityCategory category = PluginMain.GetApplication().Logbook.ActivityCategories[0];
             List<IStep> steps = new List<IStep>();
             XmlNode StepsExtensionsNode = null;
             XmlNode STExtensionsNode = null;
+            bool nameRead = false;
 
             ScheduledDates.Clear();
 
@@ -272,17 +230,12 @@ namespace GarminFitnessPlugin.Data
 
                 if (child.Name == "Name")
                 {
-                    if (child.ChildNodes.Count != 1 || child.FirstChild.GetType() != typeof(XmlText))
-                    {
-                        return false;
-                    }
-
-                    XmlText nameNode = (XmlText)child.FirstChild;
-                    workoutName = nameNode.Value;
+                    m_Name.Deserialize(child);
+                    nameRead = true;
                 }
                 else if (child.Name == "Step")
                 {
-                    if (child.Attributes.Count == 1 && child.Attributes[0].Name == "xsi:type")
+                    if (child.Attributes.Count == 1 && child.Attributes[0].Name == Constants.XsiTypeTCXString)
                     {
                         string stepTypeString = child.Attributes[0].Value;
                         IStep newStep = null;
@@ -295,36 +248,28 @@ namespace GarminFitnessPlugin.Data
                         {
                             newStep = new RepeatStep(this);
                         }
-
-                        if (newStep != null && newStep.Deserialize(child))
-                        {
-                            steps.Add(newStep);
-                        }
                         else
                         {
-                            return false;
+                            Debug.Assert(false);
+                        }
+
+                        if (newStep != null)
+                        {
+                            newStep.Deserialize(child);
+                            steps.Add(newStep);
                         }
                     }
                 }
                 else if (child.Name == "Notes")
                 {
-                    if (child.ChildNodes.Count != 1 || child.FirstChild.GetType() != typeof(XmlText))
-                    {
-                        return false;
-                    }
-
-                    Notes = ((XmlText)child.FirstChild).Value;
+                    m_Notes.Deserialize(child);
                 }
                 else if (child.Name == "ScheduledOn")
                 {
-                    CultureInfo info = new CultureInfo("En-us");
+                    GarminFitnessDate newDate = new GarminFitnessDate();
 
-                    if (child.ChildNodes.Count != 1 || child.FirstChild.GetType() != typeof(XmlText))
-                    {
-                        return false;
-                    }
-
-                    ScheduledDates.Add(DateTime.ParseExact(((XmlText)child.FirstChild).Value, "yyyy-MM-dd", info.DateTimeFormat));
+                    newDate.Deserialize(child);
+                    ScheduleWorkout(newDate);
                 }
                 else if (child.Name == Constants.ExtensionsTCXString)
                 {
@@ -339,7 +284,7 @@ namespace GarminFitnessPlugin.Data
                         {
                             XmlText categoryNode = (XmlText)child.FirstChild.FirstChild;
 
-                            category = Utils.FindCategoryByIDSafe(categoryNode.Value);
+                            Category = Utils.FindCategoryByIDSafe(categoryNode.Value);
                         }
                         else if (currentNode.Name == "SportTracksExtensions")
                         {
@@ -353,34 +298,31 @@ namespace GarminFitnessPlugin.Data
                 }
             }
 
-            if (workoutName == String.Empty || steps.Count < 1 || steps.Count > 20)
+            if (!nameRead || steps.Count < 1)
             {
-                return false;
+                throw new GarminFitnesXmlDeserializationException("Information missing in the XML node", parentNode);
             }
-            else
+            else if( steps.Count > 20)
             {
-                string finalName = GarminWorkoutManager.Instance.GetUniqueName(workoutName);
+                throw new GarminFitnesXmlDeserializationException("Too many steps in the XML node", parentNode);
+            }
 
-                Name = finalName;
-                Steps.Clear();
+            m_Name.Value = GarminWorkoutManager.Instance.GetUniqueName(Name);
+            Steps.Clear();
 
-                for (int i = 0; i < steps.Count; ++i)
-                {
-                    AddNewStep(steps[i]);
-                }
-                Category = category;
+            for (int i = 0; i < steps.Count; ++i)
+            {
+                AddNewStep(steps[i]);
+            }
 
-                if (StepsExtensionsNode != null)
-                {
-                    HandleStepExtension(StepsExtensionsNode);
-                }
+            if (StepsExtensionsNode != null)
+            {
+                HandleStepExtension(StepsExtensionsNode);
+            }
 
-                if (STExtensionsNode != null)
-                {
-                    HandleSTExtension(STExtensionsNode);
-                }
-
-                return true;
+            if (STExtensionsNode != null)
+            {
+                HandleSTExtension(STExtensionsNode);
             }
         }
 
@@ -443,7 +385,7 @@ namespace GarminFitnessPlugin.Data
                             }
                         }
                         else if (childNode.Name == "Target" && childNode.Attributes.Count == 1 &&
-                            childNode.Attributes[0].Name == "xsi:type" &&
+                            childNode.Attributes[0].Name == Constants.XsiTypeTCXString &&
                             childNode.Attributes[0].Value == Constants.TargetTypeTCXString[(int)ITarget.TargetType.Power])
                         {
                             Debug.Assert(step != null && step.Type == IStep.StepType.Regular);
@@ -1007,10 +949,10 @@ namespace GarminFitnessPlugin.Data
                 UnregisterStep(stepsToRemove[i]);
             }
 
-                CleanUpAfterDelete();
+            CleanUpAfterDelete();
 
-                TriggerWorkoutChangedEvent(new PropertyChangedEventArgs("Steps"));
-            }
+            TriggerWorkoutChangedEvent(new PropertyChangedEventArgs("Steps"));
+        }
 
         private void CleanUpAfterDelete()
         {
@@ -1120,9 +1062,11 @@ namespace GarminFitnessPlugin.Data
 
         public void ScheduleWorkout(DateTime date)
         {
-            if(!m_ScheduledDates.Contains(date))
+            GarminFitnessDate temp = new GarminFitnessDate(date);
+
+            if (!m_ScheduledDates.Contains(temp) && date.Ticks >= DateTime.Today.Ticks)
             {
-                m_ScheduledDates.Add(date);
+                m_ScheduledDates.Add(temp);
 
                 TriggerWorkoutChangedEvent(new PropertyChangedEventArgs("Schedule"));
             }
@@ -1130,9 +1074,11 @@ namespace GarminFitnessPlugin.Data
 
         public void RemoveScheduledDate(DateTime date)
         {
-            if (m_ScheduledDates.Contains(date))
+            GarminFitnessDate temp = new GarminFitnessDate(date);
+
+            if (m_ScheduledDates.Contains(temp))
             {
-                m_ScheduledDates.Remove(date);
+                m_ScheduledDates.Remove(temp);
 
                 TriggerWorkoutChangedEvent(new PropertyChangedEventArgs("Schedule"));
             }
@@ -1183,14 +1129,14 @@ namespace GarminFitnessPlugin.Data
             {
                 if (m_LastExportDate != value)
                 {
-                    m_LastExportDate = value;
+                    m_LastExportDate.Value = value;
 
                     TriggerWorkoutChangedEvent(new PropertyChangedEventArgs("ExportDate"));
                 }
             }
         }
 
-        public List<DateTime> ScheduledDates
+        public List<GarminFitnessDate> ScheduledDates
         {
             get { return m_ScheduledDates; }
         }
@@ -1223,7 +1169,7 @@ namespace GarminFitnessPlugin.Data
                 if (m_Name != value)
                 {
                     Debug.Assert(value.Length > 0 && value.Length <= 15);
-                    m_Name = value;
+                    m_Name.Value = value;
 
                     TriggerWorkoutChangedEvent(new PropertyChangedEventArgs("Name"));
                 }
@@ -1238,7 +1184,7 @@ namespace GarminFitnessPlugin.Data
                 if (m_Notes != value)
                 {
                     Debug.Assert(value.Length <= 30000);
-                    m_Notes = value;
+                    m_Notes.Value = value;
 
                     TriggerWorkoutChangedEvent(new PropertyChangedEventArgs("Notes"));
                 }
@@ -1274,14 +1220,14 @@ namespace GarminFitnessPlugin.Data
         public delegate void StepTargetChangedEventHandler(Workout modifiedWorkout, RegularStep modifiedStep, ITarget modifiedTarget, PropertyChangedEventArgs changedProperty);
         public event StepTargetChangedEventHandler StepTargetChanged;
 
-        private DateTime m_LastExportDate = new DateTime(0);
-        private List<DateTime> m_ScheduledDates = new List<DateTime>();
+        private GarminFitnessDate m_LastExportDate = new GarminFitnessDate();
+        private List<GarminFitnessDate> m_ScheduledDates = new List<GarminFitnessDate>();
         private List<IStep> m_Steps = new List<IStep>();
         private List<XmlNode> m_STExtensions = new List<XmlNode>();
         private List<XmlNode> m_StepsExtensions = new List<XmlNode>();
         private IActivityCategory m_Category;
-        private string m_Name;
-        private string m_Notes;
+        private GarminFitnessString m_Name = new GarminFitnessString();
+        private GarminFitnessString m_Notes = new GarminFitnessString();
         private bool m_EventsActive = true;
     }
 }

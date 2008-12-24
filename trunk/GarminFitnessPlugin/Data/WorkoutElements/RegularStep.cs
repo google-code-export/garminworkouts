@@ -59,20 +59,8 @@ namespace GarminFitnessPlugin.Data
         {
             base.Serialize(stream);
 
-            // Name
-            if (Name != null && Name != String.Empty)
-            {
-                stream.Write(BitConverter.GetBytes(Encoding.UTF8.GetByteCount(Name)), 0, sizeof(Int32));
-                stream.Write(Encoding.UTF8.GetBytes(Name), 0, Encoding.UTF8.GetByteCount(Name));
-            }
-            else
-            {
-                stream.Write(BitConverter.GetBytes((Int32)0), 0, sizeof(Int32));
-            }
-
-            // Resting
-            stream.Write(BitConverter.GetBytes(IsRestingStep), 0, sizeof(bool));
-
+            m_Name.Serialize(stream);
+            m_IsRestingStep.Serialize(stream);
             Duration.Serialize(stream);
             Target.Serialize(stream);
         }
@@ -83,20 +71,9 @@ namespace GarminFitnessPlugin.Data
             Deserialize(typeof(IStep), stream, version);
 
             byte[] intBuffer = new byte[sizeof(Int32)];
-            byte[] boolBuffer = new byte[sizeof(bool)];
-            byte[] stringBuffer;
-            Int32 stringLength;
 
-            // Name
-            stream.Read(intBuffer, 0, sizeof(Int32));
-            stringLength = BitConverter.ToInt32(intBuffer, 0);
-            stringBuffer = new byte[stringLength];
-            stream.Read(stringBuffer, 0, stringLength);
-            Name = Encoding.UTF8.GetString(stringBuffer);
-
-            // Resting
-            stream.Read(boolBuffer, 0, sizeof(bool));
-            IsRestingStep = BitConverter.ToBoolean(boolBuffer, 0);
+            m_Name.Deserialize(stream, version);
+            m_IsRestingStep.Deserialize(stream, version);
 
             // Duration
             stream.Read(intBuffer, 0, sizeof(Int32));
@@ -125,7 +102,7 @@ namespace GarminFitnessPlugin.Data
             TargetFactory.Create((ITarget.TargetType)type, stream, version, this);
         }
 
-        public override void Serialize(XmlNode parentNode, XmlDocument document)
+        public override void Serialize(XmlNode parentNode, String nodeName, XmlDocument document)
         {
             if (Target.Type == ITarget.TargetType.Power)
             {
@@ -136,7 +113,7 @@ namespace GarminFitnessPlugin.Data
 
                 // Create the fake target
                 TargetFactory.Create(ITarget.TargetType.Null, this);
-                Serialize(parentNode, document);
+                Serialize(parentNode, "", document);
 
                 // Restore old target
                 Target = realTarget;
@@ -147,117 +124,84 @@ namespace GarminFitnessPlugin.Data
             }
 
             // Ok now this the real stuff but the target can either be the fake one or the real one
-            base.Serialize(parentNode, document);
-
-            XmlNode elementNode;
+            base.Serialize(parentNode, "", document);
 
             if (Name != String.Empty && Name != null)
             {
-                elementNode = document.CreateElement("Name");
-                elementNode.AppendChild(document.CreateTextNode(Name));
-                parentNode.AppendChild(elementNode);
+                m_Name.Serialize(parentNode, "Name", document);
             }
 
             // Duration
-            elementNode = document.CreateElement("Duration");
-            Duration.Serialize(elementNode, document);
-            parentNode.AppendChild(elementNode);
+            Duration.Serialize(parentNode, "Duration", document);
 
             // Intensity
-            elementNode = document.CreateElement("Intensity");
-            elementNode.AppendChild(document.CreateTextNode(Constants.StepIntensityZoneTCXString[IsRestingStep ? 1 : 0]));
-            parentNode.AppendChild(elementNode);
+            m_IsRestingStep.Serialize(parentNode, "Intensity", document);
 
             // Target
-            elementNode = document.CreateElement("Target");
-            Target.Serialize(elementNode, document);
-            parentNode.AppendChild(elementNode);
+            Target.Serialize(parentNode, "Target", document);
         }
 
-        public override bool Deserialize(XmlNode parentNode)
+        public override void Deserialize(XmlNode parentNode)
         {
-            if (base.Deserialize(parentNode))
+            base.Deserialize(parentNode);
+
+            bool durationLoaded = false;
+            bool targetLoaded = false;
+            bool intensityLoaded = false;
+
+            for (int i = 0; i < parentNode.ChildNodes.Count; ++i)
             {
-                bool durationLoaded = false;
-                bool targetLoaded = false;
-                bool intensityLoaded = false;
+                XmlNode child = parentNode.ChildNodes[i];
 
-                for (int i = 0; i < parentNode.ChildNodes.Count; ++i)
+                if (child.Name == "Name")
                 {
-                    XmlNode child = parentNode.ChildNodes[i];
+                    m_Name.Deserialize(child);
+                }
+                else if (child.Name == "Duration")
+                {
+                    if (child.Attributes.Count == 1 && child.Attributes[0].Name == Constants.XsiTypeTCXString)
+                    {
+                        string stepTypeString = child.Attributes[0].Value;
 
-                    if (child.Name == "Name")
-                    {
-                        Name = child.FirstChild.Value;
-                    }
-                    else if (child.Name == "Duration")
-                    {
-                        if (child.Attributes.Count == 1 && child.Attributes[0].Name == "xsi:type")
+                        for (int j = 0; j < (int)IDuration.DurationType.DurationTypeCount; ++j)
                         {
-                            string stepTypeString = child.Attributes[0].Value;
-
-                            for (int j = 0; j < (int)IDuration.DurationType.DurationTypeCount; ++j)
+                            if (stepTypeString == Constants.DurationTypeTCXString[j])
                             {
-                                if (stepTypeString == Constants.DurationTypeTCXString[j])
-                                {
-                                    DurationFactory.Create((IDuration.DurationType)j, child, this);
-
-                                    if (Duration != null)
-                                    {
-                                        durationLoaded = true;
-                                        break;
-                                    }
-                                    else
-                                    {
-                                        return false;
-                                    }
-                                }
+                                DurationFactory.Create((IDuration.DurationType)j, child, this);
+                                durationLoaded = true;
+                                break;
                             }
                         }
-                        else
-                        {
-                            return false;
-                        }
-                    }
-                    else if (child.Name == "Target")
-                    {
-                        if (child.Attributes.Count == 1 && child.Attributes[0].Name == "xsi:type")
-                        {
-                            string stepTypeString = child.Attributes[0].Value;
-
-                            for (int j = 0; j < (int)ITarget.TargetType.TargetTypeCount; ++j)
-                            {
-                                if (stepTypeString == Constants.TargetTypeTCXString[j])
-                                {
-                                    TargetFactory.Create((ITarget.TargetType)j, child, this);
-
-                                    if (Target != null)
-                                    {
-                                        targetLoaded = true;
-                                        break;
-                                    }
-                                    else
-                                    {
-                                        return false;
-                                    }
-                                }
-                            }
-                        }
-                    }
-                    else if (child.Name == "Intensity")
-                    {
-                        IsRestingStep = child.FirstChild.Value == Constants.StepIntensityZoneTCXString[1];
-                        intensityLoaded = true;
                     }
                 }
-
-                if (durationLoaded && targetLoaded && intensityLoaded)
+                else if (child.Name == "Target")
                 {
-                    return true;
+                    if (child.Attributes.Count == 1 && child.Attributes[0].Name == Constants.XsiTypeTCXString)
+                    {
+                        string stepTypeString = child.Attributes[0].Value;
+
+                        for (int j = 0; j < (int)ITarget.TargetType.TargetTypeCount; ++j)
+                        {
+                            if (stepTypeString == Constants.TargetTypeTCXString[j])
+                            {
+                                TargetFactory.Create((ITarget.TargetType)j, child, this);
+                                targetLoaded = true;
+                                break;
+                            }
+                        }
+                    }
+                }
+                else if (child.Name == "Intensity")
+                {
+                    m_IsRestingStep.Deserialize(child);
+                    intensityLoaded = true;
                 }
             }
 
-            return false;
+            if (!durationLoaded || !targetLoaded || !intensityLoaded)
+            {
+                throw new GarminFitnesXmlDeserializationException("Information missing in the XML node", parentNode);
+            }
         }
 
         public override IStep Clone()
@@ -423,7 +367,7 @@ namespace GarminFitnessPlugin.Data
                 {
                     Debug.Assert(value.Length <= 15);
 
-                    m_Name = value;
+                    m_Name.Value = value;
 
                     TriggerStepChanged( new PropertyChangedEventArgs("Name"));
                 }
@@ -443,7 +387,7 @@ namespace GarminFitnessPlugin.Data
             {
                 if (m_IsRestingStep != value)
                 {
-                    m_IsRestingStep = value;
+                    m_IsRestingStep.Value = value;
                     
                     TriggerStepChanged( new PropertyChangedEventArgs("IsRestingStep"));
                 }
@@ -452,7 +396,7 @@ namespace GarminFitnessPlugin.Data
 
         private IDuration m_Duration;
         private ITarget m_Target;
-        private string m_Name;
-        private bool m_IsRestingStep = false;
+        private GarminFitnessString m_Name = new GarminFitnessString(String.Empty, 15);
+        private GarminFitnessBool m_IsRestingStep = new GarminFitnessBool(false, Constants.StepIntensityZoneTCXString[1], Constants.StepIntensityZoneTCXString[0]);
     }
 }

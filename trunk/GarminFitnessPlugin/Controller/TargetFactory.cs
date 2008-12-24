@@ -135,11 +135,8 @@ namespace GarminFitnessPlugin.Controller
                     }
             }
 
-            if(newTarget.Deserialize(parentNode))
-            {
-                parent.Target = newTarget;
-                return newTarget;
-            }
+            newTarget.Deserialize(parentNode);
+            parent.Target = newTarget;
             
             return newTarget;
         }

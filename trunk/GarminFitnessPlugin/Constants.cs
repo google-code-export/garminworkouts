@@ -7,6 +7,8 @@ namespace GarminFitnessPlugin
 {
     class Constants
     {
+        public static readonly double Delta = 0.00005;
+
         public static readonly UInt16 SecondsPerMinute = 60;
         public static readonly UInt16 MinutesPerHour = 60;
         public static readonly UInt16 SecondsPerHour = (UInt16)(MinutesPerHour * SecondsPerMinute);
@@ -72,6 +74,7 @@ namespace GarminFitnessPlugin
 
         public static readonly double MinOdometer = 0;
         public static readonly double MaxOdometer = 65535;
+        public static readonly double MaxOdometerMeters = MaxOdometer * 1000;
 
         public static readonly UInt16 MinWheelSize = UInt16.MinValue;
         public static readonly UInt16 MaxWheelSize = UInt16.MaxValue;
@@ -81,6 +84,7 @@ namespace GarminFitnessPlugin
         
         public static readonly string DeserializeMethodNamePrefix = "Deserialize_V";
 
+        public static readonly string XsiTypeTCXString = "xsi:type";
         public static readonly string ExtensionsTCXString = "Extensions";
         public static readonly string ValueTCXString = "Value";
         public static readonly string LowInMeterPerSecTCXString = "LowInMetersPerSecond";
@@ -176,7 +180,7 @@ namespace GarminFitnessPlugin
         public static readonly string WorkoutsClipboardID = "GFP_WorkoutsList";
         public static readonly string StepsClipboardID = "GFP_StepsList";
 
-        public static readonly DataVersion CurrentVersion = new DataVersion(9);
+        public static readonly DataVersion CurrentVersion = new DataVersion(10);
         public static readonly String DataHeaderIdString = "Garmin Workouts Plugin made by S->G";
    }
 }

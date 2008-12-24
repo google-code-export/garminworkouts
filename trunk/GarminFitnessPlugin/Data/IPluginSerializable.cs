@@ -10,9 +10,11 @@ namespace GarminFitnessPlugin.Data
         public void Deserialize(Stream stream, DataVersion version)
         {
             MethodInfo deserializeMethod = GetLatestDeserializeMethod(this.GetType(), version);
-            Debug.Assert(deserializeMethod != null);
 
-            deserializeMethod.Invoke(this, new object[] { stream, version });
+            if (deserializeMethod != null)
+            {
+                deserializeMethod.Invoke(this, new object[] { stream, version });
+            }
         }
 
         protected void Deserialize(Type forcedType, Stream stream, DataVersion version)
