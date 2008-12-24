@@ -126,7 +126,7 @@ namespace GarminFitnessPlugin
 
         public void WriteOptions(XmlDocument xmlDoc, XmlElement pluginNode)
         {
-            Options.Instance.Serialize(pluginNode, xmlDoc);
+            Options.Instance.Serialize(pluginNode, "", xmlDoc);
         }
 
         #endregion
@@ -188,7 +188,7 @@ namespace GarminFitnessPlugin
             else
             {
                 GarminWorkoutManager.Instance.RemoveAllWorkouts();
-                GarminProfileManager.Instance.Cleanup();
+                GarminProfileManager.Instance.UserProfile.Cleanup();
                 Options.Instance.ResetSettings();
 
                 // Show the wizard on first run

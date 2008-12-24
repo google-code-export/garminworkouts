@@ -19,8 +19,8 @@ namespace GarminFitnessPlugin.Data
         public RepeatStep(Byte numRepeats, Workout parent)
             : base(StepType.Repeat, parent)
         {
-            Debug.Assert(numRepeats <= 99);
-            m_RepetitionCount = numRepeats;
+            Debug.Assert(numRepeats <= Constants.MaxRepeats);
+            RepetitionCount = numRepeats;
 
             ParentWorkout.AddNewStep(new RegularStep(parent), this);
         }
@@ -35,7 +35,7 @@ namespace GarminFitnessPlugin.Data
         {
             base.Serialize(stream);
 
-            stream.Write(BitConverter.GetBytes(RepetitionCount), 0, sizeof(Byte));
+            m_RepetitionCount.Serialize(stream);
 
             stream.Write(BitConverter.GetBytes(StepsToRepeat.Count), 0, sizeof(Int32));
             for (int i = 0; i < StepsToRepeat.Count; ++i)
@@ -53,12 +53,14 @@ namespace GarminFitnessPlugin.Data
             byte[] intBuffer = new byte[sizeof(Int32)];
             Int32 stepCount;
 
-            stream.Read(byteBuffer, 0, sizeof(Byte));
-            RepetitionCount = byteBuffer[0];
+            m_RepetitionCount.Deserialize(stream, version);
 
             stream.Read(intBuffer, 0, sizeof(Int32));
             stepCount = BitConverter.ToInt32(intBuffer, 0);
-            StepsToRepeat.Clear();
+
+            ParentWorkout.RemoveSteps(StepsToRepeat);
+            // In case the repeat wasn't yet registered on the workout
+            m_StepsToRepeat.Clear();
             for (int i = 0; i < stepCount; ++i)
             {
                 IStep.StepType type;
@@ -77,74 +79,73 @@ namespace GarminFitnessPlugin.Data
             }
         }
 
-        public override void Serialize(XmlNode parentNode, XmlDocument document)
+        public override void Serialize(XmlNode parentNode, String nodeName, XmlDocument document)
         {
-            base.Serialize(parentNode, document);
-            XmlNode elementNode;
-            
-            elementNode = document.CreateElement("Repetitions");
-            elementNode.AppendChild(document.CreateTextNode(RepetitionCount.ToString()));
-            parentNode.AppendChild(elementNode);
+            base.Serialize(parentNode, nodeName, document);
+
+            m_RepetitionCount.Serialize(parentNode, "Repetitions", document);
 
             // Export all children
             for (int i = 0; i < StepsToRepeat.Count; ++i)
             {
                 XmlNode childNode = document.CreateElement("Child");
 
-                StepsToRepeat[i].Serialize(childNode, document);
+                StepsToRepeat[i].Serialize(childNode, "Child", document);
                 parentNode.AppendChild(childNode);
             }
         }
 
-        public override bool Deserialize(XmlNode parentNode)
+        public override void Deserialize(XmlNode parentNode)
         {
-            if (base.Deserialize(parentNode))
+            bool repeatsRead = false;
+            List<IStep> stepsToRepeat = new List<IStep>();
+
+            base.Deserialize(parentNode);
+
+            for (int i = 0; i < parentNode.ChildNodes.Count; ++i)
             {
-                bool repetitionsLoaded = false;
+                XmlNode child = parentNode.ChildNodes[i];
 
-                StepsToRepeat.Clear();
-
-                for (int i = 0; i < parentNode.ChildNodes.Count; ++i)
+                if (child.Name == "Repetitions")
                 {
-                    XmlNode child = parentNode.ChildNodes[i];
-
-                    if (child.Name == "Repetitions")
-                    {
-                        RepetitionCount = byte.Parse(child.FirstChild.Value);
-                        repetitionsLoaded = true;
-                    }
-                    else if (child.Name == "Child")
-                    {
-                        string stepTypeString = child.Attributes[0].Value;
-                        IStep newStep = null;
-
-                        if (stepTypeString == Constants.StepTypeTCXString[(int)IStep.StepType.Regular])
-                        {
-                            newStep = new RegularStep(ParentWorkout);
-                        }
-                        else if (stepTypeString == Constants.StepTypeTCXString[(int)IStep.StepType.Repeat])
-                        {
-                            newStep = new RepeatStep(ParentWorkout);
-                        }
-
-                        if (newStep != null && newStep.Deserialize(child))
-                        {
-                            ParentWorkout.AddNewStep(newStep, this);
-                        }
-                        else
-                        {
-                            return false;
-                        }
-                    }
+                    m_RepetitionCount.Deserialize(child);
+                    repeatsRead = true;
                 }
-
-                if (repetitionsLoaded && StepsToRepeat.Count > 0)
+                else if (child.Name == "Child")
                 {
-                    return true;
+                    string stepTypeString = child.Attributes[0].Value;
+                    IStep newStep = null;
+
+                    if (stepTypeString == Constants.StepTypeTCXString[(int)IStep.StepType.Regular])
+                    {
+                        newStep = new RegularStep(ParentWorkout);
+                    }
+                    else if (stepTypeString == Constants.StepTypeTCXString[(int)IStep.StepType.Repeat])
+                    {
+                        newStep = new RepeatStep(ParentWorkout);
+                    }
+                    else
+                    {
+                        Debug.Assert(false);
+                    }
+
+                    stepsToRepeat.Add(newStep);
+                    newStep.Deserialize(child);
                 }
             }
 
-            return false;
+            if (!repeatsRead || stepsToRepeat.Count == 0)
+            {
+                throw new GarminFitnesXmlDeserializationException("Information missing in the XML node", parentNode);
+            }
+
+            ParentWorkout.RemoveSteps(m_StepsToRepeat);
+            // In case the repeat wasn't yet registered on the workout
+            m_StepsToRepeat.Clear();
+            for (int i = 0; i < stepsToRepeat.Count; ++i)
+            {
+                ParentWorkout.AddNewStep(stepsToRepeat[i], this);
+            }
         }
 
         public override IStep Clone()
@@ -278,7 +279,7 @@ namespace GarminFitnessPlugin.Data
             {
                 if (m_RepetitionCount != value)
                 {
-                    m_RepetitionCount = value;
+                    m_RepetitionCount.Value = value;
 
                     TriggerStepChanged(new PropertyChangedEventArgs("RepetitionCount"));
                 }
@@ -312,7 +313,7 @@ namespace GarminFitnessPlugin.Data
             set { Debug.Assert(false); }
         }
 
-        private Byte m_RepetitionCount;
+        private GarminFitnessByteRange m_RepetitionCount = new GarminFitnessByteRange(Constants.MinRepeats, Constants.MinRepeats, Constants.MaxRepeats);
         private List<IStep> m_StepsToRepeat = new List<IStep>();
     }
 }

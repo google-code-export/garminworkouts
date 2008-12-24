@@ -20,7 +20,7 @@ namespace GarminFitnessPlugin.View
         {
             InitializeComponent();
 
-            GarminProfileManager.Instance.ActivityProfileChanged += new GarminProfileManager.ActivityProfileChangedEventHandler(OnActivityProfileChanged);
+            GarminProfileManager.Instance.UserProfile.ActivityProfileChanged += new GarminProfile.ActivityProfileChangedEventHandler(OnActivityProfileChanged);
 
             BikeProfileActionBanner.ThemeChanged(PluginMain.GetApplication().VisualTheme);
             PowerZonesTreeList.ThemeChanged(PluginMain.GetApplication().VisualTheme);

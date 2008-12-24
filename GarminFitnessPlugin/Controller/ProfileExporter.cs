@@ -40,7 +40,7 @@ namespace GarminFitnessPlugin.Controller
             XmlNode extensionsNode = document.CreateElement(Constants.ExtensionsTCXString, null);
             database.AppendChild(extensionsNode);
 
-            GarminProfileManager.Instance.Serialize(extensionsNode, document);
+            GarminProfileManager.Instance.Serialize(extensionsNode, "", document);
 
             document.Save(new StreamWriter(exportStream));
         }
@@ -50,7 +50,7 @@ namespace GarminFitnessPlugin.Controller
             XmlNode workoutNode = document.CreateElement("Workout");
 
             workout.LastExportDate = DateTime.Now;
-            workout.Serialize(workoutNode, document, skipExtensions);
+            workout.Serialize(workoutNode, "Workout", document, skipExtensions);
             parentNode.AppendChild(workoutNode);
         }
     }

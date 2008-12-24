@@ -246,7 +246,7 @@ namespace GarminFitnessPlugin.Controller
                         HeartRateRangeTarget concreteTarget = (HeartRateRangeTarget)target;
                         string unitsString;
 
-                        if (concreteTarget.IsPercentageMaxHeartRate)
+                        if (concreteTarget.IsPercentMaxHeartRate)
                         {
                             unitsString = CommonResources.Text.LabelPercentOfMax;
                         }

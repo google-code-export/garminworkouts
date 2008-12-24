@@ -67,9 +67,9 @@ namespace GarminFitnessPlugin.Data
             }
         }
 
-        public virtual void Serialize(XmlNode parentNode, XmlDocument document)
+        public virtual void Serialize(XmlNode parentNode, String nodeName, XmlDocument document)
         {
-            XmlAttribute attribute = document.CreateAttribute("xsi", "type", Constants.xsins);
+            XmlAttribute attribute = document.CreateAttribute(Constants.XsiTypeTCXString, Constants.xsins);
 
             attribute.Value = Constants.StepTypeTCXString[(int)Type];
             parentNode.Attributes.Append(attribute);
@@ -93,9 +93,8 @@ namespace GarminFitnessPlugin.Data
             ParentWorkout.AddSportTracksExtension(extensionNode);
         }
 
-        public virtual bool Deserialize(XmlNode parentNode)
+        public virtual void Deserialize(XmlNode parentNode)
         {
-            return true;
         }
 
         public virtual byte GetStepCount()

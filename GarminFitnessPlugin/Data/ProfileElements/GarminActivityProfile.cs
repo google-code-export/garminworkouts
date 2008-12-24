@@ -19,29 +19,25 @@ namespace GarminFitnessPlugin.Data
         {
             m_Category = category;
 
-            m_MaxHeartRate = 185;
-            m_GearWeight = 0;
-            m_HRIsInPercentMax = true;
-            m_SpeedIsInPace = false;
-
             // HR Zones (always stored in % Max)
             float currentLowHR = 0.5f;
             const float stepHR = 0.1f;
             for(int i = 0; i < Constants.GarminHRZoneCount; ++i)
             {
-                m_HeartRateZones.Add(new GarminFitnessValueRange<float>(currentLowHR, currentLowHR + stepHR));
+                m_HeartRateZones.Add(new GarminFitnessValueRange<GarminFitnessDoubleRange>(new GarminFitnessDoubleRange(currentLowHR, 0, 1),
+                                                                                           new GarminFitnessDoubleRange(currentLowHR + stepHR, 0, 1)));
 
                 currentLowHR += stepHR;
             }
 
             // Speed Zones
-            float currentLowSpeed = 10;
-            const float stepSpeed = 5;
+            float currentLowSpeed = 5;
+            const float stepSpeed = 1;
             for(int i = 0; i < Constants.GarminSpeedZoneCount; ++i)
             {
                 String zoneName = GarminFitnessView.GetLocalizedString("GTCSpeedZone" + (i + 1).ToString() + "Text");
 
-                m_SpeedZones.Add(new GarminFitnessNamedLowHighZone(currentLowSpeed, currentLowSpeed + stepSpeed, zoneName));
+                m_SpeedZones.Add(new GarminFitnessNamedSpeedZone(currentLowSpeed, currentLowSpeed + stepSpeed, zoneName));
 
                 currentLowSpeed += stepSpeed;
             }
@@ -49,133 +45,125 @@ namespace GarminFitnessPlugin.Data
 
         public override void Serialize(Stream stream)
         {
-            // Max HR
-            stream.WriteByte(MaximumHeartRate);
+            m_MaxHeartRate.Serialize(stream);
             
-            // Gear weight in pounds
-            stream.Write(BitConverter.GetBytes(GearWeight), 0, sizeof(double));
+            m_GearWeight.Serialize(stream);
 
-            // HR as max?
-            stream.Write(BitConverter.GetBytes(HRIsInPercentMax), 0, sizeof(bool));
+            m_HRIsInPercentMax.Serialize(stream);
+
             // HR zones
             for (int i = 0; i < m_HeartRateZones.Count; ++i)
             {
-                // Low bound
-                stream.Write(BitConverter.GetBytes((double)m_HeartRateZones[i].Lower), 0, sizeof(double));
+                m_HeartRateZones[i].Lower.Serialize(stream);
 
-                // High bound
-                stream.Write(BitConverter.GetBytes((double)m_HeartRateZones[i].Upper), 0, sizeof(double));
+                m_HeartRateZones[i].Upper.Serialize(stream);
             }
 
-            // Speed as pace?
-            stream.Write(BitConverter.GetBytes(SpeedIsInPace), 0, sizeof(bool));
+            m_SpeedIsInPace.Serialize(stream);
+
             // Speed Zones
             for (int i = 0; i < m_SpeedZones.Count; ++i)
             {
-                // Low bound
-                stream.Write(BitConverter.GetBytes((double)m_SpeedZones[i].Low), 0, sizeof(double));
+                m_SpeedZones[i].InternalLow.Serialize(stream);
 
-                // High bound
-                stream.Write(BitConverter.GetBytes((double)m_SpeedZones[i].High), 0, sizeof(double));
+                m_SpeedZones[i].InternalHigh.Serialize(stream);
 
-                // Name
-                stream.Write(BitConverter.GetBytes(Encoding.UTF8.GetByteCount(m_SpeedZones[i].Name)), 0, sizeof(Int32));
-                stream.Write(Encoding.UTF8.GetBytes(m_SpeedZones[i].Name), 0, Encoding.UTF8.GetByteCount(m_SpeedZones[i].Name));
+                m_SpeedZones[i].InternalName.Serialize(stream);
             }
         }
 
         public void Deserialize_V8(Stream stream, DataVersion version)
         {
-            byte[] intBuffer = new byte[sizeof(Int32)];
-            byte[] boolBuffer = new byte[sizeof(bool)];
-            byte[] doubleBuffer = new byte[sizeof(double)];
-            byte[] stringBuffer;
-            Int32 stringLength;
+            m_MaxHeartRate.Deserialize(stream, version);
 
-            // Max HR
-            MaximumHeartRate = (Byte)stream.ReadByte();
+            m_GearWeight.Deserialize(stream, version);
 
-            // Gear weight
-            stream.Read(doubleBuffer, 0, sizeof(double));
-            GearWeight = BitConverter.ToDouble(doubleBuffer, 0);
-
-            // HR as % max
-            stream.Read(boolBuffer, 0, sizeof(bool));
-            HRIsInPercentMax = BitConverter.ToBoolean(boolBuffer, 0);
+            m_HRIsInPercentMax.Deserialize(stream, version);
 
             for (int i = 0; i < m_HeartRateZones.Count; ++i)
             {
-                // Lower limit
-                stream.Read(doubleBuffer, 0, sizeof(double));
-                m_HeartRateZones[i].Lower = (float)BitConverter.ToDouble(doubleBuffer, 0);
+                m_HeartRateZones[i].Lower.Deserialize(stream, version);
 
-                // Upper limit
-                stream.Read(doubleBuffer, 0, sizeof(double));
-                m_HeartRateZones[i].Upper = (float)BitConverter.ToDouble(doubleBuffer, 0);
+                m_HeartRateZones[i].Upper.Deserialize(stream, version);
             }
 
-            // Speed as pace
-            stream.Read(boolBuffer, 0, sizeof(bool));
-            SpeedIsInPace = BitConverter.ToBoolean(boolBuffer, 0);
+            m_SpeedIsInPace.Deserialize(stream, version);
+
+            GarminFitnessDoubleRange lowLimit = new GarminFitnessDoubleRange(Constants.MinSpeedMetric, Constants.MinSpeedMetric, Constants.MaxSpeedMetric);
+            GarminFitnessDoubleRange highLimit = new GarminFitnessDoubleRange(Constants.MinSpeedMetric, Constants.MinSpeedMetric, Constants.MaxSpeedMetric);
+            for (int i = 0; i < m_SpeedZones.Count; ++i)
+            {
+                lowLimit.Deserialize(stream, version);
+                m_SpeedZones[i].Low = Length.Convert(lowLimit, Length.Units.Kilometer, Length.Units.Meter) / Constants.SecondsPerHour;
+
+                highLimit.Deserialize(stream, version);
+                m_SpeedZones[i].High = Length.Convert(highLimit, Length.Units.Kilometer, Length.Units.Meter) / Constants.SecondsPerHour;
+
+                m_SpeedZones[i].InternalName.Deserialize(stream, version);
+            }
+
+        }
+
+        public void Deserialize_V10(Stream stream, DataVersion version)
+        {
+            m_MaxHeartRate.Deserialize(stream, version);
+
+            m_GearWeight.Deserialize(stream, version);
+
+            m_HRIsInPercentMax.Deserialize(stream, version);
+
+            for (int i = 0; i < m_HeartRateZones.Count; ++i)
+            {
+                m_HeartRateZones[i].Lower.Deserialize(stream, version);
+
+                m_HeartRateZones[i].Upper.Deserialize(stream, version);
+            }
+
+            m_SpeedIsInPace.Deserialize(stream, version);
 
             for (int i = 0; i < m_SpeedZones.Count; ++i)
             {
-                // Lower limit
-                stream.Read(doubleBuffer, 0, sizeof(double));
-                m_SpeedZones[i].Low = (float)BitConverter.ToDouble(doubleBuffer, 0);
+                m_SpeedZones[i].InternalLow.Deserialize(stream, version);
 
-                // Upper limit
-                stream.Read(doubleBuffer, 0, sizeof(double));
-                m_SpeedZones[i].High = (float)BitConverter.ToDouble(doubleBuffer, 0);
+                m_SpeedZones[i].InternalHigh.Deserialize(stream, version);
 
-                // Speed zone name
-                stream.Read(intBuffer, 0, sizeof(Int32));
-                stringLength = BitConverter.ToInt32(intBuffer, 0);
-                stringBuffer = new byte[stringLength];
-                stream.Read(stringBuffer, 0, stringLength);
-                m_SpeedZones[i].Name = Encoding.UTF8.GetString(stringBuffer);
+                m_SpeedZones[i].InternalName.Deserialize(stream, version);
             }
         }
 
-        public virtual void Serialize(XmlNode parentNode, XmlDocument document)
+        public virtual void Serialize(XmlNode parentNode, String nodeName, XmlDocument document)
         {
             XmlAttribute attributeNode;
-            XmlNode activityNode, currentChild, valueNode;
-            CultureInfo culture = new CultureInfo("en-us");
+            XmlNode activityNode, currentChild;
 
-            activityNode = document.CreateElement(Constants.ActivitiesTCXString);
+            activityNode = document.CreateElement(nodeName);
+            parentNode.AppendChild(activityNode);
 
             attributeNode = document.CreateAttribute("Sport");
             attributeNode.Value = Constants.GarminCategoryTCXString[(int)Category];
             activityNode.Attributes.Append(attributeNode);
 
-            attributeNode = document.CreateAttribute("xsi", "type", Constants.xsins);
+            attributeNode = document.CreateAttribute(Constants.XsiTypeTCXString, Constants.xsins);
             attributeNode.Value = "ProfileActivity_t";
             activityNode.Attributes.Append(attributeNode);
 
             // Maximum heart rate
             currentChild = document.CreateElement(Constants.MaxHRBPMTCXString);
-            valueNode = document.CreateElement(Constants.ValueTCXString);
-            valueNode.AppendChild(document.CreateTextNode(MaximumHeartRate.ToString()));
-            currentChild.AppendChild(valueNode);
             activityNode.AppendChild(currentChild);
+            m_MaxHeartRate.Serialize(currentChild, Constants.ValueTCXString, document);
 
             // Resting HR
             currentChild = document.CreateElement(Constants.RestHRBPMTCXString);
-            valueNode = document.CreateElement(Constants.ValueTCXString);
-            valueNode.AppendChild(document.CreateTextNode(GarminProfileManager.Instance.RestingHeartRate.ToString()));
-            currentChild.AppendChild(valueNode);
             activityNode.AppendChild(currentChild);
+            GarminProfileManager.Instance.UserProfile.InternalRestingHeartRate.Serialize(currentChild, Constants.ValueTCXString, document);
 
-            // Gear weight
-            currentChild = document.CreateElement(Constants.GearWeightTCXString);
-            currentChild.AppendChild(document.CreateTextNode(Weight.Convert(Weight.Convert(GearWeight, Weight.Units.Pound, Weight.Units.Kilogram), Weight.Units.Pound, Weight.Units.Kilogram).ToString("0.00000", culture.NumberFormat)));
-            activityNode.AppendChild(currentChild);
+            m_GearWeight.Serialize(activityNode, Constants.GearWeightTCXString, document);
 
             // HR zones
             for (int i = 0; i < Constants.GarminHRZoneCount; ++i)
             {
                 currentChild = document.CreateElement(Constants.HeartRateZonesTCXString);
+                activityNode.AppendChild(currentChild);
 
                 // Number
                 XmlNode numberNode = document.CreateElement("Number");
@@ -183,33 +171,26 @@ namespace GarminFitnessPlugin.Data
                 currentChild.AppendChild(numberNode);
 
                 // View as BPM or % max
-                XmlNode viewAs = document.CreateElement(Constants.ViewAsTCXString);
-                viewAs.AppendChild(document.CreateTextNode(HRIsInPercentMax ? Constants.PercentMaxTCXString : Constants.BPMTCXString));
-                currentChild.AppendChild(viewAs);
+                m_HRIsInPercentMax.Serialize(currentChild, Constants.ViewAsTCXString, document);
 
                 // Low
-                Byte lowLimit = GetHeartRateLowLimit(i);
+                GarminFitnessByteRange lowLimit = new GarminFitnessByteRange((Byte)(m_HeartRateZones[i].Lower * MaximumHeartRate));
                 XmlNode low = document.CreateElement(Constants.LowTCXString);
-                valueNode = document.CreateElement(Constants.ValueTCXString);
-                valueNode.AppendChild(document.CreateTextNode(lowLimit.ToString("0")));
-                low.AppendChild(valueNode);
                 currentChild.AppendChild(low);
+                lowLimit.Serialize(low, Constants.ValueTCXString, document);
 
                 // High
-                Byte highLimit = GetHeartRateHighLimit(i);
+                GarminFitnessByteRange highLimit = new GarminFitnessByteRange((Byte)(m_HeartRateZones[i].Upper * MaximumHeartRate));
                 XmlNode high = document.CreateElement(Constants.HighTCXString);
-                valueNode = document.CreateElement(Constants.ValueTCXString);
-                valueNode.AppendChild(document.CreateTextNode(highLimit.ToString("0")));
-                high.AppendChild(valueNode);
                 currentChild.AppendChild(high);
-
-                activityNode.AppendChild(currentChild);
+                highLimit.Serialize(high, Constants.ValueTCXString, document);
             }
 
             // Speed zones
             for (int i = 0; i < Constants.GarminSpeedZoneCount; ++i)
             {
                 currentChild = document.CreateElement(Constants.SpeedZonesTCXString);
+                activityNode.AppendChild(currentChild);
 
                 // Number
                 XmlNode numberNode = document.CreateElement("Number");
@@ -217,49 +198,29 @@ namespace GarminFitnessPlugin.Data
                 currentChild.AppendChild(numberNode);
 
                 // Name
-                XmlNode nameNode = document.CreateElement("Name");
-                nameNode.AppendChild(document.CreateTextNode(m_SpeedZones[i].Name));
-                currentChild.AppendChild(nameNode);
+                m_SpeedZones[i].InternalName.Serialize(currentChild, "Name", document);
 
                 XmlNode valueChild = document.CreateElement(Constants.ValueTCXString);
+                currentChild.AppendChild(valueChild);
 
                 // View as pace or speed
-                XmlNode viewAs = document.CreateElement(Constants.ViewAsTCXString);
-                viewAs.AppendChild(document.CreateTextNode(SpeedIsInPace ? Constants.SpeedOrPaceTCXString[0] : Constants.SpeedOrPaceTCXString[1]));
-                valueChild.AppendChild(viewAs);
+                m_SpeedIsInPace.Serialize(valueChild, Constants.ViewAsTCXString, document);
 
                 // Low
-                XmlNode low = document.CreateElement(Constants.LowInMeterPerSecTCXString);
-                // Convert to meter per second
-                low.AppendChild(document.CreateTextNode((m_SpeedZones[i].Low / 3.6).ToString("0.00000", culture.NumberFormat)));
-                valueChild.AppendChild(low);
+                m_SpeedZones[i].InternalLow.Serialize(valueChild, Constants.LowInMeterPerSecTCXString, document);
 
                 // High
-                XmlNode high = document.CreateElement(Constants.HighInMeterPerSecTCXString);
-                // Convert to meter per second
-                high.AppendChild(document.CreateTextNode((m_SpeedZones[i].High / 3.6).ToString("0.00000", culture.NumberFormat)));
-                valueChild.AppendChild(high);
-
-                currentChild.AppendChild(valueChild);
-                activityNode.AppendChild(currentChild);
+                m_SpeedZones[i].InternalHigh.Serialize(valueChild, Constants.HighInMeterPerSecTCXString, document);
             }
-
-            parentNode.AppendChild(activityNode);
         }
 
-        public virtual bool Deserialize(XmlNode parentNode)
+        public virtual void Deserialize(XmlNode parentNode)
         {
             bool weightRead = false;
             int HRZonesRead = 0;
             int speedZonesRead = 0;
-            double weightInPounds = 0;
 
-            Byte maxHR;
-            if (!PeekMaxHR(parentNode, out maxHR))
-            {
-                return false;
-            }
-            MaximumHeartRate = maxHR;
+            ReadMaxHR(parentNode);
 
             for (int i = 0; i < parentNode.ChildNodes.Count; ++i)
             {
@@ -269,32 +230,12 @@ namespace GarminFitnessPlugin.Data
                     currentChild.ChildNodes.Count == 1 &&
                     currentChild.FirstChild.Name == Constants.ValueTCXString)
                 {
-                    XmlNode valueNode = currentChild.FirstChild;
-
-                    if (valueNode.ChildNodes.Count == 1 && valueNode.FirstChild.GetType() == typeof(XmlText))
-                    {
-                        if (!Utils.IsTextIntegerInRange(valueNode.FirstChild.Value, Constants.MinHRInBPM, Constants.MaxHRInBPM))
-                        {
-                            return false;
-                        }
-
-                        GarminProfileManager.Instance.RestingHeartRate = Byte.Parse(valueNode.FirstChild.Value);
-                    }
+                    GarminProfileManager.Instance.UserProfile.InternalRestingHeartRate.Deserialize(currentChild.FirstChild);
                 }
-                else if (currentChild.Name == Constants.GearWeightTCXString &&
-                         currentChild.ChildNodes.Count == 1 &&
-                         currentChild.FirstChild.GetType() == typeof(XmlText))
+                else if (currentChild.Name == Constants.GearWeightTCXString)
                 {
-                    double weight;
-                    CultureInfo culture = new CultureInfo("en-us");
-
-                    if (!Utils.IsTextFloatInRange(currentChild.FirstChild.Value, Constants.MinWeight, Constants.MaxWeight, culture))
-                    {
-                        return false;
-                    }
-
-                    weight = double.Parse(currentChild.FirstChild.Value);
-                    weightInPounds = Weight.Convert(weight, Weight.Units.Kilogram, Weight.Units.Pound);
+                    m_GearWeight.Deserialize(currentChild);
+                    SetGearWeightInUnits(m_GearWeight, Weight.Units.Kilogram);
                     weightRead = true;
                 }
                 else if (currentChild.Name == Constants.HeartRateZonesTCXString)
@@ -303,10 +244,8 @@ namespace GarminFitnessPlugin.Data
 
                     if (zoneIndex != -1)
                     {
-                        if (ReadHRZone(zoneIndex, currentChild))
-                        {
+                        ReadHRZone(zoneIndex, currentChild);
                             HRZonesRead++;
-                        }
                     }
                 }
                 else if (currentChild.Name == Constants.SpeedZonesTCXString)
@@ -315,10 +254,8 @@ namespace GarminFitnessPlugin.Data
 
                     if (zoneIndex != -1)
                     {
-                        if (ReadSpeedZone(zoneIndex, currentChild))
-                        {
-                            speedZonesRead++;
-                        }
+                        ReadSpeedZone(zoneIndex, currentChild);
+                        speedZonesRead++;
                     }
                 }
             }
@@ -328,86 +265,56 @@ namespace GarminFitnessPlugin.Data
                 HRZonesRead != Constants.GarminHRZoneCount ||
                 speedZonesRead != Constants.GarminSpeedZoneCount)
             {
-                return false;
+                throw new GarminFitnesXmlDeserializationException("Missing information in activity profile XML node", parentNode);
             }
-
-            // Officialize
-            GearWeight = weightInPounds;
-
-            // Convert speed zones to the right unit (m/sec to km/h)
-            for (int i = 0; i < Constants.GarminSpeedZoneCount; ++i)
-            {
-                float tempHigh = m_SpeedZones[i].High;
-
-                m_SpeedZones[i].Low = (m_SpeedZones[i].Low * Constants.SecondsPerHour) / 1000.0f;
-                m_SpeedZones[i].High = (tempHigh * Constants.SecondsPerHour) / 1000.0f;
-            }
-
-            return true;
         }
 
-        private bool ReadHRZone(int index, XmlNode parentNode)
+        private void ReadHRZone(int index, XmlNode parentNode)
         {
             Debug.Assert(index >= 0 && index < Constants.GarminHRZoneCount);
 
             bool viewAsRead = false;
             bool lowRead = false;
             bool highRead = false;
-            bool viewAsPercentMax = false;
-            Byte lowLimit = 0;
-            Byte highLimit = 0;
+            GarminFitnessByteRange lowLimit = new GarminFitnessByteRange(0);
+            GarminFitnessByteRange highLimit = new GarminFitnessByteRange(0);
 
             for (int i = 0; i < parentNode.ChildNodes.Count; ++i)
             {
                 XmlNode currentChild = parentNode.ChildNodes[i];
 
-                if (currentChild.Name == Constants.ViewAsTCXString &&
-                    currentChild.ChildNodes.Count == 1 &&
-                    currentChild.FirstChild.GetType() == typeof(XmlText))
+                if (currentChild.Name == Constants.ViewAsTCXString)
                 {
-                    viewAsPercentMax = currentChild.FirstChild.Value == Constants.PercentMaxTCXString;
+                    m_HRIsInPercentMax.Deserialize(currentChild);
                     viewAsRead = true;
                 }
                 else if (currentChild.Name == Constants.LowTCXString &&
                          currentChild.ChildNodes.Count == 1 &&
                          currentChild.FirstChild.Name == Constants.ValueTCXString)
                 {
-                    XmlNode valueNode = currentChild.FirstChild;
-
-                    if (valueNode.ChildNodes.Count == 1 && valueNode.FirstChild.GetType() == typeof(XmlText))
-                    {
-                        lowLimit = Byte.Parse(valueNode.FirstChild.Value);
-                        lowRead = true;
-                    }
+                    lowLimit.Deserialize(currentChild.FirstChild);
+                    lowRead = true;
                 }
                 else if (currentChild.Name == Constants.HighTCXString &&
                          currentChild.ChildNodes.Count == 1 &&
                          currentChild.FirstChild.Name == Constants.ValueTCXString)
                 {
-                    XmlNode valueNode = currentChild.FirstChild;
-
-                    if (valueNode.ChildNodes.Count == 1 && valueNode.FirstChild.GetType() == typeof(XmlText))
-                    {
-                        highLimit = Byte.Parse(valueNode.FirstChild.Value);
-                        highRead = true;
-                    }
+                    highLimit.Deserialize(currentChild.FirstChild);
+                    highRead = true;
                 }
             }
 
             // Check if all was read successfully
             if (!viewAsRead || !lowRead || !highRead)
             {
-                return false;
+                throw new GarminFitnesXmlDeserializationException("Missing information in heart rate zone XML node", parentNode);
             }
 
-            HRIsInPercentMax = viewAsPercentMax;
-            m_HeartRateZones[index].Lower = (float)Math.Min(lowLimit, highLimit) / MaximumHeartRate;
-            m_HeartRateZones[index].Upper = (float)Math.Max(lowLimit, highLimit) / MaximumHeartRate;
-
-            return true;
+            m_HeartRateZones[index].Lower = new GarminFitnessDoubleRange((double)Math.Min(lowLimit, highLimit) / MaximumHeartRate, 0, 1);
+            m_HeartRateZones[index].Upper = new GarminFitnessDoubleRange((double)Math.Max(lowLimit, highLimit) / MaximumHeartRate, 0, 1);
         }
 
-        private bool ReadSpeedZone(int index, XmlNode parentNode)
+        private void ReadSpeedZone(int index, XmlNode parentNode)
         {
             Debug.Assert(index >= 0 && index < Constants.GarminSpeedZoneCount);
 
@@ -415,24 +322,19 @@ namespace GarminFitnessPlugin.Data
             bool viewAsRead = false;
             bool lowRead = false;
             bool highRead = false;
-            bool viewAsPace = false;
-            double lowLimit = 0;
-            double highLimit = 0;
-            string name = String.Empty;
-            CultureInfo culture = new CultureInfo("en-us");
+            GarminFitnessDoubleRange lowLimit = new GarminFitnessDoubleRange(0);
+            GarminFitnessDoubleRange highLimit = new GarminFitnessDoubleRange(0);
 
             for (int i = 0; i < parentNode.ChildNodes.Count; ++i)
             {
                 XmlNode currentChild = parentNode.ChildNodes[i];
 
-                if (currentChild.Name == "Name" &&
-                    currentChild.ChildNodes.Count == 1 &&
-                    currentChild.FirstChild.GetType() == typeof(XmlText))
+                if (currentChild.Name == "Name")
                 {
-                    name = currentChild.FirstChild.Value;
+                    m_SpeedZones[index].InternalName.Deserialize(currentChild);
                     nameRead = true;
                 }
-                else if(currentChild.Name == Constants.ValueTCXString)
+                else if (currentChild.Name == Constants.ValueTCXString)
                 {
                     XmlNode valueNode = currentChild;
 
@@ -440,33 +342,19 @@ namespace GarminFitnessPlugin.Data
                     {
                         XmlNode valueChild = valueNode.ChildNodes[j];
 
-                        if (valueChild.Name == Constants.ViewAsTCXString &&
-                            valueChild.ChildNodes.Count == 1 &&
-                            valueChild.FirstChild.GetType() == typeof(XmlText))
+                        if (valueChild.Name == Constants.ViewAsTCXString)
                         {
-                            viewAsPace = valueChild.FirstChild.Value == Constants.SpeedOrPaceTCXString[0];
+                            m_SpeedIsInPace.Deserialize(valueChild);
                             viewAsRead = true;
                         }
-                        else if (valueChild.Name == Constants.LowInMeterPerSecTCXString &&
-                                 valueChild.ChildNodes.Count == 1 &&
-                                 valueChild.FirstChild.GetType() == typeof(XmlText))
+                        else if (valueChild.Name == Constants.LowInMeterPerSecTCXString)
                         {
-                            if (!double.TryParse(valueChild.FirstChild.Value, NumberStyles.Float, culture.NumberFormat, out lowLimit))
-                            {
-                                return false;
-                            }
-
+                            lowLimit.Deserialize(valueChild);
                             lowRead = true;
                         }
-                        else if (valueChild.Name == Constants.HighInMeterPerSecTCXString &&
-                                 valueChild.ChildNodes.Count == 1 &&
-                                 valueChild.FirstChild.GetType() == typeof(XmlText))
+                        else if (valueChild.Name == Constants.HighInMeterPerSecTCXString)
                         {
-                            if (!double.TryParse(valueChild.FirstChild.Value, NumberStyles.Float, culture.NumberFormat, out highLimit))
-                            {
-                                return false;
-                            }
-
+                            highLimit.Deserialize(valueChild);
                             highRead = true;
                         }
                     }
@@ -474,17 +362,13 @@ namespace GarminFitnessPlugin.Data
             }
 
             // Check if all was read successfully
-            if (!nameRead ||!viewAsRead || !lowRead || !highRead)
+            if (!nameRead || !viewAsRead || !lowRead || !highRead)
             {
-                return false;
+                throw new GarminFitnesXmlDeserializationException("Missing information in activity profile XML node", parentNode);
             }
 
-            SpeedIsInPace = viewAsPace;
-            m_SpeedZones[index].Name = name;
-            m_SpeedZones[index].Low = (float)Math.Min(lowLimit, highLimit);
-            m_SpeedZones[index].High = (float)Math.Max(lowLimit, highLimit);
-
-            return true;
+            m_SpeedZones[index].Low = Math.Min(lowLimit, highLimit);
+            m_SpeedZones[index].High = Math.Max(lowLimit, highLimit);
         }
 
         protected int PeekZoneNumber(XmlNode zoneNode)
@@ -508,35 +392,27 @@ namespace GarminFitnessPlugin.Data
             return -1;
         }
 
-        private bool PeekMaxHR(XmlNode zoneNode, out Byte maxHR)
+        private void ReadMaxHR(XmlNode activityNode)
         {
-            maxHR = 0;
+            bool maxHRRead = false;
 
-            for (int i = 0; i < zoneNode.ChildNodes.Count; ++i)
+            for (int i = 0; i < activityNode.ChildNodes.Count; ++i)
             {
-                XmlNode child = zoneNode.ChildNodes[i];
+                XmlNode child = activityNode.ChildNodes[i];
 
                 if (child.Name == Constants.MaxHRBPMTCXString &&
                     child.ChildNodes.Count == 1 &&
                     child.FirstChild.Name == Constants.ValueTCXString)
                 {
-                    XmlNode valueNode = child.FirstChild;
-
-                    if (valueNode.ChildNodes.Count == 1 && valueNode.FirstChild.GetType() == typeof(XmlText))
-                    {
-                        if (!Utils.IsTextIntegerInRange(valueNode.FirstChild.Value, Constants.MinHRInBPM, Constants.MaxHRInBPM))
-                        {
-                            return false;
-                        }
-
-                        maxHR = Byte.Parse(valueNode.FirstChild.Value);
-
-                        return true;
-                    }
+                    m_MaxHeartRate.Deserialize(child.FirstChild);
+                    maxHRRead = true;
                 }
             }
 
-            return false;
+            if (!maxHRRead)
+            {
+                throw new GarminFitnesXmlDeserializationException("Missing information in activity profile XML node", activityNode);
+            }
         }
 
         public virtual GarminActivityProfile Clone()
@@ -545,6 +421,7 @@ namespace GarminFitnessPlugin.Data
             GarminActivityProfile clone = new GarminActivityProfile(Category);
 
             Serialize(stream);
+            stream.Position = 0;
             clone.Deserialize(stream, Constants.CurrentVersion);
 
             return clone;
@@ -562,7 +439,7 @@ namespace GarminFitnessPlugin.Data
         {
             Debug.Assert(index >= 0 && index < Constants.GarminHRZoneCount);
 
-            float value = m_HeartRateZones[index].Lower;
+            double value = m_HeartRateZones[index].Lower;
 
             if (HRIsInPercentMax)
             {
@@ -570,7 +447,7 @@ namespace GarminFitnessPlugin.Data
             }
             else
             {
-                float lowLimit = Math.Max(Constants.MinHRInBPM, value * MaximumHeartRate);
+                double lowLimit = Math.Max(Constants.MinHRInBPM, value * MaximumHeartRate);
 
                 return (Byte)Math.Round(lowLimit, 0, MidpointRounding.AwayFromZero);
             }
@@ -580,7 +457,7 @@ namespace GarminFitnessPlugin.Data
         {
             Debug.Assert(index >= 0 && index < Constants.GarminHRZoneCount);
 
-            float value = m_HeartRateZones[index].Upper;
+            double value = m_HeartRateZones[index].Upper;
 
             if (HRIsInPercentMax)
             {
@@ -588,7 +465,7 @@ namespace GarminFitnessPlugin.Data
             }
             else
             {
-                float highLimit = Math.Max(Constants.MinHRInBPM, value * MaximumHeartRate);
+                double highLimit = Math.Max(Constants.MinHRInBPM, value * MaximumHeartRate);
 
                 return (Byte)Math.Round(highLimit, 0, MidpointRounding.AwayFromZero);
             }
@@ -598,21 +475,21 @@ namespace GarminFitnessPlugin.Data
         {
             Debug.Assert(index >= 0 && index < Constants.GarminHRZoneCount);
 
-            float percentValue;
+            double percentValue;
 
             // Convert to BPM if value is in % HRMax
             if (HRIsInPercentMax)
             {
-                percentValue = value / (float)Constants.MaxHRInPercentMax;
+                percentValue = value / (double)Constants.MaxHRInPercentMax;
             }
             else
             {
-                percentValue = value / (float)MaximumHeartRate;
+                percentValue = value / (double)MaximumHeartRate;
             }
 
             if (m_HeartRateZones[index].Lower != percentValue)
             {
-                m_HeartRateZones[index].Lower = percentValue;
+                m_HeartRateZones[index].Lower = new GarminFitnessDoubleRange(percentValue, 0, 1);
 
                 TriggerChangedEvent(new PropertyChangedEventArgs("HeartRateZoneLimit"));
             }
@@ -622,21 +499,21 @@ namespace GarminFitnessPlugin.Data
         {
             Debug.Assert(index >= 0 && index < Constants.GarminHRZoneCount);
 
-            float percentValue;
+            double percentValue;
 
             // Convert to BPM if value is in % HRMax
             if (HRIsInPercentMax)
             {
-                percentValue = value / (float)Constants.MaxHRInPercentMax;
+                percentValue = value / (double)Constants.MaxHRInPercentMax;
             }
             else
             {
-                percentValue = value / (float)MaximumHeartRate;
+                percentValue = value / (double)MaximumHeartRate;
             }
 
             if (m_HeartRateZones[index].Upper != percentValue)
             {
-                m_HeartRateZones[index].Upper = percentValue;
+                m_HeartRateZones[index].Upper = new GarminFitnessDoubleRange(percentValue, 0, 1);
 
                 TriggerChangedEvent(new PropertyChangedEventArgs("HeartRateZoneLimit"));
             }
@@ -653,7 +530,7 @@ namespace GarminFitnessPlugin.Data
         {
             Debug.Assert(index >= 0 && index < Constants.GarminSpeedZoneCount);
 
-            double speedValue = Length.Convert(m_SpeedZones[index].Low, Length.Units.Kilometer, BaseSpeedUnit);
+            double speedValue = Length.Convert(m_SpeedZones[index].Low, Length.Units.Meter, BaseSpeedUnit) * Constants.SecondsPerHour;
 
             if (SpeedIsInPace)
             {
@@ -669,7 +546,7 @@ namespace GarminFitnessPlugin.Data
         {
             Debug.Assert(index >= 0 && index < Constants.GarminSpeedZoneCount);
 
-            double speedValue = Length.Convert(m_SpeedZones[index].High, Length.Units.Kilometer, BaseSpeedUnit);
+            double speedValue = Length.Convert(m_SpeedZones[index].High, Length.Units.Meter, BaseSpeedUnit) * Constants.SecondsPerHour;
 
             if (SpeedIsInPace)
             {
@@ -694,7 +571,7 @@ namespace GarminFitnessPlugin.Data
 
         public void SetSpeedLowLimit(int index, double value)
         {
-            double realValue = Length.Convert(value, BaseSpeedUnit, Length.Units.Kilometer);
+            double realValue = value;
 
             // Convert to speed if in pace
             if (SpeedIsInPace)
@@ -702,9 +579,11 @@ namespace GarminFitnessPlugin.Data
                 realValue = Utils.PaceToSpeed(value);
             }
 
+            realValue = Length.Convert(realValue, BaseSpeedUnit, Length.Units.Meter) / Constants.SecondsPerHour;
+
             if (m_SpeedZones[index].Low != realValue)
             {
-                m_SpeedZones[index].Low = (float)realValue;
+                m_SpeedZones[index].Low = realValue;
 
                 TriggerChangedEvent(new PropertyChangedEventArgs("SpeedZoneLimit"));
             }
@@ -712,7 +591,7 @@ namespace GarminFitnessPlugin.Data
 
         public void SetSpeedHighLimit(int index, double value)
         {
-            double realValue = Length.Convert(value, BaseSpeedUnit, Length.Units.Kilometer);
+            double realValue = value;
 
             // Convert to speed if in pace
             if (SpeedIsInPace)
@@ -720,9 +599,11 @@ namespace GarminFitnessPlugin.Data
                 realValue = Utils.PaceToSpeed(realValue);
             }
 
+            realValue = Length.Convert(realValue, BaseSpeedUnit, Length.Units.Meter) / Constants.SecondsPerHour;
+
             if (m_SpeedZones[index].High != realValue)
             {
-                m_SpeedZones[index].High = (float)realValue;
+                m_SpeedZones[index].High = realValue;
 
                 TriggerChangedEvent(new PropertyChangedEventArgs("SpeedZoneLimit"));
             }
@@ -731,7 +612,7 @@ namespace GarminFitnessPlugin.Data
         public void SetGearWeightInUnits(double weight, Weight.Units unit)
         {
             // Convert to pounds
-            GearWeight = Weight.Convert(weight, unit, Weight.Units.Pound);
+            GearWeight = Weight.Convert(weight, unit, Weight.Units.Kilogram);
         }
 
         public GarminCategories Category
@@ -751,15 +632,15 @@ namespace GarminFitnessPlugin.Data
                         // Update limit values as they will change since stored in %max
                         for (int i = 0; i < Constants.GarminHRZoneCount; ++i)
                         {
-                            float currentLowValue = m_HeartRateZones[i].Lower;
-                            float currentHighValue = m_HeartRateZones[i].Upper;
+                            double currentLowValue = m_HeartRateZones[i].Lower;
+                            double currentHighValue = m_HeartRateZones[i].Upper;
 
-                            m_HeartRateZones[i].Lower = Math.Min(1.0f, (currentLowValue * MaximumHeartRate) / value);
-                            m_HeartRateZones[i].Upper = Math.Min(1.0f, (currentHighValue * MaximumHeartRate) / value);
+                            m_HeartRateZones[i].Lower = new GarminFitnessDoubleRange(Math.Min(1.0f, (currentLowValue * MaximumHeartRate) / value), 0, 1);
+                            m_HeartRateZones[i].Upper = new GarminFitnessDoubleRange(Math.Min(1.0f, (currentHighValue * MaximumHeartRate) / value), 0, 1);
                         }
                     }
 
-                    m_MaxHeartRate = value;
+                    m_MaxHeartRate.Value = value;
 
                     TriggerChangedEvent(new PropertyChangedEventArgs("MaximumHeartRate"));
                 }
@@ -773,7 +654,7 @@ namespace GarminFitnessPlugin.Data
             {
                 if (m_GearWeight != value)
                 {
-                    m_GearWeight = value;
+                    m_GearWeight.Value = value;
 
                     TriggerChangedEvent(new PropertyChangedEventArgs("GearWeight"));
                 }
@@ -787,7 +668,7 @@ namespace GarminFitnessPlugin.Data
             {
                 if (m_HRIsInPercentMax != value)
                 {
-                    m_HRIsInPercentMax = value;
+                    m_HRIsInPercentMax.Value = value;
 
                     TriggerChangedEvent(new PropertyChangedEventArgs("HRIsInPercentMax"));
                 }
@@ -801,7 +682,7 @@ namespace GarminFitnessPlugin.Data
             {
                 if (m_SpeedIsInPace != value)
                 {
-                    m_SpeedIsInPace = value;
+                    m_SpeedIsInPace.Value = value;
 
                     TriggerChangedEvent(new PropertyChangedEventArgs("SpeedIsInPace"));
                 }
@@ -827,11 +708,11 @@ namespace GarminFitnessPlugin.Data
         public event ActivityProfileChangedEventHandler ActivityProfileChanged;
 
         private GarminCategories m_Category;
-        private Byte m_MaxHeartRate;
-        private double m_GearWeight;
-        private bool m_HRIsInPercentMax;
-        private bool m_SpeedIsInPace;
-        private List<GarminFitnessValueRange<float>> m_HeartRateZones = new List<GarminFitnessValueRange<float>>();
-        private List<GarminFitnessNamedLowHighZone> m_SpeedZones = new List<GarminFitnessNamedLowHighZone>();
+        private GarminFitnessByteRange m_MaxHeartRate = new GarminFitnessByteRange(185, Constants.MinHRInBPM, Constants.MaxHRInBPM);
+        private GarminFitnessDoubleRange m_GearWeight = new GarminFitnessDoubleRange(0, Constants.MinWeight, Constants.MaxWeight);
+        private GarminFitnessBool m_HRIsInPercentMax = new GarminFitnessBool(false, Constants.PercentMaxTCXString, Constants.BPMTCXString);
+        private GarminFitnessBool m_SpeedIsInPace = new GarminFitnessBool(false, Constants.SpeedOrPaceTCXString[0], Constants.SpeedOrPaceTCXString[1]);
+        private List<GarminFitnessValueRange<GarminFitnessDoubleRange>> m_HeartRateZones = new List<GarminFitnessValueRange<GarminFitnessDoubleRange>>();
+        private List<GarminFitnessNamedSpeedZone> m_SpeedZones = new List<GarminFitnessNamedSpeedZone>();
     }
 }

@@ -17,9 +17,6 @@ namespace GarminFitnessPlugin.View
         {
             InitializeComponent();
 
-            GarminProfileManager.Instance.ProfileChanged += new GarminProfileManager.ProfileChangedEventHandler(OnProfileChanged);
-            GarminProfileManager.Instance.ActivityProfileChanged += new GarminProfileManager.ActivityProfileChangedEventHandler(OnActivityProfileChanged);
-
             GarminActivityBanner.ThemeChanged(PluginMain.GetApplication().VisualTheme);
             HRZonesTreeList.ThemeChanged(PluginMain.GetApplication().VisualTheme);
             SpeedZonesTreeList.ThemeChanged(PluginMain.GetApplication().VisualTheme);
@@ -107,17 +104,17 @@ namespace GarminFitnessPlugin.View
 
         private void NameTextBox_Validated(object sender, EventArgs e)
         {
-            GarminProfileManager.Instance.ProfileName = NameTextBox.Text;
+            GarminProfileManager.Instance.UserProfile.ProfileName = NameTextBox.Text;
         }
 
         private void MaleRadioButton_CheckedChanged(object sender, EventArgs e)
         {
-            GarminProfileManager.Instance.IsMale = MaleRadioButton.Checked;
+            GarminProfileManager.Instance.UserProfile.IsMale = MaleRadioButton.Checked;
         }
 
         private void FemaleRadioButton_CheckedChanged(object sender, EventArgs e)
         {
-            GarminProfileManager.Instance.IsMale = !FemaleRadioButton.Checked;
+            GarminProfileManager.Instance.UserProfile.IsMale = !FemaleRadioButton.Checked;
         }
 
         private void WeightTextBox_Validating(object sender, System.ComponentModel.CancelEventArgs e)
@@ -130,18 +127,18 @@ namespace GarminFitnessPlugin.View
                 System.Media.SystemSounds.Asterisk.Play();
 
                 // Reset old valid value
-                WeightTextBox.Text = Weight.Convert(GarminProfileManager.Instance.WeightInPounds, Weight.Units.Pound, PluginMain.GetApplication().SystemPreferences.WeightUnits).ToString("0.0");
+                WeightTextBox.Text = GarminProfileManager.Instance.UserProfile.GetWeightInUnits(PluginMain.GetApplication().SystemPreferences.WeightUnits).ToString("0.0");
             }
         }
 
         private void WeightTextBox_Validated(object sender, EventArgs e)
         {
-            GarminProfileManager.Instance.SetWeightInUnits(float.Parse(WeightTextBox.Text), PluginMain.GetApplication().SystemPreferences.WeightUnits);
+            GarminProfileManager.Instance.UserProfile.SetWeightInUnits(float.Parse(WeightTextBox.Text), PluginMain.GetApplication().SystemPreferences.WeightUnits);
         }
 
         private void BirthDateTimePicker_Validated(object sender, EventArgs e)
         {
-            GarminProfileManager.Instance.BirthDate = BirthDateTimePicker.Value;
+            GarminProfileManager.Instance.UserProfile.BirthDate = BirthDateTimePicker.Value;
         }
 
         private void RestHRTextBox_Validating(object sender, System.ComponentModel.CancelEventArgs e)
@@ -154,13 +151,13 @@ namespace GarminFitnessPlugin.View
                 System.Media.SystemSounds.Asterisk.Play();
 
                 // Reset old valid value
-                RestHRTextBox.Text = GarminProfileManager.Instance.RestingHeartRate.ToString("0");
+                RestHRTextBox.Text = GarminProfileManager.Instance.UserProfile.RestingHeartRate.ToString("0");
             }
         }
 
         private void RestHRTextBox_Validated(object sender, EventArgs e)
         {
-            GarminProfileManager.Instance.RestingHeartRate = Byte.Parse(RestHRTextBox.Text);
+            GarminProfileManager.Instance.UserProfile.RestingHeartRate = Byte.Parse(RestHRTextBox.Text);
         }
 
         private void MaxHRTextBox_Validating(object sender, System.ComponentModel.CancelEventArgs e)
@@ -572,13 +569,12 @@ namespace GarminFitnessPlugin.View
 
         private void RefreshProfileInfo()
         {
-            NameTextBox.Text = GarminProfileManager.Instance.ProfileName;
-            MaleRadioButton.Checked = GarminProfileManager.Instance.IsMale;
-            FemaleRadioButton.Checked = !GarminProfileManager.Instance.IsMale;
-            BirthDateTimePicker.Value = GarminProfileManager.Instance.BirthDate;
-            RestHRTextBox.Text = GarminProfileManager.Instance.RestingHeartRate.ToString();
-
-            WeightTextBox.Text = Weight.Convert(GarminProfileManager.Instance.WeightInPounds, Weight.Units.Pound, PluginMain.GetApplication().SystemPreferences.WeightUnits).ToString("0.0");
+            NameTextBox.Text = GarminProfileManager.Instance.UserProfile.ProfileName;
+            MaleRadioButton.Checked = GarminProfileManager.Instance.UserProfile.IsMale;
+            FemaleRadioButton.Checked = !GarminProfileManager.Instance.UserProfile.IsMale;
+            BirthDateTimePicker.Value = GarminProfileManager.Instance.UserProfile.BirthDate;
+            RestHRTextBox.Text = GarminProfileManager.Instance.UserProfile.RestingHeartRate.ToString();
+            WeightTextBox.Text = GarminProfileManager.Instance.UserProfile.GetWeightInUnits(PluginMain.GetApplication().SystemPreferences.WeightUnits).ToString("0.0");
         }
 
         private void RefreshUIFromCategory()

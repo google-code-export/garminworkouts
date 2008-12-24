@@ -9,8 +9,16 @@ namespace GarminFitnessPlugin.Data
     {
         public GarminFitnessValueRange(T lower, T upper)
         {
-            Lower = lower;
-            Upper = upper;
+            if (lower.CompareTo(upper) > 0)
+            {
+                m_Lower = upper;
+                m_Upper = lower;
+            }
+            else
+            {
+                m_Lower = lower;
+                m_Upper = upper;
+            }
         }
 
         public T Lower

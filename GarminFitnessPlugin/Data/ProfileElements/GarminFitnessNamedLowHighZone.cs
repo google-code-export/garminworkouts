@@ -5,47 +5,45 @@ using ZoneFiveSoftware.Common.Data.Fitness;
 
 namespace GarminFitnessPlugin.Data
 {
-    class GarminFitnessNamedLowHighZone : INamedLowHighZone
+    class GarminFitnessNamedSpeedZone
     {
-        public GarminFitnessNamedLowHighZone(float min, float max, string name)
+        public GarminFitnessNamedSpeedZone(double min, double max, string name)
         {
-            m_MinValue = min;
-            m_MaxValue = max;
-            m_Name = name;
+            Low = Math.Min(min, max);
+            High = Math.Max(min, max);
+            Name = name;
         }
 
-#region INamedLowHighZone Members
-
-        public float Low
+        public double Low
         {
             get { return m_MinValue; }
             set
             {
-                if (value > m_MaxValue)
+                if (value.CompareTo(m_MaxValue) > 0)
                 {
-                    m_MinValue = value;
-                    m_MaxValue = value;
+                    m_MinValue.Value = value;
+                    m_MaxValue.Value = value;
                 }
-                if (m_MinValue != value)
+                if (Low != value)
                 {
-                    m_MinValue = value;
+                    m_MinValue.Value = value;
                 }
             }
         }
 
-        public float High
+        public double High
         {
             get { return m_MaxValue; }
             set
             {
-                if (value < m_MinValue)
+                if (value.CompareTo(m_MinValue) < 0)
                 {
-                    m_MinValue = value;
-                    m_MaxValue = value;
+                    m_MinValue.Value = value;
+                    m_MaxValue.Value = value;
                 }
-                if (m_MaxValue != value)
+                if (High != value)
                 {
-                    m_MaxValue = value;
+                    m_MaxValue.Value = value;
                 }
             }
         }
@@ -55,17 +53,30 @@ namespace GarminFitnessPlugin.Data
             get { return m_Name; }
             set
             {
-                if (m_Name != value)
+                if (Name != value)
                 {
-                    m_Name = value;
+                    m_Name.Value = value;
                 }
             }
         }
 
-#endregion
+        public GarminFitnessDoubleRange InternalLow
+        {
+            get { return m_MinValue; }
+        }
 
-        private float m_MinValue;
-        private float m_MaxValue;
-        private string m_Name;
+        public GarminFitnessDoubleRange InternalHigh
+        {
+            get { return m_MaxValue; }
+        }
+
+        public GarminFitnessString InternalName
+        {
+            get { return m_Name; }
+        }
+
+        private GarminFitnessDoubleRange m_MinValue = new GarminFitnessDoubleRange(Constants.MinSpeedMetersPerSecond, Constants.MinSpeedMetersPerSecond, Constants.MaxSpeedMetersPerSecond);
+        private GarminFitnessDoubleRange m_MaxValue = new GarminFitnessDoubleRange(Constants.MinSpeedMetersPerSecond, Constants.MinSpeedMetersPerSecond, Constants.MaxSpeedMetersPerSecond);
+        private GarminFitnessString m_Name = new GarminFitnessString("", 15);
     }
 }
