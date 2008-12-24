@@ -26,14 +26,12 @@ namespace GarminFitnessPlugin.Data
             get { return m_Lower; }
             set
             {
-                int comparisonResult = value.CompareTo(Upper);
-
-                if (comparisonResult > 0)
+                if (value.CompareTo(Upper) > 0)
                 {
                     m_Lower = value;
                     m_Upper = value;
                 }
-                else if (comparisonResult != 0)
+                else if (value.CompareTo(Lower) != 0)
                 {
                     m_Lower = value;
                 }
@@ -45,14 +43,12 @@ namespace GarminFitnessPlugin.Data
             get { return m_Upper; }
             set
             {
-                int comparisonResult = value.CompareTo(Lower);
-
-                if (comparisonResult < 0)
+                if (value.CompareTo(Lower) < 0)
                 {
                     m_Lower = value;
                     m_Upper = value;
                 }
-                else if (comparisonResult != 0)
+                else if (value.CompareTo(Upper) != 0)
                 {
                     m_Upper = value;
                 }
