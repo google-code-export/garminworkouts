@@ -118,7 +118,6 @@ namespace GarminFitnessPlugin.Data
             parentNode = parentNode.LastChild;
 
             float lastMaxHR = PluginMain.GetApplication().Logbook.Athlete.InfoEntries.LastEntryAsOfDate(DateTime.Now).MaximumHeartRatePerMinute;
-            float baseMultiplier = ((float)Constants.MaxHRInPercentMax) / lastMaxHR;
             XmlAttribute attribute;
             XmlNode childNode;
 
@@ -134,8 +133,10 @@ namespace GarminFitnessPlugin.Data
 
             attribute = document.CreateAttribute(Constants.XsiTypeTCXString, Constants.xsins);
             childNode.Attributes.Append(attribute);
-            if (!baseMultiplier.Equals(float.NaN))
+            if (!float.IsNaN(lastMaxHR))
             {
+                float baseMultiplier = Constants.MaxHRInPercentMax / lastMaxHR;
+
                 lowValue.Value = (Byte)Math.Round(Zone.Low * baseMultiplier, 0, MidpointRounding.AwayFromZero);
                 attribute.Value = Constants.HeartRateReferenceTCXString[1];
             }
@@ -153,8 +154,10 @@ namespace GarminFitnessPlugin.Data
 
             attribute = document.CreateAttribute(Constants.XsiTypeTCXString, Constants.xsins);
             childNode.Attributes.Append(attribute);
-            if (!baseMultiplier.Equals(float.NaN))
+            if (!float.IsNaN(lastMaxHR))
             {
+                float baseMultiplier = Constants.MaxHRInPercentMax / lastMaxHR;
+
                 highValue.Value = (Byte)Math.Min(Constants.MaxHRInPercentMax, Math.Round(Zone.High * baseMultiplier, 0, MidpointRounding.AwayFromZero));
                 attribute.Value = Constants.HeartRateReferenceTCXString[1];
             }
