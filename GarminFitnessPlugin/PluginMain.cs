@@ -189,7 +189,7 @@ namespace GarminFitnessPlugin
             {
                 GarminWorkoutManager.Instance.RemoveAllWorkouts();
                 GarminProfileManager.Instance.UserProfile.Cleanup();
-                Options.Instance.ResetSettings();
+                Options.Instance.ResetLogbookSettings();
 
                 // Show the wizard on first run
                 GarminFitnessSetupWizard wizard = new GarminFitnessSetupWizard();

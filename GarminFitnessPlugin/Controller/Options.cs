@@ -56,7 +56,7 @@ namespace GarminFitnessPlugin.Controller
             IsDeserializing = true;
 
             // Set default Garmin to ST category map values
-            ResetSettings();
+            ResetLogbookSettings();
 
             base.Deserialize(stream, version);
 
@@ -272,26 +272,26 @@ namespace GarminFitnessPlugin.Controller
                 // These are here for backwards compatibility
                 ///////////////////////////////////////////////////////////
                 // HR
-                if (child.Name == "UseSTHeartRateZones")
+                if (child.Name == "UseSTHeartRateZones" && child.ChildNodes.Count == 1)
                 {
                     Options.Instance.UseSportTracksHeartRateZones = bool.Parse(child.FirstChild.Value);
                 }
                 // Speed
-                else if (child.Name == "UseSTSpeedZones")
+                else if (child.Name == "UseSTSpeedZones" && child.ChildNodes.Count == 1)
                 {
                     Options.Instance.UseSportTracksSpeedZones = bool.Parse(child.FirstChild.Value);
                 }
                 // Cadence
-                else if (child.Name == "CadenceZoneRefId")
+                else if (child.Name == "CadenceZoneRefId" && child.ChildNodes.Count == 1)
                 {
                     Options.Instance.CadenceZoneCategory = Utils.FindZoneCategoryByID(PluginMain.GetApplication().Logbook.CadenceZones, child.FirstChild.Value);
                 }
                 // Power
-                else if (child.Name == "UseSTPowerZones")
+                else if (child.Name == "UseSTPowerZones" && child.ChildNodes.Count == 1)
                 {
                     Options.Instance.UseSportTracksPowerZones = bool.Parse(child.FirstChild.Value);
                 }
-                else if (child.Name == "PowerZoneRefId")
+                else if (child.Name == "PowerZoneRefId" && child.ChildNodes.Count == 1)
                 {
                     Options.Instance.PowerZoneCategory = Utils.FindZoneCategoryByID(PluginMain.GetApplication().Logbook.PowerZones, child.FirstChild.Value);
                 }
@@ -300,28 +300,28 @@ namespace GarminFitnessPlugin.Controller
                 ///////////////////////////////////////////////////////////
 
                 // Default export directory
-                else if (child.Name == "DefaultExportDirectory")
+                else if (child.Name == "DefaultExportDirectory" && child.ChildNodes.Count == 1)
                 {
                     Options.Instance.DefaultExportDirectory = child.FirstChild.Value;
                 }
                 // Split distances
-                else if (child.Name == "CategoriesSplitDistance")
+                else if (child.Name == "CategoriesSplitDistance" && child.ChildNodes.Count == 1)
                 {
                     Options.Instance.CategoriesPanelSplitSize = int.Parse(child.FirstChild.Value);
                 }
-                else if (child.Name == "WorkoutSplitDistance")
+                else if (child.Name == "WorkoutSplitDistance" && child.ChildNodes.Count == 1)
                 {
                     Options.Instance.WorkoutPanelSplitSize = int.Parse(child.FirstChild.Value);
                 }
-                else if (child.Name == "StepSplitDistance")
+                else if (child.Name == "StepSplitDistance" && child.ChildNodes.Count == 1)
                 {
                     Options.Instance.StepPanelSplitSize = int.Parse(child.FirstChild.Value);
                 }
-                else if (child.Name == "CalendarSplitDistance")
+                else if (child.Name == "CalendarSplitDistance" && child.ChildNodes.Count == 1)
                 {
                     Options.Instance.CalendarPanelSplitSize = int.Parse(child.FirstChild.Value);
                 }
-                else if (child.Name == "StepNotesSplitDistance")
+                else if (child.Name == "StepNotesSplitDistance" && child.ChildNodes.Count == 1)
                 {
                     Options.Instance.StepNotesSplitSize = int.Parse(child.FirstChild.Value);
                 }
@@ -348,21 +348,20 @@ namespace GarminFitnessPlugin.Controller
             }
         }
 
-        public void ResetSettings()
+        public void ResetLogbookSettings()
         {
+            // Logbook settings
             m_UseSportTracksHeartRateZones = true;
             m_UseSportTracksSpeedZones = true;
             m_UseSportTracksPowerZones = true;
             m_CadenceZoneCategory = PluginMain.GetApplication().Logbook.CadenceZones[0];
             m_PowerZoneCategory = PluginMain.GetApplication().Logbook.PowerZones[0];
 
-            m_STToGarminCategoryMap = new Dictionary<IActivityCategory, GarminCategories>();
-            m_DefaultExportDirectory = Assembly.GetCallingAssembly().Location.Substring(0, Assembly.GetCallingAssembly().Location.LastIndexOf('\\'));
-
             m_IsPowerZoneDirty = false;
             m_IsCadenceZoneDirty = false;
 
             // Set default Garmin to ST category map values
+            m_STToGarminCategoryMap = new Dictionary<IActivityCategory, GarminCategories>();
             ClearAllGarminCategories();
             for (int i = 0; i < PluginMain.GetApplication().Logbook.ActivityCategories.Count; ++i)
             {
