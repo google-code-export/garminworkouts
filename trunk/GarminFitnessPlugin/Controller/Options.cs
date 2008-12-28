@@ -372,7 +372,7 @@ namespace GarminFitnessPlugin.Controller
             TriggerOptionsChangedEvent("");
         }
 
-        private void TriggerOptionsChangedEvent(string propertyName)
+        protected void TriggerOptionsChangedEvent(string propertyName)
         {
             if (!IsDeserializing)
             {

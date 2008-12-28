@@ -55,6 +55,8 @@ namespace GarminFitnessPlugin.View
 
         public void RefreshUIFromLogbook()
         {
+            this.Enabled = PluginMain.GetApplication().Logbook != null;
+
             // Update profile from new logbook
             m_CurrentProfile = GarminProfileManager.Instance.GetProfileForActivity(m_CurrentCategory);
 
