@@ -142,25 +142,25 @@
     <value>Bläddra...</value>
   </data>
   <data name="CadenceRangeTargetDescriptionText" xml:space="preserve">
-    <value>Försök bibehålla min kadens mellan {0} och {1} {2}.</value>
+    <value>Försök bibehålla kadens mellan {0} och {1} {2}.</value>
   </data>
   <data name="CadenceSettingsGroupBoxText" xml:space="preserve">
     <value>Kadensinställningar</value>
   </data>
   <data name="CadenceTargetComboBoxText" xml:space="preserve">
-    <value>Försök bibehålla min kadens i viss zon</value>
+    <value>Försök bibehålla kadens i viss zon</value>
   </data>
   <data name="CadenceZoneSelectionLabelText" xml:space="preserve">
-    <value>Använd denna kadenszonen för mina pass :</value>
+    <value>Använd denna kadenszon för mina pass :</value>
   </data>
   <data name="CadenceZoneTargetDescriptionText" xml:space="preserve">
-    <value>Försök bibehålla min kadens i zon {0}.</value>
+    <value>Försök bibehålla kadens i zon {0}.</value>
   </data>
   <data name="CaloriesDurationComboBoxText" xml:space="preserve">
     <value>Efter jag har förbränt ett visst antal kalorier</value>
   </data>
   <data name="CaloriesDurationDescriptionText" xml:space="preserve">
-    <value>Kör till jag förbränt {0} kalorier.</value>
+    <value>Kör tills jag förbränt {0} kalorier.</value>
   </data>
   <data name="CaloriesDurationLabelText" xml:space="preserve">
     <value>Hur många kalorier?</value>
@@ -193,7 +193,7 @@
     <value>Eget</value>
   </data>
   <data name="DataTooRecentErrorText" xml:space="preserve">
-    <value>Kan inte öppna datan med denna versionen av Garmin Fitness Plugin, var vänlig och uppdatera till senaste versionen.</value>
+    <value>Kan inte öppna denna data med denna versionen av Garmin Fitness Plugin, var vänlig och uppdatera till senaste versionen.</value>
   </data>
   <data name="DefaultExportDirectoryGroupBoxText" xml:space="preserve">
     <value>Förval export mapp</value>
@@ -337,25 +337,25 @@
     <value>När min puls överstiger en viss nivå</value>
   </data>
   <data name="HeartRateAboveDurationDescriptionText" xml:space="preserve">
-    <value>Kör till min puls går över {0} {1}.</value>
+    <value>Kör tills min puls går över {0} {1}.</value>
   </data>
   <data name="HeartRateBelowDurationComboBoxText" xml:space="preserve">
     <value>När min puls understiger en viss nivå</value>
   </data>
   <data name="HeartRateBelowDurationDescriptionText" xml:space="preserve">
-    <value>Kör till min puls går under {0} {1}.</value>
+    <value>Kör tills min puls går under {0} {1}.</value>
   </data>
   <data name="HeartRateDurationLabelText" xml:space="preserve">
     <value>Vilken pulszon?</value>
   </data>
   <data name="HeartRateRangeTargetDescriptionText" xml:space="preserve">
-    <value>Försök bibehålla min puls mellan {0} och {1} {2}.</value>
+    <value>Försök bibehålla puls mellan {0} och {1} {2}.</value>
   </data>
   <data name="HeartRateTargetComboBoxText" xml:space="preserve">
-    <value>Försök bibehålla min puls i viss zon</value>
+    <value>Försök bibehålla puls i viss zon</value>
   </data>
   <data name="HeartRateZoneTargetDescriptionText" xml:space="preserve">
-    <value>Försök bibehålla min puls i zon {0}.</value>
+    <value>Försök bibehålla puls i zon {0}.</value>
   </data>
   <data name="HighLabelText" xml:space="preserve">
     <value>Hög :</value>
@@ -397,10 +397,10 @@
     <value>När jag trycker på varvknappen på min enhet.</value>
   </data>
   <data name="LapButtonDurationDescriptionText" xml:space="preserve">
-    <value>Kör till jag trycker in varvknappen på min enhet</value>
+    <value>Kör tills jag trycker in varvknappen på min enhet</value>
   </data>
   <data name="LastExportDateText" xml:space="preserve">
-    <value>Senaste export datum</value>
+    <value>Senaste export datum :</value>
   </data>
   <data name="LowLabelText" xml:space="preserve">
     <value>Låg :</value>
@@ -412,7 +412,7 @@
     <value>Man</value>
   </data>
   <data name="ManualSTGarminZonesExplanationText" xml:space="preserve">
-    <value>Du har valt att konfigurera hur du använder zoner manuellt. Välj läge för varje zontyp tillgänglig i pluginet.</value>
+    <value>Du har valt att konfigurera hur du använder zoner manuellt. Välj läge för varje tillgänglig zontyp.</value>
   </data>
   <data name="MaxHRLabelText" xml:space="preserve">
     <value>Maxpuls :</value>
@@ -424,7 +424,7 @@
     <value>min</value>
   </data>
   <data name="ModeExplanationText" xml:space="preserve">
-    <value>En av de funktioner som Garmin Fitness Plugin erbjuder är bättre integration i SportTracks. Det betyder att det är möjligt att använda puls, hastighet och effektzoner definierade i SportTracks istället för de som definierats av Garmin. Detta kan också anpassas per zontyp.</value>
+    <value>Garmin Fitness Plugin möjliggör bättre integration i SportTracks. Det betyder att det är möjligt att använda puls, hastighet och effektzoner definierade i SportTracks istället för de som definierats av Garmin. Detta kan också anpassas per zontyp.</value>
   </data>
   <data name="NameLabelText" xml:space="preserve">
     <value>Namn :</value>
@@ -460,7 +460,7 @@
     <value>Övrigt</value>
   </data>
   <data name="PaceRangeTargetDescriptionText" xml:space="preserve">
-    <value>Försök bibehålla mitt tempo mellan  {0:00}:{1:00} och {2:00}:{3:00} min/{4}.</value>
+    <value>Försök bibehålla mitt tempo mellan {0:00}:{1:00} och {2:00}:{3:00} min/{4}.</value>
   </data>
   <data name="PasteStepErrorText" xml:space="preserve">
     <value>Kan inte klistra in stegen, ditt pass kan inte innehålla så många steg. Det maximala antalet steg i ett pass är 20.</value>
@@ -469,13 +469,13 @@
     <value>/h</value>
   </data>
   <data name="PowerRangeTargetDescriptionText" xml:space="preserve">
-    <value>Försök bibehålla min effekt mellan {0} och {1} watt.</value>
+    <value>Försök bibehålla effekt mellan {0} och {1} watt.</value>
   </data>
   <data name="PowerSettingsGroupBoxText" xml:space="preserve">
     <value>Effektinställningar</value>
   </data>
   <data name="PowerTargetComboBoxText" xml:space="preserve">
-    <value>Försök bibehålla min effekt i viss zon</value>
+    <value>Försök bibehålla effekt i viss zon</value>
   </data>
   <data name="PowerZoneSelectionLabelText" xml:space="preserve">
     <value>Använd denna effektzon för mina pass :</value>
@@ -484,7 +484,7 @@
     <value>Effektzoner</value>
   </data>
   <data name="PowerZoneTargetDescriptionText" xml:space="preserve">
-    <value>Försök bibehålla min effekt i zon {0}</value>
+    <value>Försök bibehålla effekt i zon {0}</value>
   </data>
   <data name="ProfileText" xml:space="preserve">
     <value>Profil</value>
@@ -511,10 +511,10 @@
     <value>Välj detta kommer att skriva över det existerande passet med samma namn</value>
   </data>
   <data name="ReplaceLabelText" xml:space="preserve">
-    <value>Byt ut</value>
+    <value>Ersätt</value>
   </data>
   <data name="ReplaceRenameDialogText" xml:space="preserve">
-    <value>Byt ut eller byt namn?</value>
+    <value>Ersätt eller byt namn?</value>
   </data>
   <data name="ReplaceRenameIntroLabelText" xml:space="preserve">
     <value>Det finns redan ett pass med detta namn. Du kan välja att ersätta det nuvarande passet eller byta namn på det nya.</value>
@@ -523,7 +523,7 @@
     <value>Vilosteg.</value>
   </data>
   <data name="RestingHeartRateLabelText" xml:space="preserve">
-    <value>Vilopuls</value>
+    <value>Vilopuls :</value>
   </data>
   <data name="RestText" xml:space="preserve">
     <value>Vila</value>
@@ -550,25 +550,25 @@
     <value>Välj enhet</value>
   </data>
   <data name="SettingsPageNameText" xml:space="preserve">
-    <value>Garmin Fitness inställningar</value>
+    <value>Garmin Fitness</value>
   </data>
   <data name="SetupGarminOrSTZonesText" xml:space="preserve">
     <value>Ställ in zoner separat</value>
   </data>
   <data name="SpeedRangeTargetDescriptionText" xml:space="preserve">
-    <value>Försök bibehålla min hastighet mellan {0:0.00} {2}/h och {1:0.00} {2}/h.</value>
+    <value>Försök bibehålla hastighet mellan {0:0.00} {2}/h och {1:0.00} {2}/h.</value>
   </data>
   <data name="SpeedSettingsGroupBoxText" xml:space="preserve">
     <value>Hastighetsinställningar</value>
   </data>
   <data name="SpeedTargetComboBoxText" xml:space="preserve">
-    <value>Försök bibehålla min hastighet i viss zon</value>
+    <value>Försök bibehålla hastighet i viss zon</value>
   </data>
   <data name="SpeedZonesGroupBoxText" xml:space="preserve">
     <value>Hastighetszoner</value>
   </data>
   <data name="SpeedZoneTargetDescriptionText" xml:space="preserve">
-    <value>Försök bibehålla min hastighet i zon {0}.</value>
+    <value>Försök bibehålla hastighet i zon {0}.</value>
   </data>
   <data name="SportTracksText" xml:space="preserve">
     <value>SportTracks</value>
@@ -586,7 +586,7 @@
     <value>Eget steg namn:</value>
   </data>
   <data name="StepTargetGroupText" xml:space="preserve">
-    <value>Stegmål:</value>
+    <value>Stegmål</value>
   </data>
   <data name="StepTargetLabelText" xml:space="preserve">
     <value>Vad är målet för detta steg?</value>
@@ -595,7 +595,7 @@
     <value>Jag vill använda SportTracks läge</value>
   </data>
   <data name="STZonesExplanationText" xml:space="preserve">
-    <value>Vid användning av SportTracks zoner, använder pluginet puls och hastighetszoner som definierats i den kategori som passet hanteras i. SportTracks aktivitetskategorier har inte kadens eller effektzoner, varför dessa måste sättas upp separat.</value>
+    <value>Vid användning av SportTracks zoner, använder pluginet puls och hastighetszoner som definierats för den kategori som passet sparats i. SportTracks aktivitetskategorier har inte kadens eller effektzoner, varför dessa måste sättas upp separat.</value>
   </data>
   <data name="SuccessText" xml:space="preserve">
     <value>Utfört</value>
@@ -622,7 +622,7 @@
     <value>till</value>
   </data>
   <data name="TooRecentDataText" xml:space="preserve">
-    <value>Datan är för ny för denna versionen av pluginet. Installera den senaste versionen av pluginet.</value>
+    <value>Datan är inkompatibel med denna versionen av pluginet. Installera den senaste versionen av pluginet.</value>
   </data>
   <data name="UseCustomCategoryText" xml:space="preserve">
     <value>Använd egen kategori</value>
@@ -637,7 +637,7 @@
     <value>Vikt :</value>
   </data>
   <data name="WelcomeLabelText" xml:space="preserve">
-    <value>Välkommen till Garmin Fitness Plugin inställningsguide. Detta kommer hjälpa dig ställa in pluginet för din logbok. Du kan trycka in ”Slutför” när som helst för att avsluta guiden. Notera också att denna guide alltid är tillgänglig från pluginets ”Inställning” sida om du vill ändra pluginet senare.</value>
+    <value>Välkommen till Garmin Fitness Plugin inställningsguide. Guiden kommer hjälpa dig ställa in pluginet för din logbok. Du kan trycka in ”Slutför” när som helst för att avsluta guiden. Notera också att denna guide alltid är tillgänglig från pluginets ”Inställning” sida om du vill ändra inställningar senare.</value>
   </data>
   <data name="WelcomeText" xml:space="preserve">
     <value>Välkommen</value>
