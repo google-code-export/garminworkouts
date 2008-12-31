@@ -246,6 +246,10 @@ namespace GarminFitnessPlugin.Controller
             child = document.CreateElement("StepNotesSplitDistance");
             child.AppendChild(document.CreateTextNode(StepNotesSplitSize.ToString()));
             parentNode.AppendChild(child);
+
+            child = document.CreateElement("DonationReminderDate");
+            child.AppendChild(document.CreateTextNode(DonationReminderDate.Ticks.ToString()));
+            parentNode.AppendChild(child);
         }
 
         public void Deserialize(System.Xml.XmlNode parentNode)
@@ -324,6 +328,10 @@ namespace GarminFitnessPlugin.Controller
                 else if (child.Name == "StepNotesSplitDistance" && child.ChildNodes.Count == 1)
                 {
                     Options.Instance.StepNotesSplitSize = int.Parse(child.FirstChild.Value);
+                }
+                else if (child.Name == "DonationReminderDate" && child.ChildNodes.Count == 1)
+                {
+                    Options.Instance.DonationReminderDate = new DateTime(long.Parse(child.FirstChild.Value));
                 }
             }
 
@@ -624,6 +632,12 @@ namespace GarminFitnessPlugin.Controller
             }
         }
 
+        public DateTime DonationReminderDate
+        {
+            get { return m_DonationReminderDate; }
+            set { m_DonationReminderDate = value; }
+        }
+
         private Dictionary<IActivityCategory, GarminCategories>  STToGarminCategoryMap
         {
             get { return m_STToGarminCategoryMap; }
@@ -664,6 +678,8 @@ namespace GarminFitnessPlugin.Controller
         private IZoneCategory m_PowerZoneCategory;
         private Dictionary<IActivityCategory, GarminCategories> m_STToGarminCategoryMap = new Dictionary<IActivityCategory, GarminCategories>();
         private String m_DefaultExportDirectory;
+
+        private DateTime m_DonationReminderDate = DateTime.Today;
 
         private bool m_IsPowerZoneDirty = false;
         private bool m_IsCadenceZoneDirty = false;

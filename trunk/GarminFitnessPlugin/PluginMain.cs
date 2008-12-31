@@ -65,6 +65,23 @@ namespace GarminFitnessPlugin
                         Options.Instance.Deserialize(m_PluginOptions);
                     }
                 }
+
+                // Check for donation reminder
+                if (Options.Instance.DonationReminderDate.Ticks != 0 &&
+                    Options.Instance.DonationReminderDate >= DateTime.Today)
+                {
+                    DonationReminder dlg = new DonationReminder();
+
+                    if(dlg.ShowDialog() == DialogResult.OK)
+                    {
+                        Options.Instance.DonationReminderDate = new DateTime(0);
+                    }
+                    else
+                    {
+                        Options.Instance.DonationReminderDate = DateTime.Today;
+                        Options.Instance.DonationReminderDate.AddDays(14);
+                    }
+                }
             }
         }
 
