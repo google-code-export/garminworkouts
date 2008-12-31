@@ -109,10 +109,14 @@ namespace GarminFitnessPlugin.Controller
                     }
 
                     Workout newWorkout = GarminWorkoutManager.Instance.CreateWorkout(child, category);
+
+                    if (newWorkout == null)
+                    {
+                        return false;
+                    }
+
                     newWorkout.Name = name;
                     newWorkout.Category = category;
-
-                    return (newWorkout != null);
                 }
                 else if (child.Name == "Running" ||
                          child.Name == "Biking" ||
@@ -125,7 +129,7 @@ namespace GarminFitnessPlugin.Controller
                         // Still looks valid, keep on
                         XmlNode folderList = child.FirstChild;
 
-                        LoadWorkouts(folderList);
+                        return LoadWorkouts(folderList);
                     }
                 }
             }

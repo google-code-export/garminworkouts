@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
@@ -213,6 +214,13 @@ namespace GarminFitnessPlugin.View
             GarminFitnessSetupWizard wizard = new GarminFitnessSetupWizard();
 
             wizard.ShowDialog();
+        }
+
+        private void DonateImageLabel_Click(object sender, System.EventArgs e)
+        {
+            Options.Instance.DonationReminderDate = new DateTime(0);
+
+            System.Diagnostics.Process.Start("https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=H3VUJCWFVH2J2&lc=CA&item_name=PissedOffCil%20ST%20Plugins&item_number=Garmin%20Fitness&currency_code=USD&bn=PP%2dDonationsBF%3abtn_donateCC_LG%2egif%3aNonHosted");
         }
 
         private void UpdateUIStrings()

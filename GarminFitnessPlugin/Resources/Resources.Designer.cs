@@ -396,6 +396,13 @@ namespace GarminFitnessPlugin.Resources {
             }
         }
         
+        internal static System.Drawing.Bitmap DonateImage {
+            get {
+                object obj = ResourceManager.GetObject("DonateImage", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
         /// <summary>
         ///   Looks up a localized string similar to Value must be a decimal number between {0:0.00} and {1:0.00}.
         /// </summary>
