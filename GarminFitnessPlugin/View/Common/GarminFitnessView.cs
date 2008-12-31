@@ -31,7 +31,6 @@ namespace GarminFitnessPlugin.View
         }
 
 #region IView Members
-
         public System.Collections.Generic.IList<IAction> Actions
         {
             get
@@ -107,11 +106,9 @@ namespace GarminFitnessPlugin.View
         {
             get { return GarminFitnessView.GetLocalizedString("GarminFitnessText"); }
         }
-
 #endregion
 
 #region IDialogPage Members
-
         public System.Windows.Forms.Control CreatePageControl()
         {
             if (m_MainControl == null)
@@ -162,7 +159,6 @@ namespace GarminFitnessPlugin.View
         {
             GetCurrentView().UICultureChanged(culture);
         }
-
 #endregion
 
 #region INotifyPropertyChanged Members
