@@ -182,7 +182,8 @@ namespace GarminFitnessPlugin.Controller
 
             if (steps != null)
             {
-                result.Steps.AddRange(steps);
+                result.Steps.Clear();
+                result.AddStepsToRoot(steps);
             }
 
             RegisterWorkout(result);
@@ -371,6 +372,72 @@ namespace GarminFitnessPlugin.Controller
             return name != String.Empty && workoutWithSameName == null;
         }
 
+        public List<string> GetUniqueNameSequence(string baseName, UInt16 sequenceLength)
+        {
+            Debug.Assert(sequenceLength > 0 && sequenceLength < Constants.PluginMaxStepsPerWorkout);
+
+            List<string> newNames = new List<string>();
+            UInt16 nameTrailingDigits = (UInt16)Math.Ceiling(Math.Log10(sequenceLength));
+            const string separator = "-";
+            const string overText = "/";
+            string numberFormat = String.Empty;
+            int extraCharacters = separator.Length + overText.Length + 2 * nameTrailingDigits;
+            
+            if (baseName.Length + extraCharacters > Constants.MaxNameLength)
+            {
+                baseName = baseName.Substring(0, Constants.MaxNameLength - extraCharacters);
+            }
+
+            for(int i = 0; i < nameTrailingDigits; ++i)
+            {
+                numberFormat += "0";
+            }
+
+            // Try a variety of name that have an appended "-XX/XX" where XX is the sequence number
+            bool allNamesUnique = false;
+            int renameCount = 1;
+            while(!allNamesUnique)
+            {
+                Debug.Assert(renameCount < 10000);
+
+                int i;
+                for (i = 1; i <= sequenceLength; ++i)
+                {
+                    string tempName = baseName + separator + i.ToString(numberFormat) + overText + sequenceLength.ToString(numberFormat);
+
+                    if(!IsWorkoutNameAvailable(tempName))
+                    {
+                        break;
+                    }
+                }
+
+                if (i > sequenceLength)
+                {
+                    // All names are unique
+                    allNamesUnique = true;
+                }
+                else
+                {
+                    if (baseName.Length + extraCharacters + renameCount.ToString().Length > Constants.MaxNameLength)
+                    {
+                        baseName = baseName.Substring(0, baseName.Length - 1);
+                    }
+
+                    baseName = baseName + renameCount.ToString();
+                    renameCount++;
+                }
+            }
+
+            for (int i = 1; i <= sequenceLength; ++i)
+            {
+                string tempName = baseName + separator + i.ToString(numberFormat) + overText + sequenceLength.ToString(numberFormat);
+
+                newNames.Add(tempName);
+            }
+
+            return newNames;
+        }
+
         public string GetUniqueName(string baseName)
         {
             if (IsWorkoutNameAvailable(baseName))
@@ -382,15 +449,12 @@ namespace GarminFitnessPlugin.Controller
                 if (!Utils.IsTextInteger(baseName))
                 {
                     // Remove all trailing numbers
-                    while (baseName.LastIndexOfAny("0123456789".ToCharArray()) == baseName.Length - 1)
-                    {
-                        baseName = baseName.Substring(0, baseName.Length - 1);
-                    }
+                    baseName = baseName.TrimEnd("0123456789".ToCharArray());
                 }
 
                 int workoutNumber = 1;
 
-                if ((baseName + workoutNumber.ToString()).Length > 15)
+                if ((baseName + workoutNumber.ToString()).Length > Constants.MaxNameLength)
                 {
                     // We need to truncate the base name (we only remove 1 character at the time
                     //  since the numbers cannot grow faster than 1 char between 2 integers)
@@ -403,7 +467,7 @@ namespace GarminFitnessPlugin.Controller
 
                     workoutNumber++;
 
-                    if ((baseName + workoutNumber.ToString()).Length > 15)
+                    if ((baseName + workoutNumber.ToString()).Length > Constants.MaxNameLength)
                     {
                         // We need to truncate the base name (we only remove 1 character at the time
                         //  since the numbers cannot grow faster than 1 char between 2 integers)

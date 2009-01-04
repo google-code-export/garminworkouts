@@ -13,7 +13,9 @@ namespace GarminFitnessPlugin
         public static readonly UInt16 MinutesPerHour = 60;
         public static readonly UInt16 SecondsPerHour = (UInt16)(MinutesPerHour * SecondsPerMinute);
 
+        public static readonly UInt16 PluginMaxStepsPerWorkout = 999;
         public static readonly Byte MaxStepsPerWorkout = 20;
+        public static readonly Byte MaxNameLength = 15;
 
         // HR limits
         public static readonly Byte MinHRInBPM = 30;

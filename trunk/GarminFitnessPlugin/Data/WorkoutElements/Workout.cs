@@ -613,44 +613,6 @@ namespace GarminFitnessPlugin.Data
             return null;
         }
 
-        public UInt16 GetSplitPartsCount()
-        {
-            return GetStepSplitPart(Steps[Steps.Count - 1]);
-        }
-
-        public UInt16 GetStepSplitPart(IStep step)
-        {
-            UInt16 partNumber = 1;
-            UInt16 counter = 0;
-            IStep topMostRepeat = GetTopMostRepeatForStep(step);
-            IStep stepToFind = step;
-
-            if (topMostRepeat != null)
-            {
-                stepToFind = topMostRepeat;
-            }
-
-            for (int i = 0; i < Steps.Count; ++i)
-            {
-                IStep currentStep = Steps[i];
-
-                counter += currentStep.GetStepCount();
-
-                if (counter > Constants.MaxStepsPerWorkout)
-                {
-                    partNumber++;
-                    counter = 0;
-                }
-
-                if (currentStep == stepToFind)
-                {
-                    break;
-                }
-            }
-
-            return partNumber;
-        }
-
         public void AddSportTracksExtension(XmlNode extensionNode)
         {
             m_STExtensions.Add(extensionNode);
@@ -744,6 +706,12 @@ namespace GarminFitnessPlugin.Data
 
         public bool CanAcceptNewStep(int newStepCount, IStep destinationStep)
         {
+            // Hard limit at PluginMaxStepsPerWorkout steps
+            if (GetStepCount() + newStepCount > Constants.PluginMaxStepsPerWorkout)
+            {
+                return false;
+            }
+
             IStep topMostRepeat = GetTopMostRepeatForStep(destinationStep);
 
             if (topMostRepeat == null)
@@ -771,6 +739,101 @@ namespace GarminFitnessPlugin.Data
                 {
                     return GetStepCount() + newStepCount <= Constants.MaxStepsPerWorkout;
                 }
+            }
+        }
+
+        public UInt16 GetSplitPartsCount()
+        {
+            return GetStepSplitPart(Steps[Steps.Count - 1]);
+        }
+
+        public UInt16 GetStepSplitPart(IStep step)
+        {
+            UInt16 partNumber = 1;
+            UInt16 counter = 0;
+            IStep topMostRepeat = GetTopMostRepeatForStep(step);
+            IStep stepToFind = step;
+
+            if (topMostRepeat != null)
+            {
+                stepToFind = topMostRepeat;
+            }
+
+            int i = 0;
+            while(i < Steps.Count)
+            {
+                IStep currentStep = Steps[i];
+
+                counter += currentStep.GetStepCount();
+
+                if (counter > Constants.MaxStepsPerWorkout)
+                {
+                    partNumber++;
+                    counter = 0;
+                }
+                else
+                {
+                    ++i;
+                }
+
+                if (currentStep == stepToFind)
+                {
+                    break;
+                }
+            }
+
+            return partNumber;
+        }
+
+        public void SplitInSeperateParts()
+        {
+            UInt16 partsCount = GetSplitPartsCount();
+
+            if (partsCount > 1)
+            {
+                // Let's first find a good base name that is available
+                List<string> uniqueNames = GarminWorkoutManager.Instance.GetUniqueNameSequence(Name, partsCount);
+
+                List<IStep> newStepsList = new List<IStep>();
+                UInt16 partNumber = 0;
+                UInt16 counter = 0;
+                UInt16 stepIndex = 0;
+                for (int i = 0; i < GetSplitPartsCount(); ++i)
+                {
+                    newStepsList.Clear();
+
+                    // Go through steps and keep those who deserve to this part
+                    while (i == partNumber)
+                    {
+                        IStep currentStep = Steps[stepIndex];
+
+                        counter += currentStep.GetStepCount();
+
+                        if (counter > Constants.MaxStepsPerWorkout)
+                        {
+                            partNumber++;
+                            counter = 0;
+                        }
+                        else
+                        {
+                            newStepsList.Add(currentStep);
+                            stepIndex++;
+
+                            // This condition forces exit when we reached the last step
+                            if (stepIndex >= Steps.Count)
+                            {
+                                partNumber++;
+
+                                Debug.Assert(partNumber == GetSplitPartsCount());
+                            }
+                        }
+                    }
+
+                    GarminWorkoutManager.Instance.CreateWorkout(uniqueNames[i], Category, newStepsList);
+                }
+
+                // Remove ourselves, we finished splitting up
+                GarminWorkoutManager.Instance.RemoveWorkout(this);
             }
         }
 
@@ -810,7 +873,14 @@ namespace GarminFitnessPlugin.Data
 
         public bool AddStepsToRoot(List<IStep> stepsToAdd)
         {
-            return InsertStepsAfterStep(stepsToAdd, Steps[Steps.Count - 1]);
+            if (Steps.Count > 0)
+            {
+                return InsertStepsAfterStep(stepsToAdd, Steps[Steps.Count - 1]);
+            }
+            else
+            {
+                return InsertStepsAfterStep(stepsToAdd, null);
+            }
         }
 
         public bool InsertStepInRoot(int index, IStep stepToAdd)
@@ -847,8 +917,6 @@ namespace GarminFitnessPlugin.Data
 
         public bool InsertStepsAfterStep(List<IStep> stepsToAdd, IStep previousStep)
         {
-            Debug.Assert(previousStep != null);
-
             int insertStepsCount = 0;
 
             // We need to count the number of items being moved
@@ -878,12 +946,14 @@ namespace GarminFitnessPlugin.Data
 
                 for (int i = 0; i < stepsToAdd.Count; ++i)
                 {
+                    IStep currentStep = stepsToAdd[i];
+
                     // Make sure we don't duplicate the step in the list
-                    Debug.Assert(!Utils.GetStepInfo(stepsToAdd[i], Steps, out tempList, out tempPosition));
+                    Debug.Assert(!Utils.GetStepInfo(currentStep, Steps, out tempList, out tempPosition));
 
-                    RegisterStep(stepsToAdd[i]);
+                    RegisterStep(currentStep);
 
-                    parentList.Insert(++previousPosition, stepsToAdd[i]);
+                    parentList.Insert(++previousPosition, currentStep);
                     stepAdded = true;
                 }
 
@@ -896,8 +966,28 @@ namespace GarminFitnessPlugin.Data
             }
             else
             {
-                // We haven't found the right step, this shouldn't happen
-                Debug.Assert(false);
+                // We haven't found the step, insert at root
+                List<IStep> tempList;
+                UInt16 tempPosition = 0;
+                bool stepAdded = false;
+
+                for (int i = 0; i < stepsToAdd.Count; ++i)
+                {
+                    IStep currentStep = stepsToAdd[i];
+
+                    // Make sure we don't duplicate the step in the list
+                    Debug.Assert(!Utils.GetStepInfo(currentStep, Steps, out tempList, out tempPosition));
+
+                    RegisterStep(currentStep);
+
+                    Steps.Add(currentStep);
+                    stepAdded = true;
+                }
+
+                if (stepAdded)
+                {
+                    TriggerWorkoutChangedEvent(new PropertyChangedEventArgs("Steps"));
+                }
             }
 
             return false;
@@ -1272,7 +1362,7 @@ namespace GarminFitnessPlugin.Data
             {
                 if (m_Name != value)
                 {
-                    Debug.Assert(value.Length > 0 && value.Length <= 15);
+                    Debug.Assert(value.Length > 0 && value.Length <= Constants.MaxNameLength);
                     m_Name.Value = value;
 
                     TriggerWorkoutChangedEvent(new PropertyChangedEventArgs("Name"));

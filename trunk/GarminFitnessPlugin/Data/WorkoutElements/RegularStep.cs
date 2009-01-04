@@ -365,8 +365,6 @@ namespace GarminFitnessPlugin.Data
             {
                 if (m_Name != value)
                 {
-                    Debug.Assert(value.Length <= 15);
-
                     m_Name.Value = value;
 
                     TriggerStepChanged( new PropertyChangedEventArgs("Name"));
@@ -396,7 +394,7 @@ namespace GarminFitnessPlugin.Data
 
         private IDuration m_Duration;
         private ITarget m_Target;
-        private GarminFitnessString m_Name = new GarminFitnessString(String.Empty, 15);
+        private GarminFitnessString m_Name = new GarminFitnessString(String.Empty, Constants.MaxNameLength);
         private GarminFitnessBool m_IsRestingStep = new GarminFitnessBool(false, Constants.StepIntensityZoneTCXString[1], Constants.StepIntensityZoneTCXString[0]);
     }
 }
