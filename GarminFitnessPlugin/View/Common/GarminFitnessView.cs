@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Drawing;
@@ -181,7 +182,7 @@ namespace GarminFitnessPlugin.View
             {
                 if (!Options.Instance.EnableAutoSplitWorkouts)
                 {
-                    bool workoutSplit = false;
+                    List<Workout> workoutsToSplit = new List<Workout>();
 
                     // Check if all workouts can handle the change
                     for(int i = 0; i < GarminWorkoutManager.Instance.Workouts.Count; i++)
@@ -190,15 +191,18 @@ namespace GarminFitnessPlugin.View
 
                         if (currentWorkout.GetStepCount() > Constants.MaxStepsPerWorkout)
                         {
-                            workoutSplit = true;
-
-                            // TODO : Auto-split this workout
-                            Trace.Assert(false);
+                            workoutsToSplit.Add(currentWorkout);
                         }
                     }
 
-                    if (workoutSplit)
+                    // Go ahead, split them up
+                    if (workoutsToSplit.Count > 0)
                     {
+                        for (int i = 0; i < workoutsToSplit.Count; ++i)
+                        {
+                            workoutsToSplit[i].SplitInSeperateParts();
+                        }
+
                         MessageBox.Show(GarminFitnessView.GetLocalizedString("WorkoutsWereSplitText"),
                                         GarminFitnessView.GetLocalizedString("WarningText"),
                                         MessageBoxButtons.OK, MessageBoxIcon.Warning);

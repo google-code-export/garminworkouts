@@ -26,6 +26,8 @@ namespace GarminFitnessPlugin.View
         {
             InitializeComponent();
 
+            Options.Instance.OptionsChanged += new Options.OptionsChangedEventHandler(OnOptionsChanged);
+
             WorkoutsList.RowDataRenderer = new WorkoutRowDataRenderer(WorkoutsList);
             WorkoutsList.LabelProvider = new WorkoutIconLabelProvider();
 
@@ -50,6 +52,14 @@ namespace GarminFitnessPlugin.View
             GarminWorkoutManager.Instance.WorkoutStepTargetChanged += new GarminWorkoutManager.WorkoutStepTargetChangedEventHandler(OnWorkoutStepTargetChanged);
 
             WorkoutsList.Focus();
+        }
+
+        void OnOptionsChanged(PropertyChangedEventArgs changedProperty)
+        {
+            if (changedProperty.PropertyName == "EnableAutoSplitWorkouts")
+            {
+                RefreshWorkoutSelectionControls();
+            }
         }
 
         private void OnGarminWorkoutManagerWorkoutListChanged()
@@ -327,7 +337,7 @@ namespace GarminFitnessPlugin.View
         {
             if (StepsList.Columns.Count > 0)
             {
-                StepsList.Columns[0].Width = StepsList.Width - 40;
+                StepsList.Columns[0].Width = StepsList.Width - 100;
             }
         }
 
@@ -368,7 +378,7 @@ namespace GarminFitnessPlugin.View
         private void StepNameText_Validated(object sender, EventArgs e)
         {
             Debug.Assert(SelectedStep != null && SelectedStep.Type == IStep.StepType.Regular);
-            Debug.Assert(StepNameText.Text.Length <= 15);
+            Debug.Assert(StepNameText.Text.Length <= Constants.MaxNameLength);
             RegularStep concreteStep = (RegularStep)SelectedStep;
 
             concreteStep.Name = StepNameText.Text;
@@ -2706,11 +2716,11 @@ namespace GarminFitnessPlugin.View
                 StepsList.RowData = stepsList;
 
                 StepsList.Columns.Clear();
-                StepsList.Columns.Add(new TreeList.Column("DisplayString", "Description", StepsList.Width - 40,
+                StepsList.Columns.Add(new TreeList.Column("DisplayString", "Description", StepsList.Width - 100,
                                                           StringAlignment.Near));
                 if (SelectedWorkout.GetStepCount() > Constants.MaxStepsPerWorkout)
                 {
-                    StepsList.Columns.Add(new TreeList.Column("AutoSplitPart", "Workout Part", 20,
+                    StepsList.Columns.Add(new TreeList.Column("AutoSplitPart", "Workout Part", 80,
                                           StringAlignment.Near));
                 }
             }

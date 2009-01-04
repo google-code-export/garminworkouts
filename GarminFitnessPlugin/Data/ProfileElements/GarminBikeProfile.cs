@@ -279,7 +279,7 @@ namespace GarminFitnessPlugin.Data
         private GarminFitnessBool m_HasCadenceSensor = new GarminFitnessBool(false, true.ToString().ToLower(), false.ToString().ToLower());
         private GarminFitnessBool m_HasPowerSensor = new GarminFitnessBool(false, true.ToString().ToLower(), false.ToString().ToLower());
         private GarminFitnessBool m_AutoWheelSize = new GarminFitnessBool(true, true.ToString().ToLower(), false.ToString().ToLower());
-        private GarminFitnessString m_Name = new GarminFitnessString("Bike", 15);
+        private GarminFitnessString m_Name = new GarminFitnessString("Bike", Constants.MaxNameLength);
         private GarminFitnessDoubleRange m_OdometerInMeters = new GarminFitnessDoubleRange(0, Constants.MinOdometer, Constants.MaxOdometerMeters);
         private GarminFitnessDoubleRange m_WeightInPounds = new GarminFitnessDoubleRange(0, Constants.MinWeight, Constants.MaxWeight);
         private GarminFitnessUInt16Range m_WheelSize = new GarminFitnessUInt16Range(2100, Constants.MinWheelSize, Constants.MaxWheelSize);

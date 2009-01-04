@@ -77,6 +77,6 @@ namespace GarminFitnessPlugin.Data
 
         private GarminFitnessDoubleRange m_MinValue = new GarminFitnessDoubleRange(Constants.MinSpeedMetersPerSecond, Constants.MinSpeedMetersPerSecond, Constants.MaxSpeedMetersPerSecond);
         private GarminFitnessDoubleRange m_MaxValue = new GarminFitnessDoubleRange(Constants.MinSpeedMetersPerSecond, Constants.MinSpeedMetersPerSecond, Constants.MaxSpeedMetersPerSecond);
-        private GarminFitnessString m_Name = new GarminFitnessString("", 15);
+        private GarminFitnessString m_Name = new GarminFitnessString("", Constants.MaxNameLength);
     }
 }
