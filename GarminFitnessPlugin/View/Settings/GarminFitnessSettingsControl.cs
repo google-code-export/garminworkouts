@@ -24,16 +24,18 @@ namespace GarminFitnessPlugin.View
             PluginMain.LogbookChanged += new PluginMain.LogbookChangedEventHandler(OnLogbookChanged);
 
             UpdateUIStrings();
+            UpdateOptionsUI();
         }
 
         public void UICultureChanged(CultureInfo culture)
         {
             UpdateUIStrings();
+            UpdateOptionsUI();
         }
 
         void OnOptionsChanged(System.ComponentModel.PropertyChangedEventArgs changedProperty)
         {
-            UpdateUIStrings();
+            UpdateOptionsUI();
         }
 
         void OnLogbookChanged(object sender, ILogbook oldLogbook, ILogbook newLogbook)
@@ -168,6 +170,11 @@ namespace GarminFitnessPlugin.View
             }
         }
 
+        private void AutoSplitCheckBox_CheckedChanged(object sender, EventArgs e)
+        {
+            Options.Instance.EnableAutoSplitWorkouts = AutoSplitCheckBox.Checked;
+        }
+
         private void ActivityCategoryList_SelectedChanged(object sender, System.EventArgs e)
         {
             if (ActivityCategoryList.Selected.Count == 1)
@@ -247,6 +254,8 @@ namespace GarminFitnessPlugin.View
 
             RunWizardLinkLabel.Text = GarminFitnessView.GetLocalizedString("RunWizardText");
 
+            AutoSplitCheckBox.Text = GarminFitnessView.GetLocalizedString("AutoSplitCheckBoxText");
+
             CadenceZoneComboBox.Items.Clear();
             for (int i = 0; i < PluginMain.GetApplication().Logbook.CadenceZones.Count; ++i)
             {
@@ -287,9 +296,6 @@ namespace GarminFitnessPlugin.View
             ActivityCategoryList.Columns.Add(new TreeList.Column("Name", GarminFitnessView.GetLocalizedString("CategoryText"),
                                                                  150, StringAlignment.Near));
             ActivityCategoryList.Columns.Add(new TreeList.Column("GarminCategory", "", 110, StringAlignment.Near));
-
-            // Update options since we modified the different lists and combo boxes
-            UpdateOptionsUI();
         }
 
         private void UpdateOptionsUI()
@@ -311,6 +317,9 @@ namespace GarminFitnessPlugin.View
             PowerGarminRadioButton.Checked = !Options.Instance.UseSportTracksPowerZones;
             PowerSportTracksRadioButton.Checked = Options.Instance.UseSportTracksPowerZones;
             PowerZoneComboBox.SelectedIndex = powerSelectedIndex;
+
+            // Auto-split workouts
+            AutoSplitCheckBox.Checked = Options.Instance.EnableAutoSplitWorkouts;
 
             // Default directory
             ExportDirectoryTextBox.Text = Options.Instance.DefaultExportDirectory;

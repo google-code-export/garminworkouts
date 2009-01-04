@@ -298,34 +298,34 @@
     <value>Kjønn:</value>
   </data>
   <data name="GTCSpeedZone10Text" xml:space="preserve">
-    <value>10 - Max fart</value>
+    <value>Max fart</value>
   </data>
   <data name="GTCSpeedZone1Text" xml:space="preserve">
-    <value>1 - Klatring 4</value>
+    <value>Klatring 4</value>
   </data>
   <data name="GTCSpeedZone2Text" xml:space="preserve">
-    <value>2 - Klatring 3</value>
+    <value>Klatring 3</value>
   </data>
   <data name="GTCSpeedZone3Text" xml:space="preserve">
-    <value>3 - Klatring 2</value>
+    <value>Klatring 2</value>
   </data>
   <data name="GTCSpeedZone4Text" xml:space="preserve">
-    <value>4 - Klatring 1</value>
+    <value>Klatring 1</value>
   </data>
   <data name="GTCSpeedZone5Text" xml:space="preserve">
-    <value>5 - Flatt 3</value>
+    <value>Flatt 3</value>
   </data>
   <data name="GTCSpeedZone6Text" xml:space="preserve">
-    <value>6 - Flatt 2</value>
+    <value>Flatt 2</value>
   </data>
   <data name="GTCSpeedZone7Text" xml:space="preserve">
-    <value>7 - Flatt 1</value>
+    <value>Flatt 1</value>
   </data>
   <data name="GTCSpeedZone8Text" xml:space="preserve">
-    <value>8 - Nedover</value>
+    <value>Nedover</value>
   </data>
   <data name="GTCSpeedZone9Text" xml:space="preserve">
-    <value>9 - Sprint</value>
+    <value>Sprint</value>
   </data>
   <data name="HasCadenceText" xml:space="preserve">
     <value>Har pedalfrekvenssensor</value>
@@ -431,6 +431,9 @@
   </data>
   <data name="NameText" xml:space="preserve">
     <value>Navn</value>
+  </data>
+  <data name="NeedActivityTemplateText" xml:space="preserve">
+    <value>To create an activity from this workout, you need at least 1 activity already in your logbook.  It seems your logbook is empty so please create an empty activity, reschedule your workout then delete that temporary activity.</value>
   </data>
   <data name="NeverExportedText" xml:space="preserve">
     <value>Aldri eksportert</value>

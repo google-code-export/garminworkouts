@@ -9,9 +9,19 @@ namespace GarminFitnessPlugin.View
 
         public System.Collections.Generic.IList<ISettingsPage> SettingsPages
         {
-            get { return new ISettingsPage[] { new GarminFitnessSettings() }; }
+            get
+            {
+                if (m_SettingPage == null)
+                {
+                    m_SettingPage = new GarminFitnessSettings();
+                }
+
+                return new ISettingsPage[] { m_SettingPage };
+            }
         }
 
         #endregion
+
+        ISettingsPage m_SettingPage = null;
     }
 }

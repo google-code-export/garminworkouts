@@ -11,13 +11,20 @@ namespace GarminFitnessPlugin.View
         {
             get
             {
+                if (m_View == null)
+                {
+                    m_View = new GarminFitnessView();
+                }
+
                 return new IView[]
                 {
-                    new GarminFitnessView()
+                    m_View
                 };
             }
         }
 
         #endregion
+
+        static IView m_View = null;
     }
 }

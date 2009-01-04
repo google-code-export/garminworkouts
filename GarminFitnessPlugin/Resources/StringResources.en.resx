@@ -117,8 +117,14 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="AddDailyViewCheckBoxText" xml:space="preserve">
+    <value>Add to logbook</value>
+  </data>
   <data name="AndText" xml:space="preserve">
     <value>and</value>
+  </data>
+  <data name="AutoSplitCheckBoxText" xml:space="preserve">
+    <value>Allow auto-split of workouts on export</value>
   </data>
   <data name="AutoText" xml:space="preserve">
     <value>Auto</value>
@@ -298,34 +304,34 @@
     <value>Gender :</value>
   </data>
   <data name="GTCSpeedZone10Text" xml:space="preserve">
-    <value>10 - Max Speed</value>
+    <value>Max Speed</value>
   </data>
   <data name="GTCSpeedZone1Text" xml:space="preserve">
-    <value>1 - Climb 4</value>
+    <value>Climb 4</value>
   </data>
   <data name="GTCSpeedZone2Text" xml:space="preserve">
-    <value>2 - Climb 3</value>
+    <value>Climb 3</value>
   </data>
   <data name="GTCSpeedZone3Text" xml:space="preserve">
-    <value>3 - Climb 2</value>
+    <value>Climb 2</value>
   </data>
   <data name="GTCSpeedZone4Text" xml:space="preserve">
-    <value>4 - Climb 1</value>
+    <value>Climb 1</value>
   </data>
   <data name="GTCSpeedZone5Text" xml:space="preserve">
-    <value>5 - Flat 3</value>
+    <value>Flat 3</value>
   </data>
   <data name="GTCSpeedZone6Text" xml:space="preserve">
-    <value>6 - Flat 2</value>
+    <value>Flat 2</value>
   </data>
   <data name="GTCSpeedZone7Text" xml:space="preserve">
-    <value>7 - Flat 1</value>
+    <value>Flat 1</value>
   </data>
   <data name="GTCSpeedZone8Text" xml:space="preserve">
-    <value>8 - Descent</value>
+    <value>Descent</value>
   </data>
   <data name="GTCSpeedZone9Text" xml:space="preserve">
-    <value>9 - Sprint</value>
+    <value>Sprint</value>
   </data>
   <data name="HasCadenceText" xml:space="preserve">
     <value>Has cadence sensor</value>
@@ -431,6 +437,9 @@
   </data>
   <data name="NameText" xml:space="preserve">
     <value>Name</value>
+  </data>
+  <data name="NeedActivityTemplateText" xml:space="preserve">
+    <value>To create an activity from this workout, you need at least 1 activity already in your logbook.  It seems your logbook is empty so please create an empty activity, reschedule your workout then delete that temporary activity.</value>
   </data>
   <data name="NeverExportedText" xml:space="preserve">
     <value>Never exported</value>
@@ -633,6 +642,9 @@
   <data name="ValueValidationTitleText" xml:space="preserve">
     <value>Invalid value</value>
   </data>
+  <data name="WarningText" xml:space="preserve">
+    <value>Warning</value>
+  </data>
   <data name="WeightLabelText" xml:space="preserve">
     <value>Weight :</value>
   </data>
@@ -656,5 +668,8 @@
   </data>
   <data name="WorkoutsText" xml:space="preserve">
     <value>Workouts</value>
+  </data>
+  <data name="WorkoutsWereSplitText" xml:space="preserve">
+    <value>Some workouts had more than 20 steps.  Those we're auto-split in your logbook to handle the change in your options, I suggest having a look at them.</value>
   </data>
 </root>

@@ -12,6 +12,7 @@ using System.Windows.Forms;
 using ZoneFiveSoftware.Common.Data.Fitness;
 using ZoneFiveSoftware.Common.Visuals.Fitness;
 using ZoneFiveSoftware.Common.Visuals;
+using GarminFitnessPlugin.Controller;
 using GarminFitnessPlugin.Data;
 
 namespace GarminFitnessPlugin.View
@@ -22,6 +23,7 @@ namespace GarminFitnessPlugin.View
         {
             PropertyChanged += new PropertyChangedEventHandler(OnPropertyChanged);
             PluginMain.LogbookChanged += new PluginMain.LogbookChangedEventHandler(OnLogbookChanged);
+            Options.Instance.OptionsChanged += new Options.OptionsChangedEventHandler(OnOptionsChanged);
 
             m_ViewControls = new IGarminFitnessPluginControl[]
                     {
@@ -138,6 +140,7 @@ namespace GarminFitnessPlugin.View
 
         public void ShowPage(string bookmark)
         {
+            GetCurrentView().RefreshCalendar();
         }
 
         public IPageStatus Status
@@ -170,6 +173,38 @@ namespace GarminFitnessPlugin.View
         private void OnLogbookChanged(object sender, ILogbook oldLogbook, ILogbook newLogbook)
         {
             GetCurrentView().RefreshUIFromLogbook();
+        }
+
+        void OnOptionsChanged(PropertyChangedEventArgs changedProperty)
+        {
+            if (changedProperty.PropertyName == "EnableAutoSplitWorkouts")
+            {
+                if (!Options.Instance.EnableAutoSplitWorkouts)
+                {
+                    bool workoutSplit = false;
+
+                    // Check if all workouts can handle the change
+                    for(int i = 0; i < GarminWorkoutManager.Instance.Workouts.Count; i++)
+                    {
+                        Workout currentWorkout = GarminWorkoutManager.Instance.Workouts[i];
+
+                        if (currentWorkout.GetStepCount() > Constants.MaxStepsPerWorkout)
+                        {
+                            workoutSplit = true;
+
+                            // TODO : Auto-split this workout
+                            Trace.Assert(false);
+                        }
+                    }
+
+                    if (workoutSplit)
+                    {
+                        MessageBox.Show(GarminFitnessView.GetLocalizedString("WorkoutsWereSplitText"),
+                                        GarminFitnessView.GetLocalizedString("WarningText"),
+                                        MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    }
+                }
+            }
         }
 
         public void WorkoutsViewEventHandler(object sender, EventArgs args)

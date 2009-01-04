@@ -117,8 +117,14 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="AddDailyViewCheckBoxText" xml:space="preserve">
+    <value>Ajouter au logbook</value>
+  </data>
   <data name="AndText" xml:space="preserve">
     <value>et</value>
+  </data>
+  <data name="AutoSplitCheckBoxText" xml:space="preserve">
+    <value>Permettre le découpage automatique des entraînements lors de l'export</value>
   </data>
   <data name="AutoText" xml:space="preserve">
     <value>Auto</value>
@@ -298,34 +304,34 @@
     <value>Sexe :</value>
   </data>
   <data name="GTCSpeedZone10Text" xml:space="preserve">
-    <value>10 - Vitesse Maximale</value>
+    <value>Vitesse Maxi</value>
   </data>
   <data name="GTCSpeedZone1Text" xml:space="preserve">
-    <value>1 - Côte 4</value>
+    <value>Côte 4</value>
   </data>
   <data name="GTCSpeedZone2Text" xml:space="preserve">
-    <value>2 - Côte 3</value>
+    <value>Côte 3</value>
   </data>
   <data name="GTCSpeedZone3Text" xml:space="preserve">
-    <value>3 - Côte 2</value>
+    <value>Côte 2</value>
   </data>
   <data name="GTCSpeedZone4Text" xml:space="preserve">
-    <value>4 - Côte 1</value>
+    <value>Côte 1</value>
   </data>
   <data name="GTCSpeedZone5Text" xml:space="preserve">
-    <value>5 - Terrain plat 3</value>
+    <value>Terrain plat 3</value>
   </data>
   <data name="GTCSpeedZone6Text" xml:space="preserve">
-    <value>6 - Terrain plat 2</value>
+    <value>Terrain plat 2</value>
   </data>
   <data name="GTCSpeedZone7Text" xml:space="preserve">
-    <value>7 - Terrain plat 1</value>
+    <value>Terrain plat 1</value>
   </data>
   <data name="GTCSpeedZone8Text" xml:space="preserve">
-    <value>8 - Descente</value>
+    <value>Descente</value>
   </data>
   <data name="GTCSpeedZone9Text" xml:space="preserve">
-    <value>9 - Sprint</value>
+    <value>Sprint</value>
   </data>
   <data name="HasCadenceText" xml:space="preserve">
     <value>Capteur de cadence</value>
@@ -431,6 +437,9 @@
   </data>
   <data name="NameText" xml:space="preserve">
     <value>Nom</value>
+  </data>
+  <data name="NeedActivityTemplateText" xml:space="preserve">
+    <value>Pour créer une activité à partir de votre entraînement, vous devez avoir au moins 1 actvité déjà présente dans votre logbook.  Il semble que votre logbook soit vide, veuillez donc créer une activité vide, replanifier votre entrainement puis supprimer l'activité temporaire.</value>
   </data>
   <data name="NeverExportedText" xml:space="preserve">
     <value>Jamais exporté</value>
@@ -633,6 +642,9 @@
   <data name="ValueValidationTitleText" xml:space="preserve">
     <value>Valeur invalide</value>
   </data>
+  <data name="WarningText" xml:space="preserve">
+    <value>Attention</value>
+  </data>
   <data name="WeightLabelText" xml:space="preserve">
     <value>Poids :</value>
   </data>
@@ -656,5 +668,8 @@
   </data>
   <data name="WorkoutsText" xml:space="preserve">
     <value>Entraînements</value>
+  </data>
+  <data name="WorkoutsWereSplitText" xml:space="preserve">
+    <value>Certains de vos entraînements avaient plus de 20 étapes.  Ceux-ci ont été automatiquement découpés en parties pour permettre votre changement d'option, je suggère de leur jeter un coup d'oeil.</value>
   </data>
 </root>

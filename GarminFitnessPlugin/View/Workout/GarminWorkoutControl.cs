@@ -245,9 +245,43 @@ namespace GarminFitnessPlugin.View
 
         private void ScheduleWorkoutButton_Click(object sender, EventArgs e)
         {
+            // 1st pass, detect if we'll be able to add to daily view
+            if (PluginMain.GetApplication().Logbook.Activities.Count == 0)
+            {
+                for (int i = 0; i < SelectedWorkouts.Count; ++i)
+                {
+                    // If we don't add to daily view, don't bother
+                    if (SelectedWorkouts[i].AddToDailyViewOnSchedule)
+                    {
+                        // Failure, display message and cancel scheduling
+                        MessageBox.Show(GarminFitnessView.GetLocalizedString("NeedActivityTemplateText"),
+                                        GarminFitnessView.GetLocalizedString("ErrorText"),
+                                        MessageBoxButtons.OK, MessageBoxIcon.Error);
+
+                        return;
+                    }
+                }
+            }
+
             for (int i = 0; i < SelectedWorkouts.Count; ++i)
             {
-                    SelectedWorkouts[i].ScheduleWorkout(WorkoutCalendar.SelectedDate);
+                if (SelectedWorkouts[i].AddToDailyViewOnSchedule)
+                {
+                    // Create new activity from template
+                    IActivity newActivity = (IActivity)Activator.CreateInstance(PluginMain.GetApplication().Logbook.Activities[0].GetType());
+                    newActivity.Category = SelectedWorkouts[i].Category;
+                    newActivity.Name = SelectedWorkouts[i].Name;
+                    newActivity.Notes = SelectedWorkouts[i].Notes;
+                    // Adjust to GMT
+                    newActivity.StartTime = WorkoutCalendar.SelectedDate - TimeZone.CurrentTimeZone.GetUtcOffset(DateTime.Now);
+                    newActivity.HasStartTime = false;
+
+                    // Add said activity to the logbook
+                    PluginMain.GetApplication().Logbook.Activities.Add(newActivity);
+                }
+
+                // Schedule workout in plugin
+                SelectedWorkouts[i].ScheduleWorkout(WorkoutCalendar.SelectedDate);
             }
         }
 
@@ -256,6 +290,17 @@ namespace GarminFitnessPlugin.View
             for (int i = 0; i < SelectedWorkouts.Count; ++i)
             {
                 SelectedWorkouts[i].RemoveScheduledDate(WorkoutCalendar.SelectedDate);
+            }
+        }
+
+        private void AddDailyViewCheckBox_Validated(object sender, EventArgs e)
+        {
+            if (AddDailyViewCheckBox.CheckState != CheckState.Indeterminate)
+            {
+                for (int i = 0; i < SelectedWorkouts.Count; ++i)
+                {
+                    SelectedWorkouts[i].AddToDailyViewOnSchedule = AddDailyViewCheckBox.Checked;
+                }
             }
         }
 
@@ -276,6 +321,14 @@ namespace GarminFitnessPlugin.View
 
             SelectedSteps = newSelection;
             UpdateUIFromSteps();
+        }
+
+        private void StepsList_SizeChanged(object sender, EventArgs e)
+        {
+            if (StepsList.Columns.Count > 0)
+            {
+                StepsList.Columns[0].Width = StepsList.Width - 40;
+            }
         }
 
         private void WorkoutsList_SelectedChanged(object sender, EventArgs e)
@@ -1565,39 +1618,61 @@ namespace GarminFitnessPlugin.View
                     stepsDragged += stepsToMove[i].GetStepCount();
                 }
 
-                if (!isCtrlKeyDown ||
-                    SelectedWorkout.GetStepCount() + stepsDragged <= Constants.MaxStepsPerWorkout)
+                bool canMoveStep = true;
+                if (isCtrlKeyDown)
                 {
-                    // Make sure we are not moving a repeat inside itself
-                    if (!isCtrlKeyDown)
+                    canMoveStep = SelectedWorkout.CanAcceptNewStep(stepsDragged, destinationStep);
+                }
+                else
+                {
+                    IStep destinationStepTopMostRepeat = SelectedWorkout.GetTopMostRepeatForStep(destinationStep);
+
+                    for (int i = 0; i < stepsToMove.Count; ++i)
                     {
-                        for (int i = 0; i < stepsToMove.Count; ++i)
+                        IStep currentMoveStep = stepsToMove[i];
+                        IStep currentMoveStepTopMostRepeat = SelectedWorkout.GetTopMostRepeatForStep(currentMoveStep);
+
+                        if (destinationStepTopMostRepeat != null &&
+                            currentMoveStepTopMostRepeat != destinationStepTopMostRepeat)
                         {
-                            if (stepsToMove[i].Type == IStep.StepType.Repeat)
+                            // It is not allowed to move a repeat inside the top most if we bust
+                            // the limit
+                            if (!SelectedWorkout.CanAcceptNewStep(stepsDragged, destinationStep))
                             {
-                                RepeatStep repeatStep = (RepeatStep)stepsToMove[i];
-
-                                if (repeatStep.IsChildStep(destinationStep))
-                                {
-                                    renderer.IsInDrag = false;
-                                    StepsList.Invalidate();
-
-                                    return;
-                                }
+                                canMoveStep = false;
+                                break;
                             }
                         }
 
+                        // Make sure we are not moving a repeat inside itself
+                        if (currentMoveStep.Type == IStep.StepType.Repeat)
+                        {
+                            RepeatStep repeatStep = (RepeatStep)currentMoveStep;
+
+                            if (repeatStep.IsChildStep(destinationStep))
+                            {
+                                canMoveStep = false;
+                                break;
+                            }
+                        }
+                    }
+                }
+
+                if (canMoveStep)
+                {
+                    if (!isCtrlKeyDown)
+                    {
                         e.Effect = DragDropEffects.Move;
                     }
                     else
                     {
                         e.Effect = DragDropEffects.Copy;
                     }
-                    
-                    renderer.IsInDrag = true;
-                    renderer.DragOverClientPosition = mouseLocation;
-                    StepsList.Invalidate();
                 }
+
+                renderer.IsInDrag = canMoveStep;
+                renderer.DragOverClientPosition = mouseLocation;
+                StepsList.Invalidate();
             }
         }
 
@@ -1743,8 +1818,7 @@ namespace GarminFitnessPlugin.View
             RepetitionPropertiesGroup.Text = GarminFitnessView.GetLocalizedString("RepetitionPropertiesGroupText");
             RepetitionCountLabel.Text = GarminFitnessView.GetLocalizedString("RepetitionCountLabelText");
             ExportDateTextLabel.Text = GarminFitnessView.GetLocalizedString("LastExportDateText");
-
-            
+            AddDailyViewCheckBox.Text = GarminFitnessView.GetLocalizedString("AddDailyViewCheckBoxText");
 
             // Update duration heart rate reference combo box text
             HeartRateDurationReferenceComboBox.Items.Clear();
@@ -1917,6 +1991,8 @@ namespace GarminFitnessPlugin.View
                 {
                     WorkoutCalendar.AddMarkedDateStyle(SelectedWorkout.ScheduledDates[i], ZoneFiveSoftware.Common.Visuals.Calendar.MarkerStyle.RedTriangle);
                 }
+                AddDailyViewCheckBox.ThreeState = false;
+                AddDailyViewCheckBox.CheckState = SelectedWorkout.AddToDailyViewOnSchedule ? CheckState.Checked : CheckState.Unchecked;
 
                 // Force selection
                 if (forcedSelection != null)
@@ -2006,6 +2082,8 @@ namespace GarminFitnessPlugin.View
                             break;
                         }
                 }
+
+                RefreshWorkoutSelectionControls();
             }
         }
 
@@ -2412,6 +2490,8 @@ namespace GarminFitnessPlugin.View
 
             bool hasScheduledDate = false;
             bool areAllWorkoutsScheduledOnDate = true;
+            bool areAllWorkoutsAddingToDailyView = true;
+            bool addToDailyView = false;
 
             // Highlight scheduled dates
             for (int i = 0; i < SelectedWorkouts.Count; ++i)
@@ -2430,6 +2510,15 @@ namespace GarminFitnessPlugin.View
                     markedDates.Add(currentWorkout.ScheduledDates[j]);
                 }
 
+                if(i == 0 || currentWorkout.AddToDailyViewOnSchedule == addToDailyView)
+                {
+                    addToDailyView = currentWorkout.AddToDailyViewOnSchedule;
+                }
+                else
+                {
+                    areAllWorkoutsAddingToDailyView = false;
+                }
+
                 if (!foundSelectedDatePlanned)
                 {
                     areAllWorkoutsScheduledOnDate = false;
@@ -2439,6 +2528,17 @@ namespace GarminFitnessPlugin.View
 
             ScheduleWorkoutButton.Enabled = WorkoutCalendar.SelectedDate >= DateTime.Today && !areAllWorkoutsScheduledOnDate;
             RemoveScheduledDateButton.Enabled = hasScheduledDate;
+
+            if (areAllWorkoutsAddingToDailyView)
+            {
+                AddDailyViewCheckBox.ThreeState = false;
+                AddDailyViewCheckBox.CheckState = addToDailyView ? CheckState.Checked : CheckState.Unchecked;
+            }
+            else
+            {
+                AddDailyViewCheckBox.ThreeState = true;
+                AddDailyViewCheckBox.CheckState = CheckState.Indeterminate;
+            }
         }
 
         private void RefreshWorkoutSelectionControls()
@@ -2468,8 +2568,8 @@ namespace GarminFitnessPlugin.View
                 GarminFitnessDate selectedDate = new GarminFitnessDate(WorkoutCalendar.SelectedDate);
 
                 StepSplit.Enabled = true;
-                AddStepButton.Enabled = SelectedWorkout.GetStepCount() < Constants.MaxStepsPerWorkout;
-                AddRepeatButton.Enabled = SelectedWorkout.GetStepCount() < Constants.MaxStepsPerWorkout - 1;
+                AddStepButton.Enabled = SelectedWorkout.CanAcceptNewStep(1, SelectedStep);
+                AddRepeatButton.Enabled = SelectedWorkout.CanAcceptNewStep(2, SelectedStep);
                 CalendarSplit.Panel2.Enabled = true;
                 ExportDateTextLabel.Enabled = true;
                 ExportDateLabel.Enabled = true;
@@ -2604,9 +2704,15 @@ namespace GarminFitnessPlugin.View
                 AddStepsToList(stepsList, SelectedWorkout.Steps, null);
 
                 StepsList.RowData = stepsList;
+
                 StepsList.Columns.Clear();
-                StepsList.Columns.Add(new TreeList.Column("DisplayString", "Description", 350,
+                StepsList.Columns.Add(new TreeList.Column("DisplayString", "Description", StepsList.Width - 40,
                                                           StringAlignment.Near));
+                if (SelectedWorkout.GetStepCount() > Constants.MaxStepsPerWorkout)
+                {
+                    StepsList.Columns.Add(new TreeList.Column("AutoSplitPart", "Workout Part", 20,
+                                          StringAlignment.Near));
+                }
             }
         }
 

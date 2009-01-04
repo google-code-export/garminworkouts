@@ -250,6 +250,10 @@ namespace GarminFitnessPlugin.Controller
             child = document.CreateElement("DonationReminderDate");
             child.AppendChild(document.CreateTextNode(DonationReminderDate.Ticks.ToString()));
             parentNode.AppendChild(child);
+
+            child = document.CreateElement("EnableAutoSplitWorkouts");
+            child.AppendChild(document.CreateTextNode(EnableAutoSplitWorkouts.ToString()));
+            parentNode.AppendChild(child);
         }
 
         public void Deserialize(System.Xml.XmlNode parentNode)
@@ -332,6 +336,10 @@ namespace GarminFitnessPlugin.Controller
                 else if (child.Name == "DonationReminderDate" && child.ChildNodes.Count == 1)
                 {
                     Options.Instance.DonationReminderDate = new DateTime(long.Parse(child.FirstChild.Value));
+                }
+                else if (child.Name == "EnableAutoSplitWorkouts" && child.ChildNodes.Count == 1)
+                {
+                    Options.Instance.EnableAutoSplitWorkouts = bool.Parse(child.FirstChild.Value);
                 }
             }
 
@@ -638,6 +646,20 @@ namespace GarminFitnessPlugin.Controller
             set { m_DonationReminderDate = value; }
         }
 
+        public bool EnableAutoSplitWorkouts
+        {
+            get { return m_EnableAutoSplitWorkouts; }
+            set
+            {
+                if (EnableAutoSplitWorkouts != value)
+                {
+                    m_EnableAutoSplitWorkouts = value;
+
+                    TriggerOptionsChangedEvent("EnableAutoSplitWorkouts");
+                }
+            }
+        }
+
         private Dictionary<IActivityCategory, GarminCategories>  STToGarminCategoryMap
         {
             get { return m_STToGarminCategoryMap; }
@@ -680,6 +702,8 @@ namespace GarminFitnessPlugin.Controller
         private String m_DefaultExportDirectory;
 
         private DateTime m_DonationReminderDate = DateTime.Today;
+
+        private bool m_EnableAutoSplitWorkouts = true;
 
         private bool m_IsPowerZoneDirty = false;
         private bool m_IsCadenceZoneDirty = false;
