@@ -51,8 +51,9 @@ namespace GarminFitnessPlugin.Data
                 ScheduledDates[i].Serialize(stream);
             }
 
-            // Last export date
             m_LastExportDate.Serialize(stream);
+
+            m_AddToDailyViewOnSchedule.Serialize(stream);
         }
 
         public void Deserialize_V0(Stream stream, DataVersion version)
@@ -123,6 +124,15 @@ namespace GarminFitnessPlugin.Data
             Deserialize_V4(stream, version);
 
             m_LastExportDate.Deserialize(stream, version);
+        }
+
+        public void Deserialize_V12(Stream stream, DataVersion version)
+        {
+            byte[] dateBuffer = new byte[sizeof(long)];
+
+            Deserialize_V5(stream, version);
+
+            m_AddToDailyViewOnSchedule.Deserialize(stream, version);
         }
 
         public void Serialize(XmlNode parentNode, String nodeName, XmlDocument document)
@@ -555,6 +565,25 @@ namespace GarminFitnessPlugin.Data
             return stepCount;
         }
 
+        public RepeatStep GetTopMostRepeatForStep(IStep step)
+        {
+            if (step != null)
+            {
+                for (int i = 0; i < Steps.Count; ++i)
+                {
+                    if (Steps[i].Type == IStep.StepType.Repeat)
+                    {
+                        if (((RepeatStep)Steps[i]).IsChildStep(step))
+                        {
+                            return (RepeatStep)Steps[i];
+                        }
+                    }
+                }
+            }
+
+            return null;
+        }
+
         public IStep GetStepById(int id)
         {
             return GetStepByIdInternal(Steps, id, 0);
@@ -582,6 +611,44 @@ namespace GarminFitnessPlugin.Data
             }
 
             return null;
+        }
+
+        public UInt16 GetSplitPartsCount()
+        {
+            return GetStepSplitPart(Steps[Steps.Count - 1]);
+        }
+
+        public UInt16 GetStepSplitPart(IStep step)
+        {
+            UInt16 partNumber = 1;
+            UInt16 counter = 0;
+            IStep topMostRepeat = GetTopMostRepeatForStep(step);
+            IStep stepToFind = step;
+
+            if (topMostRepeat != null)
+            {
+                stepToFind = topMostRepeat;
+            }
+
+            for (int i = 0; i < Steps.Count; ++i)
+            {
+                IStep currentStep = Steps[i];
+
+                counter += currentStep.GetStepCount();
+
+                if (counter > Constants.MaxStepsPerWorkout)
+                {
+                    partNumber++;
+                    counter = 0;
+                }
+
+                if (currentStep == stepToFind)
+                {
+                    break;
+                }
+            }
+
+            return partNumber;
         }
 
         public void AddSportTracksExtension(XmlNode extensionNode)
@@ -670,6 +737,43 @@ namespace GarminFitnessPlugin.Data
             }
         }
 
+        public bool CanAcceptNewStep(IStep newStep, IStep destinationStep)
+        {
+            return CanAcceptNewStep(newStep.GetStepCount(), destinationStep);
+        }
+
+        public bool CanAcceptNewStep(int newStepCount, IStep destinationStep)
+        {
+            IStep topMostRepeat = GetTopMostRepeatForStep(destinationStep);
+
+            if (topMostRepeat == null)
+            {
+                // Destination is not part of a repeat
+                if (Options.Instance.EnableAutoSplitWorkouts)
+                {
+                    return true;
+                }
+                else
+                {
+                    return GetStepCount() + newStepCount <= Constants.MaxStepsPerWorkout;
+                }
+            }
+            else
+            {
+                // When destination is part of a repeat it's a bit easier, there's a 19
+                //  child steps limit.  Since this will occur of the repeat of the base
+                //  level, check if we bust the limit
+                if (Options.Instance.EnableAutoSplitWorkouts)
+                {
+                    return topMostRepeat.GetStepCount() + newStepCount <= Constants.MaxStepsPerWorkout;
+                }
+                else
+                {
+                    return GetStepCount() + newStepCount <= Constants.MaxStepsPerWorkout;
+                }
+            }
+        }
+
         public IStep GetNextStep(IStep previousStep)
         {
             UInt16 index;
@@ -753,7 +857,7 @@ namespace GarminFitnessPlugin.Data
                 insertStepsCount += stepsToAdd[i].GetStepCount();
             }
 
-            if (GetStepCount() + insertStepsCount <= Constants.MaxStepsPerWorkout)
+            if (CanAcceptNewStep(insertStepsCount, previousStep))
             {
                 return InsertStepsAfterStepInternal(stepsToAdd, previousStep);
             }
@@ -829,7 +933,7 @@ namespace GarminFitnessPlugin.Data
                 insertStepsCount += stepsToAdd[i].GetStepCount();
             }
 
-            if (GetStepCount() + insertStepsCount <= Constants.MaxStepsPerWorkout)
+            if (CanAcceptNewStep(insertStepsCount, nextStep))
             {
                 return InsertStepsBeforeStepInternal(stepsToAdd, nextStep);
             }
@@ -881,8 +985,8 @@ namespace GarminFitnessPlugin.Data
             {
                 m_EventsActive = false;
                 {
-                    // Make a copy of the destination
-                    IStep positionMarker = previousStep.Clone();
+                    // Mark the destination
+                    IStep positionMarker = new RegularStep(this);
 
                     // Mark position
                     InsertStepAfterStepInternal(positionMarker, previousStep);
@@ -1019,7 +1123,7 @@ namespace GarminFitnessPlugin.Data
 
         public bool AddNewStep(IStep stepToRegister, RepeatStep parent)
         {
-            if (GetStepCount() < Constants.MaxStepsPerWorkout)
+            if (CanAcceptNewStep(stepToRegister, null))
             {
                 if (parent == null)
                 {
@@ -1191,6 +1295,20 @@ namespace GarminFitnessPlugin.Data
             }
         }
 
+        public bool AddToDailyViewOnSchedule
+        {
+            get { return m_AddToDailyViewOnSchedule; }
+            set
+            {
+                if (AddToDailyViewOnSchedule != value)
+                {
+                    m_AddToDailyViewOnSchedule.Value = value;
+
+                    TriggerWorkoutChangedEvent(new PropertyChangedEventArgs("AddToDailyViewOnSchedule"));
+                }
+            }
+        }
+
         public bool IsDirty
         {
             get
@@ -1228,6 +1346,7 @@ namespace GarminFitnessPlugin.Data
         private IActivityCategory m_Category;
         private GarminFitnessString m_Name = new GarminFitnessString();
         private GarminFitnessString m_Notes = new GarminFitnessString();
+        private GarminFitnessBool m_AddToDailyViewOnSchedule = new GarminFitnessBool(false);
         private bool m_EventsActive = true;
     }
 }
