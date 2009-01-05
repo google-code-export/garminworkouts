@@ -1123,6 +1123,15 @@ namespace GarminFitnessPlugin.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to part {0}/{1}.
+        /// </summary>
+        internal static string PartNumberingNotesText {
+            get {
+                return ResourceManager.GetString("PartNumberingNotesText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Unable to paste the steps, your workout cannot contain that many steps.  The maximum number of steps in a workout is 20..
         /// </summary>
         internal static string PasteStepErrorText {
@@ -1717,7 +1726,7 @@ namespace GarminFitnessPlugin.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Some workouts had more than 20 steps.  Those we&apos;re auto-split in your logbook to handle the change in your options, I suggest having a look at them..
+        ///   Looks up a localized string similar to Some of your workouts have more than 20 steps.  Those need to be split to reflect the changes in your options. Do you want to do this now?  You will need to do it manually if you choose &quot;No&quot;..
         /// </summary>
         internal static string WorkoutsWereSplitText {
             get {

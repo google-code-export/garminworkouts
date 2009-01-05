@@ -198,14 +198,21 @@ namespace GarminFitnessPlugin.View
                     // Go ahead, split them up
                     if (workoutsToSplit.Count > 0)
                     {
-                        for (int i = 0; i < workoutsToSplit.Count; ++i)
+                        if (MessageBox.Show(GarminFitnessView.GetLocalizedString("WorkoutsWereSplitText"),
+                                            GarminFitnessView.GetLocalizedString("WarningText"),
+                                            MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.Yes)
                         {
-                            workoutsToSplit[i].SplitInSeperateParts();
-                        }
+                            for (int i = 0; i < workoutsToSplit.Count; ++i)
+                            {
+                                List<Workout> splitParts = workoutsToSplit[i].SplitInSeperateParts();
 
-                        MessageBox.Show(GarminFitnessView.GetLocalizedString("WorkoutsWereSplitText"),
-                                        GarminFitnessView.GetLocalizedString("WarningText"),
-                                        MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                                for (int j = 0; j < splitParts.Count; ++j)
+                                {
+                                    GarminWorkoutManager.Instance.RegisterWorkout(splitParts[j]);
+                                }
+                            }
+                            GarminWorkoutManager.Instance.RemoveWorkouts(workoutsToSplit);
+                        }
                     }
                 }
             }

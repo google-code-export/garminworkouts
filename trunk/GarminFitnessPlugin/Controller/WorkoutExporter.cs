@@ -64,11 +64,8 @@ namespace GarminFitnessPlugin.Controller
 
         private static void ExportWorkoutInternal(Workout workout, XmlDocument document, XmlNode parentNode, bool skipExtensions)
         {
-            XmlNode workoutNode = document.CreateElement("Workout");
-
             workout.LastExportDate = DateTime.Now;
-            workout.Serialize(workoutNode, "Workout", document, skipExtensions);
-            parentNode.AppendChild(workoutNode);
+            workout.Serialize(parentNode, "Workout", document, skipExtensions);
         }
     }
 }
