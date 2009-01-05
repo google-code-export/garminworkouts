@@ -174,6 +174,15 @@ namespace GarminFitnessPlugin.Controller
 
         public Workout CreateWorkout(string name, IActivityCategory category, List<IStep> steps)
         {
+            Workout result = CreateUnregisteredWorkout(name, category, steps);
+
+            RegisterWorkout(result);
+
+            return result;
+        }
+
+        public Workout CreateUnregisteredWorkout(string name, IActivityCategory category, List<IStep> steps)
+        {
             Workout result;
             string uniqueName;
 
@@ -185,8 +194,6 @@ namespace GarminFitnessPlugin.Controller
                 result.Steps.Clear();
                 result.AddStepsToRoot(steps);
             }
-
-            RegisterWorkout(result);
 
             return result;
         }
@@ -311,7 +318,7 @@ namespace GarminFitnessPlugin.Controller
             return deserializedWorkouts;
         }
 
-        private void RegisterWorkout(Workout workoutToRegister)
+        public void RegisterWorkout(Workout workoutToRegister)
         {
             m_Workouts.Add(workoutToRegister);
             m_Workouts.Sort(new WorkoutComparer());

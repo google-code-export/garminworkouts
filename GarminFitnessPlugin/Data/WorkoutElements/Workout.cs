@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Globalization;
 using System.Reflection;
@@ -8,7 +9,7 @@ using System.Text;
 using System.Xml;
 using ZoneFiveSoftware.Common.Data.Fitness;
 using GarminFitnessPlugin.Controller;
-using System.ComponentModel;
+using GarminFitnessPlugin.View;
 
 namespace GarminFitnessPlugin.Data
 {
@@ -142,86 +143,101 @@ namespace GarminFitnessPlugin.Data
 
         public void Serialize(XmlNode parentNode, String nodeName, XmlDocument document, bool skipExtensions)
         {
-            XmlNode childNode;
-            XmlAttribute attribute;
-
-            // Sport attribute
-            attribute = document.CreateAttribute(null, "Sport", null);
-            attribute.Value = Constants.GarminCategoryTCXString[(int)Options.Instance.GetGarminCategory(Category)];
-            parentNode.Attributes.Append(attribute);
-
-            // Name
-            m_Name.Serialize(parentNode, "Name", document);
-
-            // Export all steps
-            for (int i = 0; i < Steps.Count; ++i)
+            if (GetStepCount() > Constants.MaxStepsPerWorkout)
             {
-                childNode = document.CreateElement("Step");
+                List<Workout> splitParts = SplitInSeperateParts();
 
-                Steps[i].Serialize(childNode, "Step", document);
-                parentNode.AppendChild(childNode);
-            }
-
-            // Scheduled dates
-            for (int i = 0; i < ScheduledDates.Count; ++i)
-            {
-                ScheduledDates[i].Serialize(parentNode, "ScheduledOn", document);
-            }
-
-            // Notes
-            if (Notes != String.Empty && Notes != null)
-            {
-                m_Notes.Serialize(parentNode, "Notes", document);
-            }
-
-            // Extensions
-            if (!skipExtensions)
-            {
-                childNode = document.CreateElement(Constants.ExtensionsTCXString);
-
-                // Steps extensions
-                if (m_StepsExtensions.Count > 0)
+                for (int j = 0; j < splitParts.Count; ++j)
                 {
-                    XmlNode extensionsNode = document.CreateElement("Steps");
-                    attribute = document.CreateAttribute("xmlns");
-                    attribute.Value = "http://www.garmin.com/xmlschemas/WorkoutExtension/v1";
-                    extensionsNode.Attributes.Append(attribute);
+                    splitParts[j].Serialize(parentNode, nodeName, document, skipExtensions);
+                }
+            }
+            else
+            {
+                XmlNode childNode;
+                XmlNode workoutNode = document.CreateElement(nodeName);
+                XmlAttribute attribute;
 
-                    for (int i = 0; i < m_StepsExtensions.Count; ++i)
-                    {
-                        XmlNode currentExtension = m_StepsExtensions[i];
+                parentNode.AppendChild(workoutNode);
 
-                        extensionsNode.AppendChild(currentExtension);
-                    }
-                    childNode.AppendChild(extensionsNode);
+                // Sport attribute
+                attribute = document.CreateAttribute(null, "Sport", null);
+                attribute.Value = Constants.GarminCategoryTCXString[(int)Options.Instance.GetGarminCategory(Category)];
+                workoutNode.Attributes.Append(attribute);
 
-                    m_StepsExtensions.Clear();
+                // Name
+                m_Name.Serialize(workoutNode, "Name", document);
+
+                // Export all steps
+                for (int i = 0; i < Steps.Count; ++i)
+                {
+                    childNode = document.CreateElement("Step");
+
+                    Steps[i].Serialize(childNode, "Step", document);
+                    workoutNode.AppendChild(childNode);
                 }
 
-                // ST extension
-                if (m_STExtensions.Count > 0)
+                // Scheduled dates
+                for (int i = 0; i < ScheduledDates.Count; ++i)
                 {
-                    XmlNode extensionsNode = document.CreateElement("SportTracksExtensions");
-                    attribute = document.CreateAttribute("xmlns");
-                    attribute.Value = "http://www.zonefivesoftware.com/SportTracks/Plugins/plugin_detail.php?id=97";
-                    extensionsNode.Attributes.Append(attribute);
-
-                    // Category
-                    XmlNode categoryNode = document.CreateElement("SportTracksCategory");
-                    categoryNode.AppendChild(document.CreateTextNode(Category.ReferenceId));
-                    extensionsNode.AppendChild(categoryNode);
-
-                    for (int i = 0; i < m_STExtensions.Count; ++i)
-                    {
-                        XmlNode currentExtension = m_STExtensions[i];
-
-                        extensionsNode.AppendChild(currentExtension);
-                    }
-                    childNode.AppendChild(extensionsNode);
-
-                    m_STExtensions.Clear();
+                    ScheduledDates[i].Serialize(workoutNode, "ScheduledOn", document);
                 }
-                parentNode.AppendChild(childNode);
+
+                // Notes
+                if (Notes != String.Empty && Notes != null)
+                {
+                    m_Notes.Serialize(workoutNode, "Notes", document);
+                }
+
+                // Extensions
+                if (!skipExtensions)
+                {
+                    childNode = document.CreateElement(Constants.ExtensionsTCXString);
+                    workoutNode.AppendChild(childNode);
+
+                    // Steps extensions
+                    if (m_StepsExtensions.Count > 0)
+                    {
+                        XmlNode extensionsNode = document.CreateElement("Steps");
+                        attribute = document.CreateAttribute("xmlns");
+                        attribute.Value = "http://www.garmin.com/xmlschemas/WorkoutExtension/v1";
+                        extensionsNode.Attributes.Append(attribute);
+
+                        for (int i = 0; i < m_StepsExtensions.Count; ++i)
+                        {
+                            XmlNode currentExtension = m_StepsExtensions[i];
+
+                            extensionsNode.AppendChild(currentExtension);
+                        }
+                        childNode.AppendChild(extensionsNode);
+
+                        m_StepsExtensions.Clear();
+                    }
+
+                    // ST extension
+                    if (m_STExtensions.Count > 0)
+                    {
+                        XmlNode extensionsNode = document.CreateElement("SportTracksExtensions");
+                        attribute = document.CreateAttribute("xmlns");
+                        attribute.Value = "http://www.zonefivesoftware.com/SportTracks/Plugins/plugin_detail.php?id=97";
+                        extensionsNode.Attributes.Append(attribute);
+
+                        // Category
+                        XmlNode categoryNode = document.CreateElement("SportTracksCategory");
+                        categoryNode.AppendChild(document.CreateTextNode(Category.ReferenceId));
+                        extensionsNode.AppendChild(categoryNode);
+
+                        for (int i = 0; i < m_STExtensions.Count; ++i)
+                        {
+                            XmlNode currentExtension = m_STExtensions[i];
+
+                            extensionsNode.AppendChild(currentExtension);
+                        }
+                        childNode.AppendChild(extensionsNode);
+
+                        m_STExtensions.Clear();
+                    }
+                }
             }
         }
 
@@ -785,9 +801,10 @@ namespace GarminFitnessPlugin.Data
             return partNumber;
         }
 
-        public void SplitInSeperateParts()
+        public List<Workout> SplitInSeperateParts()
         {
             UInt16 partsCount = GetSplitPartsCount();
+            List<Workout> result = new List<Workout>(partsCount);
 
             if (partsCount > 1)
             {
@@ -829,12 +846,29 @@ namespace GarminFitnessPlugin.Data
                         }
                     }
 
-                    GarminWorkoutManager.Instance.CreateWorkout(uniqueNames[i], Category, newStepsList);
-                }
+                    Workout newWorkout = GarminWorkoutManager.Instance.CreateUnregisteredWorkout(uniqueNames[i], Category, newStepsList);
 
-                // Remove ourselves, we finished splitting up
-                GarminWorkoutManager.Instance.RemoveWorkout(this);
+                    // Transfer workout info
+                    if (i == 0)
+                    {
+                        newWorkout.Notes = Notes;
+
+                        for (int j = 0; j < ScheduledDates.Count; ++j)
+                        {
+                            newWorkout.ScheduleWorkout(ScheduledDates[j]);
+                        }
+                    }
+                    else
+                    {
+                        newWorkout.Notes = Name + " " + String.Format(GarminFitnessView.GetLocalizedString("PartNumberingNotesText"), i + 1, partsCount);
+                    }
+                    newWorkout.AddToDailyViewOnSchedule = AddToDailyViewOnSchedule;
+
+                    result.Add(newWorkout);
+                }
             }
+
+            return result;
         }
 
         public IStep GetNextStep(IStep previousStep)

@@ -471,6 +471,9 @@
   <data name="PaceRangeTargetDescriptionText" xml:space="preserve">
     <value>Essayer de maintenir mon rythme entre {0:00}:{1:00} et {2:00}:{3:00} min/{4}.</value>
   </data>
+  <data name="PartNumberingNotesText" xml:space="preserve">
+    <value>portion {0}/{1}</value>
+  </data>
   <data name="PasteStepErrorText" xml:space="preserve">
     <value>Impossible de coller les phases.  Votre entraînement ne peut pas contenir autant de phases.  Le nombre maximal de phases par entraînement est de 20.</value>
   </data>
@@ -670,6 +673,6 @@
     <value>Entraînements</value>
   </data>
   <data name="WorkoutsWereSplitText" xml:space="preserve">
-    <value>Certains de vos entraînements avaient plus de 20 étapes.  Ceux-ci ont été automatiquement découpés en parties pour permettre votre changement d'option, je suggère de leur jeter un coup d'oeil.</value>
+    <value>Certains de vos entraînements ont plus de 20 étapes.  Ceux-ci doivent être découpés en parties pour refléter votre changement d'option.  Voulez-vous faire ceci maintenant?  Vous devrez le faire manuellement si vous répoondez "Non".</value>
   </data>
 </root>

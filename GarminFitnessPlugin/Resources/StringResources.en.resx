@@ -471,6 +471,9 @@
   <data name="PaceRangeTargetDescriptionText" xml:space="preserve">
     <value>Try to keep my pace between {0:00}:{1:00} and {2:00}:{3:00} min/{4}.</value>
   </data>
+  <data name="PartNumberingNotesText" xml:space="preserve">
+    <value>part {0}/{1}</value>
+  </data>
   <data name="PasteStepErrorText" xml:space="preserve">
     <value>Unable to paste the steps, your workout cannot contain that many steps.  The maximum number of steps in a workout is 20.</value>
   </data>
@@ -670,6 +673,6 @@
     <value>Workouts</value>
   </data>
   <data name="WorkoutsWereSplitText" xml:space="preserve">
-    <value>Some workouts had more than 20 steps.  Those we're auto-split in your logbook to handle the change in your options, I suggest having a look at them.</value>
+    <value>Some of your workouts have more than 20 steps.  Those need to be split to reflect the changes in your options. Do you want to do this now?  You will need to do it manually if you choose "No".</value>
   </data>
 </root>

@@ -337,7 +337,7 @@ namespace GarminFitnessPlugin.View
         {
             if (StepsList.Columns.Count > 0)
             {
-                StepsList.Columns[0].Width = StepsList.Width - 100;
+                StepsList.Columns[0].Width = StepsList.Width - 60;
             }
         }
 
@@ -2716,11 +2716,11 @@ namespace GarminFitnessPlugin.View
                 StepsList.RowData = stepsList;
 
                 StepsList.Columns.Clear();
-                StepsList.Columns.Add(new TreeList.Column("DisplayString", "Description", StepsList.Width - 100,
+                StepsList.Columns.Add(new TreeList.Column("DisplayString", "Description", StepsList.Width - 60,
                                                           StringAlignment.Near));
                 if (SelectedWorkout.GetStepCount() > Constants.MaxStepsPerWorkout)
                 {
-                    StepsList.Columns.Add(new TreeList.Column("AutoSplitPart", "Workout Part", 80,
+                    StepsList.Columns.Add(new TreeList.Column("AutoSplitPart", "Workout Part", 40,
                                           StringAlignment.Near));
                 }
             }
