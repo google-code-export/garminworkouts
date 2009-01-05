@@ -655,7 +655,11 @@ namespace GarminFitnessPlugin.Controller
                 {
                     m_EnableAutoSplitWorkouts = value;
 
-                    TriggerOptionsChangedEvent("EnableAutoSplitWorkouts");
+                    // Don't trigger when deserializing so the popup doesn't appear...
+                    if (!IsDeserializing)
+                    {
+                        TriggerOptionsChangedEvent("EnableAutoSplitWorkouts");
+                    }
                 }
             }
         }
