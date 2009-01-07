@@ -117,6 +117,9 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="AddDailyViewCheckBoxText" xml:space="preserve">
+    <value>Voeg toe aan logboek</value>
+  </data>
   <data name="AndText" xml:space="preserve">
     <value>en</value>
   </data>
@@ -433,7 +436,7 @@
     <value>Naam</value>
   </data>
   <data name="NeedActivityTemplateText" xml:space="preserve">
-    <value>To create an activity from this workout, you need at least 1 activity already in your logbook.  It seems your logbook is empty so please create an empty activity, reschedule your workout then delete that temporary activity.</value>
+    <value>Om een activiteit te maken van deze training, moet er ten minste 1 activiteit reeds in het logboek staan. Het lijkt alsof uw</value>
   </data>
   <data name="NeverExportedText" xml:space="preserve">
     <value>Nooit geëxporteerd</value>
@@ -464,6 +467,9 @@
   </data>
   <data name="PaceRangeTargetDescriptionText" xml:space="preserve">
     <value>Probeer mijn tempo tussen {0:00}:{1:00} and {2:00}:{3:00} min/{4} te houden.</value>
+  </data>
+  <data name="PartNumberingNotesText" xml:space="preserve">
+    <value>onderdeel {0}/{1}</value>
   </data>
   <data name="PasteStepErrorText" xml:space="preserve">
     <value>Onmogelijk om de stappen in te voegen, uw training kan niet zoveel stappen bevatten. Het maximale aantal stappen in een training is 20.</value>
@@ -541,7 +547,7 @@
     <value>Planning</value>
   </data>
   <data name="SelectCategoryDialogText" xml:space="preserve">
-    <value>Selecteer categorie voor training </value>
+    <value>Selecteer categorie voor training</value>
   </data>
   <data name="SelectDateText" xml:space="preserve">
     <value>Selecteer een datum</value>
@@ -597,6 +603,9 @@
   <data name="STModeRadioButtonText" xml:space="preserve">
     <value>Ik wil de SportTracks modus gebruiken</value>
   </data>
+  <data name="String" xml:space="preserve">
+    <value>logboek leeg is, maak daarom a.u.b. eerst een tijdelijke lege activiteit aan en herplan uw training. Vervolgens kunt u de tijdelijke activiteit verwijderen.</value>
+  </data>
   <data name="STZonesExplanationText" xml:space="preserve">
     <value>Als u de SportTracks zones gebruikt dan gebruikt deze plugin de hartslag en snelheids zones die ingesteld zijn in de categorie waaronder deze training is geclassificeerd. De SportTracks activiteit categorieén heebn geen cadans of kracht zones, dit is de reden waarom ze onafhankelijk gedefinieerd moeten worden. </value>
   </data>
@@ -636,6 +645,9 @@
   <data name="ValueValidationTitleText" xml:space="preserve">
     <value>Onjuiste waarde</value>
   </data>
+  <data name="WarningText" xml:space="preserve">
+    <value>Waarschuwing</value>
+  </data>
   <data name="WeightLabelText" xml:space="preserve">
     <value>Gewicht :</value>
   </data>
@@ -659,5 +671,8 @@
   </data>
   <data name="WorkoutsText" xml:space="preserve">
     <value>Trainingen</value>
+  </data>
+  <data name="WorkoutsWereSplitText" xml:space="preserve">
+    <value>Sommige van uw trainingen hebben meer dan 20 stappen. Deze moeten gesplitst worden om de wijziging in uw opties weer te kunnen geven. Wilt u dit nu doen? U moet het zelf handmatig doen als nu kiest voor "Nee".</value>
   </data>
 </root>
