@@ -117,8 +117,14 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="AddDailyViewCheckBoxText" xml:space="preserve">
+    <value>Legg til i loggboken</value>
+  </data>
   <data name="AndText" xml:space="preserve">
     <value>og</value>
+  </data>
+  <data name="AutoSplitCheckBoxText" xml:space="preserve">
+    <value>Tillat treningsprogram med mer enn 20 trinn</value>
   </data>
   <data name="AutoText" xml:space="preserve">
     <value>Automatisk</value>
@@ -269,6 +275,9 @@
   </data>
   <data name="FinishLabelText" xml:space="preserve">
     <value>For å avslutte nå og fortsette senere, klikk "Avslutt"</value>
+  </data>
+  <data name="ForceSplitCheckBoxText" xml:space="preserve">
+    <value>Framtving splitting</value>
   </data>
   <data name="FromDeviceText" xml:space="preserve">
     <value>Fra enhet</value>
@@ -433,7 +442,7 @@
     <value>Navn</value>
   </data>
   <data name="NeedActivityTemplateText" xml:space="preserve">
-    <value>To create an activity from this workout, you need at least 1 activity already in your logbook.  It seems your logbook is empty so please create an empty activity, reschedule your workout then delete that temporary activity.</value>
+    <value>For å lage en aktivitet fra dette treningsprogrammet må du ha minst en aktivititet allerede i loggboken. Lag en ny temporær aktivitet, forsøk igjen, og slett den temporære aktiviteten når du er ferdig.</value>
   </data>
   <data name="NeverExportedText" xml:space="preserve">
     <value>Aldri eksportert</value>
@@ -464,6 +473,9 @@
   </data>
   <data name="PaceRangeTargetDescriptionText" xml:space="preserve">
     <value>Forsøk å holde tempo mellom {0:00}:{1:00} og {2:00}:{3:00} min/{4}.</value>
+  </data>
+  <data name="PartNumberingNotesText" xml:space="preserve">
+    <value>del {0}/{1}</value>
   </data>
   <data name="PasteStepErrorText" xml:space="preserve">
     <value>Kan ikke lime inn trinnene da treningsprogrammet da vil få for mange trinn. Maks antall trinn er 20.</value>
@@ -636,6 +648,9 @@
   <data name="ValueValidationTitleText" xml:space="preserve">
     <value>Ugyldig verdi</value>
   </data>
+  <data name="WarningText" xml:space="preserve">
+    <value>Advarsel</value>
+  </data>
   <data name="WeightLabelText" xml:space="preserve">
     <value>Vekt:</value>
   </data>
@@ -659,5 +674,8 @@
   </data>
   <data name="WorkoutsText" xml:space="preserve">
     <value>Treningsprogram</value>
+  </data>
+  <data name="WorkoutsWereSplitText" xml:space="preserve">
+    <value>Noen av dine treningsprogram har flere enn 20 steg og må splittes. Vil du gjøre dette nå? Om ikke må du gjøre dette manuelt siden.</value>
   </data>
 </root>

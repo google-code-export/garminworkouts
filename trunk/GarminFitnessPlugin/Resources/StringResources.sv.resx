@@ -117,8 +117,14 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="AddDailyViewCheckBoxText" xml:space="preserve">
+    <value>Lägg till i loggboken</value>
+  </data>
   <data name="AndText" xml:space="preserve">
     <value>och</value>
+  </data>
+  <data name="AutoSplitCheckBoxText" xml:space="preserve">
+    <value>Tillåt pass med mer än 20 steg</value>
   </data>
   <data name="AutoText" xml:space="preserve">
     <value>Auto</value>
@@ -226,7 +232,7 @@
     <value>Värdet måste vara ett decimalt nummer mellan {0:0.00} och {1:0.00}</value>
   </data>
   <data name="EditBikingProfileText" xml:space="preserve">
-    <value>Cykel profil</value>
+    <value>Cykelprofil</value>
   </data>
   <data name="EditProfileExplanationText" xml:space="preserve">
     <value>På denna sida kan du ändra din personliga information som sparas i din profil. Notera att visning av dina pass påverkas av hur väljer att editera dina zoner (slag/min mot % maxpuls och hastighet mot tempo) och att dessa zoner skiljer sig mellan sporter.</value>
@@ -269,6 +275,9 @@
   </data>
   <data name="FinishLabelText" xml:space="preserve">
     <value>För att ställa in pluginet senare, clicka på ”Slutför”</value>
+  </data>
+  <data name="ForceSplitCheckBoxText" xml:space="preserve">
+    <value>Tvinga delning</value>
   </data>
   <data name="FromDeviceText" xml:space="preserve">
     <value>Från enhet</value>
@@ -433,7 +442,7 @@
     <value>Namn</value>
   </data>
   <data name="NeedActivityTemplateText" xml:space="preserve">
-    <value>To create an activity from this workout, you need at least 1 activity already in your logbook.  It seems your logbook is empty so please create an empty activity, reschedule your workout then delete that temporary activity.</value>
+    <value>För att skapa en aktivitet från detta pass behöver du minst 1 aktivitet i loggboken. Det verkar som om din loggbok är tom, så skapa en tom aktivitet, schemalägg ditt pass igen innan du tar bort den tillfälliga aktiviteten.</value>
   </data>
   <data name="NeverExportedText" xml:space="preserve">
     <value>Aldrig exporterad</value>
@@ -464,6 +473,9 @@
   </data>
   <data name="PaceRangeTargetDescriptionText" xml:space="preserve">
     <value>Försök bibehålla mitt tempo mellan {0:00}:{1:00} och {2:00}:{3:00} min/{4}.</value>
+  </data>
+  <data name="PartNumberingNotesText" xml:space="preserve">
+    <value>del {0}/{1}</value>
   </data>
   <data name="PasteStepErrorText" xml:space="preserve">
     <value>Kan inte klistra in stegen, ditt pass kan inte innehålla så många steg. Det maximala antalet steg i ett pass är 20.</value>
@@ -523,7 +535,7 @@
     <value>Det finns redan ett pass med detta namn. Du kan välja att ersätta det nuvarande passet eller byta namn på det nya.</value>
   </data>
   <data name="RestingCheckBoxText" xml:space="preserve">
-    <value>Vilosteg.</value>
+    <value>Vilosteg</value>
   </data>
   <data name="RestingHeartRateLabelText" xml:space="preserve">
     <value>Vilopuls :</value>
@@ -636,6 +648,9 @@
   <data name="ValueValidationTitleText" xml:space="preserve">
     <value>Ogiltigt värde</value>
   </data>
+  <data name="WarningText" xml:space="preserve">
+    <value>Varning</value>
+  </data>
   <data name="WeightLabelText" xml:space="preserve">
     <value>Vikt :</value>
   </data>
@@ -659,5 +674,8 @@
   </data>
   <data name="WorkoutsText" xml:space="preserve">
     <value>Pass</value>
+  </data>
+  <data name="WorkoutsWereSplitText" xml:space="preserve">
+    <value>Vissa av dina aktiviteter har mer än 20 steg. Dessa aktiviteter behöver delas enligt ändringar i inställningarna. Vill du göra detta nu? Du kommer behöva göra detta manuellt om du väljer "Nej".</value>
   </data>
 </root>
