@@ -22,7 +22,7 @@ namespace GarminFitnessPlugin.Data
             Debug.Assert(numRepeats <= Constants.MaxRepeats);
             RepetitionCount = numRepeats;
 
-            ParentWorkout.AddNewStep(new RegularStep(parent), this);
+            m_StepsToRepeat.Add(new RegularStep(parent));
         }
 
         public RepeatStep(Stream stream, DataVersion version, Workout parent)
@@ -58,8 +58,8 @@ namespace GarminFitnessPlugin.Data
             stream.Read(intBuffer, 0, sizeof(Int32));
             stepCount = BitConverter.ToInt32(intBuffer, 0);
 
+            // In case the repeat was already registered on the workout
             ParentWorkout.RemoveSteps(StepsToRepeat);
-            // In case the repeat wasn't yet registered on the workout
             m_StepsToRepeat.Clear();
             for (int i = 0; i < stepCount; ++i)
             {
@@ -67,14 +67,13 @@ namespace GarminFitnessPlugin.Data
 
                 stream.Read(intBuffer, 0, sizeof(Int32));
                 type = (IStep.StepType)BitConverter.ToInt32(intBuffer, 0);
-
                 if (type == IStep.StepType.Regular)
                 {
-                    ParentWorkout.AddNewStep(new RegularStep(stream, version, ParentWorkout), this);
+                    m_StepsToRepeat.Add(new RegularStep(stream, version, ParentWorkout));
                 }
                 else
                 {
-                    ParentWorkout.AddNewStep(new RepeatStep(stream, version, ParentWorkout), this);
+                    m_StepsToRepeat.Add(new RepeatStep(stream, version, ParentWorkout));
                 }
             }
         }
@@ -144,7 +143,7 @@ namespace GarminFitnessPlugin.Data
             m_StepsToRepeat.Clear();
             for (int i = 0; i < stepsToRepeat.Count; ++i)
             {
-                ParentWorkout.AddNewStep(stepsToRepeat[i], this);
+                m_StepsToRepeat.Add(stepsToRepeat[i]);
             }
         }
 

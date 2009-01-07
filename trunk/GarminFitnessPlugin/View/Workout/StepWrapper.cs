@@ -21,7 +21,19 @@ namespace GarminFitnessPlugin.View
 
         public String AutoSplitPart
         {
-            get { return ((IStep)Element).ParentWorkout.GetStepSplitPart((IStep)Element).ToString(); }
+            get
+            {
+                IStep step = (IStep)Element;
+
+                string result = step.SplitPartInWorkout.ToString();
+
+                if (step.ForceSplitOnStep)
+                {
+                    result = "*" + result;
+                }
+
+                return result;
+            }
         }
     }
 }

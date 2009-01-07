@@ -29,16 +29,9 @@ namespace GarminFitnessPlugin.Data
             // Type
             stream.Write(BitConverter.GetBytes((Int32)Type), 0, sizeof(Int32));
 
-            // Notes
-            if (Notes != null && Notes != String.Empty)
-            {
-                stream.Write(BitConverter.GetBytes(Encoding.UTF8.GetByteCount(Notes)), 0, sizeof(Int32));
-                stream.Write(Encoding.UTF8.GetBytes(Notes), 0, Encoding.UTF8.GetByteCount(Notes));
-            }
-            else
-            {
-                stream.Write(BitConverter.GetBytes((Int32)0), 0, sizeof(Int32));
-            }
+            m_Notes.Serialize(stream);
+
+            m_ForceSplit.Serialize(stream);
         }
 
         public void Deserialize_V0(Stream stream, DataVersion version)
@@ -47,24 +40,14 @@ namespace GarminFitnessPlugin.Data
 
         public void Deserialize_V6(Stream stream, DataVersion version)
         {
-            byte[] intBuffer = new byte[sizeof(Int32)];
-            byte[] stringBuffer;
-            Int32 stringLength;
+            m_Notes.Deserialize(stream, version);
+        }
 
-            // Notes
-            stream.Read(intBuffer, 0, sizeof(Int32));
-            stringLength = BitConverter.ToInt32(intBuffer, 0);
+        public void Deserialize_V12(Stream stream, DataVersion version)
+        {
+            Deserialize_V6(stream, version);
 
-            if (stringLength > 0)
-            {
-                stringBuffer = new byte[stringLength];
-                stream.Read(stringBuffer, 0, stringLength);
-                Notes = Encoding.UTF8.GetString(stringBuffer);
-            }
-            else
-            {
-                Notes = String.Empty;
-            }
+            m_ForceSplit.Deserialize(stream, version);
         }
 
         public virtual void Serialize(XmlNode parentNode, String nodeName, XmlDocument document)
@@ -86,9 +69,7 @@ namespace GarminFitnessPlugin.Data
             valueNode = document.CreateElement("StepId");
             valueNode.AppendChild(document.CreateTextNode(Utils.GetStepExportId(this).ToString()));
             extensionNode.AppendChild(valueNode);
-            valueNode = document.CreateElement("Notes");
-            valueNode.AppendChild(document.CreateTextNode(Notes));
-            extensionNode.AppendChild(valueNode);
+            m_Notes.Serialize(extensionNode, "Notes", document);
 
             ParentWorkout.AddSportTracksExtension(extensionNode);
         }
@@ -141,6 +122,10 @@ namespace GarminFitnessPlugin.Data
         public Workout ParentWorkout
         {
             get { return m_ParentWorkout; }
+            set
+            {
+                m_ParentWorkout = value;
+            }
         }
 
         public string Notes
@@ -150,7 +135,7 @@ namespace GarminFitnessPlugin.Data
             {
                 if(m_Notes != value)
                 {
-                    m_Notes = value;
+                    m_Notes.Value = value;
                 
                     if (StepChanged != null)
                     {
@@ -158,6 +143,36 @@ namespace GarminFitnessPlugin.Data
                     }
                 }
             }
+        }
+
+        public bool ForceSplitOnStep
+        {
+            get
+            {
+                if (ParentWorkout.GetTopMostRepeatForStep(this) == null)
+                {
+                    return m_ForceSplit;
+                }
+
+                return false;
+            }
+            set 
+            {
+                if(ForceSplitOnStep != value)
+                {
+                    m_ForceSplit.Value = value;
+                
+                    if (StepChanged != null)
+                    {
+                        StepChanged(this, new PropertyChangedEventArgs("ForceSplitOnStep"));
+                    }
+                }
+            }
+        }
+
+        public UInt16 SplitPartInWorkout
+        {
+            get { return ParentWorkout.GetStepSplitPart(this); }
         }
 
         public abstract bool IsDirty
@@ -177,6 +192,7 @@ namespace GarminFitnessPlugin.Data
 
         private StepType m_StepType;
         private Workout m_ParentWorkout;
-        private string m_Notes = String.Empty;
-    }
+        private GarminFitnessString m_Notes = new GarminFitnessString();
+        private GarminFitnessBool m_ForceSplit = new GarminFitnessBool(false);
+   }
 }

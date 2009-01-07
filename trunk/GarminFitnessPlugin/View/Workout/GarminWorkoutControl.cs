@@ -112,6 +112,11 @@ namespace GarminFitnessPlugin.View
                 {
                     UpdateUIFromStep();
                 }
+
+                if (changedProperty.PropertyName == "ForceSplitOnStep")
+                {
+                    BuildStepsList();
+                }
             }
         }
 
@@ -390,6 +395,13 @@ namespace GarminFitnessPlugin.View
             RegularStep concreteStep = (RegularStep)SelectedStep;
 
             concreteStep.IsRestingStep = RestingCheckBox.Checked;
+        }
+
+        private void ForceSplitCheckBox_CheckedChanged(object sender, EventArgs e)
+        {
+            Debug.Assert(SelectedStep != null);
+
+            SelectedStep.ForceSplitOnStep = ForceSplitCheckBox.Checked;
         }
 
         private void HeartRateDurationReferenceComboBox_SelectionChangedCommited(object sender, EventArgs e)
@@ -2034,6 +2046,9 @@ namespace GarminFitnessPlugin.View
                 Debug.Assert(Utils.GetStepInfo(SelectedStep, SelectedWorkout.Steps, out selectedList, out selectedPosition));
 
                 StepNotesText.Text = SelectedStep.Notes;
+                ForceSplitCheckBox.Visible = Options.Instance.AllowSplitWorkouts || SelectedWorkout.GetSplitPartsCount() > 1;
+                ForceSplitCheckBox.Enabled = SelectedWorkout.GetTopMostRepeatForStep(SelectedStep) == null;
+                ForceSplitCheckBox.Checked = SelectedStep.ForceSplitOnStep;
 
                 switch (SelectedStep.Type)
                 {
@@ -2718,7 +2733,7 @@ namespace GarminFitnessPlugin.View
                 StepsList.Columns.Clear();
                 StepsList.Columns.Add(new TreeList.Column("DisplayString", "Description", StepsList.Width - 60,
                                                           StringAlignment.Near));
-                if (SelectedWorkout.GetStepCount() > Constants.MaxStepsPerWorkout)
+                if (SelectedWorkout.GetSplitPartsCount() > 1)
                 {
                     StepsList.Columns.Add(new TreeList.Column("AutoSplitPart", "Workout Part", 40,
                                           StringAlignment.Near));

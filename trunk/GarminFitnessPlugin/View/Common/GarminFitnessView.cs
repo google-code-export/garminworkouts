@@ -180,7 +180,7 @@ namespace GarminFitnessPlugin.View
         {
             if (changedProperty.PropertyName == "EnableAutoSplitWorkouts")
             {
-                if (!Options.Instance.EnableAutoSplitWorkouts)
+                if (!Options.Instance.AllowSplitWorkouts)
                 {
                     List<Workout> workoutsToSplit = new List<Workout>();
 

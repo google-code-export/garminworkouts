@@ -252,7 +252,7 @@ namespace GarminFitnessPlugin.Controller
             parentNode.AppendChild(child);
 
             child = document.CreateElement("EnableAutoSplitWorkouts");
-            child.AppendChild(document.CreateTextNode(EnableAutoSplitWorkouts.ToString()));
+            child.AppendChild(document.CreateTextNode(AllowSplitWorkouts.ToString()));
             parentNode.AppendChild(child);
         }
 
@@ -339,7 +339,7 @@ namespace GarminFitnessPlugin.Controller
                 }
                 else if (child.Name == "EnableAutoSplitWorkouts" && child.ChildNodes.Count == 1)
                 {
-                    Options.Instance.EnableAutoSplitWorkouts = bool.Parse(child.FirstChild.Value);
+                    Options.Instance.AllowSplitWorkouts = bool.Parse(child.FirstChild.Value);
                 }
             }
 
@@ -646,12 +646,12 @@ namespace GarminFitnessPlugin.Controller
             set { m_DonationReminderDate = value; }
         }
 
-        public bool EnableAutoSplitWorkouts
+        public bool AllowSplitWorkouts
         {
             get { return m_EnableAutoSplitWorkouts; }
             set
             {
-                if (EnableAutoSplitWorkouts != value)
+                if (AllowSplitWorkouts != value)
                 {
                     m_EnableAutoSplitWorkouts = value;
 

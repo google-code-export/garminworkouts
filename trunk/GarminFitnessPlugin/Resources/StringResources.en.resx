@@ -124,7 +124,7 @@
     <value>and</value>
   </data>
   <data name="AutoSplitCheckBoxText" xml:space="preserve">
-    <value>Allow auto-split of workouts on export</value>
+    <value>Allow workouts with more than 20 steps</value>
   </data>
   <data name="AutoText" xml:space="preserve">
     <value>Auto</value>
@@ -275,6 +275,9 @@
   </data>
   <data name="FinishLabelText" xml:space="preserve">
     <value>To set up the plugin later, click on "Finish"</value>
+  </data>
+  <data name="ForceSplitCheckBoxText" xml:space="preserve">
+    <value>Force split</value>
   </data>
   <data name="FromDeviceText" xml:space="preserve">
     <value>From Device</value>

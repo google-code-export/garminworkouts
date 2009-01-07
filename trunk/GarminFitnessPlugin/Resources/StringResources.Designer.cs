@@ -79,7 +79,7 @@ namespace GarminFitnessPlugin.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Allow auto-split of workouts on export.
+        ///   Looks up a localized string similar to Allow workouts with more than 20 steps.
         /// </summary>
         internal static string AutoSplitCheckBoxText {
             get {
@@ -534,6 +534,15 @@ namespace GarminFitnessPlugin.Resources {
         internal static string FinishLabelText {
             get {
                 return ResourceManager.GetString("FinishLabelText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Force split.
+        /// </summary>
+        internal static string ForceSplitCheckBoxText {
+            get {
+                return ResourceManager.GetString("ForceSplitCheckBoxText", resourceCulture);
             }
         }
         
