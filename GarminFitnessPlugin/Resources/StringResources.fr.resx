@@ -124,7 +124,7 @@
     <value>et</value>
   </data>
   <data name="AutoSplitCheckBoxText" xml:space="preserve">
-    <value>Permettre le découpage automatique des entraînements lors de l'export</value>
+    <value>Permettre les entraînements de plus de 20 étapes</value>
   </data>
   <data name="AutoText" xml:space="preserve">
     <value>Auto</value>
@@ -275,6 +275,9 @@
   </data>
   <data name="FinishLabelText" xml:space="preserve">
     <value>Pour configurer le plugin plus tard, cliquez sur "Terminer"</value>
+  </data>
+  <data name="ForceSplitCheckBoxText" xml:space="preserve">
+    <value>Forcer le découpage</value>
   </data>
   <data name="FromDeviceText" xml:space="preserve">
     <value>À partir de l'appareil</value>
@@ -646,7 +649,7 @@
     <value>Valeur invalide</value>
   </data>
   <data name="WarningText" xml:space="preserve">
-    <value>Attention</value>
+    <value>Avertissement</value>
   </data>
   <data name="WeightLabelText" xml:space="preserve">
     <value>Poids :</value>

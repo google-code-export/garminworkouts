@@ -309,7 +309,11 @@ namespace GarminFitnessPlugin.Controller
 
         public static int GetStepExportId(IStep step)
         {
-            return GetStepExportIdInternal(step.ParentWorkout.Steps, step);
+            int result = GetStepExportIdInternal(step.ParentWorkout.Steps, step);
+
+            Debug.Assert(result != -1);
+
+            return result;
         }
 
         private static int GetStepExportIdInternal(IList<IStep> steps, IStep step)

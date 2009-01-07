@@ -172,7 +172,7 @@ namespace GarminFitnessPlugin.View
 
         private void AutoSplitCheckBox_CheckedChanged(object sender, EventArgs e)
         {
-            Options.Instance.EnableAutoSplitWorkouts = AutoSplitCheckBox.Checked;
+            Options.Instance.AllowSplitWorkouts = AutoSplitCheckBox.Checked;
         }
 
         private void ActivityCategoryList_SelectedChanged(object sender, System.EventArgs e)
@@ -319,7 +319,7 @@ namespace GarminFitnessPlugin.View
             PowerZoneComboBox.SelectedIndex = powerSelectedIndex;
 
             // Auto-split workouts
-            AutoSplitCheckBox.Checked = Options.Instance.EnableAutoSplitWorkouts;
+            AutoSplitCheckBox.Checked = Options.Instance.AllowSplitWorkouts;
 
             // Default directory
             ExportDirectoryTextBox.Text = Options.Instance.DefaultExportDirectory;

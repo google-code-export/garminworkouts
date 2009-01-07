@@ -143,7 +143,7 @@ namespace GarminFitnessPlugin.Data
 
         public void Serialize(XmlNode parentNode, String nodeName, XmlDocument document, bool skipExtensions)
         {
-            if (GetStepCount() > Constants.MaxStepsPerWorkout)
+            if (GetSplitPartsCount() > 1)
             {
                 List<Workout> splitParts = SplitInSeperateParts();
 
@@ -733,7 +733,7 @@ namespace GarminFitnessPlugin.Data
             if (topMostRepeat == null)
             {
                 // Destination is not part of a repeat
-                if (Options.Instance.EnableAutoSplitWorkouts)
+                if (Options.Instance.AllowSplitWorkouts)
                 {
                     return true;
                 }
@@ -747,7 +747,7 @@ namespace GarminFitnessPlugin.Data
                 // When destination is part of a repeat it's a bit easier, there's a 19
                 //  child steps limit.  Since this will occur of the repeat of the base
                 //  level, check if we bust the limit
-                if (Options.Instance.EnableAutoSplitWorkouts)
+                if (Options.Instance.AllowSplitWorkouts)
                 {
                     return topMostRepeat.GetStepCount() + newStepCount <= Constants.MaxStepsPerWorkout;
                 }
@@ -775,21 +775,16 @@ namespace GarminFitnessPlugin.Data
                 stepToFind = topMostRepeat;
             }
 
-            int i = 0;
-            while(i < Steps.Count)
+            for (int i = 0; i < Steps.Count; ++i)
             {
                 IStep currentStep = Steps[i];
 
                 counter += currentStep.GetStepCount();
 
-                if (counter > Constants.MaxStepsPerWorkout)
+                if (i != 0 && (currentStep.ForceSplitOnStep || counter > Constants.MaxStepsPerWorkout))
                 {
                     partNumber++;
-                    counter = 0;
-                }
-                else
-                {
-                    ++i;
+                    counter = currentStep.GetStepCount();
                 }
 
                 if (currentStep == stepToFind)
@@ -814,58 +809,50 @@ namespace GarminFitnessPlugin.Data
                 List<IStep> newStepsList = new List<IStep>();
                 UInt16 partNumber = 0;
                 UInt16 counter = 0;
-                UInt16 stepIndex = 0;
-                for (int i = 0; i < GetSplitPartsCount(); ++i)
+                Workout newWorkout; ;
+                for (int i = 0; i < Steps.Count; ++i)
                 {
-                    newStepsList.Clear();
+                    IStep currentStep = Steps[i].Clone();
 
-                    // Go through steps and keep those who deserve to this part
-                    while (i == partNumber)
+                    counter += currentStep.GetStepCount();
+
+                    if (counter > Constants.MaxStepsPerWorkout || currentStep.ForceSplitOnStep)
                     {
-                        IStep currentStep = Steps[stepIndex];
+                        // Create the new workout with the collected steps
+                        newWorkout = GarminWorkoutManager.Instance.CreateUnregisteredWorkout(uniqueNames[partNumber], Category, newStepsList);
+                        result.Add(newWorkout);
 
-                        counter += currentStep.GetStepCount();
-
-                        if (counter > Constants.MaxStepsPerWorkout)
+                        // Transfer workout info
+                        if (partNumber == 0)
                         {
-                            partNumber++;
-                            counter = 0;
+                            newWorkout.Notes = Notes;
+
+                            for (int j = 0; j < ScheduledDates.Count; ++j)
+                            {
+                                newWorkout.ScheduleWorkout(ScheduledDates[j]);
+                            }
                         }
                         else
                         {
-                            newStepsList.Add(currentStep);
-                            stepIndex++;
-
-                            // This condition forces exit when we reached the last step
-                            if (stepIndex >= Steps.Count)
-                            {
-                                partNumber++;
-
-                                Debug.Assert(partNumber == GetSplitPartsCount());
-                            }
+                            newWorkout.Notes = Name + " " + String.Format(GarminFitnessView.GetLocalizedString("PartNumberingNotesText"), partNumber + 1, partsCount);
                         }
+                        newWorkout.AddToDailyViewOnSchedule = AddToDailyViewOnSchedule;
+
+                        // Setup for next split
+                        newStepsList.Clear();
+                        partNumber++;
+                        counter = currentStep.GetStepCount();
                     }
 
-                    Workout newWorkout = GarminWorkoutManager.Instance.CreateUnregisteredWorkout(uniqueNames[i], Category, newStepsList);
-
-                    // Transfer workout info
-                    if (i == 0)
-                    {
-                        newWorkout.Notes = Notes;
-
-                        for (int j = 0; j < ScheduledDates.Count; ++j)
-                        {
-                            newWorkout.ScheduleWorkout(ScheduledDates[j]);
-                        }
-                    }
-                    else
-                    {
-                        newWorkout.Notes = Name + " " + String.Format(GarminFitnessView.GetLocalizedString("PartNumberingNotesText"), i + 1, partsCount);
-                    }
-                    newWorkout.AddToDailyViewOnSchedule = AddToDailyViewOnSchedule;
-
-                    result.Add(newWorkout);
+                    newStepsList.Add(currentStep);
                 }
+
+                // Create the last split
+                newWorkout = GarminWorkoutManager.Instance.CreateUnregisteredWorkout(uniqueNames[partNumber], Category, newStepsList);
+                result.Add(newWorkout);
+
+                newWorkout.Notes = Name + " " + String.Format(GarminFitnessView.GetLocalizedString("PartNumberingNotesText"), partsCount, partsCount);
+                newWorkout.AddToDailyViewOnSchedule = AddToDailyViewOnSchedule;
             }
 
             return result;
@@ -1271,6 +1258,21 @@ namespace GarminFitnessPlugin.Data
             stepToRegister.StepChanged += new IStep.StepChangedEventHandler(OnStepChanged);
             stepToRegister.DurationChanged += new IStep.StepDurationChangedEventHandler(OnDurationChanged);
             stepToRegister.TargetChanged += new IStep.StepTargetChangedEventHandler(OnTargetChanged);
+
+            stepToRegister.ParentWorkout = this;
+
+            if (stepToRegister.Type == IStep.StepType.Repeat)
+            {
+                RegisterRepeatStep((RepeatStep)stepToRegister);
+            }
+        }
+
+        private void RegisterRepeatStep(RepeatStep stepToRegister)
+        {
+            foreach (IStep step in stepToRegister.StepsToRepeat)
+            {
+                RegisterStep(step);
+            }
         }
 
         private void UnregisterStep(IStep stepToUnregister)
