@@ -117,8 +117,14 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="AddDailyViewCheckBoxText" xml:space="preserve">
+    <value>Aggiungi al logbook</value>
+  </data>
   <data name="AndText" xml:space="preserve">
     <value>e</value>
+  </data>
+  <data name="AutoSplitCheckBoxText" xml:space="preserve">
+    <value>Consenti allenamenti con più di 20 passi</value>
   </data>
   <data name="AutoText" xml:space="preserve">
     <value>Auto</value>
@@ -190,7 +196,7 @@
     <value>Per impostare il plugin, clicca su "Next"</value>
   </data>
   <data name="CustomText" xml:space="preserve">
-    <value />
+    <value>Personalizza</value>
   </data>
   <data name="DataTooRecentErrorText" xml:space="preserve">
     <value>Non riesco ad aprire questi dati con la versione attualmente installata del Gramin Fitness Plugin. Per favore aggiornalo all'ultima versione.</value>
@@ -270,6 +276,9 @@
   <data name="FinishLabelText" xml:space="preserve">
     <value>Per settare il plugin più tardi, cliccare su "Finish"</value>
   </data>
+  <data name="ForceSplitCheckBoxText" xml:space="preserve">
+    <value>Forza lo split</value>
+  </data>
   <data name="FromDeviceText" xml:space="preserve">
     <value>Dal dispositivo</value>
   </data>
@@ -301,25 +310,25 @@
     <value>Velocità Max</value>
   </data>
   <data name="GTCSpeedZone1Text" xml:space="preserve">
-    <value>Arramp. 4</value>
+    <value>Salita 4</value>
   </data>
   <data name="GTCSpeedZone2Text" xml:space="preserve">
-    <value>Arramp. 3</value>
+    <value>Salita 3</value>
   </data>
   <data name="GTCSpeedZone3Text" xml:space="preserve">
-    <value>Arramp. 2</value>
+    <value>Salita 2</value>
   </data>
   <data name="GTCSpeedZone4Text" xml:space="preserve">
-    <value>Arramp. 1</value>
+    <value>Salita 1</value>
   </data>
   <data name="GTCSpeedZone5Text" xml:space="preserve">
-    <value>Pianura 3</value>
+    <value>Piano 3</value>
   </data>
   <data name="GTCSpeedZone6Text" xml:space="preserve">
-    <value>Pianura 2</value>
+    <value>Piano 2</value>
   </data>
   <data name="GTCSpeedZone7Text" xml:space="preserve">
-    <value>Pianura 1</value>
+    <value>Piano 1</value>
   </data>
   <data name="GTCSpeedZone8Text" xml:space="preserve">
     <value>Discesa</value>
@@ -433,7 +442,7 @@
     <value>Nome</value>
   </data>
   <data name="NeedActivityTemplateText" xml:space="preserve">
-    <value>To create an activity from this workout, you need at least 1 activity already in your logbook.  It seems your logbook is empty so please create an empty activity, reschedule your workout then delete that temporary activity.</value>
+    <value>Per creare un'attività da questo allenamento, bisogna che ci sia almeno un'attività già presente nel logbook. Sembra che il logbook sia vuoto quindi, per favore crea un'attività vuota, ripianifica l'allenamento e poi cancella l'attività temporanea.</value>
   </data>
   <data name="NeverExportedText" xml:space="preserve">
     <value>Mai esportato</value>
@@ -464,6 +473,9 @@
   </data>
   <data name="PaceRangeTargetDescriptionText" xml:space="preserve">
     <value>Prova a mantenere il passo tra  {0:00}:{1:00} e {2:00}:{3:00} min/{4}.</value>
+  </data>
+  <data name="PartNumberingNotesText" xml:space="preserve">
+    <value>parte {0}/{1}</value>
   </data>
   <data name="PasteStepErrorText" xml:space="preserve">
     <value>Non sono in gradi di incollare gli steps perché il tuo allenamento ne contiene troppi. Il massimo numero di steps per allenamento è 20.</value>
@@ -553,7 +565,7 @@
     <value>Seleziona il dispositivo</value>
   </data>
   <data name="SettingsPageNameText" xml:space="preserve">
-    <value>Impostazioni del Garmin Fitness</value>
+    <value>Garmin Fitness</value>
   </data>
   <data name="SetupGarminOrSTZonesText" xml:space="preserve">
     <value>Imposta le zone individualmente</value>
@@ -636,6 +648,9 @@
   <data name="ValueValidationTitleText" xml:space="preserve">
     <value>Valore non valido</value>
   </data>
+  <data name="WarningText" xml:space="preserve">
+    <value>Attenzione</value>
+  </data>
   <data name="WeightLabelText" xml:space="preserve">
     <value>Peso :</value>
   </data>
@@ -659,5 +674,8 @@
   </data>
   <data name="WorkoutsText" xml:space="preserve">
     <value>Allenamenti</value>
+  </data>
+  <data name="WorkoutsWereSplitText" xml:space="preserve">
+    <value>Alcuni dei tuoi allenamenti hanno più di 20 passi. Questi dovrebbereo essere divisi per essere gestiti correttamente. Vuoi farlo adesso ? Se scegli "NO", dovrai farlo manualmente.</value>
   </data>
 </root>
