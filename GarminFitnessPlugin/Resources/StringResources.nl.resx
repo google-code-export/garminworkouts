@@ -123,6 +123,9 @@
   <data name="AndText" xml:space="preserve">
     <value>en</value>
   </data>
+  <data name="AutoSplitCheckBoxText" xml:space="preserve">
+    <value>Trainingen mogen meer dan 20 stappen bevatten</value>
+  </data>
   <data name="AutoText" xml:space="preserve">
     <value>Auto</value>
   </data>
@@ -272,6 +275,9 @@
   </data>
   <data name="FinishLabelText" xml:space="preserve">
     <value>Op de plugin op een later tijdstip in te stellen, klik op "Einde"</value>
+  </data>
+  <data name="ForceSplitCheckBoxText" xml:space="preserve">
+    <value>Forceer splitsen</value>
   </data>
   <data name="FromDeviceText" xml:space="preserve">
     <value>Van Unit</value>

@@ -47,8 +47,8 @@ namespace GarminFitnessPlugin
         public static readonly double MaxSpeedStatute = 60.0;
         public static readonly double MinSpeedMetric = Length.Convert(MinSpeedStatute, Length.Units.Mile, Length.Units.Kilometer);
         public static readonly double MaxSpeedMetric = Length.Convert(MaxSpeedStatute, Length.Units.Mile, Length.Units.Kilometer);
-        public static readonly double MinSpeedMetersPerSecond = 0.44722;
-        public static readonly double MaxSpeedMetersPerSecond = 26.8222;
+        public static readonly double MinSpeedMetersPerSecond = Length.Convert(MinSpeedStatute, Length.Units.Mile, Length.Units.Meter) / Constants.SecondsPerHour;
+        public static readonly double MaxSpeedMetersPerSecond = Length.Convert(MaxSpeedStatute, Length.Units.Mile, Length.Units.Meter) / Constants.SecondsPerHour;
 
         // Pace limits
         public static readonly double MinPaceStatute = MinutesPerHour / MaxSpeedStatute;
