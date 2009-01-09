@@ -244,6 +244,7 @@ namespace GarminFitnessPlugin.View
             CadenceSettingsGroupBox.Text = GarminFitnessView.GetLocalizedString("CadenceSettingsGroupBoxText");
             PowerSettingsGroupBox.Text = GarminFitnessView.GetLocalizedString("PowerSettingsGroupBoxText");
             ExportDirectoryGroupBox.Text = GarminFitnessView.GetLocalizedString("DefaultExportDirectoryGroupBoxText");
+            CategoriesGroupBox.Text = GarminFitnessView.GetLocalizedString("CategoriesText");
 
             DefaultHeartRateZonesLabel.Text = GarminFitnessView.GetLocalizedString("DefaultHeartRateZoneLabelText");
             DefaultSpeedZoneLabel.Text = GarminFitnessView.GetLocalizedString("DefaultSpeedZoneLabelText");

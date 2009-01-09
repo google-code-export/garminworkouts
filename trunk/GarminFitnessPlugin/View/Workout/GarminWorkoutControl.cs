@@ -1841,6 +1841,23 @@ namespace GarminFitnessPlugin.View
             RepetitionCountLabel.Text = GarminFitnessView.GetLocalizedString("RepetitionCountLabelText");
             ExportDateTextLabel.Text = GarminFitnessView.GetLocalizedString("LastExportDateText");
             AddDailyViewCheckBox.Text = GarminFitnessView.GetLocalizedString("AddDailyViewCheckBoxText");
+            ForceSplitCheckBox.Text = GarminFitnessView.GetLocalizedString("ForceSplitCheckBoxText");
+
+            if (SelectedWorkout != null)
+            {
+                if (SelectedWorkout.LastExportDate.Ticks == 0)
+                {
+                    ExportDateLabel.Text = GarminFitnessView.GetLocalizedString("NeverExportedText");
+                }
+                else
+                {
+                    CultureInfo culture = CultureInfo.CreateSpecificCulture(GarminFitnessView.UICulture.Name);
+
+                    ExportDateLabel.Text = SelectedWorkout.LastExportDate.ToString(culture.DateTimeFormat.ShortDatePattern) +
+                                            " " + SelectedWorkout.LastExportDate.ToString(culture.DateTimeFormat.ShortTimePattern);
+                }
+            }
+
 
             // Update duration heart rate reference combo box text
             HeartRateDurationReferenceComboBox.Items.Clear();
