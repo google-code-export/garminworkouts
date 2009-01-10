@@ -142,7 +142,7 @@ namespace GarminFitnessPlugin.View
 
                     for (int i = 0; i < viewControl.SelectedWorkouts.Count; ++i)
                     {
-                        Workout currentWorkout = viewControl.SelectedWorkouts[i];
+                        IWorkout currentWorkout = viewControl.SelectedWorkouts[i];
                         string fileName = Utils.GetWorkoutFilename(currentWorkout);
 
                         file = File.Create(dlg.SelectedPath + "\\" + fileName);
@@ -228,6 +228,6 @@ namespace GarminFitnessPlugin.View
             }
         }
 
-        private List<Workout> m_FailedExportList = new List<Workout>();
+        private List<IWorkout> m_FailedExportList = new List<IWorkout>();
     }
 }

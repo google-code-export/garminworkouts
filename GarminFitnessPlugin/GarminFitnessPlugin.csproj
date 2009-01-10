@@ -101,6 +101,7 @@
     <Compile Include="Data\ProfileElements\GarminFitnessNamedLowHighZone.cs" />
     <Compile Include="Data\ProfileElements\GarminFitnessValueRange.cs" />
     <Compile Include="Data\ProfileElements\GarminProfile.cs" />
+    <Compile Include="Data\WorkoutElements\IWorkout.cs" />
     <Compile Include="Data\WorkoutElements\Targets\Cadence\BaseCadenceTarget.cs" />
     <Compile Include="Data\WorkoutElements\Targets\Cadence\CadenceZoneSTTarget.cs" />
     <Compile Include="Data\WorkoutElements\Targets\Heart rate\HeartRateZoneSTTarget.cs" />
@@ -135,6 +136,7 @@
     <Compile Include="Controller\GarminWorkoutManager.cs" />
     <Compile Include="Controller\WorkoutExporter.cs" />
     <Compile Include="Controller\WorkoutImporter.cs" />
+    <Compile Include="Data\WorkoutElements\WorkoutPart.cs" />
     <Compile Include="GUIDs.cs" />
     <Compile Include="PluginMain.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

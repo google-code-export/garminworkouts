@@ -187,11 +187,11 @@ namespace GarminFitnessPlugin.View
                     // Check if all workouts can handle the change
                     for(int i = 0; i < GarminWorkoutManager.Instance.Workouts.Count; i++)
                     {
-                        Workout currentWorkout = GarminWorkoutManager.Instance.Workouts[i];
+                        IWorkout currentWorkout = GarminWorkoutManager.Instance.Workouts[i];
 
-                        if (currentWorkout.GetStepCount() > Constants.MaxStepsPerWorkout)
+                        if (currentWorkout is Workout && currentWorkout.GetSplitPartsCount() > 1)
                         {
-                            workoutsToSplit.Add(currentWorkout);
+                            workoutsToSplit.Add(currentWorkout as Workout);
                         }
                     }
 
@@ -204,11 +204,11 @@ namespace GarminFitnessPlugin.View
                         {
                             for (int i = 0; i < workoutsToSplit.Count; ++i)
                             {
-                                List<Workout> splitParts = workoutsToSplit[i].SplitInSeperateParts();
+                                List<WorkoutPart> splitParts = workoutsToSplit[i].SplitInSeperateParts();
 
                                 for (int j = 0; j < splitParts.Count; ++j)
                                 {
-                                    GarminWorkoutManager.Instance.RegisterWorkout(splitParts[j]);
+                                    splitParts[j].ConvertToWorkout();
                                 }
                             }
                             GarminWorkoutManager.Instance.RemoveWorkouts(workoutsToSplit);
