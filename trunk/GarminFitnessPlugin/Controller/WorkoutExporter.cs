@@ -11,21 +11,21 @@ namespace GarminFitnessPlugin.Controller
 {
     class WorkoutExporter
     {
-        public static void ExportWorkout(Workout workout, Stream exportStream)
+        public static void ExportWorkout(IWorkout workout, Stream exportStream)
         {
-            List<Workout> workouts = new List<Workout>();
+            List<IWorkout> workouts = new List<IWorkout>();
 
             workouts.Add(workout);
 
             ExportWorkout(workouts, exportStream, false);
         }
 
-        public static void ExportWorkout(List<Workout> workouts, Stream exportStream)
+        public static void ExportWorkout(List<IWorkout> workouts, Stream exportStream)
         {
             ExportWorkout(workouts, exportStream, false);
         }
 
-        public static void ExportWorkout(List<Workout> workouts, Stream exportStream, bool skipExtensions)
+        public static void ExportWorkout(List<IWorkout> workouts, Stream exportStream, bool skipExtensions)
         {
             Debug.Assert(exportStream.CanWrite && exportStream.Length == 0);
             XmlDocument document = new XmlDocument();
@@ -56,16 +56,16 @@ namespace GarminFitnessPlugin.Controller
 
             for (int i = 0; i < workouts.Count; ++i)
             {
-                ExportWorkoutInternal(workouts[i], document, workoutsNode, skipExtensions);
+                ExportWorkoutInternal(workouts[i], document, workoutsNode);
             }
 
             document.Save(new StreamWriter(exportStream));
         }
 
-        private static void ExportWorkoutInternal(Workout workout, XmlDocument document, XmlNode parentNode, bool skipExtensions)
+        private static void ExportWorkoutInternal(IWorkout workout, XmlDocument document, XmlNode parentNode)
         {
             workout.LastExportDate = DateTime.Now;
-            workout.Serialize(parentNode, "Workout", document, skipExtensions);
+            workout.Serialize(parentNode, "Workout", document);
         }
     }
 }

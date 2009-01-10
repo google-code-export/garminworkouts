@@ -407,7 +407,7 @@ namespace GarminFitnessPlugin.Controller
             }
         }
 
-        public static string GetWorkoutFilename(Workout workout)
+        public static string GetWorkoutFilename(IWorkout workout)
         {
             string fileName = workout.Name;
 
