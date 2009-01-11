@@ -16,9 +16,9 @@ namespace GarminFitnessPlugin.Data
         public SpeedZoneSTTarget(BaseSpeedTarget baseTarget)
             : base(SpeedTargetType.ZoneST, baseTarget)
         {
-            Debug.Assert(baseTarget.ParentStep.ParentWorkout.Category.SpeedZone.Zones.Count > 0);
+            Debug.Assert(baseTarget.ParentStep.ParentConcreteWorkout.Category.SpeedZone.Zones.Count > 0);
 
-            Zone = baseTarget.ParentStep.ParentWorkout.Category.SpeedZone.Zones[0];
+            Zone = baseTarget.ParentStep.ParentConcreteWorkout.Category.SpeedZone.Zones[0];
         }
 
         public SpeedZoneSTTarget(INamedLowHighZone zone, BaseSpeedTarget baseTarget)
@@ -37,7 +37,7 @@ namespace GarminFitnessPlugin.Data
         {
             base.Serialize(stream);
 
-            IZoneCategory zones = BaseTarget.ParentStep.ParentWorkout.Category.SpeedZone;
+            IZoneCategory zones = BaseTarget.ParentStep.ParentConcreteWorkout.Category.SpeedZone;
             String zoneRefID = zones.ReferenceId;
 
             GarminFitnessString categoryRefID = new GarminFitnessString(zoneRefID);
@@ -55,7 +55,7 @@ namespace GarminFitnessPlugin.Data
             // Call base deserialization
             Deserialize(typeof(BaseSpeedTarget.IConcreteSpeedTarget), stream, version);
 
-            IZoneCategory zones = BaseTarget.ParentStep.ParentWorkout.Category.SpeedZone;
+            IZoneCategory zones = BaseTarget.ParentStep.ParentConcreteWorkout.Category.SpeedZone;
 
             // RefId
             GarminFitnessString categoryRefID = new GarminFitnessString();
@@ -84,7 +84,7 @@ namespace GarminFitnessPlugin.Data
             // Call base deserialization
             Deserialize(typeof(BaseSpeedTarget.IConcreteSpeedTarget), stream, version);
 
-            IZoneCategory zones = BaseTarget.ParentStep.ParentWorkout.Category.SpeedZone;
+            IZoneCategory zones = BaseTarget.ParentStep.ParentConcreteWorkout.Category.SpeedZone;
 
             GarminFitnessString categoryRefID = new GarminFitnessString();
             categoryRefID.Deserialize(stream, version);
@@ -140,7 +140,7 @@ namespace GarminFitnessPlugin.Data
 
             // Extension
             Utils.SerializeSTZoneInfoXML(BaseTarget.ParentStep,
-                                         BaseTarget.ParentStep.ParentWorkout.Category.SpeedZone,
+                                         BaseTarget.ParentStep.ParentConcreteWorkout.Category.SpeedZone,
                                          Zone, document);
         }
 

@@ -66,7 +66,7 @@ namespace GarminFitnessPlugin.Controller
             AddTask(new SetOperationDeviceTask());
         }
 
-        public void ExportWorkout(List<IWorkout> workouts)
+        public void ExportWorkout(List<Workout> workouts)
         {
             AddTask(new ExportWorkoutTask(workouts));
         }
@@ -295,13 +295,13 @@ namespace GarminFitnessPlugin.Controller
 
         public class ExportWorkoutTask : BasicTask
         {
-            public ExportWorkoutTask(List<IWorkout> workouts) :
+            public ExportWorkoutTask(List<Workout> workouts) :
                 base(TaskTypes.TaskType_ExportWorkout)
             {
                 m_Workouts = workouts;
             }
 
-            public List<IWorkout> Workouts
+            public List<Workout> Workouts
             {
                 get { return m_Workouts; }
             }
@@ -329,7 +329,7 @@ namespace GarminFitnessPlugin.Controller
                                          fileName);
             }
 
-            private List<IWorkout> m_Workouts;
+            private List<Workout> m_Workouts;
         }
 
         public class ExportProfileTask : BasicTask

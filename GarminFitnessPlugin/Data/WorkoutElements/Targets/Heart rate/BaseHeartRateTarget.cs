@@ -192,7 +192,7 @@ namespace GarminFitnessPlugin.Data
             // We got here so our target must be a range
             Debug.Assert(ConcreteTarget.Type == IConcreteHeartRateTarget.HeartRateTargetType.Range);
 
-            IZoneCategory referenceZones = ParentStep.ParentWorkout.Category.HeartRateZone;
+            IZoneCategory referenceZones = ParentStep.ParentConcreteWorkout.Category.HeartRateZone;
             string zoneReferenceId = null;
             int zoneIndex = -1;
 

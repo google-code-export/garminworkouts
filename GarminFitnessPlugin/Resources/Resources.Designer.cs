@@ -171,5 +171,12 @@ namespace GarminFitnessPlugin.Resources {
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
+        
+        internal static System.Drawing.Bitmap WorkoutPartIcon {
+            get {
+                object obj = ResourceManager.GetObject("WorkoutPartIcon", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
     }
 }

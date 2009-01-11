@@ -202,13 +202,13 @@ namespace GarminFitnessPlugin.View
                                             GarminFitnessView.GetLocalizedString("WarningText"),
                                             MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.Yes)
                         {
-                            for (int i = 0; i < workoutsToSplit.Count; ++i)
+                            foreach (Workout workout in workoutsToSplit)
                             {
-                                List<WorkoutPart> splitParts = workoutsToSplit[i].SplitInSeperateParts();
+                                List<WorkoutPart> splitParts = workout.SplitInSeperateParts();
 
-                                for (int j = 0; j < splitParts.Count; ++j)
+                                foreach (WorkoutPart part in splitParts)
                                 {
-                                    splitParts[j].ConvertToWorkout();
+                                    part.ConvertToWorkout();
                                 }
                             }
                             GarminWorkoutManager.Instance.RemoveWorkouts(workoutsToSplit);

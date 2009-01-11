@@ -298,7 +298,7 @@ namespace GarminFitnessPlugin.Controller
                     {
                         SpeedRangeTarget concreteTarget = (SpeedRangeTarget)target;
 
-                        if (concreteTarget.BaseTarget.ParentStep.ParentWorkout.Category.SpeedUnits == Speed.Units.Pace)
+                        if (concreteTarget.BaseTarget.ParentStep.ParentConcreteWorkout.Category.SpeedUnits == Speed.Units.Pace)
                         {
                             baseString = GarminFitnessView.GetLocalizedString("PaceRangeTargetDescriptionText");
 

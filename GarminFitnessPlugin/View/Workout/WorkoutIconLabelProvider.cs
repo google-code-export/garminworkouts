@@ -25,6 +25,10 @@ namespace GarminFitnessPlugin.View
 
                 return global::GarminFitnessPlugin.Resources.Resources.WorkoutIcon;
             }
+            if (element.GetType() == typeof(WorkoutPartWrapper))
+            {
+                return global::GarminFitnessPlugin.Resources.Resources.WorkoutPartIcon;
+            }
             else if (element.GetType() == typeof(ActivityCategoryWrapper))
             {
                 return global::GarminFitnessPlugin.Resources.Resources.CategoryIcon;
