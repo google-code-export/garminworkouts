@@ -40,6 +40,18 @@ namespace GarminFitnessPlugin.Controller
         {
             Utils.SaveWorkoutsToLogbook();
 
+            // Sort workouts to order them alphabetically in list
+            if (changedProperty.PropertyName == "Name")
+            {
+                m_Workouts.Sort(new WorkoutComparer());
+                UpdateReservedNamesForWorkout(modifiedWorkout as Workout);
+            }
+            else if (changedProperty.PropertyName == "PartsCount")
+            {
+                // Refresh the reserved names list
+                UpdateReservedNamesForWorkout(modifiedWorkout.ConcreteWorkout);
+            }
+
             if (m_EventTriggerActive && WorkoutChanged != null)
             {
                 WorkoutChanged(modifiedWorkout, changedProperty);
@@ -126,7 +138,7 @@ namespace GarminFitnessPlugin.Controller
             get { return m_Instance; }
         }
 
-        public List<IWorkout> Workouts
+        public List<Workout> Workouts
         {
             get { return m_Workouts; }
         }
@@ -331,6 +343,8 @@ namespace GarminFitnessPlugin.Controller
             workoutToRegister.StepDurationChanged += new Workout.StepDurationChangedEventHandler(OnStepDurationChanged);
             workoutToRegister.StepTargetChanged += new Workout.StepTargetChangedEventHandler(OnStepTargetChanged);
 
+            UpdateReservedNamesForWorkout(workoutToRegister);
+
             if (!IsDeserializing)
             {
                 Utils.SaveWorkoutsToLogbook();
@@ -343,11 +357,13 @@ namespace GarminFitnessPlugin.Controller
             }
         }
 
-        private void UnregisterWorkout(IWorkout workoutToUnregister)
+        private void UnregisterWorkout(Workout workoutToUnregister)
         {
             // Unregister on workout events
             workoutToUnregister.WorkoutChanged -= new Workout.WorkoutChangedEventHandler(OnWorkoutChanged);
             workoutToUnregister.StepChanged -= new Workout.StepChangedEventHandler(OnWorkoutStepChanged);
+
+            m_WorkoutReservedNames.Remove(workoutToUnregister);
 
             if (!IsDeserializing)
             {
@@ -364,6 +380,14 @@ namespace GarminFitnessPlugin.Controller
                 {
                     return workout;
                 }
+
+                foreach (string reservedName in m_WorkoutReservedNames[workout])
+                {
+                    if (reservedName.ToLower().Equals(name.ToLower()))
+                    {
+                        return workout;
+                    }
+                }
             }
 
             return null;
@@ -379,6 +403,29 @@ namespace GarminFitnessPlugin.Controller
             IWorkout workoutWithSameName = GetWorkoutWithName(name);
 
             return name != String.Empty && workoutWithSameName == null;
+        }
+
+        public void UpdateReservedNamesForWorkout(Workout baseWorkout)
+        {
+            if (m_WorkoutReservedNames.ContainsKey(baseWorkout))
+            {
+                m_WorkoutReservedNames[baseWorkout].Clear();
+            }
+            else
+            {
+                m_WorkoutReservedNames[baseWorkout] = new List<string>();
+            }
+
+            UInt16 splitsPart = baseWorkout.GetSplitPartsCount();
+            if (splitsPart > 1)
+            {
+                m_WorkoutReservedNames[baseWorkout].AddRange(GetUniqueNameSequence(baseWorkout.Name, splitsPart));
+            }
+        }
+
+        public List<string> GetReservedNamesForWorkout(Workout workout)
+        {
+            return m_WorkoutReservedNames[workout];
         }
 
         public List<string> GetUniqueNameSequence(string baseName, UInt16 sequenceLength)
@@ -520,11 +567,11 @@ namespace GarminFitnessPlugin.Controller
             }
         }
 
-        private class WorkoutComparer : IComparer<IWorkout>
+        private class WorkoutComparer : IComparer<Workout>
         {
             #region IComparer<IWorkout> Members
 
-            public int Compare(IWorkout x, IWorkout y)
+            public int Compare(Workout x, Workout y)
             {
                 return x.Name.CompareTo(y.Name);
             }
@@ -555,7 +602,8 @@ namespace GarminFitnessPlugin.Controller
 
         private static GarminWorkoutManager m_Instance = new GarminWorkoutManager();
 
-        private List<IWorkout> m_Workouts = new List<IWorkout>();
+        private List<Workout> m_Workouts = new List<Workout>();
+        private Dictionary<Workout, List<String>> m_WorkoutReservedNames = new Dictionary<Workout, List<String>>();
         private bool m_EventTriggerActive = true;
         private bool m_IsDeserializing = false;
 

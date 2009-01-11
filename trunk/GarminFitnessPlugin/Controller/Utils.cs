@@ -307,44 +307,6 @@ namespace GarminFitnessPlugin.Controller
             return 0;
         }
 
-        public static int GetStepExportId(IStep step)
-        {
-            int result = GetStepExportIdInternal(step.ParentWorkout.Steps, step);
-
-            Debug.Assert(result != -1);
-
-            return result;
-        }
-
-        private static int GetStepExportIdInternal(IList<IStep> steps, IStep step)
-        {
-            int currentId = 0;
-
-            for (int i = 0; i < steps.Count; ++i)
-            {
-                IStep currentStep = steps[i];
-
-                if (currentStep == step)
-                {
-                    return currentId + currentStep.GetStepCount();
-                }
-                else if (currentStep.Type == IStep.StepType.Repeat)
-                {
-                    RepeatStep concreteStep = (RepeatStep)currentStep;
-                    int temp = GetStepExportIdInternal(concreteStep.StepsToRepeat, step);
-
-                    if (temp != -1)
-                    {
-                        return currentId + temp;
-                    }
-                }
-
-                currentId += currentStep.GetStepCount();
-            }
-
-            return -1;
-        }
-
         public static bool GetStepInfo(IStep step, List<IStep> referenceList, out List<IStep> owningList, out UInt16 index)
         {
             owningList = null;
@@ -389,7 +351,7 @@ namespace GarminFitnessPlugin.Controller
                 // Step Id node
                 valueNode = document.CreateElement("StepId");
                 extensionNode.AppendChild(valueNode);
-                valueNode.AppendChild(document.CreateTextNode(Utils.GetStepExportId(step).ToString()));
+                valueNode.AppendChild(document.CreateTextNode(step.ParentWorkout.GetStepExportId(step).ToString()));
 
                 // Category node
                 categoryNode = document.CreateElement("Category");
@@ -403,7 +365,7 @@ namespace GarminFitnessPlugin.Controller
                 GarminFitnessInt32Range zoneIndex = new GarminFitnessInt32Range(index);
                 zoneIndex.Serialize(categoryNode, "Index", document);
 
-                step.ParentWorkout.AddSportTracksExtension(extensionNode);
+                step.ParentConcreteWorkout.AddSportTracksExtension(extensionNode);
             }
         }
 

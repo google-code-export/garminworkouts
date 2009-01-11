@@ -120,7 +120,7 @@ namespace GarminFitnessPlugin.Data
 
                 // Create new parent node and add it to the extensions
                 parentNode = document.CreateElement("Step");
-                ParentWorkout.AddStepExtension(parentNode);
+                ParentConcreteWorkout.AddStepExtension(parentNode);
             }
 
             // Ok now this the real stuff but the target can either be the fake one or the real one
@@ -213,7 +213,7 @@ namespace GarminFitnessPlugin.Data
             // Put back at start but skip the first 4 bytes which are the step type
             stream.Seek(sizeof(Int32), SeekOrigin.Begin);
 
-            return new RegularStep(stream, Constants.CurrentVersion, ParentWorkout);
+            return new RegularStep(stream, Constants.CurrentVersion, ParentConcreteWorkout);
         }
 
         public void HandleTargetOverride(XmlNode extensionNode)
@@ -261,7 +261,7 @@ namespace GarminFitnessPlugin.Data
                             if(!Utils.NamedZoneStillExists(PluginMain.GetApplication().Logbook.HeartRateZones, concreteTarget.Zone))
                             {
                                 // Revert zone to a valid default zone
-                                concreteTarget.Zone = ParentWorkout.Category.HeartRateZone.Zones[0];
+                                concreteTarget.Zone = ParentConcreteWorkout.Category.HeartRateZone.Zones[0];
 
                                 // Mark as dirty
                                 concreteTarget.IsDirty = true;
@@ -282,7 +282,7 @@ namespace GarminFitnessPlugin.Data
                             if(!Utils.NamedZoneStillExists(PluginMain.GetApplication().Logbook.SpeedZones, concreteTarget.Zone))
                             {
                                 // Revert zone to a valid default zone
-                                concreteTarget.Zone = ParentWorkout.Category.SpeedZone.Zones[0];
+                                concreteTarget.Zone = ParentConcreteWorkout.Category.SpeedZone.Zones[0];
 
                                 // Mark as dirty
                                 concreteTarget.IsDirty = true;

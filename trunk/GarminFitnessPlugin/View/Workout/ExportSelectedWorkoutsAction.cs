@@ -29,7 +29,7 @@ namespace GarminFitnessPlugin.View
                 GarminFitnessView currentView = (GarminFitnessView)PluginMain.GetApplication().ActiveView;
                 GarminWorkoutControl viewControl = (GarminWorkoutControl)currentView.GetCurrentView();
 
-                return viewControl.SelectedWorkouts.Count > 0;
+                return viewControl.SelectedConcreteWorkouts.Count > 0;
             }
         }
 
@@ -110,7 +110,7 @@ namespace GarminFitnessPlugin.View
 
                 // Export using Communicator Plugin
                 GarminDeviceManager.Instance.SetOperatingDevice();
-                GarminDeviceManager.Instance.ExportWorkout(viewControl.SelectedWorkouts);
+                GarminDeviceManager.Instance.ExportWorkout(viewControl.SelectedConcreteWorkouts);
             }
             catch (FileNotFoundException)
             {
@@ -140,9 +140,8 @@ namespace GarminFitnessPlugin.View
                 {
                     GarminWorkoutControl viewControl = (GarminWorkoutControl)((GarminFitnessView)PluginMain.GetApplication().ActiveView).GetCurrentView();
 
-                    for (int i = 0; i < viewControl.SelectedWorkouts.Count; ++i)
+                    foreach (Workout currentWorkout in viewControl.SelectedConcreteWorkouts)
                     {
-                        IWorkout currentWorkout = viewControl.SelectedWorkouts[i];
                         string fileName = Utils.GetWorkoutFilename(currentWorkout);
 
                         file = File.Create(dlg.SelectedPath + "\\" + fileName);
@@ -228,6 +227,6 @@ namespace GarminFitnessPlugin.View
             }
         }
 
-        private List<IWorkout> m_FailedExportList = new List<IWorkout>();
+        private List<Workout> m_FailedExportList = new List<Workout>();
     }
 }

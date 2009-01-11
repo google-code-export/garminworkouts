@@ -59,7 +59,7 @@ namespace GarminFitnessPlugin.Data
             stepCount = BitConverter.ToInt32(intBuffer, 0);
 
             // In case the repeat was already registered on the workout
-            ParentWorkout.RemoveSteps(StepsToRepeat);
+            ParentConcreteWorkout.RemoveSteps(StepsToRepeat);
             m_StepsToRepeat.Clear();
             for (int i = 0; i < stepCount; ++i)
             {
@@ -69,11 +69,11 @@ namespace GarminFitnessPlugin.Data
                 type = (IStep.StepType)BitConverter.ToInt32(intBuffer, 0);
                 if (type == IStep.StepType.Regular)
                 {
-                    m_StepsToRepeat.Add(new RegularStep(stream, version, ParentWorkout));
+                    m_StepsToRepeat.Add(new RegularStep(stream, version, ParentConcreteWorkout));
                 }
                 else
                 {
-                    m_StepsToRepeat.Add(new RepeatStep(stream, version, ParentWorkout));
+                    m_StepsToRepeat.Add(new RepeatStep(stream, version, ParentConcreteWorkout));
                 }
             }
         }
@@ -117,11 +117,11 @@ namespace GarminFitnessPlugin.Data
 
                     if (stepTypeString == Constants.StepTypeTCXString[(int)IStep.StepType.Regular])
                     {
-                        newStep = new RegularStep(ParentWorkout);
+                        newStep = new RegularStep(ParentConcreteWorkout);
                     }
                     else if (stepTypeString == Constants.StepTypeTCXString[(int)IStep.StepType.Repeat])
                     {
-                        newStep = new RepeatStep(ParentWorkout);
+                        newStep = new RepeatStep(ParentConcreteWorkout);
                     }
                     else
                     {
@@ -138,7 +138,7 @@ namespace GarminFitnessPlugin.Data
                 throw new GarminFitnesXmlDeserializationException("Information missing in the XML node", parentNode);
             }
 
-            ParentWorkout.RemoveSteps(m_StepsToRepeat);
+            ParentConcreteWorkout.RemoveSteps(m_StepsToRepeat);
             // In case the repeat wasn't yet registered on the workout
             m_StepsToRepeat.Clear();
             for (int i = 0; i < stepsToRepeat.Count; ++i)
@@ -156,7 +156,7 @@ namespace GarminFitnessPlugin.Data
             // Put back at start but skip the first 4 bytes which are the step type
             stream.Seek(sizeof(Int32), SeekOrigin.Begin);
 
-            return new RepeatStep(stream, Constants.CurrentVersion, ParentWorkout);
+            return new RepeatStep(stream, Constants.CurrentVersion, ParentConcreteWorkout);
         }
 
         public override bool ValidateAfterZoneCategoryChanged(IZoneCategory changedCategory)

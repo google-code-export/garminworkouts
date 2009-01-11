@@ -66,7 +66,7 @@ namespace GarminFitnessPlugin.Data
 
             public bool ViewAsPace
             {
-                get { return BaseTarget.ParentStep.ParentWorkout.Category.SpeedUnits == Speed.Units.Pace; }
+                get { return BaseTarget.ParentStep.ParentConcreteWorkout.Category.SpeedUnits == Speed.Units.Pace; }
             }
 
             public abstract bool IsDirty
@@ -200,7 +200,7 @@ namespace GarminFitnessPlugin.Data
             // We got here so our target must be a range
             Debug.Assert(ConcreteTarget.Type == BaseSpeedTarget.IConcreteSpeedTarget.SpeedTargetType.Range);
 
-            IZoneCategory referenceZones = ParentStep.ParentWorkout.Category.SpeedZone;
+            IZoneCategory referenceZones = ParentStep.ParentConcreteWorkout.Category.SpeedZone;
             string zoneReferenceId = null;
             int zoneIndex = -1;
 

@@ -58,7 +58,7 @@ namespace GarminFitnessPlugin.Data
             parentNode.Attributes.Append(attribute);
 
             XmlNode idNode = document.CreateElement("StepId");
-            idNode.AppendChild(document.CreateTextNode(Utils.GetStepExportId(this).ToString()));
+            idNode.AppendChild(document.CreateTextNode(ParentWorkout.GetStepExportId(this).ToString()));
             parentNode.AppendChild(idNode);
 
             // Extension
@@ -67,11 +67,11 @@ namespace GarminFitnessPlugin.Data
 
             extensionNode = document.CreateElement("StepNotes");
             valueNode = document.CreateElement("StepId");
-            valueNode.AppendChild(document.CreateTextNode(Utils.GetStepExportId(this).ToString()));
+            valueNode.AppendChild(document.CreateTextNode(ParentWorkout.GetStepExportId(this).ToString()));
             extensionNode.AppendChild(valueNode);
             m_Notes.Serialize(extensionNode, "Notes", document);
 
-            ParentWorkout.AddSportTracksExtension(extensionNode);
+            ParentConcreteWorkout.AddSportTracksExtension(extensionNode);
         }
 
         public virtual void Deserialize(XmlNode parentNode)
@@ -119,7 +119,24 @@ namespace GarminFitnessPlugin.Data
             get { return m_StepType; }
         }
 
-        public Workout ParentWorkout
+        public IWorkout ParentWorkout
+        {
+            get
+            {
+                if (ParentConcreteWorkout.GetSplitPartsCount() == 1)
+                {
+                    return ParentConcreteWorkout;
+                }
+                else
+                {
+                    UInt16 partIndex = ParentConcreteWorkout.GetStepSplitPart(this);
+
+                    return GarminWorkoutManager.Instance.CreateWorkoutPart(ParentConcreteWorkout, partIndex);
+                }
+            }
+        }
+
+        public Workout ParentConcreteWorkout
         {
             get { return m_ParentWorkout; }
             set
@@ -149,7 +166,7 @@ namespace GarminFitnessPlugin.Data
         {
             get
             {
-                if (ParentWorkout.GetTopMostRepeatForStep(this) == null)
+                if (ParentConcreteWorkout.GetTopMostRepeatForStep(this) == null)
                 {
                     return m_ForceSplit;
                 }
@@ -172,7 +189,7 @@ namespace GarminFitnessPlugin.Data
 
         public UInt16 SplitPartInWorkout
         {
-            get { return ParentWorkout.GetStepSplitPart(this); }
+            get { return ParentConcreteWorkout.GetStepSplitPart(this); }
         }
 
         public abstract bool IsDirty

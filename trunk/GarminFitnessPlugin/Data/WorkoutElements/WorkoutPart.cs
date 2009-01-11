@@ -14,9 +14,6 @@ namespace GarminFitnessPlugin.Data
         {
             m_FullWorkout = fullWorkout;
             m_PartNumber = partNumber;
-
-            NotesInternal.Value = Name + " " + String.Format(GarminFitnessView.GetLocalizedString("PartNumberingNotesText"),
-                                                             m_PartNumber + 1, m_FullWorkout.GetSplitPartsCount());
         }
 
         public Workout ConvertToWorkout()
@@ -27,7 +24,7 @@ namespace GarminFitnessPlugin.Data
 #region IWorkout Members
         public override void Serialize(Stream stream)
         {
-            throw new System.Exception("The method or operation is not implemented.");
+            throw new System.Exception("There is no need to serialize a WorkoutPart");
         }
 
         public override bool CanAcceptNewStep(int newStepCount, IStep destinationStep)
@@ -51,7 +48,7 @@ namespace GarminFitnessPlugin.Data
         {
             get
             {
-                List<String> names = GarminWorkoutManager.Instance.GetUniqueNameSequence(m_FullWorkout.Name, m_FullWorkout.GetSplitPartsCount());
+                List<String> names = GarminWorkoutManager.Instance.GetReservedNamesForWorkout(ConcreteWorkout);
 
                 return new GarminFitnessString(names[m_PartNumber]);
             }
@@ -67,7 +64,9 @@ namespace GarminFitnessPlugin.Data
                 }
                 else
                 {
-                    return m_OverrideNotes;
+                    return new GarminFitnessString(ConcreteWorkout.Name + " " +
+                                                   String.Format(GarminFitnessView.GetLocalizedString("PartNumberingNotesText"),
+                                                                 m_PartNumber + 1, m_FullWorkout.GetSplitPartsCount()));
                 }
             }
         }
@@ -103,6 +102,5 @@ namespace GarminFitnessPlugin.Data
 
         Workout m_FullWorkout;
         int m_PartNumber;
-        GarminFitnessString m_OverrideNotes = new GarminFitnessString();
     }
 }

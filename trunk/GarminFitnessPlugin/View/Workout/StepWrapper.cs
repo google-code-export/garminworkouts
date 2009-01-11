@@ -25,14 +25,21 @@ namespace GarminFitnessPlugin.View
             {
                 IStep step = (IStep)Element;
 
-                string result = step.SplitPartInWorkout.ToString();
-
-                if (step.ForceSplitOnStep)
+                if (step.ParentConcreteWorkout.GetSplitPartsCount() == 1)
                 {
-                    result = "*" + result;
+                    return string.Empty;
                 }
+                else
+                {
+                    string result = (step.SplitPartInWorkout + 1).ToString();
 
-                return result;
+                    if (step.ForceSplitOnStep)
+                    {
+                        result = "*" + result;
+                    }
+
+                    return result;
+                }
             }
         }
     }

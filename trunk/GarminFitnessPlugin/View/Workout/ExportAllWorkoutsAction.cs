@@ -122,9 +122,8 @@ namespace GarminFitnessPlugin.View
             {
                 try
                 {
-                    for (int i = 0; i < GarminWorkoutManager.Instance.Workouts.Count; ++i)
+                    foreach (Workout currentWorkout in GarminWorkoutManager.Instance.Workouts)
                     {
-                        IWorkout currentWorkout = GarminWorkoutManager.Instance.Workouts[i];
                         string fileName = Utils.GetWorkoutFilename(currentWorkout);
 
                         file = File.Create(dlg.SelectedPath + "\\" + fileName);
@@ -210,7 +209,7 @@ namespace GarminFitnessPlugin.View
             }
         }
 
-        private List<IWorkout> m_FailedExportList = new List<IWorkout>();
+        private List<Workout> m_FailedExportList = new List<Workout>();
 
         public event System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
     }

@@ -124,7 +124,7 @@ namespace GarminFitnessPlugin.Data
         {
             get
             {
-                if (Utils.IsStatute(ParentStep.ParentWorkout.Category.DistanceUnits))
+                if (Utils.IsStatute(ParentStep.ParentConcreteWorkout.Category.DistanceUnits))
                 {
                     return Length.Units.Mile;
                 }

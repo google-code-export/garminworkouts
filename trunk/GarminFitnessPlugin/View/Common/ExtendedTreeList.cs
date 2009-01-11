@@ -45,7 +45,10 @@ namespace GarminFitnessPlugin.View
             if (m_RefocusOnItem)
             {
                 // Force focus to selection after drop
-                Selected = Selected;
+                if (Selected.Count > 0)
+                {
+                    EnsureVisible(Selected[0]);
+                }
 
                 m_RefocusOnItem = false;
             }

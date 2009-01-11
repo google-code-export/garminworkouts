@@ -14,9 +14,9 @@ namespace GarminFitnessPlugin.Data
         public HeartRateZoneSTTarget(BaseHeartRateTarget baseTarget)
             : base(HeartRateTargetType.ZoneST, baseTarget)
         {
-            Debug.Assert(baseTarget.ParentStep.ParentWorkout.Category.HeartRateZone.Zones.Count > 0);
+            Debug.Assert(baseTarget.ParentStep.ParentConcreteWorkout.Category.HeartRateZone.Zones.Count > 0);
 
-            Zone = baseTarget.ParentStep.ParentWorkout.Category.HeartRateZone.Zones[0];
+            Zone = baseTarget.ParentStep.ParentConcreteWorkout.Category.HeartRateZone.Zones[0];
         }
 
         public HeartRateZoneSTTarget(INamedLowHighZone zone, BaseHeartRateTarget baseTarget)
@@ -35,7 +35,7 @@ namespace GarminFitnessPlugin.Data
         {
             base.Serialize(stream);
 
-            IZoneCategory zones = BaseTarget.ParentStep.ParentWorkout.Category.HeartRateZone;
+            IZoneCategory zones = BaseTarget.ParentStep.ParentConcreteWorkout.Category.HeartRateZone;
             String zoneRefID = zones.ReferenceId;
 
             GarminFitnessString categoryRefID = new GarminFitnessString(zoneRefID);
@@ -53,7 +53,7 @@ namespace GarminFitnessPlugin.Data
             // Call base deserialization
             Deserialize(typeof(BaseHeartRateTarget.IConcreteHeartRateTarget), stream, version);
 
-            IZoneCategory zones = BaseTarget.ParentStep.ParentWorkout.Category.HeartRateZone;
+            IZoneCategory zones = BaseTarget.ParentStep.ParentConcreteWorkout.Category.HeartRateZone;
 
             // RefId
             GarminFitnessString categoryRefID = new GarminFitnessString();
@@ -82,7 +82,7 @@ namespace GarminFitnessPlugin.Data
             // Call base deserialization
             Deserialize(typeof(BaseHeartRateTarget.IConcreteHeartRateTarget), stream, version);
 
-            IZoneCategory zones = BaseTarget.ParentStep.ParentWorkout.Category.HeartRateZone;
+            IZoneCategory zones = BaseTarget.ParentStep.ParentConcreteWorkout.Category.HeartRateZone;
 
             GarminFitnessString categoryRefID = new GarminFitnessString();
             categoryRefID.Deserialize(stream, version);
@@ -170,7 +170,7 @@ namespace GarminFitnessPlugin.Data
 
             // Extension
             Utils.SerializeSTZoneInfoXML(BaseTarget.ParentStep,
-                                         BaseTarget.ParentStep.ParentWorkout.Category.HeartRateZone,
+                                         BaseTarget.ParentStep.ParentConcreteWorkout.Category.HeartRateZone,
                                          Zone, document);
         }
 
