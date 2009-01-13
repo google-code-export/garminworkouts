@@ -37,7 +37,7 @@ namespace GarminFitnessPlugin.View
             // 
             // RemindLaterButton
             // 
-            this.RemindLaterButton.DialogResult = System.Windows.Forms.DialogResult.OK;
+            this.RemindLaterButton.DialogResult = System.Windows.Forms.DialogResult.Cancel;
             this.RemindLaterButton.Location = new System.Drawing.Point(75, 251);
             this.RemindLaterButton.Name = "RemindLaterButton";
             this.RemindLaterButton.Size = new System.Drawing.Size(137, 23);
@@ -47,7 +47,7 @@ namespace GarminFitnessPlugin.View
             // 
             // StopRemindingButton
             // 
-            this.StopRemindingButton.DialogResult = System.Windows.Forms.DialogResult.Cancel;
+            this.StopRemindingButton.DialogResult = System.Windows.Forms.DialogResult.OK;
             this.StopRemindingButton.Location = new System.Drawing.Point(218, 251);
             this.StopRemindingButton.Name = "StopRemindingButton";
             this.StopRemindingButton.Size = new System.Drawing.Size(137, 23);

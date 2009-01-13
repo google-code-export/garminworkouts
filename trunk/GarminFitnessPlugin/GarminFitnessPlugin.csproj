@@ -497,8 +497,12 @@
     <None Include="app.config" />
   </ItemGroup>
   <PropertyGroup>
-    <PostBuildEvent>xcopy "$(TargetDir)GarminFitnessPlugin*.*" "C:\Documents and Settings\All Users\Application Data\ZoneFiveSoftware\SportTracks\2.0\Plugins\Installed\ba218e6e-01a1-4a63-9fda-1fa937e56fe9\GarminFitnessPlugin" /S /Y
-</PostBuildEvent>
+    <PostBuildEvent>set INSTALLPATH=C:\Documents and Settings\All Users\Application Data\ZoneFiveSoftware\SportTracks\2.0\Plugins\Installed\ba218e6e-01a1-4a63-9fda-1fa937e56fe9
+set ZIPPATH=D:\7-Zip
+
+del "$(SolutionDir)Package.st2plugin" /Q
+xcopy "$(TargetDir)GarminFitnessPlugin*.dll" "%25INSTALLPATH%25\GarminFitnessPlugin" /S /Y
+"%25ZIPPATH%25\7z.exe" a -r -tzip "$(SolutionDir)Package.st2plugin" "%25INSTALLPATH%25\*.*"</PostBuildEvent>
   </PropertyGroup>
   <ItemGroup>
     <None Include="Resources\NewStepButton.png" />

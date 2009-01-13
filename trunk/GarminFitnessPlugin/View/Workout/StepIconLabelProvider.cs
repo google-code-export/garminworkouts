@@ -10,7 +10,7 @@ namespace GarminFitnessPlugin.View
     {
         public override System.Drawing.Image GetImage(object element, TreeList.Column column)
         {
-            if (element.GetType() == typeof(StepWrapper))
+            if (element.GetType() == typeof(StepWrapper) && column.Id == "DisplayString")
             {
                 StepWrapper wrapper = (StepWrapper)element;
 

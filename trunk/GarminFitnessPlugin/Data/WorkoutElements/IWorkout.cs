@@ -112,6 +112,38 @@ namespace GarminFitnessPlugin.Data
         public abstract void Deserialize(XmlNode parentNode);
 #endregion
 
+        public List<IStep> DeserializeSteps(Stream stream)
+        {
+            List<IStep> deserializedSteps = new List<IStep>();
+            byte[] intBuffer = new byte[sizeof(Int32)];
+            Byte stepCount = (Byte)stream.ReadByte();
+
+            for (int i = 0; i < stepCount; i++)
+            {
+                IStep.StepType type;
+
+                stream.Read(intBuffer, 0, sizeof(Int32));
+                type = (IStep.StepType)BitConverter.ToInt32(intBuffer, 0);
+
+                if (type == IStep.StepType.Regular)
+                {
+                    deserializedSteps.Add(new RegularStep(stream, Constants.CurrentVersion, ConcreteWorkout));
+                }
+                else
+                {
+                    deserializedSteps.Add(new RepeatStep(stream, Constants.CurrentVersion, ConcreteWorkout));
+                }
+            }
+
+            // Now that we deserialized, paste in the current workout
+            if (AddStepsToRoot(deserializedSteps))
+            {
+                return deserializedSteps;
+            }
+
+            return null;
+        }
+
         public void AddSportTracksExtension(XmlNode extensionNode)
         {
             m_STExtensions.Add(extensionNode);
@@ -708,12 +740,6 @@ namespace GarminFitnessPlugin.Data
         private void CleanUpAfterDelete()
         {
             CleanUpAfterDelete(Steps);
-
-            if (Steps.Count == 0)
-            {
-                // Cannot have an empty workout, recreate a base step
-                AddStepToRoot(new RegularStep(ConcreteWorkout));
-            }
         }
 
         private void CleanUpAfterDelete(List<IStep> listToClean)
@@ -743,6 +769,12 @@ namespace GarminFitnessPlugin.Data
                 {
                     listToClean.Remove(step);
                 }
+            }
+
+            if (this is Workout && Steps.Count == 0)
+            {
+                // Cannot have an empty workout, recreate a base step
+                AddStepToRoot(new RegularStep(ConcreteWorkout));
             }
         }
 
