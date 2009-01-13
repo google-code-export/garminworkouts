@@ -42,7 +42,6 @@ namespace GarminFitnessPlugin.View
             ActivityCategoryList.Columns.Add(new TreeList.Column("Name", GarminFitnessView.GetLocalizedString("CategoryText"),
                                                          150, StringAlignment.Near));
             ActivityCategoryList.Selected = selection;
-            ActivityCategoryList.SetExpanded(ActivityCategoryList.RowData, true, true);
         }
 
         private void ActivityCategoryList_DoubleClick(object sender, System.EventArgs e)

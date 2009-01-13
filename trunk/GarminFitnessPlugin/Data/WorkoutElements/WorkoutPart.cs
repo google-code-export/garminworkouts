@@ -5,6 +5,7 @@ using System.Xml;
 using GarminFitnessPlugin.Controller;
 using GarminFitnessPlugin.View;
 using ZoneFiveSoftware.Common.Data.Fitness;
+using GarminGPS.Xml;
 
 namespace GarminFitnessPlugin.Data
 {
@@ -19,6 +20,13 @@ namespace GarminFitnessPlugin.Data
         public Workout ConvertToWorkout()
         {
             return GarminWorkoutManager.Instance.CreateWorkout(this);
+        }
+
+        public bool IsValid()
+        {
+            Workout parent = GarminWorkoutManager.Instance.GetWorkoutWithName(ConcreteWorkout.Name);
+
+            return parent != null && m_PartNumber < parent.GetSplitPartsCount();
         }
 
 #region IWorkout Members

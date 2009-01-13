@@ -76,27 +76,34 @@ namespace GarminFitnessPlugin.Controller
 
                 if (child.Name == "Workout")
                 {
-                    IActivityCategory category = null;
+                    IActivityCategory category = PeekWorkoutCategory(child);;
                     string name = PeekWorkoutName(child);
+                    bool isUsedByPart;
 
-                    if (!GarminWorkoutManager.Instance.IsWorkoutNameAvailable(name))
+                    if (!GarminWorkoutManager.Instance.IsWorkoutNameAvailable(name, out isUsedByPart))
                     {
-                        ReplaceRenameDialog dlg = new ReplaceRenameDialog(GarminWorkoutManager.Instance.GetUniqueName(name));
-
-                        if (dlg.ShowDialog() == System.Windows.Forms.DialogResult.Yes)
+                        if (!isUsedByPart)
                         {
-                            // Yes = replace, delete the current workout from the list
-                            Workout oldWorkout = GarminWorkoutManager.Instance.GetWorkoutWithName(name);
+                            ReplaceRenameDialog dlg = new ReplaceRenameDialog(GarminWorkoutManager.Instance.GetUniqueName(name));
 
-                            category = oldWorkout.Category;
-                            GarminWorkoutManager.Instance.RemoveWorkout(oldWorkout);
+                            if (dlg.ShowDialog() == System.Windows.Forms.DialogResult.Yes)
+                            {
+                                // Yes = replace, delete the current workout from the list
+                                Workout oldWorkout = GarminWorkoutManager.Instance.GetWorkoutWithName(name);
+
+                                category = oldWorkout.Category;
+                                GarminWorkoutManager.Instance.RemoveWorkout(oldWorkout);
+                            }
+                            else
+                            {
+                                // No = rename
+                                name = dlg.NewName;
+                            }
                         }
                         else
                         {
-                            // No = rename
-                            name = dlg.NewName;
-
-                            category = PeekWorkoutCategory(child);
+                            // Auto rename
+                            name = GarminWorkoutManager.Instance.GetUniqueName(name);
                         }
                     }
 
@@ -177,6 +184,7 @@ namespace GarminFitnessPlugin.Controller
                             XmlText categoryNode = (XmlText)child.FirstChild.FirstChild;
 
                             category = Utils.FindCategoryByID(categoryNode.Value);
+                            break;
                         }
                         else if (currentNode.Name == "SportTracksExtensions")
                         {
@@ -192,7 +200,7 @@ namespace GarminFitnessPlugin.Controller
                                         XmlText categoryNode = (XmlText)currentExtension.FirstChild;
 
                                         category = Utils.FindCategoryByID(categoryNode.Value);
-                                        //break;
+                                        break;
                                     }
                                 }
                             }

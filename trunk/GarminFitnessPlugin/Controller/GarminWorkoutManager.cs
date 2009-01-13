@@ -395,7 +395,25 @@ namespace GarminFitnessPlugin.Controller
 
         public bool IsWorkoutNameAvailable(string name)
         {
-            return GetWorkoutWithName(name) == null;
+            bool temp;
+
+            return IsWorkoutNameAvailable(name, out temp);
+        }
+
+        public bool IsWorkoutNameAvailable(string name, out bool isPart)
+        {
+            Workout workoutWithSameName = GetWorkoutWithName(name);
+
+            if (workoutWithSameName != null)
+            {
+                isPart = !workoutWithSameName.Name.ToLower().Equals(name.ToLower());
+            }
+            else
+            {
+                isPart = false;
+            }
+
+            return workoutWithSameName == null;
         }
 
         public bool IsWorkoutNameValid(string name)
@@ -505,7 +523,7 @@ namespace GarminFitnessPlugin.Controller
                 if (!Utils.IsTextInteger(baseName))
                 {
                     // Remove all trailing numbers
-                    baseName = baseName.TrimEnd("0123456789".ToCharArray());
+                    baseName = baseName.TrimEnd("0123456789/".ToCharArray());
                 }
 
                 int workoutNumber = 1;

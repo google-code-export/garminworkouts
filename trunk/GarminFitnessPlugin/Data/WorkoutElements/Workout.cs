@@ -21,6 +21,8 @@ namespace GarminFitnessPlugin.Data
             Category = category;
 
             AddStepToRoot(new RegularStep(this));
+
+            WorkoutChanged += new WorkoutChangedEventHandler(OnWorkoutChanged);
         }
 
         public Workout(string name, IActivityCategory category, List<IStep> steps)
@@ -29,11 +31,25 @@ namespace GarminFitnessPlugin.Data
             Category = category;
 
             AddStepsToRoot(steps);
+
+            WorkoutChanged += new WorkoutChangedEventHandler(OnWorkoutChanged);
         }
 
         public Workout(Stream stream, DataVersion version)
         {
             Deserialize(stream, version);
+
+            WorkoutChanged += new WorkoutChangedEventHandler(OnWorkoutChanged);
+
+            UpdateSplitsCache();
+        }
+
+        void OnWorkoutChanged(IWorkout modifiedWorkout, PropertyChangedEventArgs changedProperty)
+        {
+            if (changedProperty.PropertyName == "PartsCount")
+            {
+                UpdateSplitsCache();
+            }
         }
 
         public override void Serialize(Stream stream)
@@ -456,6 +472,36 @@ namespace GarminFitnessPlugin.Data
             return stepCount;
         }
 
+        public List<WorkoutPart> GetSplitParts()
+        {
+            return m_SplitParts;
+        }
+
+        private void UpdateSplitsCache()
+        {
+            UInt16 partsCount = GetSplitPartsCount();
+
+            if (partsCount > 1)
+            {
+                if (partsCount > m_SplitParts.Count)
+                {
+                    // Add the new parts in cache
+                    for (int i = m_SplitParts.Count; i < partsCount; ++i)
+                    {
+                        m_SplitParts.Add(GarminWorkoutManager.Instance.CreateWorkoutPart(this, i));
+                    }
+                }
+                else
+                {
+                    // Remove the excess parts from cache
+                    for (int i = m_SplitParts.Count; i > partsCount; --i)
+                    {
+                        m_SplitParts.RemoveAt(i - 1);
+                    }
+                }
+            }
+        }
+
         public override bool CanAcceptNewStep(int newStepCount, IStep destinationStep)
         {
             // Hard limit at PluginMaxStepsPerWorkout steps
@@ -582,6 +628,7 @@ namespace GarminFitnessPlugin.Data
         private GarminFitnessDate m_LastExportDate = new GarminFitnessDate();
         private List<GarminFitnessDate> m_ScheduledDates = new List<GarminFitnessDate>();
         private List<IStep> m_Steps = new List<IStep>();
+        private List<WorkoutPart> m_SplitParts = new List<WorkoutPart>();
         private IActivityCategory m_Category;
         private GarminFitnessString m_Name = new GarminFitnessString("", 15);
         private GarminFitnessString m_Notes = new GarminFitnessString("", 30000);
