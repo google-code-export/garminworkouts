@@ -27,7 +27,7 @@ namespace GarminFitnessPlugin.View
 
                 if (step.ParentConcreteWorkout.GetSplitPartsCount() == 1)
                 {
-                    return string.Empty;
+                    return String.Empty;
                 }
                 else
                 {
