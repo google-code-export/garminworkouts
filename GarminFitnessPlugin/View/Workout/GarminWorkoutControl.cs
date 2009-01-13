@@ -279,7 +279,10 @@ namespace GarminFitnessPlugin.View
 
         private void RemoveWorkoutButton_Click(object sender, EventArgs e)
         {
-            DeleteSelectedWorkouts();
+            if (SelectedConcreteWorkouts.Count > 0)
+            {
+                DeleteSelectedWorkouts();
+            }
         }
 
         private void ScheduleWorkoutButton_Click(object sender, EventArgs e)
@@ -1354,23 +1357,23 @@ namespace GarminFitnessPlugin.View
 
         private void WorkoutsList_KeyDown(object sender, KeyEventArgs e)
         {
-            if (e.KeyCode == Keys.Delete && SelectedWorkouts.Count > 0)
+            if (e.KeyCode == Keys.Delete && SelectedConcreteWorkouts.Count > 0)
             {
                 DeleteSelectedWorkouts();
             }
             else if (e.Control)
             {
                 if ((e.KeyCode == Keys.C || e.KeyCode == Keys.X) &&
-                    SelectedWorkouts.Count > 0)
+                    SelectedConcreteWorkouts.Count > 0)
                 {
                     // Copy data to clipboard
                     MemoryStream workoutsData = new MemoryStream();
 
                     // Number of workouts to deserialize
-                    workoutsData.WriteByte((Byte)SelectedWorkouts.Count);
-                    for (int i = 0; i < SelectedWorkouts.Count; ++i)
+                    workoutsData.WriteByte((Byte)SelectedConcreteWorkouts.Count);
+                    foreach (Workout workout in SelectedConcreteWorkouts)
                     {
-                        SelectedWorkouts[i].Serialize(workoutsData);
+                        workout.Serialize(workoutsData);
                     }
 
                     Clipboard.SetData(Constants.WorkoutsClipboardID, workoutsData);
@@ -1527,7 +1530,7 @@ namespace GarminFitnessPlugin.View
                             // Set back to start
                             pasteResult.Seek(0, SeekOrigin.Begin);
 
-                            List<IStep> newSteps = SelectedWorkout.ConcreteWorkout.DeserializeSteps(pasteResult);
+                            List<IStep> newSteps = SelectedWorkout.DeserializeSteps(pasteResult);
 
                             if (newSteps != null)
                             {
@@ -2608,7 +2611,8 @@ namespace GarminFitnessPlugin.View
 
             RemoveStepButton.Enabled = SelectedSteps.Count > 0;
             StepsNotesSplitter.Enabled = SelectedStep != null;
-            if (SelectedStep != null && Utils.GetStepInfo(SelectedStep, SelectedWorkout.Steps, out selectedList, out selectedPosition))
+            if (SelectedStep != null && SelectedWorkout != null &&
+                Utils.GetStepInfo(SelectedStep, SelectedWorkout.Steps, out selectedList, out selectedPosition))
             {
                 MoveUpButton.Enabled = selectedPosition != 0; // Not the first step
                 MoveDownButton.Enabled = selectedPosition < selectedList.Count - 1; // Not the last step
@@ -2689,15 +2693,15 @@ namespace GarminFitnessPlugin.View
                 ExportDateTextLabel.Enabled = false;
                 ExportDateLabel.Enabled = false;
 
-                if (SelectedWorkouts.Count == 0)
+                if (SelectedConcreteWorkouts.Count == 0)
                 {
                     RemoveWorkoutButton.Enabled = false;
                     CalendarSplit.Panel2.Enabled = false;
                 }
                 else
                 {
-                    RemoveWorkoutButton.Enabled = true;
-                    CalendarSplit.Panel2.Enabled = true;
+                    RemoveWorkoutButton.Enabled = SelectedConcreteWorkouts.Count > 0;
+                    CalendarSplit.Panel2.Enabled = SelectedConcreteWorkouts.Count > 0;
                 }
 
             }
@@ -2711,6 +2715,9 @@ namespace GarminFitnessPlugin.View
                 CalendarSplit.Panel2.Enabled = true;
                 ExportDateTextLabel.Enabled = true;
                 ExportDateLabel.Enabled = true;
+
+                RemoveWorkoutButton.Enabled = SelectedConcreteWorkouts.Count > 0;
+                CalendarSplit.Panel2.Enabled = SelectedConcreteWorkouts.Count > 0;
             }
 
             RefreshWorkoutCalendar();
@@ -3188,35 +3195,16 @@ namespace GarminFitnessPlugin.View
         {
             object nextSelection = StepsList.FindNextSelectedAfterDelete(GetStepWrapper(SelectedSteps[0]));
 
-            DeleteSteps(SelectedSteps);
+            SelectedWorkout.RemoveSteps(SelectedSteps);
 
             if (nextSelection != null)
             {
                 SelectedStep = (IStep)((StepWrapper)nextSelection).Element;
             }
-        }
-
-        private void DeleteSteps(List<IStep> stepsTodelete)
-        {
-            for (int i = 0; i < stepsTodelete.Count; ++i)
+            else
             {
-                SelectedWorkout.RemoveStep(stepsTodelete[i]);
+                SelectedStep = null;
             }
-        }
-
-        private void DeleteSelectedStep()
-        {
-            DeleteStep(SelectedStep);
-            SelectedSteps = null;
-        }
-
-        private void DeleteStep(IStep step)
-        {
-            List<IStep> stepsTodelete = new List<IStep>();
-
-            stepsTodelete.Add(step);
-
-            DeleteSteps(stepsTodelete);
         }
 
         private bool IsItemSelectedInWorkoutsList(object item)
