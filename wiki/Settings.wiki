@@ -12,7 +12,7 @@ http://garminworkouts.googlecode.com/files/Settings%20access.gif
 
 Once clicked, this link will lead you to the settings page which has a special section for plugins.  In this section, you will find the "Garmin Fitness Settings" that looks like this.
 
-http://garminworkouts.googlecode.com/files/Settings%20passive-c.gif
+http://garminworkouts.googlecode.com/files/Settings%20passive-d.gif
 
 = Zone categories =
 == Workouts and zone categories ==
@@ -30,7 +30,7 @@ Now that you have discovered how to change between Garmin and [http://www.zonefi
 == Specifying the zone categories ==
 In the settings page you will also have noticed that you can select the zone categories to use for cadence and power.  This allows you to select which zone category will be used for the cadence and power target respectively.  Opening the listbox will list all of the zones you have defined for either cadence or power.
 
-http://garminworkouts.googlecode.com/files/Settings%20expanded%20combo-c.gif
+http://garminworkouts.googlecode.com/files/Settings%20expanded%20combo-d.gif
 
 http://garminworkouts.googlecode.com/files/Categories%20view.gif
 
@@ -44,6 +44,11 @@ http://garminworkouts.googlecode.com/files/Cycling%20HR%20Zones.gif
 Since I use information contained within the activity category, it is very important to select the right activity category when creating your workouts.  Failure to do so will result in the display of the wrong zones in your target.
 
 You can also notice the reason why the user is given the selection of what cadence and power zone to use.  These options are simply not available in the activity categories.  At the moment, there is no option to select what zone to use on a per-activity category basis.
+
+= Allow workouts with more than 20 steps =
+This option is also know as the "auto-split" feature.  The different Garmin Fitness units have a maximum of 20 steps per workout.  This limitation can definitely be annoying.  HENNES has found a clean workaround that this implements.  It consists of splitting the workouts with more than 20 steps into multiple workouts that can be executed one after the other.  If you check this checkbox, this feature will be active, if not, the plugin will behave like Garmin Training Center and limit all workouts to 20 steps.
+
+For more information on how to use this feature, head to the [AdvancedOperations Advanced Operations] section.
 
 = Garmin activity categories =
 To integrate the Garmin Workouts Plugin seamlessly into [http://www.zonefivesoftware.com/SportTracks SportTracks], it was chosen to associate every activity category to a Garmin activity category.  Garmin only provides 3 categories : running, biking and other.  Each of these categories has their own speed and heart rate zones.  The "Biking" category also has power zones.  Since these zones might not match with the zones defined in [http://www.zonefivesoftware.com/SportTracks SportTracks], you must decide to which sport each [http://www.zonefivesoftware.com/SportTracks SportTracks] corresponds.  This is what the section is for and it looks like the following :
