@@ -1765,7 +1765,7 @@ namespace GarminFitnessPlugin.View
 
         private void SettingsButton_Click(object sender, EventArgs e)
         {
-            PluginMain.GetApplication().ShowView(GUIDs.SettingsView, "CurrentPage=Settings&PluginName=" + GUIDs.SettingsView.ToString());
+            PluginMain.GetApplication().ShowView(GUIDs.SettingsView, "PageId=" + GUIDs.GarminFitnessSettings.ToString());
         }
 
         private void StepsList_FocusEnter(object sender, EventArgs e)
