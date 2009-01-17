@@ -43,7 +43,9 @@ http://garminworkouts.googlecode.com/files/Drag%20copy%20workout.gif
 == Copy-Pasting ==
 As mentionned previously, drag & dropping is the mouse equivalent of copy pasting.  In fact this is not 100% true.  Truth is that copy pasting is more versatile because it allows you to paste in a different logbook.  That means you can have a workout duplicated in two logbooks.  This can be useful when starting a new logbook and wanting to transfer your workouts to it.
 
-With copy-pasting, you must remember three following keyboard shortcuts :
+To copy-paste workouts and steps, you can use the three buttons located in the upper left corner of the Garmin Fitness view.  They look like this : http://garminworkouts.googlecode.com/files/Clipboard%20buttons.gif
+
+Alternately, you can use the following three keyboard shortcuts :
 
   # CTRL-X : This shortcut corresponds to the "cut" command.  It makes a copy of your workouts for you to paste and removes them immediately for the current logbook.  Hitting this shortcut is equivalent to the move drag & drop operation described above.
   # CTRL-C : This shortcut corresponds to the "copy" command.  Just like the "cut" operation, it makes a copy of your selected workouts but it differs in that it doesn't remove the workouts from the logbook.  Hitting this shortcut is equivalent to the copy  drag & drop operation (holding CTRL) described above.
@@ -137,4 +139,4 @@ The same applies when you want to move a step before the first step inside a rep
 So be careful when moving steps around and always remember the golden rule.
 
 == Copy-Pasting ==
-There is nothing new with steps copy-pasting.  The steps can be copied inside a workout, between workouts and between logbooks in the same manner that is done with workouts.  See the above section about copy-pasting for more details.
+There is nothing new with steps copy-pasting.  The steps can be copied inside a workout, between workouts and between logbooks in the same manner that is done with workouts.  See the [http://code.google.com/p/garminworkouts/w/edit.do#Copy-Pasting above section] about copy-pasting for more details.
