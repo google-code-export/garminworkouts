@@ -12,7 +12,7 @@ http://garminworkouts.googlecode.com/files/Garmin%20Fitness%20Access.gif
 
 Once you have clicked this link, you will be presented the following screen.
 
-http://garminworkouts.googlecode.com/files/Garmin%20Fitness%20view.gif
+http://garminworkouts.googlecode.com/files/Garmin%20Fitness%20view-b.gif
 
 This screen is where you will be able to do everything this plugin allows.
 
@@ -21,7 +21,7 @@ This screen is where you will be able to do everything this plugin allows.
 == Creating workouts ==
 The first thing you will want to do is to create a workout.  For this purpose, you must first select the category you want to put the workout in.  I have selected My Activites/Cycling/Road but feel free to choose the right category that suits your own workout.  Once done, you must hit the new workout button, in the upper left.  http://garminworkouts.googlecode.com/files/New%20Workout%20Button.gif  This creates a workout with a default name and that contains a single step.  The keyboard shortcut CTRL-N also triggers the same action.
 
-http://garminworkouts.googlecode.com/files/New%20workout-b.gif
+http://garminworkouts.googlecode.com/files/New%20workout-c.gif
 
 == Deleting a workout ==
 When a workout is selected in the workouts list, you will notice that the delete workout button is enabled.  Deleting a workout is simple, simply hit the delete button that is also located in the upper left corner http://garminworkouts.googlecode.com/files/Delete%20Workout%20Button.gif  You can also hit the "delete" key on the keyboard if you prefer.
@@ -57,7 +57,7 @@ Of course all the above means nothing if you don't setup the different steps tha
 
 A step is composed of a duration and a target.  A step's duration defines when a certain step will end and the target defines a goal for a step.  Let's see how to define these elements.  Of course you must start by selecting the step you want to edit in the steps list.  This will enable the bottom section of the view as you can see in the following screenshot.
 
-http://garminworkouts.googlecode.com/files/Steps%20details.gif
+http://garminworkouts.googlecode.com/files/Steps%20details-b.gif
 
 
 == Selecting the step's duration ==
