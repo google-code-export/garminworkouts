@@ -63,11 +63,11 @@ Scheduling a workout is very simple, simply select all the workouts you want to 
 
 If you want to plan your workout on the 31st of October, start by selecting that date :
 
-http://garminworkouts.googlecode.com/files/Workout%20scheduling%20operation.gif
+http://garminworkouts.googlecode.com/files/Workout%20scheduling%20operation-b.gif
 
 Then you click on the "schedule workout" button.  You get the following result.  Notice that the 31st now has a small red triangle in the upper left, which means your workout has been planned.
 
-http://garminworkouts.googlecode.com/files/Workout%20scheduling%20result.gif
+http://garminworkouts.googlecode.com/files/Workout%20scheduling%20result-b.gif
 
 Note that when selecting a date, it must be today or in the future.  Planning a workout in the past is useless so it is not allowed.
 
