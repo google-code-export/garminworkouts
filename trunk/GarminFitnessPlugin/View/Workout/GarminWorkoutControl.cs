@@ -1388,7 +1388,8 @@ namespace GarminFitnessPlugin.View
                         CutWorkoutSelection();
                     }
                 }
-                else if (e.KeyCode == Keys.V && Clipboard.ContainsData(Constants.WorkoutsClipboardID))
+                
+                if (e.KeyCode == Keys.V && Clipboard.ContainsData(Constants.WorkoutsClipboardID))
                 {
                     PasteWorkoutsFromClipboard();
                 }
@@ -1495,7 +1496,8 @@ namespace GarminFitnessPlugin.View
                         CutStepSelection();
                     }
                 }
-                else if(e.KeyCode == Keys.V && SelectedWorkout != null &&
+                
+                if(e.KeyCode == Keys.V && SelectedWorkout != null &&
                         Clipboard.ContainsData(Constants.StepsClipboardID))
                 {
                     PasteStepsFromClipboard();
