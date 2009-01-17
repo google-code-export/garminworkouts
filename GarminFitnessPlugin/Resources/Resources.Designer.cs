@@ -74,6 +74,13 @@ namespace GarminFitnessPlugin.Resources {
             }
         }
         
+        internal static System.Drawing.Bitmap CutIcon {
+            get {
+                object obj = ResourceManager.GetObject("CutIcon", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
         internal static System.Drawing.Bitmap DirtyWarning {
             get {
                 object obj = ResourceManager.GetObject("DirtyWarning", resourceCulture);
@@ -98,6 +105,13 @@ namespace GarminFitnessPlugin.Resources {
         internal static System.Drawing.Bitmap GarminLogo {
             get {
                 object obj = ResourceManager.GetObject("GarminLogo", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        internal static System.Drawing.Bitmap HelpIcon {
+            get {
+                object obj = ResourceManager.GetObject("HelpIcon", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

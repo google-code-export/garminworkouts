@@ -44,6 +44,12 @@ namespace GarminFitnessPlugin.View
                 CaloriesDurationPanel
             };
 
+            SettingsButton.CenterImage = CommonResources.Images.Settings16;
+            CopyButton.CenterImage = CommonResources.Images.DocumentCopy16;
+            PasteButton.CenterImage = CommonResources.Images.Paste16;
+
+            this.GotFocus += new EventHandler(GarminWorkoutControl_GotFocus);
+
             // Register on controller events
             GarminWorkoutManager.Instance.WorkoutListChanged += new GarminWorkoutManager.WorkoutListChangedEventHandler(OnGarminWorkoutManagerWorkoutListChanged);
             GarminWorkoutManager.Instance.WorkoutChanged += new GarminWorkoutManager.WorkoutChangedEventHandler(OnWorkoutChanged);
@@ -61,6 +67,11 @@ namespace GarminFitnessPlugin.View
                                                       StringAlignment.Near));
             StepsList.Columns.Add(new TreeList.Column("AutoSplitPart", "Workout Part", 40,
                                   StringAlignment.Near));
+        }
+
+        void GarminWorkoutControl_GotFocus(object sender, EventArgs e)
+        {
+            throw new Exception("The method or operation is not implemented.");
         }
 
         void OnOptionsChanged(PropertyChangedEventArgs changedProperty)
@@ -275,6 +286,7 @@ namespace GarminFitnessPlugin.View
 
             SelectedWorkout = GarminWorkoutManager.Instance.CreateWorkout(SelectedCategory);
             SelectedCategory = null;
+            WorkoutsList.Focus();
         }
 
         private void RemoveWorkoutButton_Click(object sender, EventArgs e)
@@ -363,6 +375,7 @@ namespace GarminFitnessPlugin.View
 
             SelectedSteps = newSelection;
             UpdateUIFromSteps();
+            RefreshClipboardControls();
         }
 
         private void StepsList_SizeChanged(object sender, EventArgs e)
@@ -401,6 +414,7 @@ namespace GarminFitnessPlugin.View
 
             RefreshActions();
             UpdateUIFromWorkouts();
+            RefreshClipboardControls();
         }
 
         private void ChildControl_KeyDown(object sender, KeyEventArgs e)
@@ -1363,46 +1377,20 @@ namespace GarminFitnessPlugin.View
             }
             else if (e.Control)
             {
-                if ((e.KeyCode == Keys.C || e.KeyCode == Keys.X) &&
-                    SelectedConcreteWorkouts.Count > 0)
+                if (SelectedConcreteWorkouts.Count > 0)
                 {
-                    // Copy data to clipboard
-                    MemoryStream workoutsData = new MemoryStream();
-
-                    // Number of workouts to deserialize
-                    workoutsData.WriteByte((Byte)SelectedConcreteWorkouts.Count);
-                    foreach (Workout workout in SelectedConcreteWorkouts)
+                    if(e.KeyCode == Keys.C)
                     {
-                        workout.Serialize(workoutsData);
+                        CopyWorkoutSelection();
                     }
-
-                    Clipboard.SetData(Constants.WorkoutsClipboardID, workoutsData);
-
-                    if (e.KeyCode == Keys.X)
+                    else if (e.KeyCode == Keys.X)
                     {
-                        // Cut, so remove from workout
-                        DeleteSelectedWorkouts();
+                        CutWorkoutSelection();
                     }
                 }
-                else if (e.KeyCode == Keys.V)
+                else if (e.KeyCode == Keys.V && Clipboard.ContainsData(Constants.WorkoutsClipboardID))
                 {
-                    if (Clipboard.ContainsData(Constants.WorkoutsClipboardID))
-                    {
-                        MemoryStream pasteResult = (MemoryStream)Clipboard.GetData(Constants.WorkoutsClipboardID);
-
-                        if (SelectedCategory == null)
-                        {
-                            SelectedCategory = Utils.GetDefaultCategory();
-                        }
-
-                        if (pasteResult != null)
-                        {
-                            // Set back to start
-                            pasteResult.Seek(0, SeekOrigin.Begin);
-
-                            SelectedWorkouts = GarminWorkoutManager.Instance.DeserializeWorkouts(pasteResult, SelectedCategory);
-                        }
-                    }
+                    PasteWorkoutsFromClipboard();
                 }
                 else if (e.KeyCode == Keys.N)
                 {
@@ -1496,54 +1484,21 @@ namespace GarminFitnessPlugin.View
             }
             else if (e.Control)
             {
-                if ((e.KeyCode == Keys.C || e.KeyCode == Keys.X) &&
-                    SelectedSteps.Count > 0)
+                if (SelectedSteps.Count > 0)
                 {
-                    // Copy data to clipboard
-                    MemoryStream stepsData = new MemoryStream();
-                    List<IStep> baseSteps;
-
-                    baseSteps = GetMinimalStepsBase(SelectedSteps);
-                    // Number of steps to deserialize
-                    stepsData.WriteByte((Byte)baseSteps.Count);
-                    for (int i = 0; i < baseSteps.Count; ++i)
+                    if (e.KeyCode == Keys.C)
                     {
-                        baseSteps[i].Serialize(stepsData);
+                        CopyStepSelection();
                     }
-
-                    Clipboard.SetData(Constants.StepsClipboardID, stepsData);
-
-                    if (e.KeyCode == Keys.X)
+                    else if (e.KeyCode == Keys.X)
                     {
-                        // Cut, so remove from workout
-                        DeleteSelectedSteps();
+                        CutStepSelection();
                     }
                 }
-                else if (e.KeyCode == Keys.V)
+                else if(e.KeyCode == Keys.V && SelectedWorkout != null &&
+                        Clipboard.ContainsData(Constants.StepsClipboardID))
                 {
-                    if (SelectedWorkout != null && Clipboard.ContainsData(Constants.StepsClipboardID))
-                    {
-                        MemoryStream pasteResult = (MemoryStream)Clipboard.GetData(Constants.StepsClipboardID);
-
-                        if (pasteResult != null)
-                        {
-                            // Set back to start
-                            pasteResult.Seek(0, SeekOrigin.Begin);
-
-                            List<IStep> newSteps = SelectedWorkout.DeserializeSteps(pasteResult);
-
-                            if (newSteps != null)
-                            {
-                                SelectedSteps = newSteps;
-                            }
-                            else
-                            {
-                                MessageBox.Show(GarminFitnessView.GetLocalizedString("PasteStepErrorText"),
-                                                GarminFitnessView.GetLocalizedString("ErrorText"),
-                                                MessageBoxButtons.OK, MessageBoxIcon.Error);
-                            }
-                        }
-                    }
+                    PasteStepsFromClipboard();
                 }
                 else if (e.KeyCode == Keys.N)
                 {
@@ -1803,12 +1758,130 @@ namespace GarminFitnessPlugin.View
             RefreshStepSelection();
         }
 
-        private void DonateImageLabel_Click(object sender, EventArgs e)
+        private void HelpButton_Click(object sender, EventArgs e)
         {
-            Options.Instance.DonationReminderDate = new DateTime(0);
-
-            System.Diagnostics.Process.Start("https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=H3VUJCWFVH2J2&lc=CA&item_name=PissedOffCil%20ST%20Plugins&item_number=Garmin%20Fitness&currency_code=USD&bn=PP%2dDonationsBF%3abtn_donateCC_LG%2egif%3aNonHosted");
+            System.Diagnostics.Process.Start("http://code.google.com/p/garminworkouts/wiki/Welcome?tm=6");
         }
+
+        private void SettingsButton_Click(object sender, EventArgs e)
+        {
+            PluginMain.GetApplication().ShowView(GUIDs.SettingsView, "CurrentPage=Settings&PluginName=" + GUIDs.SettingsView.ToString());
+        }
+
+        private void StepsList_FocusEnter(object sender, EventArgs e)
+        {
+            m_LastClipboardControlFocused = ClipboardControls.StepsList;
+
+            RefreshClipboardControls();
+        }
+
+        private void WorkoutsList_FocusEnter(object sender, EventArgs e)
+        {
+            m_LastClipboardControlFocused = ClipboardControls.WorkoutsList;
+
+            RefreshClipboardControls();
+        }
+
+        private void GenericControl_FocusEnter(object sender, EventArgs e)
+        {
+            m_LastClipboardControlFocused = ClipboardControls.Invalid;
+
+            RefreshClipboardControls();
+        }
+
+        private void TextboxControl_FocusEnter(object sender, EventArgs e)
+        {
+            m_LastClipboardControlFocused = ClipboardControls.TextBox;
+            m_LastFocusTextBox = (ExtendedTextBox)sender;
+
+            RefreshClipboardControls();
+        }
+
+        private void PasteButton_Click(object sender, EventArgs e)
+        {
+            switch(m_LastClipboardControlFocused)
+            {
+                case ClipboardControls.WorkoutsList:
+                    {
+                        PasteWorkoutsFromClipboard();
+                        break;
+                    }
+                case ClipboardControls.StepsList:
+                    {
+                        PasteStepsFromClipboard();
+                        break;
+                    }
+                case ClipboardControls.TextBox:
+                    {
+                        m_LastFocusTextBox.Paste();
+                        break;
+                    }
+                default:
+                    {
+                        break;
+                    }
+            }
+
+            RefreshClipboardControls();
+        }
+
+        private void CopyButton_Click(object sender, EventArgs e)
+        {
+            switch (m_LastClipboardControlFocused)
+            {
+                case ClipboardControls.WorkoutsList:
+                    {
+                        CopyWorkoutSelection();
+                        break;
+                    }
+                case ClipboardControls.StepsList:
+                    {
+                        CopyStepSelection();
+                        break;
+                    }
+                case ClipboardControls.TextBox:
+                    {
+                        m_LastFocusTextBox.Copy();
+                        break;
+                    }
+                default:
+                    {
+                        break;
+                    }
+            }
+
+            RefreshClipboardControls();
+        }
+
+        private void CutButton_Click(object sender, EventArgs e)
+        {
+            switch (m_LastClipboardControlFocused)
+            {
+                case ClipboardControls.WorkoutsList:
+                    {
+                        CutWorkoutSelection();
+                        break;
+                    }
+                case ClipboardControls.StepsList:
+                    {
+                        CutStepSelection();
+                        break;
+                    }
+                case ClipboardControls.TextBox:
+                    {
+                        m_LastFocusTextBox.Cut();
+                        break;
+                    }
+                default:
+                    {
+                        break;
+                    }
+            }
+
+            RefreshClipboardControls();
+        }
+
+
 #endregion
 
         public void RefreshCalendar()
@@ -1866,6 +1939,8 @@ namespace GarminFitnessPlugin.View
             {
                 WorkoutsList.SetExpanded(WorkoutsList.RowData, true, true);
             }
+
+            RefreshClipboardControls();
         }
 
         private void UpdateUIStrings()
@@ -2723,6 +2798,41 @@ namespace GarminFitnessPlugin.View
             RefreshWorkoutCalendar();
         }
 
+        private void RefreshClipboardControls()
+        {
+            switch(m_LastClipboardControlFocused)
+            {
+                case ClipboardControls.WorkoutsList:
+                    {
+                        CutButton.Enabled = SelectedConcreteWorkouts.Count > 0;
+                        CopyButton.Enabled = SelectedConcreteWorkouts.Count > 0;
+                        PasteButton.Enabled = Clipboard.ContainsData(Constants.WorkoutsClipboardID);
+                        break;
+                    }
+                case ClipboardControls.StepsList:
+                    {
+                        CutButton.Enabled = SelectedSteps.Count > 0;
+                        CopyButton.Enabled = SelectedSteps.Count > 0;
+                        PasteButton.Enabled = Clipboard.ContainsData(Constants.StepsClipboardID);
+                        break;
+                    }
+                case ClipboardControls.TextBox:
+                    {
+                        CutButton.Enabled = true;
+                        CopyButton.Enabled = true;
+                        PasteButton.Enabled = Clipboard.ContainsText();
+                        break;
+                    }
+                default:
+                    {
+                        CutButton.Enabled = false;
+                        CopyButton.Enabled = false;
+                        PasteButton.Enabled = false;
+                        break;
+                    }
+            }
+        }
+
         private void AddNewStep(IStep newStep)
         {
             Debug.Assert(SelectedWorkout != null);
@@ -2742,6 +2852,7 @@ namespace GarminFitnessPlugin.View
             if (succeeded)
             {
                 SelectedStep = newStep;
+                StepsList.Focus();
             }
         }
 
@@ -3221,6 +3332,104 @@ namespace GarminFitnessPlugin.View
             return false;
         }
 
+        private void CopyWorkoutSelection()
+        {
+            Debug.Assert(SelectedConcreteWorkouts.Count > 0);
+
+            // Copy data to clipboard
+            MemoryStream workoutsData = new MemoryStream();
+
+            // Number of workouts to deserialize
+            workoutsData.WriteByte((Byte)SelectedConcreteWorkouts.Count);
+            foreach (Workout workout in SelectedConcreteWorkouts)
+            {
+                workout.Serialize(workoutsData);
+            }
+
+            Clipboard.SetData(Constants.WorkoutsClipboardID, workoutsData);
+        }
+
+        private void CutWorkoutSelection()
+        {
+            CopyWorkoutSelection();
+            
+            // Cut, so remove from workout
+            DeleteSelectedWorkouts();
+        }
+
+        private void PasteWorkoutsFromClipboard()
+        {
+            Debug.Assert(Clipboard.ContainsData(Constants.WorkoutsClipboardID));
+
+            MemoryStream pasteResult = (MemoryStream)Clipboard.GetData(Constants.WorkoutsClipboardID);
+
+            if (SelectedCategory == null)
+            {
+                SelectedCategory = Utils.GetDefaultCategory();
+            }
+
+            if (pasteResult != null)
+            {
+                // Set back to start
+                pasteResult.Seek(0, SeekOrigin.Begin);
+
+                SelectedWorkouts = GarminWorkoutManager.Instance.DeserializeWorkouts(pasteResult, SelectedCategory);
+            }
+
+            WorkoutsList.Focus();
+        }
+
+        private void CopyStepSelection()
+        {
+            Debug.Assert(SelectedSteps.Count > 0);
+
+            // Copy data to clipboard
+            MemoryStream stepsData = new MemoryStream();
+            List<IStep> baseSteps;
+
+            baseSteps = GetMinimalStepsBase(SelectedSteps);
+            // Number of steps to deserialize
+            stepsData.WriteByte((Byte)baseSteps.Count);
+            for (int i = 0; i < baseSteps.Count; ++i)
+            {
+                baseSteps[i].Serialize(stepsData);
+            }
+
+            Clipboard.SetData(Constants.StepsClipboardID, stepsData);
+        }
+
+        private void CutStepSelection()
+        {
+            CopyStepSelection();
+
+            DeleteSelectedSteps();
+        }
+
+        private void PasteStepsFromClipboard()
+        {
+            Debug.Assert(Clipboard.ContainsData(Constants.StepsClipboardID));
+
+            MemoryStream pasteResult = (MemoryStream)Clipboard.GetData(Constants.StepsClipboardID);
+
+            // Set back to start
+            pasteResult.Seek(0, SeekOrigin.Begin);
+
+            List<IStep> newSteps = SelectedWorkout.DeserializeSteps(pasteResult);
+
+            if (newSteps != null)
+            {
+                SelectedSteps = newSteps;
+            }
+            else
+            {
+                MessageBox.Show(GarminFitnessView.GetLocalizedString("PasteStepErrorText"),
+                                GarminFitnessView.GetLocalizedString("ErrorText"),
+                                MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+
+            StepsList.Focus();
+        }
+
         private List<IStep> GetMinimalStepsBase(List<IStep> steps)
         {
             List<IStep> result = new List<IStep>();
@@ -3529,11 +3738,20 @@ namespace GarminFitnessPlugin.View
                 }
             }
         }
+
         private enum RangeValidationInputType
         {
             Integer,
             Double,
             Time
+        }
+
+        private enum ClipboardControls
+        {
+            WorkoutsList,
+            StepsList,
+            TextBox,
+            Invalid
         }
 
         private System.Windows.Forms.Panel m_CurrentDurationPanel;
@@ -3548,5 +3766,7 @@ namespace GarminFitnessPlugin.View
         private Dictionary<WorkoutPart, WorkoutPartWrapper> m_WorkoutPartWrapperMap = new Dictionary<WorkoutPart, WorkoutPartWrapper>();
         private Dictionary<IActivityCategory, ActivityCategoryWrapper> m_CategoryWrapperMap = new Dictionary<IActivityCategory, ActivityCategoryWrapper>();
         private Dictionary<IStep, StepWrapper> m_StepWrapperMap = new Dictionary<IStep, StepWrapper>();
+        private ClipboardControls m_LastClipboardControlFocused = ClipboardControls.Invalid;
+        private ExtendedTextBox m_LastFocusTextBox;
     }
 }

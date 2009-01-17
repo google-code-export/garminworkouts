@@ -62,10 +62,6 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\..\All Users\Application Data\ZoneFiveSoftware\SportTracks\2.0\Plugins\Installed\64c67771-aec3-4434-9ef1-ad6cabc1479e\GarminGPS\GarminGPS.dll</HintPath>
     </Reference>
-    <Reference Include="SportTracks, Version=2.0.3170.32893, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>D:\Zone Five Software\SportTracks 2.0\SportTracks.exe</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
@@ -505,7 +501,9 @@ xcopy "$(TargetDir)GarminFitnessPlugin*.dll" "%25INSTALLPATH%25\GarminFitnessPlu
 
 REM Create installer
 del "$(SolutionDir)*.st2plugin" /Q
-"%25ZIPPATH%25\7z.exe" a -r -tzip "$(SolutionDir)GarminFitnessPlugin.st2plugin" "%25INSTALLPATH%25\*.*"</PostBuildEvent>
+IF $(ConfigurationName)==Debug GOTO end
+"%25ZIPPATH%25\7z.exe" a -r -tzip "$(SolutionDir)GarminFitnessPlugin.st2plugin" "%25INSTALLPATH%25\*.*"
+:end</PostBuildEvent>
   </PropertyGroup>
   <ItemGroup>
     <None Include="Resources\NewStepButton.png" />
@@ -529,9 +527,11 @@ del "$(SolutionDir)*.st2plugin" /Q
     <None Include="Resources\CategoryIcon.png" />
     <Content Include="Resources\Arrow.png" />
     <Content Include="Resources\btn_donate_LG.gif" />
+    <Content Include="Resources\Cut.png" />
     <Content Include="Resources\DirtyWarning.png" />
     <Content Include="Resources\Export.png" />
     <Content Include="Resources\GarminLogo.PNG" />
+    <Content Include="Resources\Help.png" />
     <Content Include="Resources\Import.png" />
     <None Include="Resources\WorkoutDirtyIcon.png" />
     <Content Include="Resources\PlanWorkout.png" />

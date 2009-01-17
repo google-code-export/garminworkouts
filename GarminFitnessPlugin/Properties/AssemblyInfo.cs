@@ -7,7 +7,7 @@ using System.Resources;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("Garmin Fitness Plugin")]
-[assembly: AssemblyDescription("SportTracks 2.0 plugin to configure and import/export with Garmin Fitness units")]
+[assembly: AssemblyDescription("SportTracks 2.0 plugin to configure and import/export workouts with Garmin Fitness units")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
 [assembly: AssemblyProduct("GarminFitnessPlugin.Properties")]
@@ -30,6 +30,6 @@ using System.Resources;
 //      Build Number
 //      Revision
 //
-[assembly: AssemblyVersion("1.0.219")]
+[assembly: AssemblyVersion("1.0.220")]
 [assembly: AssemblyFileVersion("1.0.0.0")]
 [assembly: NeutralResourcesLanguageAttribute("en-US")]
