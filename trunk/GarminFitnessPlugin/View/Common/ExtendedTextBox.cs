@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics;
 using System.Media;
 using System.Windows.Forms;
 using ZoneFiveSoftware.Common.Visuals;
@@ -42,6 +43,23 @@ namespace GarminFitnessPlugin.View
             }
         }
 
+        public void Cut()
+        {
+            Focus();
+            SendKeys.Send("^X");
+        }
+
+        public void Copy()
+        {
+            Focus();
+            SendKeys.Send("^C");
+        }
+
+        public void Paste()
+        {
+            Focus();
+            SendKeys.Send("^V");
+        }
 
         public UInt16 MaxLength
         {
