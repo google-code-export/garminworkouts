@@ -46,7 +46,7 @@ Since I use information contained within the activity category, it is very impor
 You can also notice the reason why the user is given the selection of what cadence and power zone to use.  These options are simply not available in the activity categories.  At the moment, there is no option to select what zone to use on a per-activity category basis.
 
 = Allow workouts with more than 20 steps =
-This option is also know as the "auto-split" feature.  The different Garmin Fitness units have a maximum of 20 steps per workout.  This limitation can definitely be annoying.  HENNES has found a clean workaround that this implements.  It consists of splitting the workouts with more than 20 steps into multiple workouts that can be executed one after the other.  If you check this checkbox, this feature will be active, if not, the plugin will behave like Garmin Training Center and limit all workouts to 20 steps.
+This option is also know as the "auto-split" feature.  The different Garmin Fitness units have a maximum of 20 steps per workout.  This limitation can definitely be annoying.  HENNES has found a clean workaround that the plugin implements.  It consists of splitting the workouts with more than 20 steps into multiple workouts that can be executed one after the other.  If you check this checkbox, this feature will be active, if not, the plugin will behave like Garmin Training Center and limit all workouts to 20 steps.
 
 For more information on how to use this feature, head to the [AdvancedOperations Advanced Operations] section.
 
