@@ -497,12 +497,13 @@
 set ZIPPATH=D:\7-Zip
 
 REM Copy to install folder
-xcopy "$(TargetDir)GarminFitnessPlugin*.dll" "%25INSTALLPATH%25\GarminFitnessPlugin" /S /Y
+IF NOT EXIST "%25INSTALLPATH%25\$(ProjectName)" mkdir "%25INSTALLPATH%25\$(ProjectName)"
+xcopy "$(TargetDir)$(ProjectName)*.dll" "%25INSTALLPATH%25\$(ProjectName)\" /S /Y
 
 REM Create installer
-del "$(SolutionDir)*.st2plugin" /Q
+IF EXIST "$(SolutionDir)$(ProjectName).st2plugin" del "$(SolutionDir)*.st2plugin" /Q
 IF $(ConfigurationName)==Debug GOTO end
-"%25ZIPPATH%25\7z.exe" a -r -tzip "$(SolutionDir)GarminFitnessPlugin.st2plugin" "%25INSTALLPATH%25\*.*"
+"%25ZIPPATH%25\7z.exe" a -r -tzip "$(SolutionDir)$(ProjectName).st2plugin" "%25INSTALLPATH%25\*.*"
 :end</PostBuildEvent>
   </PropertyGroup>
   <ItemGroup>
