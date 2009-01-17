@@ -10,7 +10,7 @@ First of all, you want to access the settings page.  To do so, simply select the
 
 http://garminworkouts.googlecode.com/files/Settings%20access.gif
 
-Once clicked, this link will lead you to the settings page which has a special section for plugins.  An alternate way of accessing the settings page is to click on the settings button http://garminworkouts.googlecode.com/files/Settings%20Button.gif in the upper right corner of the Garmin Fitness view.  In this section, you will find the "Garmin Fitness Settings" that looks like this.
+Once clicked, this link will lead you to the settings page which has a special section for plugins.  In this section, you will find the "Garmin Fitness Settings" that looks like this.  An alternate way of accessing the settings page is to click on the settings button http://garminworkouts.googlecode.com/files/Settings%20Button.gif in the upper right corner of the Garmin Fitness view.
 
 http://garminworkouts.googlecode.com/files/Settings%20passive-d.gif
 
