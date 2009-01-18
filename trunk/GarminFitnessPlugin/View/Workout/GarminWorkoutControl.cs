@@ -48,7 +48,7 @@ namespace GarminFitnessPlugin.View
             CopyButton.CenterImage = CommonResources.Images.DocumentCopy16;
             PasteButton.CenterImage = CommonResources.Images.Paste16;
 
-            this.GotFocus += new EventHandler(GarminWorkoutControl_GotFocus);
+            RegisterChildrenControlsGorFocus(this);
 
             // Register on controller events
             GarminWorkoutManager.Instance.WorkoutListChanged += new GarminWorkoutManager.WorkoutListChangedEventHandler(OnGarminWorkoutManagerWorkoutListChanged);
@@ -57,7 +57,6 @@ namespace GarminFitnessPlugin.View
             GarminWorkoutManager.Instance.WorkoutStepDurationChanged += new GarminWorkoutManager.WorkoutStepDurationChangedEventHandler(OnWorkoutStepDurationChanged);
             GarminWorkoutManager.Instance.WorkoutStepTargetChanged += new GarminWorkoutManager.WorkoutStepTargetChangedEventHandler(OnWorkoutStepTargetChanged);
 
-            WorkoutsList.Focus();
             WorkoutsList.Columns.Clear();
             WorkoutsList.Columns.Add(new TreeList.Column("Name", GarminFitnessView.GetLocalizedString("CategoryText"),
                                                          150, StringAlignment.Near));
@@ -67,11 +66,6 @@ namespace GarminFitnessPlugin.View
                                                       StringAlignment.Near));
             StepsList.Columns.Add(new TreeList.Column("AutoSplitPart", "Workout Part", 40,
                                   StringAlignment.Near));
-        }
-
-        void GarminWorkoutControl_GotFocus(object sender, EventArgs e)
-        {
-            throw new Exception("The method or operation is not implemented.");
         }
 
         void OnOptionsChanged(PropertyChangedEventArgs changedProperty)
@@ -229,6 +223,8 @@ namespace GarminFitnessPlugin.View
             StepsNotesSplitter.SplitterDistance = Options.Instance.StepNotesSplitSize;
             StepSplit.SplitterDistance = Math.Max(StepSplit.Panel1MinSize, StepSplit.Height - Options.Instance.StepPanelSplitSize);
             CalendarSplit.SplitterDistance = Math.Max(CalendarSplit.Panel1MinSize, CalendarSplit.Height - Options.Instance.CalendarPanelSplitSize);
+
+            RefreshClipboardControls();
         }
 
         private void CategoriesSplit_SplitterMoving(object sender, SplitterCancelEventArgs e)
@@ -1382,16 +1378,22 @@ namespace GarminFitnessPlugin.View
                     if(e.KeyCode == Keys.C)
                     {
                         CopyWorkoutSelection();
+
+                        RefreshClipboardControls();
                     }
                     else if (e.KeyCode == Keys.X)
                     {
                         CutWorkoutSelection();
+
+                        RefreshClipboardControls();
                     }
                 }
                 
                 if (e.KeyCode == Keys.V && Clipboard.ContainsData(Constants.WorkoutsClipboardID))
                 {
                     PasteWorkoutsFromClipboard();
+
+                    RefreshClipboardControls();
                 }
                 else if (e.KeyCode == Keys.N)
                 {
@@ -1490,10 +1492,14 @@ namespace GarminFitnessPlugin.View
                     if (e.KeyCode == Keys.C)
                     {
                         CopyStepSelection();
+
+                        RefreshClipboardControls();
                     }
                     else if (e.KeyCode == Keys.X)
                     {
                         CutStepSelection();
+
+                        RefreshClipboardControls();
                     }
                 }
                 
@@ -1501,6 +1507,8 @@ namespace GarminFitnessPlugin.View
                         Clipboard.ContainsData(Constants.StepsClipboardID))
                 {
                     PasteStepsFromClipboard();
+
+                    RefreshClipboardControls();
                 }
                 else if (e.KeyCode == Keys.N)
                 {
@@ -1773,29 +1781,26 @@ namespace GarminFitnessPlugin.View
         private void StepsList_FocusEnter(object sender, EventArgs e)
         {
             m_LastClipboardControlFocused = ClipboardControls.StepsList;
-
-            RefreshClipboardControls();
         }
 
         private void WorkoutsList_FocusEnter(object sender, EventArgs e)
         {
             m_LastClipboardControlFocused = ClipboardControls.WorkoutsList;
-
-            RefreshClipboardControls();
         }
 
         private void GenericControl_FocusEnter(object sender, EventArgs e)
         {
             m_LastClipboardControlFocused = ClipboardControls.Invalid;
-
-            RefreshClipboardControls();
         }
 
         private void TextboxControl_FocusEnter(object sender, EventArgs e)
         {
             m_LastClipboardControlFocused = ClipboardControls.TextBox;
             m_LastFocusTextBox = (ExtendedTextBox)sender;
+        }
 
+        void ChildControl_GotFocus(object sender, EventArgs e)
+        {
             RefreshClipboardControls();
         }
 
@@ -3430,6 +3435,19 @@ namespace GarminFitnessPlugin.View
             }
 
             StepsList.Focus();
+        }
+
+        private void RegisterChildrenControlsGorFocus(Control parent)
+        {
+            foreach (Control control in parent.Controls)
+            {
+                control.GotFocus += new EventHandler(ChildControl_GotFocus);
+
+                if (control.Controls.Count > 0)
+                {
+                    RegisterChildrenControlsGorFocus(control);
+                }
+            }
         }
 
         private List<IStep> GetMinimalStepsBase(List<IStep> steps)

@@ -173,7 +173,10 @@ namespace GarminFitnessPlugin.View
 
         private void OnLogbookChanged(object sender, ILogbook oldLogbook, ILogbook newLogbook)
         {
-            GetCurrentView().RefreshUIFromLogbook();
+            if (m_ViewControls[(int)m_CurrentView] != null)
+            {
+                GetCurrentView().RefreshUIFromLogbook();
+            }
         }
 
         void OnOptionsChanged(PropertyChangedEventArgs changedProperty)
