@@ -89,6 +89,33 @@ http://garminworkouts.googlecode.com/files/SportTracks%20calendar%20result.gif
 
 You can see that "!NewWorkout 3" and "!NewWorkout 5" were planned on the 31st.  
 
+=== Add to logbook ===
+There is a check box just above the scheduling calendar http://garminworkouts.googlecode.com/files/Add%20to%20logbook.gif that is used to create a copy of the workout in the "Daily Activity" view every time you schedule it.  Some people use the workouts simply as a timer and are not interested in importing those workouts from their device.  In this case, you still want to know when you executed a given workout and checking this option allows you to save time by automatically creating the activity in your logbook.  For an activity planned on the 22nd of january, I get the following :
+
+http://garminworkouts.googlecode.com/files/Add%20to%20logbook%20result.gif
+
+=== Workouts with more than 20 steps ===
+As mentionned in the [Settings settings page], it is allowed to have workouts with more than 20 steps if the option is active.  These workouts will be automatically split up in portions of up to 20 steps.  When the workout is split in multiple parts, you will see a column appearing that indicates in what part the step is.
+
+http://garminworkouts.googlecode.com/files/Multiple%20parts%20workout.gif
+
+You will also notice that the workouts list has been updated to show the workout's parts.
+
+http://garminworkouts.googlecode.com/files/Multiple%20parts%20workout%20list.gif
+
+You can select a specific part to edit it individually.  You cannot change its name or notes though as these are automatically generated from the master workout.  Note that when exporting to a file or to your device the master workout won't be exported, only the parts will be.  It is your responsability to go from one part to the next on your device when you wish todo this workout completely.
+
+==== Forcing the split on a certain step ====
+If the option to allow more than 20 steps per workout is active, there will be a new check box available for the steps on the root level.
+
+http://garminworkouts.googlecode.com/files/Force%20split%20checkbox.gif
+
+This check box allows you to control on what step the next part will start.  This option is usefull if you prefer to have your parts start or finish with steps that have a certain property.  For instance, using a resting step as the first step in a workout is a good idea because it gives you time to start the next part.
+
+When you check the "Force split" check box, you will see that the part number column updates itself.  A little star ("`*`") appears to make it easier to see that this split is the result of a force and the part numbers are updated.
+
+http://garminworkouts.googlecode.com/files/Force%20split%20result.gif
+
 = Advanced steps operations =
 The advanced step operations are basically the same as the advanced workout steps, namely drag and dropping and copy-pasting.  Of course multiple selection is also possible.
 
