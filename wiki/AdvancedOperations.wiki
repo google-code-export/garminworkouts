@@ -166,4 +166,4 @@ The same applies when you want to move a step before the first step inside a rep
 So be careful when moving steps around and always remember the golden rule.
 
 == Copy-Pasting ==
-There is nothing new with steps copy-pasting.  The steps can be copied inside a workout, between workouts and between logbooks in the same manner that is done with workouts.  See the [http://code.google.com/p/garminworkouts/w/edit.do#Copy-Pasting above section] about copy-pasting for more details.
+There is nothing new with steps copy-pasting.  The steps can be copied inside a workout, between workouts and between logbooks in the same manner that is done with workouts.  See the [http://code.google.com/p/garminworkouts/wiki/AdvancedOperations?ts=1232236954&updated=AdvancedOperations#Copy-Pasting above section] about copy-pasting for more details.
