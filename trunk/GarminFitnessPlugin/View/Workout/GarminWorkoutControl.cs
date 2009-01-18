@@ -47,6 +47,7 @@ namespace GarminFitnessPlugin.View
             SettingsButton.CenterImage = CommonResources.Images.Settings16;
             CopyButton.CenterImage = CommonResources.Images.DocumentCopy16;
             PasteButton.CenterImage = CommonResources.Images.Paste16;
+            DonateButton.CenterImage = CommonResources.Images.Favorite16;
 
             RegisterChildrenControlsGorFocus(this);
 
@@ -1888,6 +1889,12 @@ namespace GarminFitnessPlugin.View
             RefreshClipboardControls();
         }
 
+        private void DonateButton_Click(object sender, EventArgs e)
+        {
+            Options.Instance.DonationReminderDate = new DateTime(0);
+
+            System.Diagnostics.Process.Start("https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=H3VUJCWFVH2J2&lc=CA&item_name=PissedOffCil%20ST%20Plugins&item_number=Garmin%20Fitness&currency_code=USD&bn=PP%2dDonationsBF%3abtn_donateCC_LG%2egif%3aNonHosted");
+        }
 
 #endregion
 
