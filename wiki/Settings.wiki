@@ -48,7 +48,7 @@ You can also notice the reason why the user is given the selection of what caden
 = Allow workouts with more than 20 steps =
 This option is also know as the "auto-split" feature.  The different Garmin Fitness units have a maximum of 20 steps per workout.  This limitation can definitely be annoying.  HENNES has found a clean workaround that the plugin implements.  It consists of splitting the workouts with more than 20 steps into multiple workouts that can be executed one after the other.  If you check this checkbox, this feature will be active, if not, the plugin will behave like Garmin Training Center and limit all workouts to 20 steps.
 
-For more information on how to use this feature, head to the [AdvancedOperations Advanced Operations] section.
+For more information on how to use this feature, head to the [http://code.google.com/p/garminworkouts/wiki/AdvancedOperations?ts=1232236954&updated=AdvancedOperations#Workouts_with_more_than_20_steps Advanced Operations] section.
 
 = Garmin activity categories =
 To integrate the Garmin Workouts Plugin seamlessly into [http://www.zonefivesoftware.com/SportTracks SportTracks], it was chosen to associate every activity category to a Garmin activity category.  Garmin only provides 3 categories : running, biking and other.  Each of these categories has their own speed and heart rate zones.  The "Biking" category also has power zones.  Since these zones might not match with the zones defined in [http://www.zonefivesoftware.com/SportTracks SportTracks], you must decide to which sport each [http://www.zonefivesoftware.com/SportTracks SportTracks] corresponds.  This is what the section is for and it looks like the following :
