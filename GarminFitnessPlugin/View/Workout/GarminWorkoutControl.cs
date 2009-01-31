@@ -1617,6 +1617,7 @@ namespace GarminFitnessPlugin.View
             }
 
             renderer.IsInDrag = false;
+            StepsList.Invalidate();
         }
 
         private void StepsList_DragOver(object sender, DragEventArgs e)
