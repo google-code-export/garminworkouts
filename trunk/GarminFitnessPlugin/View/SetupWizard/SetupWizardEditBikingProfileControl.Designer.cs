@@ -56,10 +56,16 @@ namespace GarminFitnessPlugin.View
             this.HighPowerLabel = new System.Windows.Forms.Label();
             this.LowPowerLabel = new System.Windows.Forms.Label();
             this.PowerZonesTreeList = new GarminFitnessPlugin.View.ExtendedTreeList();
+            this.flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
+            this.flowLayoutPanel2 = new System.Windows.Forms.FlowLayoutPanel();
+            this.flowLayoutPanel3 = new System.Windows.Forms.FlowLayoutPanel();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.panel1.SuspendLayout();
             this.WheelSizeGroupBox.SuspendLayout();
             this.PowerZonesGroupBox.SuspendLayout();
+            this.flowLayoutPanel1.SuspendLayout();
+            this.flowLayoutPanel2.SuspendLayout();
+            this.flowLayoutPanel3.SuspendLayout();
             this.SuspendLayout();
             // 
             // pictureBox1
@@ -84,18 +90,13 @@ namespace GarminFitnessPlugin.View
             // 
             // panel1
             // 
+            this.panel1.Controls.Add(this.flowLayoutPanel3);
+            this.panel1.Controls.Add(this.flowLayoutPanel2);
+            this.panel1.Controls.Add(this.flowLayoutPanel1);
             this.panel1.Controls.Add(this.BikeProfileActionBanner);
             this.panel1.Controls.Add(this.WheelSizeGroupBox);
-            this.panel1.Controls.Add(this.BikeNameLabel);
-            this.panel1.Controls.Add(this.OdometerUnitsLabel);
             this.panel1.Controls.Add(this.HasCadenceCheckBox);
-            this.panel1.Controls.Add(this.BikeWeightUnitLabel);
             this.panel1.Controls.Add(this.HasPowerCheckBox);
-            this.panel1.Controls.Add(this.OdometerTextBox);
-            this.panel1.Controls.Add(this.BikeNameTextBox);
-            this.panel1.Controls.Add(this.BikeWeightTextBox);
-            this.panel1.Controls.Add(this.BikeWeightLabel);
-            this.panel1.Controls.Add(this.OdometerLabel);
             this.panel1.Location = new System.Drawing.Point(6, 203);
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(591, 120);
@@ -160,21 +161,33 @@ namespace GarminFitnessPlugin.View
             // 
             // WheelSizeTextBox
             // 
+            this.WheelSizeTextBox.AcceptsReturn = false;
+            this.WheelSizeTextBox.AcceptsTab = false;
+            this.WheelSizeTextBox.BackColor = System.Drawing.Color.White;
+            this.WheelSizeTextBox.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(123)))), ((int)(((byte)(114)))), ((int)(((byte)(108)))));
+            this.WheelSizeTextBox.ButtonImage = null;
             this.WheelSizeTextBox.Location = new System.Drawing.Point(265, 16);
-            this.WheelSizeTextBox.MaxLength = 4;
+            this.WheelSizeTextBox.MaxLength = ((ushort)(4));
+            this.WheelSizeTextBox.Multiline = false;
             this.WheelSizeTextBox.Name = "WheelSizeTextBox";
+            this.WheelSizeTextBox.ReadOnly = false;
+            this.WheelSizeTextBox.ReadOnlyColor = System.Drawing.SystemColors.Control;
+            this.WheelSizeTextBox.ReadOnlyTextColor = System.Drawing.SystemColors.ControlLight;
+            this.WheelSizeTextBox.RightToLeft = System.Windows.Forms.RightToLeft.No;
             this.WheelSizeTextBox.Size = new System.Drawing.Size(47, 20);
             this.WheelSizeTextBox.TabIndex = 7;
+            this.WheelSizeTextBox.TextAlign = System.Windows.Forms.HorizontalAlignment.Left;
             this.WheelSizeTextBox.Validated += new System.EventHandler(this.WheelSizeTextBox_Validated);
-            this.WheelSizeTextBox.KeyDown += new System.Windows.Forms.KeyEventHandler(this.OnValidatedKeyDown);
             this.WheelSizeTextBox.Validating += new System.ComponentModel.CancelEventHandler(this.WheelSizeTextBox_Validating);
+            this.WheelSizeTextBox.KeyDown += new System.Windows.Forms.KeyEventHandler(this.OnValidatedKeyDown);
             // 
             // BikeNameLabel
             // 
             this.BikeNameLabel.AutoSize = true;
-            this.BikeNameLabel.Location = new System.Drawing.Point(9, 44);
+            this.BikeNameLabel.Location = new System.Drawing.Point(3, 0);
+            this.BikeNameLabel.MinimumSize = new System.Drawing.Size(0, 24);
             this.BikeNameLabel.Name = "BikeNameLabel";
-            this.BikeNameLabel.Size = new System.Drawing.Size(41, 13);
+            this.BikeNameLabel.Size = new System.Drawing.Size(41, 24);
             this.BikeNameLabel.TabIndex = 3;
             this.BikeNameLabel.Text = "Name :";
             this.BikeNameLabel.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -182,11 +195,13 @@ namespace GarminFitnessPlugin.View
             // OdometerUnitsLabel
             // 
             this.OdometerUnitsLabel.AutoSize = true;
-            this.OdometerUnitsLabel.Location = new System.Drawing.Point(138, 70);
+            this.OdometerUnitsLabel.Location = new System.Drawing.Point(138, 0);
+            this.OdometerUnitsLabel.MinimumSize = new System.Drawing.Size(0, 24);
             this.OdometerUnitsLabel.Name = "OdometerUnitsLabel";
-            this.OdometerUnitsLabel.Size = new System.Drawing.Size(21, 13);
+            this.OdometerUnitsLabel.Size = new System.Drawing.Size(21, 24);
             this.OdometerUnitsLabel.TabIndex = 8;
             this.OdometerUnitsLabel.Text = "km";
+            this.OdometerUnitsLabel.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // HasCadenceCheckBox
             // 
@@ -202,11 +217,13 @@ namespace GarminFitnessPlugin.View
             // BikeWeightUnitLabel
             // 
             this.BikeWeightUnitLabel.AutoSize = true;
-            this.BikeWeightUnitLabel.Location = new System.Drawing.Point(138, 96);
+            this.BikeWeightUnitLabel.Location = new System.Drawing.Point(126, 0);
+            this.BikeWeightUnitLabel.MinimumSize = new System.Drawing.Size(0, 24);
             this.BikeWeightUnitLabel.Name = "BikeWeightUnitLabel";
-            this.BikeWeightUnitLabel.Size = new System.Drawing.Size(15, 13);
+            this.BikeWeightUnitLabel.Size = new System.Drawing.Size(15, 24);
             this.BikeWeightUnitLabel.TabIndex = 8;
             this.BikeWeightUnitLabel.Text = "lb";
+            this.BikeWeightUnitLabel.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // HasPowerCheckBox
             // 
@@ -221,51 +238,90 @@ namespace GarminFitnessPlugin.View
             // 
             // OdometerTextBox
             // 
-            this.OdometerTextBox.Location = new System.Drawing.Point(68, 67);
+            this.OdometerTextBox.AcceptsReturn = false;
+            this.OdometerTextBox.AcceptsTab = false;
+            this.OdometerTextBox.BackColor = System.Drawing.Color.White;
+            this.OdometerTextBox.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(123)))), ((int)(((byte)(114)))), ((int)(((byte)(108)))));
+            this.OdometerTextBox.ButtonImage = null;
+            this.OdometerTextBox.Location = new System.Drawing.Point(68, 3);
+            this.OdometerTextBox.MaxLength = ((ushort)(65535));
+            this.OdometerTextBox.Multiline = false;
             this.OdometerTextBox.Name = "OdometerTextBox";
+            this.OdometerTextBox.ReadOnly = false;
+            this.OdometerTextBox.ReadOnlyColor = System.Drawing.SystemColors.Control;
+            this.OdometerTextBox.ReadOnlyTextColor = System.Drawing.SystemColors.ControlLight;
+            this.OdometerTextBox.RightToLeft = System.Windows.Forms.RightToLeft.No;
             this.OdometerTextBox.Size = new System.Drawing.Size(64, 20);
             this.OdometerTextBox.TabIndex = 7;
+            this.OdometerTextBox.TextAlign = System.Windows.Forms.HorizontalAlignment.Left;
             this.OdometerTextBox.Validated += new System.EventHandler(this.OdometerTextBox_Validated);
-            this.OdometerTextBox.KeyDown += new System.Windows.Forms.KeyEventHandler(this.OnValidatedKeyDown);
             this.OdometerTextBox.Validating += new System.ComponentModel.CancelEventHandler(this.OdometerTextBox_Validating);
+            this.OdometerTextBox.KeyDown += new System.Windows.Forms.KeyEventHandler(this.OnValidatedKeyDown);
             // 
             // BikeNameTextBox
             // 
-            this.BikeNameTextBox.Location = new System.Drawing.Point(68, 41);
-            this.BikeNameTextBox.MaxLength = 15;
+            this.BikeNameTextBox.AcceptsReturn = false;
+            this.BikeNameTextBox.AcceptsTab = false;
+            this.BikeNameTextBox.BackColor = System.Drawing.Color.White;
+            this.BikeNameTextBox.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(123)))), ((int)(((byte)(114)))), ((int)(((byte)(108)))));
+            this.BikeNameTextBox.ButtonImage = null;
+            this.BikeNameTextBox.Location = new System.Drawing.Point(50, 3);
+            this.BikeNameTextBox.MaxLength = ((ushort)(15));
+            this.BikeNameTextBox.Multiline = false;
             this.BikeNameTextBox.Name = "BikeNameTextBox";
+            this.BikeNameTextBox.ReadOnly = false;
+            this.BikeNameTextBox.ReadOnlyColor = System.Drawing.SystemColors.Control;
+            this.BikeNameTextBox.ReadOnlyTextColor = System.Drawing.SystemColors.ControlLight;
+            this.BikeNameTextBox.RightToLeft = System.Windows.Forms.RightToLeft.No;
             this.BikeNameTextBox.Size = new System.Drawing.Size(120, 20);
             this.BikeNameTextBox.TabIndex = 2;
+            this.BikeNameTextBox.TextAlign = System.Windows.Forms.HorizontalAlignment.Left;
             this.BikeNameTextBox.Validated += new System.EventHandler(this.BikeNameTextBox_Validated);
             this.BikeNameTextBox.KeyDown += new System.Windows.Forms.KeyEventHandler(this.OnValidatedKeyDown);
             // 
             // BikeWeightTextBox
             // 
-            this.BikeWeightTextBox.Location = new System.Drawing.Point(68, 93);
+            this.BikeWeightTextBox.AcceptsReturn = false;
+            this.BikeWeightTextBox.AcceptsTab = false;
+            this.BikeWeightTextBox.BackColor = System.Drawing.Color.White;
+            this.BikeWeightTextBox.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(123)))), ((int)(((byte)(114)))), ((int)(((byte)(108)))));
+            this.BikeWeightTextBox.ButtonImage = null;
+            this.BikeWeightTextBox.Location = new System.Drawing.Point(56, 3);
+            this.BikeWeightTextBox.MaxLength = ((ushort)(65535));
+            this.BikeWeightTextBox.Multiline = false;
             this.BikeWeightTextBox.Name = "BikeWeightTextBox";
+            this.BikeWeightTextBox.ReadOnly = false;
+            this.BikeWeightTextBox.ReadOnlyColor = System.Drawing.SystemColors.Control;
+            this.BikeWeightTextBox.ReadOnlyTextColor = System.Drawing.SystemColors.ControlLight;
+            this.BikeWeightTextBox.RightToLeft = System.Windows.Forms.RightToLeft.No;
             this.BikeWeightTextBox.Size = new System.Drawing.Size(64, 20);
             this.BikeWeightTextBox.TabIndex = 7;
+            this.BikeWeightTextBox.TextAlign = System.Windows.Forms.HorizontalAlignment.Left;
             this.BikeWeightTextBox.Validated += new System.EventHandler(this.BikeWeightTextBox_Validated);
-            this.BikeWeightTextBox.KeyDown += new System.Windows.Forms.KeyEventHandler(this.OnValidatedKeyDown);
             this.BikeWeightTextBox.Validating += new System.ComponentModel.CancelEventHandler(this.BikeWeightTextBox_Validating);
+            this.BikeWeightTextBox.KeyDown += new System.Windows.Forms.KeyEventHandler(this.OnValidatedKeyDown);
             // 
             // BikeWeightLabel
             // 
             this.BikeWeightLabel.AutoSize = true;
-            this.BikeWeightLabel.Location = new System.Drawing.Point(9, 96);
+            this.BikeWeightLabel.Location = new System.Drawing.Point(3, 0);
+            this.BikeWeightLabel.MinimumSize = new System.Drawing.Size(0, 24);
             this.BikeWeightLabel.Name = "BikeWeightLabel";
-            this.BikeWeightLabel.Size = new System.Drawing.Size(47, 13);
+            this.BikeWeightLabel.Size = new System.Drawing.Size(47, 24);
             this.BikeWeightLabel.TabIndex = 6;
             this.BikeWeightLabel.Text = "Weight :";
+            this.BikeWeightLabel.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // OdometerLabel
             // 
             this.OdometerLabel.AutoSize = true;
-            this.OdometerLabel.Location = new System.Drawing.Point(9, 70);
+            this.OdometerLabel.Location = new System.Drawing.Point(3, 0);
+            this.OdometerLabel.MinimumSize = new System.Drawing.Size(0, 24);
             this.OdometerLabel.Name = "OdometerLabel";
-            this.OdometerLabel.Size = new System.Drawing.Size(59, 13);
+            this.OdometerLabel.Size = new System.Drawing.Size(59, 24);
             this.OdometerLabel.TabIndex = 6;
             this.OdometerLabel.Text = "Odometer :";
+            this.OdometerLabel.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // PowerZonesGroupBox
             // 
@@ -286,36 +342,69 @@ namespace GarminFitnessPlugin.View
             // 
             // HighPowerTextBox
             // 
+            this.HighPowerTextBox.AcceptsReturn = false;
+            this.HighPowerTextBox.AcceptsTab = false;
+            this.HighPowerTextBox.BackColor = System.Drawing.Color.White;
+            this.HighPowerTextBox.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(123)))), ((int)(((byte)(114)))), ((int)(((byte)(108)))));
+            this.HighPowerTextBox.ButtonImage = null;
             this.HighPowerTextBox.Location = new System.Drawing.Point(396, 66);
-            this.HighPowerTextBox.MaxLength = 4;
+            this.HighPowerTextBox.MaxLength = ((ushort)(4));
+            this.HighPowerTextBox.Multiline = false;
             this.HighPowerTextBox.Name = "HighPowerTextBox";
+            this.HighPowerTextBox.ReadOnly = false;
+            this.HighPowerTextBox.ReadOnlyColor = System.Drawing.SystemColors.Control;
+            this.HighPowerTextBox.ReadOnlyTextColor = System.Drawing.SystemColors.ControlLight;
+            this.HighPowerTextBox.RightToLeft = System.Windows.Forms.RightToLeft.No;
             this.HighPowerTextBox.Size = new System.Drawing.Size(129, 20);
             this.HighPowerTextBox.TabIndex = 3;
+            this.HighPowerTextBox.TextAlign = System.Windows.Forms.HorizontalAlignment.Left;
             this.HighPowerTextBox.Validated += new System.EventHandler(this.HighPowerTextBox_Validated);
-            this.HighPowerTextBox.KeyDown += new System.Windows.Forms.KeyEventHandler(this.OnValidatedKeyDown);
             this.HighPowerTextBox.Validating += new System.ComponentModel.CancelEventHandler(this.HighPowerTextBox_Validating);
+            this.HighPowerTextBox.KeyDown += new System.Windows.Forms.KeyEventHandler(this.OnValidatedKeyDown);
             // 
             // FTPTextBox
             // 
+            this.FTPTextBox.AcceptsReturn = false;
+            this.FTPTextBox.AcceptsTab = false;
+            this.FTPTextBox.BackColor = System.Drawing.Color.White;
+            this.FTPTextBox.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(123)))), ((int)(((byte)(114)))), ((int)(((byte)(108)))));
+            this.FTPTextBox.ButtonImage = null;
             this.FTPTextBox.Location = new System.Drawing.Point(220, 18);
-            this.FTPTextBox.MaxLength = 4;
+            this.FTPTextBox.MaxLength = ((ushort)(4));
+            this.FTPTextBox.Multiline = false;
             this.FTPTextBox.Name = "FTPTextBox";
+            this.FTPTextBox.ReadOnly = false;
+            this.FTPTextBox.ReadOnlyColor = System.Drawing.SystemColors.Control;
+            this.FTPTextBox.ReadOnlyTextColor = System.Drawing.SystemColors.ControlLight;
+            this.FTPTextBox.RightToLeft = System.Windows.Forms.RightToLeft.No;
             this.FTPTextBox.Size = new System.Drawing.Size(46, 20);
             this.FTPTextBox.TabIndex = 0;
+            this.FTPTextBox.TextAlign = System.Windows.Forms.HorizontalAlignment.Left;
             this.FTPTextBox.Validated += new System.EventHandler(this.FTPTextBox_Validated);
-            this.FTPTextBox.KeyDown += new System.Windows.Forms.KeyEventHandler(this.OnValidatedKeyDown);
             this.FTPTextBox.Validating += new System.ComponentModel.CancelEventHandler(this.FTPTextBox_Validating);
+            this.FTPTextBox.KeyDown += new System.Windows.Forms.KeyEventHandler(this.OnValidatedKeyDown);
             // 
             // LowPowerTextBox
             // 
+            this.LowPowerTextBox.AcceptsReturn = false;
+            this.LowPowerTextBox.AcceptsTab = false;
+            this.LowPowerTextBox.BackColor = System.Drawing.Color.White;
+            this.LowPowerTextBox.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(123)))), ((int)(((byte)(114)))), ((int)(((byte)(108)))));
+            this.LowPowerTextBox.ButtonImage = null;
             this.LowPowerTextBox.Location = new System.Drawing.Point(396, 40);
-            this.LowPowerTextBox.MaxLength = 4;
+            this.LowPowerTextBox.MaxLength = ((ushort)(4));
+            this.LowPowerTextBox.Multiline = false;
             this.LowPowerTextBox.Name = "LowPowerTextBox";
+            this.LowPowerTextBox.ReadOnly = false;
+            this.LowPowerTextBox.ReadOnlyColor = System.Drawing.SystemColors.Control;
+            this.LowPowerTextBox.ReadOnlyTextColor = System.Drawing.SystemColors.ControlLight;
+            this.LowPowerTextBox.RightToLeft = System.Windows.Forms.RightToLeft.No;
             this.LowPowerTextBox.Size = new System.Drawing.Size(129, 20);
             this.LowPowerTextBox.TabIndex = 2;
+            this.LowPowerTextBox.TextAlign = System.Windows.Forms.HorizontalAlignment.Left;
             this.LowPowerTextBox.Validated += new System.EventHandler(this.LowPowerTextBox_Validated);
-            this.LowPowerTextBox.KeyDown += new System.Windows.Forms.KeyEventHandler(this.OnValidatedKeyDown);
             this.LowPowerTextBox.Validating += new System.ComponentModel.CancelEventHandler(this.LowPowerTextBox_Validating);
+            this.LowPowerTextBox.KeyDown += new System.Windows.Forms.KeyEventHandler(this.OnValidatedKeyDown);
             // 
             // FTPUnitsLabel
             // 
@@ -380,6 +469,35 @@ namespace GarminFitnessPlugin.View
             this.PowerZonesTreeList.TabIndex = 1;
             this.PowerZonesTreeList.SelectedChanged += new System.EventHandler(this.PowerZonesTreeList_SelectedChanged);
             // 
+            // flowLayoutPanel1
+            // 
+            this.flowLayoutPanel1.Controls.Add(this.OdometerLabel);
+            this.flowLayoutPanel1.Controls.Add(this.OdometerTextBox);
+            this.flowLayoutPanel1.Controls.Add(this.OdometerUnitsLabel);
+            this.flowLayoutPanel1.Location = new System.Drawing.Point(6, 64);
+            this.flowLayoutPanel1.Name = "flowLayoutPanel1";
+            this.flowLayoutPanel1.Size = new System.Drawing.Size(200, 26);
+            this.flowLayoutPanel1.TabIndex = 10;
+            // 
+            // flowLayoutPanel2
+            // 
+            this.flowLayoutPanel2.Controls.Add(this.BikeNameLabel);
+            this.flowLayoutPanel2.Controls.Add(this.BikeNameTextBox);
+            this.flowLayoutPanel2.Location = new System.Drawing.Point(6, 37);
+            this.flowLayoutPanel2.Name = "flowLayoutPanel2";
+            this.flowLayoutPanel2.Size = new System.Drawing.Size(200, 26);
+            this.flowLayoutPanel2.TabIndex = 11;
+            // 
+            // flowLayoutPanel3
+            // 
+            this.flowLayoutPanel3.Controls.Add(this.BikeWeightLabel);
+            this.flowLayoutPanel3.Controls.Add(this.BikeWeightTextBox);
+            this.flowLayoutPanel3.Controls.Add(this.BikeWeightUnitLabel);
+            this.flowLayoutPanel3.Location = new System.Drawing.Point(6, 91);
+            this.flowLayoutPanel3.Name = "flowLayoutPanel3";
+            this.flowLayoutPanel3.Size = new System.Drawing.Size(200, 26);
+            this.flowLayoutPanel3.TabIndex = 12;
+            // 
             // SetupWizardEditBikingProfileControl
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -397,6 +515,12 @@ namespace GarminFitnessPlugin.View
             this.WheelSizeGroupBox.PerformLayout();
             this.PowerZonesGroupBox.ResumeLayout(false);
             this.PowerZonesGroupBox.PerformLayout();
+            this.flowLayoutPanel1.ResumeLayout(false);
+            this.flowLayoutPanel1.PerformLayout();
+            this.flowLayoutPanel2.ResumeLayout(false);
+            this.flowLayoutPanel2.PerformLayout();
+            this.flowLayoutPanel3.ResumeLayout(false);
+            this.flowLayoutPanel3.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -431,5 +555,8 @@ namespace GarminFitnessPlugin.View
         private System.Windows.Forms.Label HighPowerLabel;
         private System.Windows.Forms.Label LowPowerLabel;
         private ExtendedTreeList PowerZonesTreeList;
+        private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel2;
+        private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel1;
+        private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel3;
     }
 }

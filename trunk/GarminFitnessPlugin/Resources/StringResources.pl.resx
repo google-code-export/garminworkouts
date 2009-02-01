@@ -118,13 +118,13 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="AddDailyViewCheckBoxText" xml:space="preserve">
-    <value>Dodaj do dzienniczek trening</value>
+    <value>Dodaj do dzienniczka</value>
   </data>
   <data name="AndText" xml:space="preserve">
     <value>i</value>
   </data>
   <data name="AutoSplitCheckBoxText" xml:space="preserve">
-    <value>Zezwól na treningi z więcej niż 20 krokami</value>
+    <value>Zezwól na treningi z więcej niż 20 etapami</value>
   </data>
   <data name="AutoText" xml:space="preserve">
     <value>Auto</value>
@@ -193,7 +193,7 @@
     <value>Zakonczone</value>
   </data>
   <data name="ContinueLabelText" xml:space="preserve">
-    <value>Aby skonfigurować wtyczkę naciśnij "Dalej"</value>
+    <value>Aby skonfigurować wtyczkę naciśnij "Następny"</value>
   </data>
   <data name="CustomText" xml:space="preserve">
     <value>Własne</value>
@@ -307,7 +307,7 @@
     <value>Płeć :</value>
   </data>
   <data name="GTCSpeedZone10Text" xml:space="preserve">
-    <value>Maks. szybkosć</value>
+    <value>Na maksa</value>
   </data>
   <data name="GTCSpeedZone1Text" xml:space="preserve">
     <value>Pod górę 4</value>
@@ -454,7 +454,7 @@
     <value>Notatki :</value>
   </data>
   <data name="NullTargetComboBoxText" xml:space="preserve">
-    <value>Nie mam specyficznego celu dla tego kroku</value>
+    <value>Nie mam specyficznego celu dla tego etapu</value>
   </data>
   <data name="NullTargetDescriptionText" xml:space="preserve">
     <value />
@@ -478,13 +478,13 @@
     <value>część {0}/{1}</value>
   </data>
   <data name="PasteStepErrorText" xml:space="preserve">
-    <value>Nie można wkleić kroków, Twój trening nie może zawierać tak wielu kroków. Maksymalna liczba kroków w jednym treningu to 20</value>
+    <value>Nie można wkleić etapów, Twój trening nie może zawierać tak wielu etapów. Maksymalna liczba etapw w jednym treningu to 20</value>
   </data>
   <data name="PerHourText" xml:space="preserve">
     <value>/h</value>
   </data>
   <data name="PowerRangeTargetDescriptionText" xml:space="preserve">
-    <value>Utrzymuj siłe pomiędzy {0} i {1} wattów</value>
+    <value>Utrzymuj moc pomiędzy {0} i {1} wattów</value>
   </data>
   <data name="PowerSettingsGroupBoxText" xml:space="preserve">
     <value>Ustawienia Mocy</value>
@@ -493,13 +493,13 @@
     <value>Staraj sie utrzymywac sile w okreslonej strefie</value>
   </data>
   <data name="PowerZoneSelectionLabelText" xml:space="preserve">
-    <value>Użyj tej strefy siły w moich treningach :</value>
+    <value>Użyj tej strefy mocy w moich treningach :</value>
   </data>
   <data name="PowerZonesGroupBoxText" xml:space="preserve">
     <value>Strefy Mocy</value>
   </data>
   <data name="PowerZoneTargetDescriptionText" xml:space="preserve">
-    <value>Staraj się utrzymywać siłę w strefie {0}.</value>
+    <value>Staraj się utrzymywać moc w strefie {0}.</value>
   </data>
   <data name="ProfileText" xml:space="preserve">
     <value>Profil</value>
@@ -607,10 +607,10 @@
     <value>Co jest celem dla tego etapu?</value>
   </data>
   <data name="STModeRadioButtonText" xml:space="preserve">
-    <value>Chę użyć trybu SportTracks</value>
+    <value>Chcę używać trybu SportTracks</value>
   </data>
   <data name="STZonesExplanationText" xml:space="preserve">
-    <value>Gdy użyjesz stref z SportTracks, wówczas wtyczka będzie używać strefy pulsu i prędkości zdefioniowanych w kategorii do której trening został przypisany. Kategorie SportTracks nie mają stref mocy i kadencji i dlatego muszą być one osobno zdefiniowane </value>
+    <value>Gdy użyjesz stref z SportTracks, wówczas wtyczka będzie korzystać ze strefy pulsu i prędkości zdefioniowanych w kategorii do której trening został przypisany. Kategorie SportTracks nie mają stref mocy i kadencji i dlatego muszą być one osobno zdefiniowane </value>
   </data>
   <data name="SuccessText" xml:space="preserve">
     <value>Sukces</value>
@@ -676,6 +676,6 @@
     <value>Treningi</value>
   </data>
   <data name="WorkoutsWereSplitText" xml:space="preserve">
-    <value>Niektóre treningi mają więcej niż 20 kroków. Dlatego automatycznie podzieliliśmy je w Twoim dzienniczku treningowym zgodnie z ustawieniem opcji w preferencjach. Sugerujemy abyś zobaczył i sprawdził czy wszystko jest OK.</value>
+    <value>Niektóre treningi mają więcej niż 20 etapow. Dlatego automatycznie podzieliliśmy je w Twoim dzienniczku treningowym zgodnie z ustawieniem opcji w preferencjach. Sugerujemy abyś zobaczył i sprawdził czy wszystko jest OK.</value>
   </data>
 </root>
