@@ -37,7 +37,6 @@ namespace GarminFitnessPlugin.View
                 else
                 {
                     Text = m_LastText;
-                    SendKeys.Send("{END}");
                     SystemSounds.Asterisk.Play();
                 }
             }
