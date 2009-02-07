@@ -1,5 +1,5 @@
 using System;
-using System.Diagnostics;
+using System.ComponentModel;
 using System.Media;
 using System.Windows.Forms;
 using ZoneFiveSoftware.Common.Visuals;
@@ -13,9 +13,7 @@ namespace GarminFitnessPlugin.View
             InitializeComponent();
 
             KeyDown += new KeyEventHandler(OnKeyDown);
-            TextChanged += new EventHandler(OnTextChanged);
-
-            m_MaxLength = UInt16.MaxValue;
+            base.TextChanged += new EventHandler(OnTextChanged);
         }
 
         private void OnKeyDown(object sender, KeyEventArgs e)
@@ -28,17 +26,9 @@ namespace GarminFitnessPlugin.View
 
         private void OnTextChanged(object sender, EventArgs e)
         {
-            if (m_LastText != Text)
+            if (TextChanged != null)
             {
-                if (Text.Length <= m_MaxLength)
-                {
-                    m_LastText = Text;
-                }
-                else
-                {
-                    Text = m_LastText;
-                    SystemSounds.Asterisk.Play();
-                }
+                TextChanged(this, e);
             }
         }
 
@@ -60,14 +50,9 @@ namespace GarminFitnessPlugin.View
             SendKeys.Send("^V");
         }
 
-        public UInt16 MaxLength
-        {
-            get { return m_MaxLength; }
-            set { m_MaxLength = value; }
-        }
-
-        private String m_LastText;
-        private UInt16 m_MaxLength;
+        [Category("Action")]
+        [Browsable(true)]
+        public new event EventHandler TextChanged;
     }
 }
 

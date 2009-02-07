@@ -5,7 +5,6 @@ using System.Diagnostics;
 using System.Drawing;
 using System.Windows.Forms;
 using ZoneFiveSoftware.Common.Visuals;
-using GarminFitnessPlugin.Controller;
 
 namespace GarminFitnessPlugin.View
 {

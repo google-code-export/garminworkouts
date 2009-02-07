@@ -50,17 +50,17 @@
   </Target>
   -->
   <ItemGroup>
-    <Reference Include="Common.Data, Version=2.0.3088.30779, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="Common.Data, Version=2.1.3313.41779, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\Program Files\Zone Five Software\SportTracks 2.0\Common.Data.dll</HintPath>
+      <HintPath>D:\Zone Five Software\SportTracks 2.0\Common.Data.dll</HintPath>
     </Reference>
-    <Reference Include="Common.Visuals, Version=2.0.3088.30782, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="Common.Visuals, Version=2.1.3313.41784, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\Program Files\Zone Five Software\SportTracks 2.0\Common.Visuals.dll</HintPath>
+      <HintPath>D:\Zone Five Software\SportTracks 2.0\Common.Visuals.dll</HintPath>
     </Reference>
-    <Reference Include="GarminGPS, Version=2.0.3164.41516, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="GarminGPS, Version=2.1.3313.41820, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\All Users\Application Data\ZoneFiveSoftware\SportTracks\2.0\Plugins\Installed\64c67771-aec3-4434-9ef1-ad6cabc1479e\GarminGPS\GarminGPS.dll</HintPath>
+      <HintPath>C:\ProgramData\ZoneFiveSoftware\SportTracks\2.0\Plugins\Installed\64c67771-aec3-4434-9ef1-ad6cabc1479e\GarminGPS\GarminGPS.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
