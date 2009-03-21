@@ -59,12 +59,19 @@ namespace GarminFitnessPlugin.Data
 
         public void Deserialize(XmlNode node)
         {
-            if (node.ChildNodes.Count != 1 || node.FirstChild.GetType() != typeof(XmlText))
+            if (node.ChildNodes.Count == 1 && node.FirstChild.GetType() != typeof(XmlText))
             {
                 throw new GarminFitnesXmlDeserializationException("Unable to deserialize string node", node);
             }
-
-            Value = node.FirstChild.Value;
+            else if (node.ChildNodes.Count == 0)
+            {
+                // No name if no child nodes
+                Value = "";
+            }
+            else
+            {
+                Value = node.FirstChild.Value;
+            }
         }
 
         public String Value

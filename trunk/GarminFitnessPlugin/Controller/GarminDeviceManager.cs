@@ -109,13 +109,20 @@ namespace GarminFitnessPlugin.Controller
 
         private void StartNextTask()
         {
-            Debug.Assert(m_TaskQueue.Count > 0);
-            Debug.Assert(IsInitialized);
+            try
+            {
+                Debug.Assert(m_TaskQueue.Count > 0);
+                Debug.Assert(IsInitialized);
 
-            GetCurrentTask().ExecuteTask(m_Controller, m_OperatingDevice);
+                GetCurrentTask().ExecuteTask(m_Controller, m_OperatingDevice);
+            }
+            catch (NoDeviceSupportException e)
+            {
+                CompleteCurrentTask(false, e.Message);
+            }
         }
 
-        private void CompleteCurrentTask(bool success)
+        private void CompleteCurrentTask(bool success, String errorText)
         {
             BasicTask task = GetCurrentTask();
 
@@ -124,7 +131,7 @@ namespace GarminFitnessPlugin.Controller
 
             if (TaskCompleted != null)
             {
-                TaskCompleted(this, task, success);
+                TaskCompleted(this, task, success, errorText);
             }
 
             if (success)
@@ -134,6 +141,11 @@ namespace GarminFitnessPlugin.Controller
                     StartNextTask();
                 }
             }
+        }
+
+        private void CompleteCurrentTask(bool success)
+        {
+            CompleteCurrentTask(success, String.Empty);
         }
 
         private void OnControllerReadyChanged(object sender, EventArgs e)
@@ -149,7 +161,7 @@ namespace GarminFitnessPlugin.Controller
             {
                 if (TaskCompleted != null)
                 {
-                    TaskCompleted(this, new BasicTask(BasicTask.TaskTypes.TaskType_Initialize), false);
+                    TaskCompleted(this, new BasicTask(BasicTask.TaskTypes.TaskType_Initialize), false, String.Empty);
                 }
 
                 CancelAllTasks();
@@ -168,6 +180,7 @@ namespace GarminFitnessPlugin.Controller
 
                 if (currentDevice.SoftwareVersion != "0")
                 {
+                    MessageBox.Show(String.Format("Unit : {0}\nDescrition : {1}", currentDevice.DisplayName, currentDevice.Description));
                     m_Devices.Add(currentDevice);
                 }
             }
@@ -370,8 +383,16 @@ namespace GarminFitnessPlugin.Controller
 
             public override void ExecuteTask(GarminDeviceControl controller, Device device)
             {
-                GarminDeviceManager.m_TimeoutTimer.Start();
-                controller.ReadWktWorkouts(device);
+                // This function is not suppoerted on the FR405
+                if (device.Description == Constants.Forerunner405UnitDescription)
+                {
+                    throw new NoDeviceSupportException(device, GarminFitnessView.GetLocalizedString("ImportingWorkoutsText"));
+                }
+                else
+                {
+                    GarminDeviceManager.m_TimeoutTimer.Start();
+                    controller.ReadWktWorkouts(device);
+                }
             }
 
             private string m_WorkoutsXML;
@@ -392,8 +413,16 @@ namespace GarminFitnessPlugin.Controller
 
             public override void ExecuteTask(GarminDeviceControl controller, Device device)
             {
-                GarminDeviceManager.m_TimeoutTimer.Start();
-                controller.ReadTcxUserProfile(device);
+                // This function is not suppoerted on the FR405
+                if (device.Description == Constants.Forerunner405UnitDescription)
+                {
+                    throw new NoDeviceSupportException(device, GarminFitnessView.GetLocalizedString("ImportingProfilesText"));
+                }
+                else
+                {
+                    GarminDeviceManager.m_TimeoutTimer.Start();
+                    controller.ReadTcxUserProfile(device);
+                }
             }
 
             private string m_ProfileXML;
@@ -424,7 +453,7 @@ namespace GarminFitnessPlugin.Controller
             get { return m_Devices; }
         }
 
-        public delegate void TaskCompletedEventHandler(GarminDeviceManager manager, BasicTask task, bool succeeded);
+        public delegate void TaskCompletedEventHandler(GarminDeviceManager manager, BasicTask task, bool succeeded, String errorText);
         public event TaskCompletedEventHandler TaskCompleted;
 
         private GarminDeviceControl m_Controller;

@@ -678,4 +678,13 @@
   <data name="ForceSplitCheckBoxText" xml:space="preserve">
     <value>Force split</value>
   </data>
+  <data name="ImportingProfilesText" xml:space="preserve">
+    <value>importing profiles</value>
+  </data>
+  <data name="NoDeviceSupportText" xml:space="preserve">
+    <value>The device {0} does not support {1}.</value>
+  </data>
+  <data name="ImportingWorkoutsText" xml:space="preserve">
+    <value>importing workouts</value>
+  </data>
 </root>
