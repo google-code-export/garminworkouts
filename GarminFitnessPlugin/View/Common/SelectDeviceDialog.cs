@@ -1,3 +1,4 @@
+using System;
 using System.Diagnostics;
 using System.Drawing;
 using System.Globalization;
@@ -81,7 +82,7 @@ namespace GarminFitnessPlugin.View
             OKButton.Enabled = (m_SelectedDevice != null);
         }
 
-        private void OnManagerTaskCompleted(GarminDeviceManager manager, GarminDeviceManager.BasicTask task, bool succeeded)
+        private void OnManagerTaskCompleted(GarminDeviceManager manager, GarminDeviceManager.BasicTask task, bool succeeded, String errorText)
         {
             if (task.Type == GarminDeviceManager.BasicTask.TaskTypes.TaskType_RefreshDevices)
             {

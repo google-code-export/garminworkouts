@@ -175,7 +175,7 @@ namespace GarminFitnessPlugin.View
             }
         }
 
-        void OnDeviceManagerTaskCompleted(GarminDeviceManager manager, GarminDeviceManager.BasicTask task, bool succeeded)
+        void OnDeviceManagerTaskCompleted(GarminDeviceManager manager, GarminDeviceManager.BasicTask task, bool succeeded, String errorText)
         {
             bool exportCancelled = false;
 

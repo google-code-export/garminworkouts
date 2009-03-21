@@ -853,6 +853,24 @@ namespace GarminFitnessPlugin.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to importing profiles.
+        /// </summary>
+        internal static string ImportingProfilesText {
+            get {
+                return ResourceManager.GetString("ImportingProfilesText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to importing workouts.
+        /// </summary>
+        internal static string ImportingWorkoutsText {
+            get {
+                return ResourceManager.GetString("ImportingWorkoutsText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Import or edit profile.
         /// </summary>
         internal static string ImportOrEditProfileText {
@@ -1056,6 +1074,15 @@ namespace GarminFitnessPlugin.Resources {
         internal static string NewNameLabelText {
             get {
                 return ResourceManager.GetString("NewNameLabelText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The device {0} does not support {1}..
+        /// </summary>
+        internal static string NoDeviceSupportText {
+            get {
+                return ResourceManager.GetString("NoDeviceSupportText", resourceCulture);
             }
         }
         

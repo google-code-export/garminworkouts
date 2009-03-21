@@ -381,6 +381,9 @@
   <data name="ImportEditExplanationText" xml:space="preserve">
     <value>Pour que vos entraînements utilisent les bonnes plages, nous devons les configurer.  Même si vous utilisez le plugin en mode SportTracks, votre profile est utilisé pour l'affichage (BPM vs. &amp; max FC et vitesse vs. rythme) donc il est important de bien les configurer.  Vous pouvez soit les importer de votre appareil ou les éditer manuellement.</value>
   </data>
+  <data name="ImportingProfilesText" xml:space="preserve">
+    <value>l'import de profil</value>
+  </data>
   <data name="ImportOrEditProfileText" xml:space="preserve">
     <value>Importer ou éditer votre profil</value>
   </data>
@@ -449,6 +452,9 @@
   </data>
   <data name="NewNameLabelText" xml:space="preserve">
     <value>Nouveau nom :</value>
+  </data>
+  <data name="NoDeviceSupportText" xml:space="preserve">
+    <value>L'appareil {0} ne supporte pas {1}.</value>
   </data>
   <data name="NotesLabelText" xml:space="preserve">
     <value>Notes :</value>

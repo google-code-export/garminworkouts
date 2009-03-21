@@ -157,7 +157,7 @@ namespace GarminFitnessPlugin.View
             }
         }
 
-        void OnDeviceManagerTaskCompleted(GarminDeviceManager manager, GarminDeviceManager.BasicTask task, bool succeeded)
+        void OnDeviceManagerTaskCompleted(GarminDeviceManager manager, GarminDeviceManager.BasicTask task, bool succeeded, String errorText)
         {
             bool exportCancelled = false;
 
@@ -180,6 +180,12 @@ namespace GarminFitnessPlugin.View
                     GarminDeviceManager.ExportWorkoutTask concreteTask = (GarminDeviceManager.ExportWorkoutTask)task;
 
                     m_FailedExportList.AddRange(concreteTask.Workouts);
+                }
+                else
+                {
+                    MessageBox.Show(errorText,
+                                    GarminFitnessView.GetLocalizedString("ErrorText"),
+                                    MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
             }
             

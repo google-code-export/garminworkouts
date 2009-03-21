@@ -91,7 +91,7 @@ namespace GarminFitnessPlugin.View
 
         #endregion
 
-        void OnDeviceManagerTaskCompleted(GarminDeviceManager manager, GarminDeviceManager.BasicTask task, bool succeeded)
+        void OnDeviceManagerTaskCompleted(GarminDeviceManager manager, GarminDeviceManager.BasicTask task, bool succeeded, String errorText)
         {
             bool exportCancelled = false;
 
@@ -114,6 +114,12 @@ namespace GarminFitnessPlugin.View
                     MessageBox.Show(GarminFitnessView.GetLocalizedString("ExportProfileFailedText"),
                                     GarminFitnessView.GetLocalizedString("ErrorText"),
                                     MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+                else
+                {
+                    MessageBox.Show(errorText,
+                                    GarminFitnessView.GetLocalizedString("ErrorText"),
+                                    MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
             }
             
