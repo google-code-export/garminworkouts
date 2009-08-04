@@ -13,7 +13,7 @@ This wiki is used as a help file to guide you through the different features tha
 If you have a version already installed in [http://www.zonefivesoftware.com/SportTracks SportTracks] you should uninstall the current version prior to installing a new one with the above method.  You can also simply update directly from the Plugins section of the [http://www.zonefivesoftware.com/SportTracks SportTracks] Settings page.
 
 == Important Notes ==
-  # This version of the plugin requires the *latest version of [http://www.zonefivesoftware.com/SportTracks SportTracks] which is 2.0.3170 or later*
+  # This version of the plugin requires the *latest version of [http://www.zonefivesoftware.com/SportTracks SportTracks] which is 2.1.3478 or later*
   # The [http://www.garmin.com/products/communicator Garmin Communicator Plugin] must be *installed and activated in Internet Explorer*.  After it has installed, go to the [http://www.garmin.com/products/communicator/test test page] in Internet Explorer and *allow the ActiveX plugin*. Once this is done, your unit should be detected on the [http://www.garmin.com/products/communicator/test test page].
   # This new export to device feature *won't work on Vista x64* (and possibly XP x64, I need a confirmation on this) 
 
