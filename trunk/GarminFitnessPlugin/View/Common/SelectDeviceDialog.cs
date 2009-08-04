@@ -27,6 +27,14 @@ namespace GarminFitnessPlugin.View
             Cancel_Button.Text = CommonResources.Text.ActionCancel;
             OKButton.Text = CommonResources.Text.ActionOk;
 
+                        Graphics tempGraphics = this.CreateGraphics();
+            Region[] stringRegion;
+            StringFormat format = new StringFormat();
+            format.SetMeasurableCharacterRanges(new CharacterRange[] { new CharacterRange(0, RefreshButton.Text.Length) });
+            stringRegion = tempGraphics.MeasureCharacterRanges(RefreshButton.Text, RefreshButton.Font, new Rectangle(0, 0, 1000, 1000), format);
+            RefreshButton.Size = stringRegion[0].GetBounds(tempGraphics).Size.ToSize();
+            tempGraphics.Dispose();
+
             RefreshButton.Location = new Point((this.Width - RefreshButton.Width) / 2, RefreshButton.Location.Y);
 
             RefreshDeviceComboBox();
