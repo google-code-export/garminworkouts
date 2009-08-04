@@ -136,7 +136,7 @@ namespace GarminFitnessPlugin.View
                                     GarminFitnessView.GetLocalizedString("ErrorText"),
                                     MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
-                else
+                else if(errorText != String.Empty)
                 {
                     MessageBox.Show(errorText,
                                     GarminFitnessView.GetLocalizedString("ErrorText"),

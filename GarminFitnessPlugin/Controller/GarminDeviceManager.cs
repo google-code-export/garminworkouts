@@ -180,7 +180,6 @@ namespace GarminFitnessPlugin.Controller
 
                 if (currentDevice.SoftwareVersion != "0")
                 {
-                    MessageBox.Show(String.Format("Unit : {0}\nDescrition : {1}", currentDevice.DisplayName, currentDevice.Description));
                     m_Devices.Add(currentDevice);
                 }
             }
