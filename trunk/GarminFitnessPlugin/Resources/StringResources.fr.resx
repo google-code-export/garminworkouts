@@ -196,7 +196,7 @@
     <value>Pour configurer le plugin, cliquez sur "Suivant"</value>
   </data>
   <data name="CustomText" xml:space="preserve">
-    <value>Personnallisée</value>
+    <value>Personnalisée</value>
   </data>
   <data name="DataTooRecentErrorText" xml:space="preserve">
     <value>Vous ne pouvez ouvrir ce logbook avec votre version actuelle du plugin Garmin Fitness, veuillez installer la dernière version.</value>
