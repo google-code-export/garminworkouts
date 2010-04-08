@@ -323,7 +323,9 @@ namespace GarminFitnessPlugin.Controller
                 case BaseSpeedTarget.IConcreteSpeedTarget.SpeedTargetType.ZoneGTC:
                     {
                         SpeedZoneGTCTarget concreteTarget = (SpeedZoneGTCTarget)target;
-                        result = String.Format(baseString, GarminFitnessView.GetLocalizedString("GTCSpeedZone" + concreteTarget.Zone.ToString() + "Text"));
+                        GarminCategories garminCategory = Options.Instance.GetGarminCategory(target.BaseTarget.ParentStep.ParentWorkout.Category);
+                        GarminActivityProfile currentProfile = GarminProfileManager.Instance.GetProfileForActivity(garminCategory);
+                        result = String.Format(baseString, currentProfile.GetSpeedZoneName(concreteTarget.Zone));
                         break;
                     }
                 case BaseSpeedTarget.IConcreteSpeedTarget.SpeedTargetType.ZoneST:

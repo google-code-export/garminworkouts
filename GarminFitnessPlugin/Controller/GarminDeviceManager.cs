@@ -383,7 +383,8 @@ namespace GarminFitnessPlugin.Controller
             public override void ExecuteTask(GarminDeviceControl controller, Device device)
             {
                 // This function is not suppoerted on the FR405
-                if (device.Description == Constants.Forerunner405UnitDescription)
+                if (device.Description == Constants.Forerunner405UnitDescription ||
+                    device.Description == Constants.Forerunner310XTUnitDescription)
                 {
                     throw new NoDeviceSupportException(device, GarminFitnessView.GetLocalizedString("ImportingWorkoutsText"));
                 }
@@ -413,7 +414,8 @@ namespace GarminFitnessPlugin.Controller
             public override void ExecuteTask(GarminDeviceControl controller, Device device)
             {
                 // This function is not suppoerted on the FR405
-                if (device.Description == Constants.Forerunner405UnitDescription)
+                if (device.Description == Constants.Forerunner405UnitDescription ||
+                    device.Description == Constants.Forerunner310XTUnitDescription)
                 {
                     throw new NoDeviceSupportException(device, GarminFitnessView.GetLocalizedString("ImportingProfilesText"));
                 }
