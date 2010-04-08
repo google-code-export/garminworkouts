@@ -100,20 +100,21 @@ namespace GarminFitnessPlugin
 
             if (referenceList != null)
             {
-                Debug.Assert(referenceList.Count == 1);
-
-                if (referenceList[0].GetType().FullName == "ZoneFiveSoftware.SportTracks.Data.ZoneCategory")
+                foreach (Object currentItem in referenceList)
                 {
-                    if (ZoneCategoryChanged != null)
+                    if (currentItem.GetType().FullName == "ZoneFiveSoftware.SportTracks.Data.ZoneCategory")
                     {
-                        ZoneCategoryChanged(this, (IZoneCategory)referenceList[0]);
+                        if (ZoneCategoryChanged != null)
+                        {
+                            ZoneCategoryChanged(this, (IZoneCategory)currentItem);
+                        }
                     }
-                }
-                else if (referenceList[0].GetType().FullName == "ZoneFiveSoftware.SportTracks.Data.ActivityCategory")
-                {
-                    if (ActivityCategoryChanged != null)
+                    else if (currentItem.GetType().FullName == "ZoneFiveSoftware.SportTracks.Data.ActivityCategory")
                     {
-                        ActivityCategoryChanged(this, (IActivityCategory)referenceList[0]);
+                        if (ActivityCategoryChanged != null)
+                        {
+                            ActivityCategoryChanged(this, (IActivityCategory)currentItem);
+                        }
                     }
                 }
             }
