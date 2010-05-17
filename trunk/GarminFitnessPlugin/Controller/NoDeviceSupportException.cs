@@ -8,9 +8,9 @@ namespace GarminFitnessPlugin.Controller
 {
     class NoDeviceSupportException : Exception
     {
-        public NoDeviceSupportException(Device device, String operation) :
+        public NoDeviceSupportException(IGarminDevice device, String operation) :
             base(String.Format(GarminFitnessView.GetLocalizedString("NoDeviceSupportText"),
-                               device.Description, operation))
+                               device.DisplayName, operation))
         {
         }
     }

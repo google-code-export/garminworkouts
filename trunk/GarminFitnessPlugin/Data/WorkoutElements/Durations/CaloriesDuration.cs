@@ -57,10 +57,21 @@ namespace GarminFitnessPlugin.Data
 
             if(parentNode.ChildNodes.Count != 1 || parentNode.FirstChild.Name != "Calories")
                     {
-                throw new GarminFitnesXmlDeserializationException("Missing information in calories duration XML node", parentNode);
+                throw new GarminFitnessXmlDeserializationException("Missing information in calories duration XML node", parentNode);
             }
 
             m_CaloriesToSpend.Deserialize(parentNode.FirstChild);
+        }
+
+        public override void Serialize(GarXFaceNet._Workout._Step step)
+        {
+            step.SetDurationType(GarXFaceNet._Workout._Step.DurationTypes.CaloriesBurned);
+            step.SetDurationValue(CaloriesToSpend);
+        }
+
+        public override void Deserialize(GarXFaceNet._Workout._Step step)
+        {
+            CaloriesToSpend = (UInt16)step.GetDurationValue();
         }
 
         public UInt16 CaloriesToSpend

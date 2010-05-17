@@ -17,7 +17,6 @@ namespace GarminFitnessPlugin.Data
             Deserialize(stream, version);
         }
 
-
         public override void Serialize(Stream stream)
         {
             base.Serialize(stream);
@@ -37,6 +36,15 @@ namespace GarminFitnessPlugin.Data
         public override void Deserialize(XmlNode parentNode)
         {
             base.Deserialize(parentNode);
+        }
+
+        public override void Serialize(GarXFaceNet._Workout._Step step)
+        {
+            step.SetDurationType(GarXFaceNet._Workout._Step.DurationTypes.Open);
+        }
+
+        public override void Deserialize(GarXFaceNet._Workout._Step step)
+        {
         }
     }
 }

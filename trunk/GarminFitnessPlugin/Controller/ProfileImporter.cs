@@ -59,7 +59,7 @@ namespace GarminFitnessPlugin.Controller
 
                 return true;
             }
-            catch (GarminFitnesXmlDeserializationException e)
+            catch (GarminFitnessXmlDeserializationException e)
             {
                 System.Windows.Forms.MessageBox.Show(e.Message + "\n\n" + e.ErroneousNode.OuterXml);
                 return false;

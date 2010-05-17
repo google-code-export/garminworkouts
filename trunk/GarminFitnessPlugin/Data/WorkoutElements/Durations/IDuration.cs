@@ -49,6 +49,9 @@ namespace GarminFitnessPlugin.Data
         {
         }
 
+        public abstract void Serialize(GarXFaceNet._Workout._Step step);
+        public abstract void Deserialize(GarXFaceNet._Workout._Step step);
+
         protected void TriggerDurationChangedEvent(PropertyChangedEventArgs args)
         {
             if (DurationChanged != null)

@@ -64,11 +64,11 @@ namespace GarminFitnessPlugin.Data
 
             if (node.ChildNodes.Count != 1 || node.FirstChild.GetType() != typeof(XmlText))
             {
-                throw new GarminFitnesXmlDeserializationException("Unable to deserialize double node", node);
+                throw new GarminFitnessXmlDeserializationException("Unable to deserialize double node", node);
             }
             else if (!Utils.IsTextFloatInRange(node.FirstChild.Value, m_MinimumValue, m_MaximumValue, culture))
             {
-                throw new GarminFitnesXmlDeserializationException("Invalid float for node", node);
+                throw new GarminFitnessXmlDeserializationException("Invalid float for node", node);
             }
 
             Value = double.Parse(node.FirstChild.Value, NumberStyles.Float, culture.NumberFormat);

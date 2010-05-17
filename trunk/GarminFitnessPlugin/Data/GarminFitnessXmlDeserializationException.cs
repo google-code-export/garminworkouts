@@ -3,9 +3,9 @@ using System.Xml;
 
 namespace GarminFitnessPlugin.Data
 {
-    class GarminFitnesXmlDeserializationException : Exception
+    class GarminFitnessXmlDeserializationException : Exception
     {
-        public GarminFitnesXmlDeserializationException(String errorMessage, XmlNode node)
+        public GarminFitnessXmlDeserializationException(String errorMessage, XmlNode node)
             : base(errorMessage)
         {
             m_ErroneousNode = node;

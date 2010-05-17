@@ -64,10 +64,21 @@ namespace GarminFitnessPlugin.Data
 
             if (parentNode.ChildNodes.Count != 1 || parentNode.FirstChild.Name != "Number")
             {
-                throw new GarminFitnesXmlDeserializationException("Invalid GTC heart rate target in XML node", parentNode);
+                throw new GarminFitnessXmlDeserializationException("Invalid GTC heart rate target in XML node", parentNode);
             }
 
             m_Zone.Deserialize(parentNode.FirstChild);
+        }
+
+        public override void Serialize(GarXFaceNet._Workout._Step step)
+        {
+            step.SetTargetType(1);
+            step.SetTargetValue(Zone);
+        }
+
+        public override void Deserialize(GarXFaceNet._Workout._Step step)
+        {
+            Zone = (Byte)step.GetDurationValue();
         }
 
         public Byte Zone

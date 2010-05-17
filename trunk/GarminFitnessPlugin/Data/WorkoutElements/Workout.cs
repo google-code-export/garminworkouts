@@ -245,11 +245,11 @@ namespace GarminFitnessPlugin.Data
 
             if (!nameRead || steps.Count < 1)
             {
-                throw new GarminFitnesXmlDeserializationException("Information missing in the XML node", parentNode);
+                throw new GarminFitnessXmlDeserializationException("Information missing in the XML node", parentNode);
             }
             else if( steps.Count > 20)
             {
-                throw new GarminFitnesXmlDeserializationException("Too many steps in the XML node", parentNode);
+                throw new GarminFitnessXmlDeserializationException("Too many steps in the XML node", parentNode);
             }
 
             m_Name.Value = GarminWorkoutManager.Instance.GetUniqueName(Name);
@@ -268,6 +268,47 @@ namespace GarminFitnessPlugin.Data
             if (STExtensionsNode != null)
             {
                 HandleSTExtension(STExtensionsNode);
+            }
+        }
+
+        public override void Deserialize(GarXFaceNet._Workout workout)
+        {
+            Steps.Clear();
+            Category = null;
+
+            Name = workout.GetName();
+
+            for (UInt32 i = 0; i < workout.GetNumValidSteps(); ++i)
+            {
+                GarXFaceNet._Workout._Step step = workout.GetStep(i);
+                IStep newStep;
+                
+                if(step.GetDurationType() == GarXFaceNet._Workout._Step.DurationTypes.Repeat)
+                {
+                    newStep = new RepeatStep(this);
+                }
+                else
+                {
+                    newStep = new RegularStep(this);
+                }
+
+                newStep.Deserialize(workout, i);
+                AddStepToRoot(newStep);
+            }           
+        }
+
+        public override void DeserializeOccurances(GarXFaceNet._WorkoutOccuranceList occuranceList)
+        {
+            ScheduledDates.Clear();
+
+            for (UInt32 i = 0; i < occuranceList.GetCount(); ++i)
+            {
+                GarXFaceNet._WorkoutOccurance occurance = occuranceList.GetAtIndex(i);
+
+                if (occurance.GetWorkoutName().Equals(Name))
+                {
+                    ScheduleWorkout(new DateTime(1989, 12, 31) + new TimeSpan(0, 0, (int)occurance.GetDay()));
+                }
             }
         }
 

@@ -265,7 +265,46 @@ namespace GarminFitnessPlugin.Data
                 HRZonesRead != Constants.GarminHRZoneCount ||
                 speedZonesRead != Constants.GarminSpeedZoneCount)
             {
-                throw new GarminFitnesXmlDeserializationException("Missing information in activity profile XML node", parentNode);
+                throw new GarminFitnessXmlDeserializationException("Missing information in activity profile XML node", parentNode);
+            }
+        }
+
+        public void Serialize(GarXFaceNet._FitnessUserProfile._Activity activityProfile)
+        {
+            bool inPercentMax = HRIsInPercentMax;
+
+            HRIsInPercentMax = false;
+            activityProfile.SetGearWeight((float)GearWeight);
+            activityProfile.SetMaxHeartRate(MaximumHeartRate);
+
+            for (UInt32 i = 0; i < 5; ++i)
+            {
+                GarXFaceNet._FitnessUserProfile._Activity._HeartRateZone hrZone = activityProfile.GetHeartRateZone(i);
+
+                hrZone.SetLowHeartRate((UInt32)GetHeartRateLowLimit((int)i));
+                hrZone.SetHighHeartRate((UInt32)GetHeartRateHighLimit((int)i));
+            }
+
+            for (UInt32 i = 0; i < 10; ++i)
+            {
+                GarXFaceNet._FitnessUserProfile._Activity._SpeedZone speedZone = activityProfile.GetSpeedZone(i);
+
+                speedZone.SetName(m_SpeedZones[(int)i].Name);
+                speedZone.SetLowSpeed((float)m_SpeedZones[(int)i].Low);
+                speedZone.SetHighSpeed((float)m_SpeedZones[(int)i].High);
+            }
+
+            HRIsInPercentMax = inPercentMax;
+        }
+
+        public void Deserialize(GarXFaceNet._FitnessUserProfile._Activity activityProfile)
+        {
+            GearWeight = activityProfile.GetGearWeight();
+            MaximumHeartRate = (Byte)activityProfile.GetMaxHeartRate();
+
+            for (UInt32 i = 0; i < 5; ++i)
+            {
+                GarXFaceNet._FitnessUserProfile._Activity._HeartRateZone hrZone = activityProfile.GetHeartRateZone(i);
             }
         }
 
@@ -307,7 +346,7 @@ namespace GarminFitnessPlugin.Data
             // Check if all was read successfully
             if (!viewAsRead || !lowRead || !highRead)
             {
-                throw new GarminFitnesXmlDeserializationException("Missing information in heart rate zone XML node", parentNode);
+                throw new GarminFitnessXmlDeserializationException("Missing information in heart rate zone XML node", parentNode);
             }
 
             m_HeartRateZones[index].Lower = new GarminFitnessDoubleRange((double)Math.Min(lowLimit, highLimit) / MaximumHeartRate, 0, 1);
@@ -364,7 +403,7 @@ namespace GarminFitnessPlugin.Data
             // Check if all was read successfully
             if (!nameRead || !viewAsRead || !lowRead || !highRead)
             {
-                throw new GarminFitnesXmlDeserializationException("Missing information in activity profile XML node", parentNode);
+                throw new GarminFitnessXmlDeserializationException("Missing information in activity profile XML node", parentNode);
             }
 
             m_SpeedZones[index].Low = Math.Min(lowLimit, highLimit);
@@ -411,7 +450,7 @@ namespace GarminFitnessPlugin.Data
 
             if (!maxHRRead)
             {
-                throw new GarminFitnesXmlDeserializationException("Missing information in activity profile XML node", activityNode);
+                throw new GarminFitnessXmlDeserializationException("Missing information in activity profile XML node", activityNode);
             }
         }
 

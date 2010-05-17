@@ -44,6 +44,15 @@ namespace GarminFitnessPlugin.Data
         {
         }
 
+        public override void Serialize(GarXFaceNet._Workout._Step step)
+        {
+            step.SetTargetType(2);
+        }
+
+        public override void Deserialize(GarXFaceNet._Workout._Step step)
+        {
+        }
+
         public override bool IsDirty
         {
             get { return false; }

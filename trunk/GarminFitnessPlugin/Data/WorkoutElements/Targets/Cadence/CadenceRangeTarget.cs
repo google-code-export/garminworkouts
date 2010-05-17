@@ -89,11 +89,25 @@ namespace GarminFitnessPlugin.Data
             // Just make sure there were no decimals in the number
             if (!minRead || !maxRead)
             {
-                throw new GarminFitnesXmlDeserializationException("Missing information in cadence range target XML node", parentNode);
+                throw new GarminFitnessXmlDeserializationException("Missing information in cadence range target XML node", parentNode);
             }
 
             // Reorder, GTC doesn't enforce
             SetValues(Math.Min(MinCadence, MaxCadence), Math.Max(MinCadence, MaxCadence));
+        }
+
+        public override void Serialize(GarXFaceNet._Workout._Step step)
+        {
+            step.SetTargetType(3);
+            step.SetTargetValue(0);
+            step.SetTargetCustomZoneLow(MinCadence);
+            step.SetTargetCustomZoneHigh(MaxCadence);
+        }
+
+        public override void Deserialize(GarXFaceNet._Workout._Step step)
+        {
+            MinCadence = (Byte)step.GetTargetCustomZoneLow();
+            MaxCadence = (Byte)step.GetTargetCustomZoneHigh();
         }
 
         public void ValidateValues(Byte min, Byte max)

@@ -138,21 +138,7 @@ namespace GarminFitnessPlugin.View
             {
                 if (task.Type == GarminDeviceManager.BasicTask.TaskTypes.TaskType_ImportProfile)
                 {
-                    GarminDeviceManager.ImportProfileTask concreteTask = (GarminDeviceManager.ImportProfileTask)task;
-                    MemoryStream stream = new MemoryStream(Encoding.UTF8.GetBytes(concreteTask.ProfileXML));
-
-                    if (!ProfileImporter.ImportProfile(stream))
-                    {
-                        MessageBox.Show(GarminFitnessView.GetLocalizedString("ImportProfileErrorText"),
-                                        GarminFitnessView.GetLocalizedString("ErrorText"),
-                                        MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    }
-                    else
-                    {
-                        Wizard.GoNext();
-                    }
-
-                    stream.Close();
+                    Wizard.GoNext();
                 }
             }
 

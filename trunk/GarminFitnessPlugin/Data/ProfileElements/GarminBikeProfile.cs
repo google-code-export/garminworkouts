@@ -137,7 +137,7 @@ namespace GarminFitnessPlugin.Data
                         currentChild.ChildNodes.Count != 1 ||
                         currentChild.FirstChild.Name != Constants.SizeMillimetersTCXString)
                     {
-                        throw new GarminFitnesXmlDeserializationException("Invalid bike wheel size XML node", parentNode);
+                        throw new GarminFitnessXmlDeserializationException("Invalid bike wheel size XML node", parentNode);
                     }
 
                     AutoWheelSize = m_AutoWheelSize.GetTextValue(currentChild.Attributes[0].Value);
@@ -150,7 +150,7 @@ namespace GarminFitnessPlugin.Data
             if (!cadenceSensorRead || !powerSensorRead || !nameRead ||
                 !odometerRead || !weightRead || !wheelSizeRead)
             {
-                throw new GarminFitnesXmlDeserializationException("Missing information in bike profile XML node", parentNode);
+                throw new GarminFitnessXmlDeserializationException("Missing information in bike profile XML node", parentNode);
             }
         }
 
