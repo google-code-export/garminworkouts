@@ -83,17 +83,49 @@ namespace GarminFitnessPlugin.Data
                     }
                     else
                     {
-                        throw new GarminFitnesXmlDeserializationException("Invalid heart rate below duration XML node", child);
+                        throw new GarminFitnessXmlDeserializationException("Invalid heart rate below duration XML node", child);
                     }
 
                     if (child.ChildNodes.Count != 1 || child.FirstChild.Name != Constants.ValueTCXString)
                     {
-                        throw new GarminFitnesXmlDeserializationException("Missing information in heart rate below duration XML node", parentNode);
+                        throw new GarminFitnessXmlDeserializationException("Missing information in heart rate below duration XML node", parentNode);
                     }
 
                     InternalMinHeartRate.Deserialize(child.FirstChild);
                 }
             }
+        }
+
+        public override void Serialize(GarXFaceNet._Workout._Step step)
+        {
+            step.SetDurationType(GarXFaceNet._Workout._Step.DurationTypes.HeartRateGreaterThan);
+
+            if (IsPercentageMaxHeartRate)
+            {
+                step.SetDurationValue(InternalMinHeartRate);
+            }
+            else
+            {
+                step.SetDurationValue((UInt16)(InternalMinHeartRate + 100));
+            }
+        }
+
+        public override void Deserialize(GarXFaceNet._Workout._Step step)
+        {
+            UInt16 duration = (UInt16)step.GetDurationValue();
+
+            if (duration <= 100)
+            {
+                m_IsPercentageMaxHR.Value = true;
+                m_MinHeartRatePercent.Value = (Byte)duration;
+            }
+            else
+            {
+                m_IsPercentageMaxHR.Value = false;
+                m_MinHeartRateBPM.Value = (Byte)(duration - 100);
+            }
+
+            ValidateValue(MinHeartRate, IsPercentageMaxHeartRate);
         }
 
         private void ValidateValue(Byte minHeartRate, bool isPercentageMaxHeartRate)

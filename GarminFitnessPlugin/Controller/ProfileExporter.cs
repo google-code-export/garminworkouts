@@ -11,7 +11,7 @@ namespace GarminFitnessPlugin.Controller
 {
     class ProfileExporter
     {
-        public static void ExportProfile(Stream exportStream)
+        public static void ExportProfile(GarminProfile profile, Stream exportStream)
         {
             Debug.Assert(exportStream.CanWrite && exportStream.Length == 0);
             XmlDocument document = new XmlDocument();
@@ -40,7 +40,7 @@ namespace GarminFitnessPlugin.Controller
             XmlNode extensionsNode = document.CreateElement(Constants.ExtensionsTCXString, null);
             database.AppendChild(extensionsNode);
 
-            GarminProfileManager.Instance.Serialize(extensionsNode, "", document);
+            profile.Serialize(extensionsNode, "", document);
 
             document.Save(new StreamWriter(exportStream));
         }

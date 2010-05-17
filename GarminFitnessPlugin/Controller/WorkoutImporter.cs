@@ -56,7 +56,7 @@ namespace GarminFitnessPlugin.Controller
 
                 return false;
             }
-            catch (GarminFitnesXmlDeserializationException e)
+            catch (GarminFitnessXmlDeserializationException e)
             {
                 System.Windows.Forms.MessageBox.Show(e.Message + "\n\n" + e.ErroneousNode.OuterXml);
                 return false;
@@ -68,6 +68,60 @@ namespace GarminFitnessPlugin.Controller
             }
         }
 
+        public static bool ImportWorkout(GarXFaceNet._Workout workout, GarXFaceNet._WorkoutOccuranceList occuranceList)
+        {
+            IActivityCategory category = null;
+            String workoutName = workout.GetName();
+            bool isUsedByPart;
+
+            if (!GarminWorkoutManager.Instance.IsWorkoutNameAvailable(workoutName, out isUsedByPart))
+            {
+                if (!isUsedByPart)
+                {
+                    ReplaceRenameDialog dlg = new ReplaceRenameDialog(GarminWorkoutManager.Instance.GetUniqueName(workoutName));
+
+                    if (dlg.ShowDialog() == System.Windows.Forms.DialogResult.Yes)
+                    {
+                        // Yes = replace, delete the current workout from the list
+                        Workout oldWorkout = GarminWorkoutManager.Instance.GetWorkoutWithName(workoutName);
+
+                        category = oldWorkout.Category;
+                        GarminWorkoutManager.Instance.RemoveWorkout(oldWorkout);
+                    }
+                    else
+                    {
+                        // No = rename
+                        workoutName = dlg.NewName;
+                    }
+                }
+                else
+                {
+                    // Auto rename
+                    workoutName = GarminWorkoutManager.Instance.GetUniqueName(workoutName);
+                }
+            }
+
+            if (category == null)
+            {
+                SelectCategoryDialog categoryDlg = new SelectCategoryDialog(workoutName);
+
+                categoryDlg.ShowDialog();
+                category = categoryDlg.SelectedCategory;
+            }
+
+            Workout newWorkout = GarminWorkoutManager.Instance.CreateWorkout(category);
+
+            if (newWorkout == null)
+            {
+                return false;
+            }
+
+            newWorkout.Deserialize(workout);
+            newWorkout.DeserializeOccurances(occuranceList);
+
+            return true;
+        }
+
         private static bool LoadWorkouts(XmlNode workoutsList)
         {
             for (int i = 0; i < workoutsList.ChildNodes.Count; ++i)
@@ -76,7 +130,7 @@ namespace GarminFitnessPlugin.Controller
 
                 if (child.Name == "Workout")
                 {
-                    IActivityCategory category = PeekWorkoutCategory(child);;
+                    IActivityCategory category = PeekWorkoutCategory(child);
                     string name = PeekWorkoutName(child);
                     bool isUsedByPart;
 

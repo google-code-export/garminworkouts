@@ -200,7 +200,40 @@ namespace GarminFitnessPlugin.Data
 
             if (!durationLoaded || !targetLoaded || !intensityLoaded)
             {
-                throw new GarminFitnesXmlDeserializationException("Information missing in the XML node", parentNode);
+                throw new GarminFitnessXmlDeserializationException("Information missing in the XML node", parentNode);
+            }
+        }
+
+        public override UInt32 Serialize(GarXFaceNet._Workout workout, UInt32 stepIndex)
+        {
+            GarXFaceNet._Workout._Step step = workout.GetStep(stepIndex);
+
+            step.SetCustomName(Name);
+            step.SetIntensity(this.IsRestingStep ? GarXFaceNet._Workout._Step.IntensityTypes.Rest : GarXFaceNet._Workout._Step.IntensityTypes.Active);
+
+            Duration.Serialize(step);
+            Target.Serialize(step);
+
+            return stepIndex + 1;
+        }
+
+        public override void Deserialize(GarXFaceNet._Workout workout, UInt32 stepIndex)
+        {
+            GarXFaceNet._Workout._Step step = workout.GetStep(stepIndex);
+
+            Name = step.GetCustomName();
+            IsRestingStep = step.GetIntensity() == GarXFaceNet._Workout._Step.IntensityTypes.Rest;
+
+            Duration.Deserialize(step);
+
+            try
+            {
+                Target.Deserialize(step);
+            }
+            catch (NoDeviceSupportException)
+            {
+                // Unsupported target = power.  Replace with a null target
+                new NullTarget(this).Serialize(step);
             }
         }
 

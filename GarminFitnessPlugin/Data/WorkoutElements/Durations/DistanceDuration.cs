@@ -76,10 +76,21 @@ namespace GarminFitnessPlugin.Data
 
             if (parentNode.ChildNodes.Count != 1 || parentNode.FirstChild.Name != "Meters")
             {
-                throw new GarminFitnesXmlDeserializationException("Missing information in distance duration XML node", parentNode);
+                throw new GarminFitnessXmlDeserializationException("Missing information in distance duration XML node", parentNode);
             }
 
             m_Distance.Deserialize(parentNode.FirstChild);
+        }
+
+        public override void Serialize(GarXFaceNet._Workout._Step step)
+        {
+            step.SetDurationType(GarXFaceNet._Workout._Step.DurationTypes.Distance);
+            step.SetDurationValue((UInt16)Math.Round(Distance, 0));
+        }
+
+        public override void Deserialize(GarXFaceNet._Workout._Step step)
+        {
+            Distance = step.GetDurationValue();
         }
 
         public double GetDistanceInBaseUnit()

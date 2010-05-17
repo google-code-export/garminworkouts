@@ -218,7 +218,7 @@ namespace GarminFitnessPlugin.Data
                 if (!FTPRead || powerZonesRead != Constants.GarminPowerZoneCount ||
                     bikeProfilesRead != 3)
                 {
-                    throw new GarminFitnesXmlDeserializationException("Missing information in biking profile XML node", parentNode);
+                    throw new GarminFitnessXmlDeserializationException("Missing information in biking profile XML node", parentNode);
                 }
             }
         }
@@ -263,7 +263,7 @@ namespace GarminFitnessPlugin.Data
             // Check if all was read successfully
             if (!lowRead || !highRead)
             {
-                throw new GarminFitnesXmlDeserializationException("Missing information in profile power zone XML node", parentNode);
+                throw new GarminFitnessXmlDeserializationException("Missing information in profile power zone XML node", parentNode);
             }
 
             // Reorder both elements, GTC doesn't enforce

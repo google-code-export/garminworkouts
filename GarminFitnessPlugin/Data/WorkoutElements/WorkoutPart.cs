@@ -108,6 +108,16 @@ namespace GarminFitnessPlugin.Data
         }
 #endregion
 
+        public override void Deserialize(GarXFaceNet._Workout workout)
+        {
+            throw new Exception("Cannot deserialize a WorkoutPart");
+        }
+
+        public override void DeserializeOccurances(GarXFaceNet._WorkoutOccuranceList occuranceList)
+        {
+            throw new Exception("Cannot deserialize a WorkoutPart");
+        }
+
         Workout m_FullWorkout;
         int m_PartNumber;
     }

@@ -55,7 +55,7 @@ namespace GarminFitnessPlugin.Data
         {
             if (node.ChildNodes.Count != 1 || node.FirstChild.GetType() != typeof(XmlText))
             {
-                throw new GarminFitnesXmlDeserializationException("Unable to deserialize string node", node);
+                throw new GarminFitnessXmlDeserializationException("Unable to deserialize string node", node);
             }
 
             CultureInfo culture = new CultureInfo("en-us");

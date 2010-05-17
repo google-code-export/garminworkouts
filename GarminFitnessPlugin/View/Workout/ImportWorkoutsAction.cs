@@ -143,23 +143,6 @@ namespace GarminFitnessPlugin.View
                                     MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
             }
-            else
-            {
-                if (task.Type == GarminDeviceManager.BasicTask.TaskTypes.TaskType_ImportWorkouts)
-                {
-                    GarminDeviceManager.ImportWorkoutsTask concreteTask = (GarminDeviceManager.ImportWorkoutsTask)task;
-                    MemoryStream stream = new MemoryStream(Encoding.UTF8.GetBytes(concreteTask.WorkoutsXML));
-
-                    if (!WorkoutImporter.ImportWorkout(stream))
-                    {
-                        MessageBox.Show(GarminFitnessView.GetLocalizedString("ImportWorkoutsErrorText"),
-                                        GarminFitnessView.GetLocalizedString("ErrorText"),
-                                        MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    }
-
-                    stream.Close();
-                }
-            }
 
             if (manager.AreAllTasksFinished)
             {

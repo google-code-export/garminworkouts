@@ -81,7 +81,7 @@ namespace GarminFitnessPlugin.Data
         {
             if (node.ChildNodes.Count != 1 || node.FirstChild.GetType() != typeof(XmlText))
             {
-                throw new GarminFitnesXmlDeserializationException("Unable to deserialize bool node", node);
+                throw new GarminFitnessXmlDeserializationException("Unable to deserialize bool node", node);
             }
 
             Value = (node.FirstChild.Value == m_TrueString);

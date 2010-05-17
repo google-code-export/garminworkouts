@@ -27,7 +27,7 @@ namespace GarminFitnessPlugin.View
             Cancel_Button.Text = CommonResources.Text.ActionCancel;
             OKButton.Text = CommonResources.Text.ActionOk;
 
-                        Graphics tempGraphics = this.CreateGraphics();
+            Graphics tempGraphics = this.CreateGraphics();
             Region[] stringRegion;
             StringFormat format = new StringFormat();
             format.SetMeasurableCharacterRanges(new CharacterRange[] { new CharacterRange(0, RefreshButton.Text.Length) });
@@ -104,11 +104,11 @@ namespace GarminFitnessPlugin.View
             }
         }
 
-        public Device SelectedDevice
+        public IGarminDevice SelectedDevice
         {
             get { return m_SelectedDevice; }
         }
 
-        private Device m_SelectedDevice = null;
+        private IGarminDevice m_SelectedDevice = null;
     }
 }

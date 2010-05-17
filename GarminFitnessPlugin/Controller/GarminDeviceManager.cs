@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using System.Windows.Forms;
-using ZoneFiveSoftware.SportTracks.Device.GarminGPS;
 using GarminFitnessPlugin.View;
 using GarminFitnessPlugin.Data;
 
@@ -19,12 +18,17 @@ namespace GarminFitnessPlugin.Controller
                 m_TimeoutTimer.Tick += new EventHandler(OnTimeoutTimerTick);
                 m_TimeoutTimer.Interval = 30000;
 
-                m_Controller = new GarminDeviceControl();
+                IGarminDeviceController newController = new GarXFaceDeviceController();
+                newController.InitializationCompleted += new DeviceControllerOperationCompletedEventHandler(OnControllerInitializationCompleted);
+                newController.FindDevicesCompleted += new DeviceControllerOperationCompletedEventHandler(OnControllerFindDevicesCompleted);
+                newController.Initialize();
+                m_Controllers.Add(newController);
 
-                m_Controller.ReadyChanged += new EventHandler(OnControllerReadyChanged);
-                m_Controller.FinishFindDevices += new GarminDeviceControl.FinishFindDevicesEventHandler(OnControllerFinishFindDevices);
-                m_Controller.FinishWriteToDevice += new GarminDeviceControl.TransferCompleteEventHandler(OnControllerFinishWriteToDevice);
-                m_Controller.FinishReadFromDevice += new GarminDeviceControl.TransferCompleteEventHandler(OnControllerFinishReadFromDevice);
+                newController = new CommunicatorDeviceController();
+                newController.InitializationCompleted += new DeviceControllerOperationCompletedEventHandler(OnControllerInitializationCompleted);
+                newController.FindDevicesCompleted += new DeviceControllerOperationCompletedEventHandler(OnControllerFindDevicesCompleted);
+                newController.Initialize();
+                m_Controllers.Add(newController);
             }
             catch (Exception e)
             {
@@ -34,10 +38,13 @@ namespace GarminFitnessPlugin.Controller
 
         ~GarminDeviceManager()
         {
-            m_Controller.ReadyChanged -= new EventHandler(OnControllerReadyChanged);
-            m_Controller.FinishFindDevices -= new GarminDeviceControl.FinishFindDevicesEventHandler(OnControllerFinishFindDevices);
-            m_Controller.FinishWriteToDevice -= new GarminDeviceControl.TransferCompleteEventHandler(OnControllerFinishWriteToDevice);
-            m_Controller.FinishReadFromDevice -= new GarminDeviceControl.TransferCompleteEventHandler(OnControllerFinishReadFromDevice);
+            foreach(IGarminDeviceController controller in m_Controllers)
+            {
+                controller.InitializationCompleted -= new DeviceControllerOperationCompletedEventHandler(OnControllerInitializationCompleted);
+                controller.FindDevicesCompleted -= new DeviceControllerOperationCompletedEventHandler(OnControllerFindDevicesCompleted);
+            }
+
+            m_Controllers.Clear();
         }
 
         public static GarminDeviceManager Instance
@@ -55,14 +62,23 @@ namespace GarminFitnessPlugin.Controller
 
         public void RefreshDevices()
         {
+            m_Devices.Clear();
+
             // Refresh devices is an optional sub-step of SetOperatingDevice, so insert it
             //  first and trigger it manually.
             m_TaskQueue.Insert(0, new BasicTask(BasicTask.TaskTypes.TaskType_RefreshDevices));
-            m_Controller.FindDevices();
+
+            foreach (IGarminDeviceController controller in m_Controllers)
+            {
+                controller.FindDevices();
+            }
         }
 
         public void SetOperatingDevice()
         {
+            m_Devices.Clear();
+            OperatingDevice = null;
+
             AddTask(new SetOperationDeviceTask());
         }
 
@@ -114,7 +130,8 @@ namespace GarminFitnessPlugin.Controller
                 Debug.Assert(m_TaskQueue.Count > 0);
                 Debug.Assert(IsInitialized);
 
-                GetCurrentTask().ExecuteTask(m_Controller, m_OperatingDevice);
+                m_TimeoutTimer.Start();
+                GetCurrentTask().ExecuteTask(OperatingDevice);
             }
             catch (NoDeviceSupportException e)
             {
@@ -148,9 +165,9 @@ namespace GarminFitnessPlugin.Controller
             CompleteCurrentTask(success, String.Empty);
         }
 
-        private void OnControllerReadyChanged(object sender, EventArgs e)
+        private void OnControllerInitializationCompleted(object sender, Boolean succeeded)
         {
-            if (m_Controller.Ready && m_Controller.Initialize())
+            if (succeeded)
             {
                 if (GetPendingTaskCount() > 0)
                 {
@@ -168,68 +185,112 @@ namespace GarminFitnessPlugin.Controller
             }
         }
 
-        private void OnControllerFinishFindDevices(object sender, GarminDeviceControl.FinishFindDevicesEventArgs e)
+        private void OnControllerFindDevicesCompleted(object sender, Boolean succeeded)
         {
-            bool succeeded = true;
+            bool setDeviceSucceeded = succeeded;
 
-            m_Devices.Clear();
-
-            for (int i = 0; i < e.Devices.Length; ++i)
+            if (succeeded)
             {
-                Device currentDevice = e.Devices[i];
+                IGarminDeviceController controller = sender as IGarminDeviceController;
 
-                if (currentDevice.SoftwareVersion != "0")
+                foreach (IGarminDevice currentDevice in controller.Devices)
                 {
-                    m_Devices.Add(currentDevice);
+                    // Don't add invalid devices or add them twice
+                    if (currentDevice.SoftwareVersion != "0" &&
+                        !m_Devices.ContainsKey(currentDevice.DeviceId))
+                    {
+                        m_Devices.Add(currentDevice.DeviceId, currentDevice);
+                    }
                 }
-            }
 
-            if (GetCurrentTask().Type == BasicTask.TaskTypes.TaskType_SetOperatingDevice)
-            {
-                if (m_Devices.Count == 1)
+                int currentControllerIndex = m_Controllers.IndexOf(controller);
+
+                if (currentControllerIndex != m_Controllers.Count - 1)
                 {
-                    m_OperatingDevice = m_Devices[0];
+                    // Not the last controller, start the next one.
+                    m_Controllers[currentControllerIndex + 1].FindDevices();
                 }
                 else
                 {
-                    SelectDeviceDialog dlg = new SelectDeviceDialog();
+                    if (GetCurrentTask().Type == BasicTask.TaskTypes.TaskType_SetOperatingDevice)
+                    {
+                        if (Devices.Count == 1)
+                        {
+                            // Use the first and only device
+                            OperatingDevice = Devices[0];
+                        }
+                        else
+                        {
+                            SelectDeviceDialog dlg = new SelectDeviceDialog();
 
-                    if (dlg.ShowDialog() == DialogResult.OK)
-                    {
-                        m_OperatingDevice = dlg.SelectedDevice;
+                            if (dlg.ShowDialog() == DialogResult.OK)
+                            {
+                                OperatingDevice = dlg.SelectedDevice;
+                            }
+                            else
+                            {
+                                CancelPendingTasks();
+                                setDeviceSucceeded = false;
+                            }
+                        }
                     }
-                    else
-                    {
-                        CancelPendingTasks();
-                        succeeded = false;
-                    }
+
+                    CompleteCurrentTask(setDeviceSucceeded);
+                }
+            }
+        }
+
+        void OnWriteToDeviceCompleted(IGarminDevice device, DeviceOperations operation, Boolean succeeded)
+        {
+            String errorText = String.Empty;
+
+            if (GetCurrentTask().Type == BasicTask.TaskTypes.TaskType_ExportWorkout)
+            {
+                Debug.Assert(operation == DeviceOperations.Operation_WriteWorkout);
+
+                if (!succeeded)
+                {
+                    errorText = GarminFitnessView.GetLocalizedString("ExportWorkoutsErrorText");
+                }
+            }
+            else if (GetCurrentTask().Type == BasicTask.TaskTypes.TaskType_ExportProfile)
+            {
+                Debug.Assert(operation == DeviceOperations.Operation_WriteProfile);
+
+                if (!succeeded)
+                {
+                    errorText = GarminFitnessView.GetLocalizedString("ExportProfileErrorText");
                 }
             }
 
-            CompleteCurrentTask(succeeded);
+            CompleteCurrentTask(succeeded, errorText);
         }
 
-        void OnControllerFinishWriteToDevice(object sender, GarminDeviceControl.TransferCompleteEventArgs e)
+        void OnReadFromDeviceCompleted(IGarminDevice device, DeviceOperations operation, Boolean succeeded)
         {
-            CompleteCurrentTask(e.Success);
-        }
+            String errorText = String.Empty;
 
-        void OnControllerFinishReadFromDevice(object sender, GarminDeviceControl.TransferCompleteEventArgs e)
-        {
             if (GetCurrentTask().Type == BasicTask.TaskTypes.TaskType_ImportWorkouts)
             {
-                ImportWorkoutsTask task = (ImportWorkoutsTask)GetCurrentTask();
+                Debug.Assert(operation == DeviceOperations.Operation_ReadWorkout);
 
-                task.WorkoutsXML = e.XmlData;
-                CompleteCurrentTask(e.Success);
+                if (!succeeded)
+                {
+                    errorText = GarminFitnessView.GetLocalizedString("ImportWorkoutsErrorText");
+                }
+
             }
             else if (GetCurrentTask().Type == BasicTask.TaskTypes.TaskType_ImportProfile)
             {
-                ImportProfileTask task = (ImportProfileTask)GetCurrentTask();
+                Debug.Assert(operation == DeviceOperations.Operation_ReadProfile);
 
-                task.ProfileXML = e.XmlData;
-                CompleteCurrentTask(e.Success);
+                if (!succeeded)
+                {
+                    errorText = GarminFitnessView.GetLocalizedString("ImportProfileErrorText");
+                }
             }
+
+            CompleteCurrentTask(succeeded, errorText);
         }
 
         void OnTimeoutTimerTick(object sender, EventArgs e)
@@ -239,12 +300,12 @@ namespace GarminFitnessPlugin.Controller
             if (GetCurrentTask().Type == BasicTask.TaskTypes.TaskType_ExportWorkout ||
                 GetCurrentTask().Type == BasicTask.TaskTypes.TaskType_ExportProfile)
             {
-                m_Controller.FireFinishWriteToDevice(false, "");
+                OperatingDevice.CancelWrite();
             }
             else if (GetCurrentTask().Type == BasicTask.TaskTypes.TaskType_ImportWorkouts ||
                      GetCurrentTask().Type == BasicTask.TaskTypes.TaskType_ImportProfile)
             {
-                m_Controller.FireFinishReadFromDevice(false, "");
+                OperatingDevice.CancelRead();
             }
             else
             {
@@ -276,9 +337,8 @@ namespace GarminFitnessPlugin.Controller
                 get { return m_Type; }
             }
 
-            public virtual void ExecuteTask(GarminDeviceControl controller, Device device)
+            public virtual void ExecuteTask(IGarminDevice device)
             {
-                GarminDeviceManager.m_TimeoutTimer.Start();
             }
 
             private TaskTypes m_Type;
@@ -291,18 +351,13 @@ namespace GarminFitnessPlugin.Controller
             {
             }
 
-            public string WorkoutsXML
+            public override void ExecuteTask(IGarminDevice device)
             {
-                get { return m_WorkoutsXML; }
-                set { m_WorkoutsXML = value; }
+                if(GarminDeviceManager.Instance.m_Controllers.Count > 0)
+                {
+                    GarminDeviceManager.Instance.m_Controllers[0].FindDevices();
+                }
             }
-
-            public override void ExecuteTask(GarminDeviceControl controller, Device device)
-            {
-                controller.FindDevices();
-            }
-
-            private string m_WorkoutsXML;
         }
 
         public class ExportWorkoutTask : BasicTask
@@ -318,27 +373,17 @@ namespace GarminFitnessPlugin.Controller
                 get { return m_Workouts; }
             }
 
-            public override void ExecuteTask(GarminDeviceControl controller, Device device)
+            public override void ExecuteTask(IGarminDevice device)
             {
-                string fileName;
-
-                if (Workouts.Count == 1)
+                // This function is not supported on the device
+                if (!device.SupportsReadWorkout)
                 {
-                    fileName = Utils.GetWorkoutFilename(Workouts[0]);
+                    throw new NoDeviceSupportException(device, "Export Workout");
                 }
                 else
                 {
-                    fileName = "Workouts.tcx";
+                    device.WriteWorkouts(m_Workouts);
                 }
-                MemoryStream textStream = new MemoryStream();
-
-                WorkoutExporter.ExportWorkout(Workouts, textStream);
-                string xmlCode = Encoding.UTF8.GetString(textStream.GetBuffer());
-
-                GarminDeviceManager.m_TimeoutTimer.Start();
-                controller.WriteWorkouts(device,
-                                         xmlCode,
-                                         fileName);
             }
 
             private List<Workout> m_Workouts;
@@ -352,18 +397,17 @@ namespace GarminFitnessPlugin.Controller
             {
             }
 
-            public override void ExecuteTask(GarminDeviceControl controller, Device device)
+            public override void ExecuteTask(IGarminDevice device)
             {
-                string fileName = "Profile.tcx";
-                MemoryStream textStream = new MemoryStream();
-
-                ProfileExporter.ExportProfile(textStream);
-                string xmlCode = Encoding.UTF8.GetString(textStream.GetBuffer());
-
-                GarminDeviceManager.m_TimeoutTimer.Start();
-                controller.WriteUserProfile(device,
-                                            xmlCode,
-                                            fileName);
+                // This function is not supported on the device
+                if (!device.SupportsReadProfile)
+                {
+                    throw new NoDeviceSupportException(device, "Export Profile");
+                }
+                else
+                {
+                    device.WriteProfile(GarminProfileManager.Instance.UserProfile);
+                }
             }
         }
 
@@ -374,28 +418,18 @@ namespace GarminFitnessPlugin.Controller
             {
             }
 
-            public string WorkoutsXML
+            public override void ExecuteTask(IGarminDevice device)
             {
-                get { return m_WorkoutsXML; }
-                set { m_WorkoutsXML = value; }
-            }
-
-            public override void ExecuteTask(GarminDeviceControl controller, Device device)
-            {
-                // This function is not suppoerted on the FR405
-                if (device.Description == Constants.Forerunner405UnitDescription ||
-                    device.Description == Constants.Forerunner310XTUnitDescription)
+                // This function is not supported on the device
+                if (!device.SupportsReadWorkout)
                 {
-                    throw new NoDeviceSupportException(device, GarminFitnessView.GetLocalizedString("ImportingWorkoutsText"));
+                    throw new NoDeviceSupportException(device, "Import Workouts");
                 }
                 else
                 {
-                    GarminDeviceManager.m_TimeoutTimer.Start();
-                    controller.ReadWktWorkouts(device);
+                    device.ReadWorkouts();
                 }
             }
-
-            private string m_WorkoutsXML;
         }
 
         public class ImportProfileTask : BasicTask
@@ -405,28 +439,18 @@ namespace GarminFitnessPlugin.Controller
             {
             }
 
-            public string ProfileXML
+            public override void ExecuteTask(IGarminDevice device)
             {
-                get { return m_ProfileXML; }
-                set { m_ProfileXML = value; }
-            }
-
-            public override void ExecuteTask(GarminDeviceControl controller, Device device)
-            {
-                // This function is not suppoerted on the FR405
-                if (device.Description == Constants.Forerunner405UnitDescription ||
-                    device.Description == Constants.Forerunner310XTUnitDescription)
+                // This function is not supported on the device
+                if (!device.SupportsReadProfile)
                 {
-                    throw new NoDeviceSupportException(device, GarminFitnessView.GetLocalizedString("ImportingProfilesText"));
+                    throw new NoDeviceSupportException(device, "Import Profile");
                 }
                 else
                 {
-                    GarminDeviceManager.m_TimeoutTimer.Start();
-                    controller.ReadTcxUserProfile(device);
+                    device.ReadProfile(GarminProfileManager.Instance.UserProfile);
                 }
             }
-
-            private string m_ProfileXML;
         }
 
         public int GetPendingTaskCount()
@@ -441,7 +465,18 @@ namespace GarminFitnessPlugin.Controller
 
         public bool IsInitialized
         {
-            get { return m_Controller.Ready && m_Controller.Initialized; }
+            get
+            {
+                foreach (IGarminDeviceController controller in m_Controllers)
+                {
+                    if (!controller.IsInitialized)
+                    {
+                        return false;
+                    }
+                }
+
+                return true;
+            }
         }
 
         public bool AreAllTasksFinished
@@ -449,18 +484,53 @@ namespace GarminFitnessPlugin.Controller
             get { return m_TaskQueue.Count == 0; }
         }
 
-        public List<Device> Devices
+        public List<IGarminDevice> Devices
         {
-            get { return m_Devices; }
+            get
+            {
+                List<IGarminDevice> devices = new List<IGarminDevice>();
+                Dictionary<String, IGarminDevice>.ValueCollection.Enumerator enumerator = m_Devices.Values.GetEnumerator();
+
+                while (enumerator.MoveNext())
+                {
+                    devices.Add(enumerator.Current);
+                }
+
+                return devices;
+            }
+        }
+
+        private IGarminDevice OperatingDevice
+        {
+            get { return m_OperatingDevice; }
+            set
+            {
+                if(OperatingDevice != value)
+                {
+                    if (OperatingDevice != null)
+                    {
+                        OperatingDevice.ReadFromDeviceCompleted -= new DeviceOperationCompletedEventHandler(OnReadFromDeviceCompleted);
+                        OperatingDevice.WriteToDeviceCompleted -= new DeviceOperationCompletedEventHandler(OnWriteToDeviceCompleted);
+                    }
+
+                    m_OperatingDevice = value;
+
+                    if (OperatingDevice != null)
+                    {
+                        OperatingDevice.ReadFromDeviceCompleted += new DeviceOperationCompletedEventHandler(OnReadFromDeviceCompleted);
+                        OperatingDevice.WriteToDeviceCompleted += new DeviceOperationCompletedEventHandler(OnWriteToDeviceCompleted);
+                    }
+                }
+            }
         }
 
         public delegate void TaskCompletedEventHandler(GarminDeviceManager manager, BasicTask task, bool succeeded, String errorText);
         public event TaskCompletedEventHandler TaskCompleted;
 
-        private GarminDeviceControl m_Controller;
+        private List<IGarminDeviceController> m_Controllers = new List<IGarminDeviceController>();
         private List<BasicTask> m_TaskQueue = new List<BasicTask>();
-        private List<Device> m_Devices = new List<Device>();
-        private Device m_OperatingDevice = null;
+        private Dictionary<String, IGarminDevice> m_Devices = new Dictionary<String, IGarminDevice>();
+        private IGarminDevice m_OperatingDevice = null;
         private static Timer m_TimeoutTimer = new Timer();
 
         private static GarminDeviceManager m_Instance = null;

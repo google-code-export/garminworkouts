@@ -102,7 +102,7 @@ namespace GarminFitnessPlugin.Data
 
             if(!minRead || !maxRead)
             {
-                throw new GarminFitnesXmlDeserializationException("Missing information in power range target XML node", parentNode);
+                throw new GarminFitnessXmlDeserializationException("Missing information in power range target XML node", parentNode);
             }
 
             SetValues(Math.Min(MinPower, MaxPower), Math.Max(MinPower, MaxPower));

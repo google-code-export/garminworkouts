@@ -61,7 +61,7 @@ namespace GarminFitnessPlugin.Data
         {
             if (node.ChildNodes.Count == 1 && node.FirstChild.GetType() != typeof(XmlText))
             {
-                throw new GarminFitnesXmlDeserializationException("Unable to deserialize string node", node);
+                throw new GarminFitnessXmlDeserializationException("Unable to deserialize string node", node);
             }
             else if (node.ChildNodes.Count == 0)
             {

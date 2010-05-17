@@ -64,7 +64,7 @@ namespace GarminFitnessPlugin.Data
 
             if (parentNode.ChildNodes.Count != 1 || parentNode.FirstChild.Name != "Number")
             {
-                throw new GarminFitnesXmlDeserializationException("Invalid GTC power target in XML node", parentNode);
+                throw new GarminFitnessXmlDeserializationException("Invalid GTC power target in XML node", parentNode);
             }
 
             m_Zone.Deserialize(parentNode.FirstChild);

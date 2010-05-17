@@ -110,7 +110,54 @@ namespace GarminFitnessPlugin.Data
         }
 
         public abstract void Deserialize(XmlNode parentNode);
+
 #endregion
+
+        public void Serialize(GarXFaceNet._WorkoutList workoutList)
+        {
+            if (GetSplitPartsCount() > 1)
+            {
+                List<WorkoutPart> splitParts = ConcreteWorkout.SplitInSeperateParts();
+
+                foreach (WorkoutPart part in splitParts)
+                {
+                    part.Serialize(workoutList);
+                }
+            }
+            else
+            {
+                GarXFaceNet._Workout workout = new GarXFaceNet._Workout();
+
+                workout.SetName(Name);
+                workout.SetNumValidSteps((UInt32)Steps.Count);
+                workout.SetSportType((GarXFaceNet._Workout.SportTypes)Options.Instance.GetGarminCategory(Category));
+
+                UInt32 internalStepId = 0;
+                foreach (IStep step in Steps)
+                {
+                    internalStepId = step.Serialize(workout, internalStepId);
+                }
+
+                workoutList.Add(workout);
+            }
+        }
+
+        public void SerializeOccurances(GarXFaceNet._WorkoutOccuranceList occuranceList)
+        {
+            foreach (GarminFitnessDate scheduledDate in ScheduledDates)
+            {
+                GarXFaceNet._WorkoutOccurance newOccurance = new GarXFaceNet._WorkoutOccurance();
+                TimeSpan timeSinceReference = (DateTime)scheduledDate - new DateTime(1989, 12, 31);
+
+                newOccurance.SetWorkoutName(Name);
+                newOccurance.SetDay((UInt32)(timeSinceReference.TotalSeconds));
+
+                occuranceList.Add(newOccurance);
+            }
+        }
+
+        public abstract void Deserialize(GarXFaceNet._Workout workout);
+        public abstract void DeserializeOccurances(GarXFaceNet._WorkoutOccuranceList occuranceList);
 
         public List<IStep> DeserializeSteps(Stream stream)
         {
