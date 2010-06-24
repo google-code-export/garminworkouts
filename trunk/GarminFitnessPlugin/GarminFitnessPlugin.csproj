@@ -80,6 +80,7 @@
     <Compile Include="Controller\Devices\GarXFace\GarXFaceDeviceController.cs" />
     <Compile Include="Controller\Devices\IGarminDevice.cs" />
     <Compile Include="Controller\Devices\IGarminDeviceController.cs" />
+    <Compile Include="Controller\Logger.cs" />
     <Compile Include="Controller\NoDeviceSupportException.cs" />
     <Compile Include="Controller\ProfileExporter.cs" />
     <Compile Include="Controller\ProfileImporter.cs" />

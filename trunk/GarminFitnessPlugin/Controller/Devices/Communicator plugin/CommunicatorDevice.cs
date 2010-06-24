@@ -24,6 +24,8 @@ namespace GarminFitnessPlugin.Controller
             {
                 case DeviceOperations.Operation_ReadProfile:
                     {
+                        Logger.Instance.LogText("Comm. : Profile read");
+
                         MemoryStream stream = new MemoryStream(Encoding.UTF8.GetBytes(e.XmlData));
 
                         success = ProfileImporter.ImportProfile(stream);
@@ -33,6 +35,8 @@ namespace GarminFitnessPlugin.Controller
                     }
                 case DeviceOperations.Operation_ReadWorkout:
                     {
+                        Logger.Instance.LogText("Comm. : Workouts read");
+
                         MemoryStream stream = new MemoryStream(Encoding.UTF8.GetBytes(e.XmlData));
 
                         success = WorkoutImporter.ImportWorkout(stream);
@@ -65,10 +69,12 @@ namespace GarminFitnessPlugin.Controller
             {
                 case DeviceOperations.Operation_WriteProfile:
                     {
+                        Logger.Instance.LogText("Comm. : Profile written");
                         break;
                     }
                 case DeviceOperations.Operation_WriteWorkout:
                     {
+                        Logger.Instance.LogText("Comm. : Workouts written");
                         break;
                     }
                 default:
@@ -104,8 +110,10 @@ namespace GarminFitnessPlugin.Controller
             m_Controller.CommunicatorController.FireFinishReadFromDevice(false, "");
         }
 
-        public void WriteWorkouts(List<Workout> workouts)
+        public void WriteWorkouts(List<IWorkout> workouts)
         {
+            Logger.Instance.LogText("Comm. : Writing workouts");
+
             Debug.Assert(m_CurrentOperation == DeviceOperations.Operation_Idle);
 
             string fileName;
@@ -132,6 +140,8 @@ namespace GarminFitnessPlugin.Controller
 
         public void ReadWorkouts()
         {
+            Logger.Instance.LogText("Comm. : Reading workouts");
+
             Debug.Assert(m_CurrentOperation == DeviceOperations.Operation_Idle);
 
             m_Controller.CommunicatorController.FinishReadFromDevice += new GarminDeviceControl.TransferCompleteEventHandler(OnControllerFinishReadFromDevice);
@@ -141,6 +151,8 @@ namespace GarminFitnessPlugin.Controller
 
         public void WriteProfile(GarminFitnessPlugin.Data.GarminProfile profile)
         {
+            Logger.Instance.LogText("Comm. : Writing workouts");
+
             Debug.Assert(m_CurrentOperation == DeviceOperations.Operation_Idle);
 
             string fileName = "Profile.tcx";
@@ -158,6 +170,8 @@ namespace GarminFitnessPlugin.Controller
 
         public void ReadProfile(GarminFitnessPlugin.Data.GarminProfile profile)
         {
+            Logger.Instance.LogText("Comm. : Reading profile");
+
             Debug.Assert(m_CurrentOperation == DeviceOperations.Operation_Idle);
 
             m_Controller.CommunicatorController.FinishReadFromDevice += new GarminDeviceControl.TransferCompleteEventHandler(OnControllerFinishReadFromDevice);

@@ -25,6 +25,8 @@ namespace GarminFitnessPlugin.Controller
 
         public void Initialize()
         {
+            Logger.Instance.LogText("GarXFace : Init");
+
             if (InitializationCompleted != null)
             {
                 InitializationCompleted(this, true);
@@ -33,6 +35,8 @@ namespace GarminFitnessPlugin.Controller
 
         public void FindDevices()
         {
+            Logger.Instance.LogText("GarXFace : Find devices");
+
             GarXFaceNet._UsbDeviceNameList usbDevices = new GarXFaceNet._UsbDeviceNameList();
 
             m_Devices.Clear();
@@ -42,6 +46,8 @@ namespace GarminFitnessPlugin.Controller
 
                 m_Devices.Add(new GarXFaceDevice(this, new GarXFaceNet._GpsUsbDevice(name)));
             }
+
+            Logger.Instance.LogText(String.Format("GarXFace : Find devices completed({0})", m_Devices.Count));
 
             if (FindDevicesCompleted != null)
             {
