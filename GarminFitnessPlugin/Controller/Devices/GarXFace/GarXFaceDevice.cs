@@ -19,114 +19,111 @@ namespace GarminFitnessPlugin.Controller
             m_Device = device;
         }
 
-        void OnTransferProgressChanged(bool inProgress, uint progressTotalPackets, uint progressCurrentPacket, bool completed)
-        {
-            if (!inProgress)
-            {
-                // Tranfer completed
-                switch (m_CurrentOperation)
-                {
-                    case DeviceOperations.Operation_ReadWorkout:
-                        {
-                            if (m_WorkoutSubStep == WorkoutTransferSubSteps.Step_WorkoutList)
-                            {
-                                m_WorkoutSubStep = WorkoutTransferSubSteps.Step_WorkoutOccuranceList;
-                                m_Controller.GarXFaceController.TxWorkoutOccuranceList(m_OperationProgressNotifier);
-                            }
-                            else
-                            {
-                                for (UInt32 i = 0; i < m_Controller.GarXFaceController.GetWorkoutList().GetCount(); ++i)
-                                {
-                                    GarXFaceNet._Workout workout = m_Controller.GarXFaceController.GetWorkoutList().GetAtIndex(i);
-
-                                    WorkoutImporter.ImportWorkout(workout, m_Controller.GarXFaceController.GetWorkoutOccuranceList());
-                                }
-
-                                m_WorkoutSubStep = WorkoutTransferSubSteps.Step_None;
-                                m_Controller.GarXFaceController.Close();
-                                if (ReadFromDeviceCompleted != null)
-                                {
-                                    ReadFromDeviceCompleted(this, m_CurrentOperation, completed);
-                                }
-
-                                m_OperationProgressNotifier.TransferProgressChanged -= new GarXFaceNet._ProgressNotifier.ProgressChangedEventHandler(OnTransferProgressChanged);
-                                m_CurrentOperation = DeviceOperations.Operation_Idle;
-                            }
-                            break;
-                        }
-                    case DeviceOperations.Operation_WriteWorkout:
-                        {
-                            if (m_WorkoutSubStep == WorkoutTransferSubSteps.Step_WorkoutList)
-                            {
-                                // Send occurances
-                                m_WorkoutSubStep = WorkoutTransferSubSteps.Step_WorkoutOccuranceList;
-                                m_Controller.GarXFaceController.TxWorkoutOccuranceList(m_OperationProgressNotifier);
-                            }
-                            else
-                            {
-                                // Completed
-                                m_WorkoutSubStep = WorkoutTransferSubSteps.Step_None;
-                                m_Controller.GarXFaceController.Close();
-                                if (WriteToDeviceCompleted != null)
-                                {
-                                    WriteToDeviceCompleted(this, m_CurrentOperation, completed);
-                                }
-
-                                m_OperationProgressNotifier.TransferProgressChanged -= new GarXFaceNet._ProgressNotifier.ProgressChangedEventHandler(OnTransferProgressChanged);
-                                m_CurrentOperation = DeviceOperations.Operation_Idle;
-                            }
-                            break;
-                        }
-                }
-            }
-        }
-
 #region IGarminDevice Members
 
         public void CancelWrite()
         {
-            m_OperationProgressNotifier.SetAbort(true);
         }
 
         public void CancelRead()
         {
-            m_OperationProgressNotifier.SetAbort(true);
         }
 
-        public void WriteWorkouts(List<Workout> workouts)
+        public void WriteWorkouts(List<IWorkout> workouts)
         {
+            Logger.Instance.LogText("GarXFace : Writing workouts");
+
+            int result;
             GarXFaceNet._Gps controller = m_Controller.GarXFaceController;
 
             controller.Open(m_Device);
-
             controller.GetWorkoutList().Clear();
             controller.GetWorkoutOccuranceList().Clear();
-            foreach (Workout workout in workouts)
+            Logger.Instance.LogText("GarXFace : Writing workouts");
+
+            foreach (IWorkout workout in workouts)
             {
-                workout.Serialize(m_Controller.GarXFaceController.GetWorkoutList());
-                workout.SerializeOccurances(m_Controller.GarXFaceController.GetWorkoutOccuranceList());
+                Logger.Instance.LogText(String.Format("GarXFace : Writing workout {0)", workout.Name));
+
+                workout.Serialize(controller.GetWorkoutList());
+                workout.SerializeOccurances(controller.GetWorkoutOccuranceList());
             }
 
-            m_OperationProgressNotifier.TransferProgressChanged += new GarXFaceNet._ProgressNotifier.ProgressChangedEventHandler(OnTransferProgressChanged);
             m_CurrentOperation = DeviceOperations.Operation_WriteWorkout;
+
+            Logger.Instance.LogText("GarXFace : Transfer workouts");
             m_WorkoutSubStep = WorkoutTransferSubSteps.Step_WorkoutList;
-            controller.TxWorkoutList(m_OperationProgressNotifier);
+            result = controller.TxWorkoutList();
+            Logger.Instance.LogText(String.Format("GarXFace : Transfer workouts result = %i", result));
+
+            Logger.Instance.LogText("GarXFace : Transfer workouts occurances");
+            m_WorkoutSubStep = WorkoutTransferSubSteps.Step_WorkoutOccuranceList;
+            result = controller.TxWorkoutOccuranceList();
+            Logger.Instance.LogText(String.Format("GarXFace : Transfer workouts occurances result = %i", result));
+
+            Logger.Instance.LogText("GarXFace : Write workouts completed");
+
+            // Completed
+            m_WorkoutSubStep = WorkoutTransferSubSteps.Step_None;
+            controller.Close();
+            if (WriteToDeviceCompleted != null)
+            {
+                WriteToDeviceCompleted(this, m_CurrentOperation, true);
+            }
+
+            m_CurrentOperation = DeviceOperations.Operation_Idle;
         }
 
         public void ReadWorkouts()
         {
+            Logger.Instance.LogText("GarXFace : Reading workouts");
+
+            int result;
             GarXFaceNet._Gps controller = m_Controller.GarXFaceController;
 
             controller.Open(m_Device);
 
-            m_OperationProgressNotifier.TransferProgressChanged += new GarXFaceNet._ProgressNotifier.ProgressChangedEventHandler(OnTransferProgressChanged);
             m_CurrentOperation = DeviceOperations.Operation_ReadWorkout;
+
+            Logger.Instance.LogText("GarXFace : Reading workouts");
             m_WorkoutSubStep = WorkoutTransferSubSteps.Step_WorkoutList;
-            controller.RxWorkoutList(m_OperationProgressNotifier);
+            result = controller.RxWorkoutList();
+            Logger.Instance.LogText(String.Format("GarXFace : Reading workouts result = %i", result));
+
+            Logger.Instance.LogText("GarXFace : Reading workouts occurances");
+            m_WorkoutSubStep = WorkoutTransferSubSteps.Step_WorkoutOccuranceList;
+            result = controller.RxWorkoutOccuranceList();
+            Logger.Instance.LogText(String.Format("GarXFace : Reading workouts occurances result = %i", result));
+
+            Logger.Instance.LogText(String.Format("GarXFace : Read workout completed({0})", controller.GetWorkoutList().GetCount()));
+
+            for (UInt32 i = 0; i < controller.GetWorkoutList().GetCount(); ++i)
+            {
+                GarXFaceNet._Workout workout = controller.GetWorkoutList().GetAtIndex(i);
+
+                WorkoutImporter.ImportWorkout(workout, controller.GetWorkoutOccuranceList());
+
+                Logger.Instance.LogText(String.Format("GarXFace : Read workout {0}", workout.GetName()));
+            }
+
+            Logger.Instance.LogText("GarXFace : Write workouts completed");
+
+            // Completed
+            m_WorkoutSubStep = WorkoutTransferSubSteps.Step_None;
+            controller.Close();
+
+            if (ReadFromDeviceCompleted != null)
+            {
+                ReadFromDeviceCompleted(this, m_CurrentOperation, true);
+            }
+
+            m_CurrentOperation = DeviceOperations.Operation_Idle;
         }
 
         public void WriteProfile(GarminProfile profile)
         {
+            Logger.Instance.LogText("GarXFace : Writing profile");
+
             GarXFaceNet._Gps controller = m_Controller.GarXFaceController;
 
             controller.Open(m_Device);
@@ -147,6 +144,8 @@ namespace GarminFitnessPlugin.Controller
 
         public void ReadProfile(GarminProfile profile)
         {
+            Logger.Instance.LogText("GarXFace : Reading profile");
+
             GarXFaceNet._Gps controller = m_Controller.GarXFaceController;
 
             controller.Open(m_Device);
@@ -182,6 +181,8 @@ namespace GarminFitnessPlugin.Controller
                 controller.RxProductData();
                 Int16 workoutProtocol = controller.GetProductData().GetProtocolCapabilities().GetWorkoutProtocol();
 
+                Logger.Instance.LogText(String.Format("GarXFace : Workout protocol id={0}", workoutProtocol));
+
                 return workoutProtocol == 1002 || workoutProtocol == 1008;
             }
         }
@@ -197,6 +198,8 @@ namespace GarminFitnessPlugin.Controller
 
                 controller.RxProductData();
                 Int16 workoutProtocol = controller.GetProductData().GetProtocolCapabilities().GetWorkoutProtocol();
+
+                Logger.Instance.LogText(String.Format("GarXFace : Workout protocol id={0}", workoutProtocol));
 
                 return workoutProtocol == 1002 || workoutProtocol == 1008;
             }
@@ -214,6 +217,8 @@ namespace GarminFitnessPlugin.Controller
                 controller.RxProductData();
                 Int16 profileProtocol = controller.GetProductData().GetProtocolCapabilities().GetFitnessUserProfileProtocol();
 
+                Logger.Instance.LogText(String.Format("GarXFace : Profile protocol id={0}", profileProtocol));
+
                 return profileProtocol == 1004;
             }
         }
@@ -229,6 +234,8 @@ namespace GarminFitnessPlugin.Controller
 
                 controller.RxProductData();
                 Int16 profileProtocol = controller.GetProductData().GetProtocolCapabilities().GetFitnessUserProfileProtocol();
+
+                Logger.Instance.LogText(String.Format("GarXFace : Profile protocol id={0}", profileProtocol));
 
                 return profileProtocol == 1004;
             }
@@ -283,7 +290,6 @@ namespace GarminFitnessPlugin.Controller
 
         private GarXFaceDeviceController m_Controller = null;
         private GarXFaceNet._GpsDevice m_Device = null;
-        private GarXFaceNet._ProgressNotifier m_OperationProgressNotifier = new GarXFaceNet._ProgressNotifier();
         private DeviceOperations m_CurrentOperation = DeviceOperations.Operation_Idle;
         private WorkoutTransferSubSteps m_WorkoutSubStep = WorkoutTransferSubSteps.Step_None;
     }

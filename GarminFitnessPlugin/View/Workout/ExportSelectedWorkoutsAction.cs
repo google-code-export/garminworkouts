@@ -139,8 +139,28 @@ namespace GarminFitnessPlugin.View
                 try
                 {
                     GarminWorkoutControl viewControl = (GarminWorkoutControl)((GarminFitnessView)PluginMain.GetApplication().ActiveView).GetCurrentView();
+                    List<IWorkout> workoutsToExport = new List<IWorkout>();
 
-                    foreach (Workout currentWorkout in viewControl.SelectedConcreteWorkouts)
+                    // Populate list of workouts to export
+                    foreach (IWorkout currentWorkout in viewControl.SelectedConcreteWorkouts)
+                    {
+                        if (currentWorkout.GetSplitPartsCount() > 1)
+                        {
+                            List<WorkoutPart> splitParts = currentWorkout.SplitInSeperateParts();
+
+                            // Replace the workout by it's parts
+                            foreach (WorkoutPart currentPart in splitParts)
+                            {
+                                workoutsToExport.Add(currentPart);
+                            }
+                        }
+                        else
+                        {
+                            workoutsToExport.Add(currentWorkout);
+                        }
+                    }
+
+                    foreach (IWorkout currentWorkout in workoutsToExport)
                     {
                         string fileName = Utils.GetWorkoutFilename(currentWorkout);
 

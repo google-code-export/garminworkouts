@@ -73,7 +73,8 @@ namespace GarminFitnessPlugin.Data
 
             m_OdometerInMeters.Serialize(bikeNode, Constants.OdometerTCXString, document);
 
-            m_WeightInPounds.Serialize(bikeNode, Constants.WeightTCXString, document);
+            GarminFitnessDoubleRange weightInKg = new GarminFitnessDoubleRange(Weight.Convert(m_WeightInPounds, Weight.Units.Pound, Weight.Units.Kilogram));
+            weightInKg.Serialize(bikeNode, Constants.WeightTCXString, document);
 
             // Wheel info node
             wheelInfoChild = document.CreateElement(Constants.WheelSizeTCXString);
