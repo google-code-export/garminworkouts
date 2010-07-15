@@ -10,11 +10,6 @@ namespace GarminFitnessPlugin.View
             :
             base(parentWizard)
         {
-            PropertyChanged += new PropertyChangedEventHandler(SetupWizardGarminCategoryAssociation_PropertyChanged);
-        }
-
-        void SetupWizardGarminCategoryAssociation_PropertyChanged(object sender, PropertyChangedEventArgs e)
-        {
         }
 
 #region IExtendedWizardPage implementation
@@ -51,6 +46,11 @@ namespace GarminFitnessPlugin.View
             if (m_Control == null)
             {
                 m_Control = new SetupWizardGarminCategoryAssociationControl(wizard);
+
+                if (PropertyChanged != null)
+                {
+                    PropertyChanged(this, new PropertyChangedEventArgs("Control"));
+                }
             }
 
             return m_Control;

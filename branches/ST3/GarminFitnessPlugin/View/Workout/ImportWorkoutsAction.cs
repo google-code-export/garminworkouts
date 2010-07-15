@@ -1,4 +1,5 @@
 using System;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Drawing;
 using System.Resources;
@@ -15,7 +16,10 @@ namespace GarminFitnessPlugin.View
     {
         public ImportWorkoutsAction()
         {
-            PropertyChanged += new System.ComponentModel.PropertyChangedEventHandler(WorkoutImportWorkoutsAction_PropertyChanged);
+            if (PropertyChanged != null)
+            {
+                PropertyChanged(this, new PropertyChangedEventArgs("Action"));
+            }
         }
 
         #region IAction Members
@@ -72,13 +76,6 @@ namespace GarminFitnessPlugin.View
 
         #endregion
 
-        #region INotifyPropertyChanged Members
-
-        void WorkoutImportWorkoutsAction_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
-        {
-        }
-
-        #endregion
 
         public void FromDeviceEventHandler(object sender, EventArgs args)
         {

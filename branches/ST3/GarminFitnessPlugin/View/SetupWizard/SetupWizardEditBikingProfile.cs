@@ -10,14 +10,9 @@ namespace GarminFitnessPlugin.View
             :
             base(parentWizard)
         {
-            PropertyChanged += new PropertyChangedEventHandler(SetupWizardEditBikingProfile_PropertyChanged);
         }
 
 #region IExtendedWizardPage implementation
-
-        void SetupWizardEditBikingProfile_PropertyChanged(object sender, PropertyChangedEventArgs e)
-        {
-        }
 
         public override void FinishClicked(CancelEventArgs e)
         {
@@ -57,6 +52,11 @@ namespace GarminFitnessPlugin.View
             if (m_Control == null)
             {
                 m_Control = new SetupWizardEditBikingProfileControl(wizard);
+
+                if (PropertyChanged != null)
+                {
+                    PropertyChanged(this, new PropertyChangedEventArgs("Control"));
+                }
             }
 
             return m_Control;

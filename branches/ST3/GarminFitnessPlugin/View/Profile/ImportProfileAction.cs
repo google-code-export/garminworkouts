@@ -1,4 +1,5 @@
 using System;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Drawing;
 using System.Resources;
@@ -15,10 +16,13 @@ namespace GarminFitnessPlugin.View
     {
         public ImportProfileAction()
         {
-            PropertyChanged += new System.ComponentModel.PropertyChangedEventHandler(WorkoutImportProfileAction_PropertyChanged);
+            if (PropertyChanged != null)
+            {
+                PropertyChanged(this, new PropertyChangedEventArgs("Action"));
+            }
         }
 
-        #region IAction Members
+#region IAction Members
 
         public bool Enabled
         {
@@ -70,15 +74,8 @@ namespace GarminFitnessPlugin.View
             }
         }
 
-        #endregion
+#endregion
 
-        #region INotifyPropertyChanged Members
-
-        void WorkoutImportProfileAction_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
-        {
-        }
-
-        #endregion
 
         void OnDeviceManagerTaskCompleted(GarminDeviceManager manager, GarminDeviceManager.BasicTask task, bool succeeded, String errorText)
         {

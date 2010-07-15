@@ -54,19 +54,16 @@ namespace GarminFitnessPlugin.Controller
             m_CurrentOperation = DeviceOperations.Operation_WriteWorkout;
 
             Logger.Instance.LogText("GarXFace : Transfer workouts");
-            m_WorkoutSubStep = WorkoutTransferSubSteps.Step_WorkoutList;
             result = controller.TxWorkoutList();
             Logger.Instance.LogText(String.Format("GarXFace : Transfer workouts result = %i", result));
 
             Logger.Instance.LogText("GarXFace : Transfer workouts occurances");
-            m_WorkoutSubStep = WorkoutTransferSubSteps.Step_WorkoutOccuranceList;
             result = controller.TxWorkoutOccuranceList();
             Logger.Instance.LogText(String.Format("GarXFace : Transfer workouts occurances result = %i", result));
 
             Logger.Instance.LogText("GarXFace : Write workouts completed");
 
             // Completed
-            m_WorkoutSubStep = WorkoutTransferSubSteps.Step_None;
             controller.Close();
             if (WriteToDeviceCompleted != null)
             {
@@ -88,12 +85,10 @@ namespace GarminFitnessPlugin.Controller
             m_CurrentOperation = DeviceOperations.Operation_ReadWorkout;
 
             Logger.Instance.LogText("GarXFace : Reading workouts");
-            m_WorkoutSubStep = WorkoutTransferSubSteps.Step_WorkoutList;
             result = controller.RxWorkoutList();
             Logger.Instance.LogText(String.Format("GarXFace : Reading workouts result = %i", result));
 
             Logger.Instance.LogText("GarXFace : Reading workouts occurances");
-            m_WorkoutSubStep = WorkoutTransferSubSteps.Step_WorkoutOccuranceList;
             result = controller.RxWorkoutOccuranceList();
             Logger.Instance.LogText(String.Format("GarXFace : Reading workouts occurances result = %i", result));
 
@@ -111,7 +106,6 @@ namespace GarminFitnessPlugin.Controller
             Logger.Instance.LogText("GarXFace : Write workouts completed");
 
             // Completed
-            m_WorkoutSubStep = WorkoutTransferSubSteps.Step_None;
             controller.Close();
 
             if (ReadFromDeviceCompleted != null)
@@ -293,6 +287,5 @@ namespace GarminFitnessPlugin.Controller
         private GarXFaceDeviceController m_Controller = null;
         private GarXFaceNet._GpsDevice m_Device = null;
         private DeviceOperations m_CurrentOperation = DeviceOperations.Operation_Idle;
-        private WorkoutTransferSubSteps m_WorkoutSubStep = WorkoutTransferSubSteps.Step_None;
     }
 }

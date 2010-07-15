@@ -20,16 +20,16 @@ namespace GarminFitnessPlugin.Controller
                 m_TimeoutTimer.Tick += new EventHandler(OnTimeoutTimerTick);
                 m_TimeoutTimer.Interval = 30000;
 
-                Logger.Instance.LogText("Adding GarXFace controller");
+/*                Logger.Instance.LogText("Adding GarXFace controller");
 
                 IGarminDeviceController newController = new GarXFaceDeviceController();
                 newController.InitializationCompleted += new DeviceControllerOperationCompletedEventHandler(OnControllerInitializationCompleted);
                 newController.FindDevicesCompleted += new DeviceControllerOperationCompletedEventHandler(OnControllerFindDevicesCompleted);
-                m_Controllers.Add(newController);
+                m_Controllers.Add(newController);*/
 
                 Logger.Instance.LogText("Adding Communicator controller");
 
-                newController = new CommunicatorDeviceController();
+                IGarminDeviceController newController = new CommunicatorDeviceController();
                 newController.InitializationCompleted += new DeviceControllerOperationCompletedEventHandler(OnControllerInitializationCompleted);
                 newController.FindDevicesCompleted += new DeviceControllerOperationCompletedEventHandler(OnControllerFindDevicesCompleted);
                 m_Controllers.Add(newController);

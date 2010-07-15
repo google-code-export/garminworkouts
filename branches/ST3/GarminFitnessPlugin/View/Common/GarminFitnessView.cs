@@ -26,6 +26,11 @@ namespace GarminFitnessPlugin.View
             PluginMain.LogbookChanged += new PluginMain.LogbookChangedEventHandler(OnLogbookChanged);
             Options.Instance.OptionsChanged += new Options.OptionsChangedEventHandler(OnOptionsChanged);
 
+            if (PropertyChanged != null)
+            {
+                PropertyChanged(this, new PropertyChangedEventArgs("Instance"));
+            }
+
             m_ViewControls = new IGarminFitnessPluginControl[]
                     {
                         null,

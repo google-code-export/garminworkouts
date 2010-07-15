@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Drawing;
 using System.Resources;
@@ -16,7 +17,10 @@ namespace GarminFitnessPlugin.View
     {
         public ExportAllWorkoutsAction()
         {
-            PropertyChanged += new System.ComponentModel.PropertyChangedEventHandler(WorkoutExportAction_PropertyChanged);
+            if (PropertyChanged != null)
+            {
+                PropertyChanged(this, new PropertyChangedEventArgs("Action"));
+            }
         }
 
         #region IAction Members
@@ -72,14 +76,6 @@ namespace GarminFitnessPlugin.View
 
                 return GarminFitnessView.GetLocalizedString("ExportAllText");
             }
-        }
-
-        #endregion
-
-        #region INotifyPropertyChanged Members
-
-        void WorkoutExportAction_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
-        {
         }
 
         #endregion

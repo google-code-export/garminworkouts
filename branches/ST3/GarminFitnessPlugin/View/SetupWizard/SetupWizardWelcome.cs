@@ -8,12 +8,8 @@ namespace GarminFitnessPlugin.View
         public SetupWizardWelcome(ExtendedWizard parentWizard) :
             base(parentWizard)
         {
-            PropertyChanged += new System.ComponentModel.PropertyChangedEventHandler(SetupWizardWelcome_PropertyChanged);
         }
 
-        void SetupWizardWelcome_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
-        {
-        }
 
 #region IExtendedWizardPage Members
 
@@ -58,6 +54,11 @@ namespace GarminFitnessPlugin.View
             if(m_Control == null)
             {
                 m_Control = new SetupWizardWelcomeControl(wizard);
+
+                if (PropertyChanged != null)
+                {
+                    PropertyChanged(this, new PropertyChangedEventArgs("Control"));
+                }
             }
 
             return m_Control;
