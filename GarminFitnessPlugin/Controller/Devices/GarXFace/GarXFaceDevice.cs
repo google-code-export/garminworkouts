@@ -31,15 +31,17 @@ namespace GarminFitnessPlugin.Controller
 
         public void WriteWorkouts(List<IWorkout> workouts)
         {
-            Logger.Instance.LogText("GarXFace : Writing workouts");
+            Logger.Instance.LogText(String.Format("GarXFace : Writing workouts (%i)", workouts.Count));
 
             int result;
             GarXFaceNet._Gps controller = m_Controller.GarXFaceController;
 
+            Logger.Instance.LogText("GarXFace : Opening");
             controller.Open(m_Device);
+            Logger.Instance.LogText("GarXFace : Open");
             controller.GetWorkoutList().Clear();
             controller.GetWorkoutOccuranceList().Clear();
-            Logger.Instance.LogText("GarXFace : Writing workouts");
+            Logger.Instance.LogText("GarXFace : Lists cleared");
 
             foreach (IWorkout workout in workouts)
             {
