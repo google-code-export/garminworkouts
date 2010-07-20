@@ -296,39 +296,22 @@ namespace GarminFitnessPlugin.View
 
         private void ScheduleWorkoutButton_Click(object sender, EventArgs e)
         {
-            // 1st pass, detect if we'll be able to add to daily view
-            if (PluginMain.GetApplication().Logbook.Activities.Count == 0)
-            {
-                foreach (Workout workout in SelectedConcreteWorkouts)
-                {
-                    // If we don't add to daily view, don't bother
-                    if (workout.AddToDailyViewOnSchedule)
-                    {
-                        // Failure, display message and cancel scheduling
-                        MessageBox.Show(GarminFitnessView.GetLocalizedString("NeedActivityTemplateText"),
-                                        GarminFitnessView.GetLocalizedString("ErrorText"),
-                                        MessageBoxButtons.OK, MessageBoxIcon.Error);
-
-                        return;
-                    }
-                }
-            }
-
             foreach (Workout workout in SelectedConcreteWorkouts)
             {
                 if (workout.AddToDailyViewOnSchedule)
                 {
                     // Create new activity from template
-                    IActivity newActivity = (IActivity)Activator.CreateInstance(PluginMain.GetApplication().Logbook.Activities[0].GetType());
+                    IActivity newActivity = PluginMain.GetApplication().Logbook.Activities.Add(WorkoutCalendar.SelectedDate - TimeZone.CurrentTimeZone.GetUtcOffset(DateTime.Now)); ;
+
                     newActivity.Category = workout.Category;
                     newActivity.Name = workout.Name;
                     newActivity.Notes = workout.Notes;
                     // Adjust to GMT
                     newActivity.StartTime = WorkoutCalendar.SelectedDate - TimeZone.CurrentTimeZone.GetUtcOffset(DateTime.Now);
-                    newActivity.HasStartTime = false;
+                    newActivity.HasStartTime = true;
 
                     // Add said activity to the logbook
-                    PluginMain.GetApplication().Logbook.Activities.Add(newActivity);
+                    
                 }
 
                 // Schedule workout in plugin
@@ -360,7 +343,7 @@ namespace GarminFitnessPlugin.View
             RefreshWorkoutCalendar();
         }
 
-        private void StepsList_SelectedChanged(object sender, EventArgs e)
+        private void StepsList_SelectedItemsChanged(object sender, EventArgs e)
         {
             List<IStep> newSelection = new List<IStep>();
 
@@ -383,7 +366,7 @@ namespace GarminFitnessPlugin.View
             }
         }
 
-        private void WorkoutsList_SelectedChanged(object sender, EventArgs e)
+        private void WorkoutsList_SelectedItemsChanged(object sender, EventArgs e)
         {
             List<IWorkout> newWorkoutSelection = new List<IWorkout>();
             List<IActivityCategory> newCategorySelection = new List<IActivityCategory>();

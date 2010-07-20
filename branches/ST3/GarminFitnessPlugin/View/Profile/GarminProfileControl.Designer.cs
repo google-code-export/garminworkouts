@@ -1040,7 +1040,7 @@ namespace GarminFitnessPlugin.View
             this.PowerZonesTreeList.ShowPlusMinus = false;
             this.PowerZonesTreeList.Size = new System.Drawing.Size(298, 72);
             this.PowerZonesTreeList.TabIndex = 1;
-            this.PowerZonesTreeList.SelectedChanged += new System.EventHandler(this.PowerZonesTreeList_SelectedChanged);
+            this.PowerZonesTreeList.SelectedItemsChanged += new System.EventHandler(this.PowerZonesTreeList_SelectedItemsChanged);
             // 
             // SpeedNameTextBox
             // 
@@ -1132,7 +1132,7 @@ namespace GarminFitnessPlugin.View
             this.SpeedZonesTreeList.ShowPlusMinus = false;
             this.SpeedZonesTreeList.Size = new System.Drawing.Size(298, 72);
             this.SpeedZonesTreeList.TabIndex = 1;
-            this.SpeedZonesTreeList.SelectedChanged += new System.EventHandler(this.SpeedZonesTreeList_SelectedChanged);
+            this.SpeedZonesTreeList.SelectedItemsChanged += new System.EventHandler(this.SpeedZonesTreeList_SelectedItemsChanged);
             // 
             // HighHRTextBox
             // 
@@ -1203,7 +1203,7 @@ namespace GarminFitnessPlugin.View
             this.HRZonesTreeList.ShowPlusMinus = false;
             this.HRZonesTreeList.Size = new System.Drawing.Size(298, 72);
             this.HRZonesTreeList.TabIndex = 1;
-            this.HRZonesTreeList.SelectedChanged += new System.EventHandler(this.HRZonesTreeList_SelectedChanged);
+            this.HRZonesTreeList.SelectedItemsChanged += new System.EventHandler(this.HRZonesTreeList_SelectedItemsChanged);
             // 
             // GarminProfileControl
             // 

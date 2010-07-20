@@ -362,7 +362,7 @@ namespace GarminFitnessPlugin.View
             this.ActivityCategoryList.Size = new System.Drawing.Size(284, 133);
             this.ActivityCategoryList.TabIndex = 5;
             this.ActivityCategoryList.TabStop = false;
-            this.ActivityCategoryList.SelectedChanged += new System.EventHandler(this.ActivityCategoryList_SelectedChanged);
+            this.ActivityCategoryList.SelectedItemsChanged += new System.EventHandler(this.ActivityCategoryList_SelectedItemsChanged);
             // 
             // CategorySelectionPanel
             // 

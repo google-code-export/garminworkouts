@@ -13,12 +13,13 @@ using System.Windows.Forms;
 using ZoneFiveSoftware.Common.Data.Fitness;
 using ZoneFiveSoftware.Common.Visuals.Fitness;
 using ZoneFiveSoftware.Common.Visuals;
+using SportTracksPluginFramework;
 using GarminFitnessPlugin.Controller;
 using GarminFitnessPlugin.Data;
 
 namespace GarminFitnessPlugin.View
 {
-    class GarminFitnessView : IView
+    class GarminFitnessView : STFrameworkView
     {
         public GarminFitnessView()
         {
@@ -38,8 +39,9 @@ namespace GarminFitnessPlugin.View
                     };
         }
 
-#region IView Members
-        public System.Collections.Generic.IList<IAction> Actions
+#region STFrameworkView Members
+
+        public override System.Collections.Generic.IList<IAction> Actions
         {
             get
             {
@@ -60,12 +62,12 @@ namespace GarminFitnessPlugin.View
             }
         }
 
-        public System.Guid Id
+        public override System.Guid Id
         {
             get { return GarminFitnessPlugin.GUIDs.GarminFitnessView; }
         }
 
-        public string SubTitle
+        public override string SubTitle
         {
             get
             {
@@ -88,7 +90,7 @@ namespace GarminFitnessPlugin.View
             }
         }
 
-        public void SubTitleClicked(System.Drawing.Rectangle subTitleRect)
+        public override void SubTitleClicked(System.Drawing.Rectangle subTitleRect)
         {
             GarminFitnessView currentView = (GarminFitnessView)PluginMain.GetApplication().ActiveView;
             Control control = currentView.CreatePageControl();
@@ -105,74 +107,77 @@ namespace GarminFitnessPlugin.View
             menu.Show(control, control.PointToClient(new Point(subTitleRect.X, subTitleRect.Bottom)));
         }
 
-        public bool SubTitleHyperlink
+        public override bool SubTitleHyperlink
         {
             get { return true; }
         }
 
-        public string TasksHeading
+        public override string TasksHeading
         {
             get { return GarminFitnessView.GetLocalizedString("GarminFitnessText"); }
         }
-#endregion
 
-#region IDialogPage Members
-        public System.Windows.Forms.Control CreatePageControl()
+        public override Control ViewControl
         {
-            if (m_MainControl == null)
+            get
             {
-                m_MainControl = new GarminFitnessMainControl();
+                if (m_MainControl == null)
+                {
+                    m_MainControl = new GarminFitnessMainControl();
 
-                SetupCurrentView();
-                GetCurrentView().RefreshUIFromLogbook();
+                    SetupCurrentView();
+                    GetCurrentView().RefreshUIFromLogbook();
+                }
+
+                return m_MainControl;
             }
-
-            return m_MainControl;
         }
 
-        void OnPropertyChanged(object sender, PropertyChangedEventArgs e)
+        private void OnPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
         }
 
-        public bool HidePage()
+        public override bool HidePage()
         {
             return true;
         }
 
-        public string PageName
+        public override string PageName
         {
             get { return GarminFitnessView.GetLocalizedString("GarminFitnessText"); }
         }
 
-        public void ShowPage(string bookmark)
+        public override void ShowPage(string bookmark)
         {
             GetCurrentView().RefreshCalendar();
         }
 
-        public IPageStatus Status
+        public override IPageStatus Status
         {
             get { throw new System.Exception("The method or operation is not implemented."); }
         }
 
-        public void ThemeChanged(ITheme visualTheme)
+        public override void ThemeChanged(ITheme visualTheme)
         {
             GetCurrentView().ThemeChanged(visualTheme);
         }
 
-        public string Title
+        public override string Title
         {
             get { return GarminFitnessView.GetLocalizedString("GarminFitnessText"); }
         }
 
-        public void UICultureChanged(CultureInfo culture)
+        public override void UICultureChanged(CultureInfo culture)
         {
             GetCurrentView().UICultureChanged(culture);
         }
-#endregion
 
-#region INotifyPropertyChanged Members
+        public override Guid MainPluginId
+        {
+            get { return GUIDs.PluginMain; }
+        }
 
-        public event PropertyChangedEventHandler PropertyChanged;
+        public override event PropertyChangedEventHandler PropertyChanged;
 
 #endregion
 

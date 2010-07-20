@@ -196,7 +196,7 @@ namespace GarminFitnessPlugin.View
             GarminProfileManager.Instance.GetProfileForActivity(m_CurrentCategory).SetGearWeightInUnits(double.Parse(GearWeightTextBox.Text), PluginMain.GetApplication().SystemPreferences.WeightUnits);
         }
 
-        private void HRZonesTreeList_SelectedChanged(object sender, EventArgs e)
+        private void HRZonesTreeList_SelectedItemsChanged(object sender, EventArgs e)
         {
             if (HRZonesTreeList.Selected.Count == 1)
             {
@@ -210,7 +210,7 @@ namespace GarminFitnessPlugin.View
             RefreshUIFromProfile();
         }
 
-        private void SpeedZonesTreeList_SelectedChanged(object sender, EventArgs e)
+        private void SpeedZonesTreeList_SelectedItemsChanged(object sender, EventArgs e)
         {
             if (SpeedZonesTreeList.Selected.Count == 1)
             {
@@ -507,7 +507,7 @@ namespace GarminFitnessPlugin.View
             concreteProfile.FTP = UInt16.Parse(FTPTextBox.Text);
         }
 
-        private void PowerZonesTreeList_SelectedChanged(object sender, EventArgs e)
+        private void PowerZonesTreeList_SelectedItemsChanged(object sender, EventArgs e)
         {
             if (PowerZonesTreeList.Selected.Count == 1)
             {

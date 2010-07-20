@@ -467,7 +467,7 @@ namespace GarminFitnessPlugin.View
             this.PowerZonesTreeList.ShowPlusMinus = false;
             this.PowerZonesTreeList.Size = new System.Drawing.Size(298, 72);
             this.PowerZonesTreeList.TabIndex = 1;
-            this.PowerZonesTreeList.SelectedChanged += new System.EventHandler(this.PowerZonesTreeList_SelectedChanged);
+            this.PowerZonesTreeList.SelectedItemsChanged += new System.EventHandler(this.PowerZonesTreeList_SelectedItemsChanged);
             // 
             // flowLayoutPanel1
             // 

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Text;
+using ZoneFiveSoftware.SportTracks.Device.GarminAPI;
 using ZoneFiveSoftware.SportTracks.Device.GarminGPS;
 using GarminFitnessPlugin.Data;
 

@@ -15,10 +15,10 @@ namespace GarminFitnessPlugin.Controller
     {
         private GarminWorkoutManager()
         {
-            PluginMain.ZoneCategoryChanged += new PluginMain.ZoneCategoryChangedEventHandler(OnZoneCategoryChanged);
+            PluginMain.ZoneCategoryListChanged += new PluginMain.ZoneCategoryChangedEventHandler(OnZoneCategoryListChanged);
         }
 
-        private void OnZoneCategoryChanged(object sender, IZoneCategory changedCategory)
+        private void OnZoneCategoryListChanged(object sender, IZoneCategory changedCategory)
         {
             bool valueChanged = false;
 

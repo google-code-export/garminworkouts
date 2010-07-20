@@ -1,5 +1,6 @@
 using System;
 using System.ComponentModel;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
 using System.Resources;
@@ -22,7 +23,7 @@ namespace GarminFitnessPlugin.View
             }
         }
 
-        #region IAction Members
+#region IAction Members
 
         public bool Enabled
         {
@@ -40,6 +41,16 @@ namespace GarminFitnessPlugin.View
             {
                 return global::GarminFitnessPlugin.Resources.Resources.Import;
             }
+        }
+
+        public bool Visible
+        {
+            get { return true; }
+        }
+
+        public IList<string> MenuPath
+        {
+            get { return null; }
         }
 
         public void Refresh()
@@ -74,7 +85,7 @@ namespace GarminFitnessPlugin.View
             }
         }
 
-        #endregion
+#endregion
 
 
         public void FromDeviceEventHandler(object sender, EventArgs args)

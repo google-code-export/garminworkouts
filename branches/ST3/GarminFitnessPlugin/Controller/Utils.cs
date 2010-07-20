@@ -58,17 +58,17 @@ namespace GarminFitnessPlugin.Controller
             return GetDefaultCategory();
         }
 
-        private static IActivityCategory FindCategoryByIDInList(string categoryID, IList<IActivityCategory> list)
+        private static IActivityCategory FindCategoryByIDInList(string categoryID, IEnumerable<IActivityCategory> list)
         {
-            for (int i = 0; i < list.Count; ++i)
+            foreach (IActivityCategory category in list)
             {
-                if (list[i].ReferenceId == categoryID)
+                if (category.ReferenceId == categoryID)
                 {
-                    return list[i];
+                    return category;
                 }
-                else if (list[i].SubCategories.Count > 0)
+                else if (category.SubCategories.Count > 0)
                 {
-                    IActivityCategory child = FindCategoryByIDInList(categoryID, list[i].SubCategories);
+                    IActivityCategory child = FindCategoryByIDInList(categoryID, category.SubCategories);
                     if (child != null)
                     {
                         return child;
@@ -79,7 +79,7 @@ namespace GarminFitnessPlugin.Controller
             return null;
         }
 
-        public static IZoneCategory FindZoneCategoryByID(IList<IZoneCategory> list, string categoryID)
+        public static IZoneCategory FindZoneCategoryByID(IZoneCategoryList list, string categoryID)
         {
             for (int i = 0; i < list.Count; ++i)
             {
@@ -92,7 +92,7 @@ namespace GarminFitnessPlugin.Controller
             return list[0];
         }
 
-        public static bool NamedZoneStillExists(IList<IZoneCategory> list, INamedLowHighZone zone)
+        public static bool NamedZoneStillExists(IZoneCategoryList list, INamedLowHighZone zone)
         {
             for (int i = 0; i < list.Count; ++i)
             {
@@ -110,7 +110,7 @@ namespace GarminFitnessPlugin.Controller
             return false;
         }
 
-        public static bool ZoneCategoryStillExists(IList<IZoneCategory> list, IZoneCategory zone)
+        public static bool ZoneCategoryStillExists(IZoneCategoryList list, IZoneCategory zone)
         {
             for (int i = 0; i < list.Count; ++i)
             {
@@ -292,7 +292,7 @@ namespace GarminFitnessPlugin.Controller
             return -1;
         }
 
-        public static int FindIndexForZoneCategory(IList<IZoneCategory> list, IZoneCategory zone)
+        public static int FindIndexForZoneCategory(IZoneCategoryList list, IZoneCategory zone)
         {
             Debug.Assert(list.Count > 0);
 

@@ -75,19 +75,21 @@
   <ItemGroup>
     <Reference Include="Common.Data, Version=2.1.3478.21402, Culture=neutral, processorArchitecture=x86">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>D:\Zone Five Software\SportTracks 2.1\Common.Data.dll</HintPath>
+      <HintPath>D:\Zone Five Software\SportTracks 3\Common.Data.dll</HintPath>
     </Reference>
     <Reference Include="Common.Visuals, Version=2.1.3478.21407, Culture=neutral, processorArchitecture=x86">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>D:\Zone Five Software\SportTracks 2.1\Common.Visuals.dll</HintPath>
+      <HintPath>D:\Zone Five Software\SportTracks 3\Common.Visuals.dll</HintPath>
     </Reference>
-    <Reference Include="GarminGPS, Version=2.1.3313.41820, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>C:\ProgramData\ZoneFiveSoftware\SportTracks\2.0\Plugins\Installed\64c67771-aec3-4434-9ef1-ad6cabc1479e\GarminGPS\GarminGPS.dll</HintPath>
+    <Reference Include="GarminAPIDevicePlugin">
+      <HintPath>C:\ProgramData\ZoneFiveSoftware\SportTracks\3\Plugins\Update\64c67771-aec3-4434-9ef1-ad6cabc1479e\GarminAPIDevicePlugin\GarminAPIDevicePlugin.dll</HintPath>
     </Reference>
-    <Reference Include="GarXFaceNet, Version=1.0.3770.32075, Culture=neutral, processorArchitecture=x86">
+    <Reference Include="GarXFaceNet, Version=1.0.3805.31245, Culture=neutral, processorArchitecture=x86">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>.\GarXFaceNet.dll</HintPath>
+      <HintPath>..\References\GarXFaceNet.dll</HintPath>
+    </Reference>
+    <Reference Include="SportTracksPluginFramework">
+      <HintPath>..\References\SportTracksPluginFramework\SportTracksPluginFramework.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
@@ -196,11 +198,11 @@
     <Compile Include="View\Common\ExtendedTextBox.Designer.cs">
       <DependentUpon>ExtendedTextBox.cs</DependentUpon>
     </Compile>
-    <Compile Include="View\DonationReminder\DonationReminder.cs">
-      <SubType>Form</SubType>
+    <Compile Include="View\DonationReminder\GarminFitnessDonationReminderControl.cs">
+      <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="View\DonationReminder\DonationReminder.Designer.cs">
-      <DependentUpon>DonationReminder.cs</DependentUpon>
+    <Compile Include="View\DonationReminder\GarminFitnessDonationReminderControl.Designer.cs">
+      <DependentUpon>GarminFitnessDonationReminderControl.cs</DependentUpon>
     </Compile>
     <Compile Include="View\Profile\ExportProfileAction.cs" />
     <Compile Include="View\Profile\ImportProfileAction.cs" />
@@ -451,9 +453,8 @@
       <SubType>Designer</SubType>
       <DependentUpon>GarminFitnessMainControl.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="View\DonationReminder\DonationReminder.resx">
-      <SubType>Designer</SubType>
-      <DependentUpon>DonationReminder.cs</DependentUpon>
+    <EmbeddedResource Include="View\DonationReminder\GarminFitnessDonationReminderControl.resx">
+      <DependentUpon>GarminFitnessDonationReminderControl.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="View\Profile\GarminProfileControl.resx">
       <SubType>Designer</SubType>
@@ -528,18 +529,20 @@
     <None Include="app.config" />
   </ItemGroup>
   <PropertyGroup>
-    <PostBuildEvent>set INSTALLPATH=C:\Documents and Settings\All Users\Application Data\ZoneFiveSoftware\SportTracks\2.0\Plugins\Installed\ba218e6e-01a1-4a63-9fda-1fa937e56fe9
+    <PostBuildEvent>set INSTALLPATH=C:\Documents and Settings\All Users\Application Data\ZoneFiveSoftware\SportTracks\3\Plugins\Update\ba218e6e-01a1-4a63-9fda-1fa937e56fe9
 set ZIPPATH=D:\7-Zip
 
 REM Copy to install folder
 IF NOT EXIST "%25INSTALLPATH%25\$(ProjectName)" mkdir "%25INSTALLPATH%25\$(ProjectName)"
 xcopy "$(TargetDir)$(ProjectName)*.dll" "%25INSTALLPATH%25\$(ProjectName)\" /S /Y
-xcopy "$(ProjectDir)GarXface*.dll" "%25INSTALLPATH%25\$(ProjectName)\" /Y
+xcopy "$(ProjectDir)..\plugin.xml" "%25INSTALLPATH%25\" /S /Y
+REM xcopy "$(TargetDir)GarXface*.dll" "%25INSTALLPATH%25\$(ProjectName)\" /S /Y
+xcopy "$(TargetDir)SportTracksPluginFramework*.dll" "%25INSTALLPATH%25\$(ProjectName)\" /S /Y
 
 REM Create installer
-IF EXIST "$(SolutionDir)$(ProjectName).st2plugin" del "$(SolutionDir)*.st2plugin" /Q
+IF EXIST "$(SolutionDir)$(ProjectName).st3plugin" del "$(SolutionDir)*.st3plugin" /Q
 IF $(ConfigurationName)==Debug GOTO end
-"%25ZIPPATH%25\7z.exe" a -r -tzip "$(SolutionDir)$(ProjectName).st2plugin" "%25INSTALLPATH%25\*.*"
+"%25ZIPPATH%25\7z.exe" a -r -tzip "$(SolutionDir)$(ProjectName).st3plugin" "%25INSTALLPATH%25\*.*"
 :end</PostBuildEvent>
   </PropertyGroup>
   <ItemGroup>

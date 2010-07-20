@@ -12,7 +12,7 @@ namespace GarminFitnessPlugin.View
     {
         public ExtendedTreeList()
         {
-            base.SelectedChanged += new EventHandler(OnBaseSelectedChanged);
+            base.SelectedItemsChanged += new EventHandler(OnBaseSelectedItemsChanged);
             base.MouseDown += new System.Windows.Forms.MouseEventHandler(OnBaseMouseDown);
             base.MouseUp += new System.Windows.Forms.MouseEventHandler(OnBaseMouseUp);
             base.MouseMove += new System.Windows.Forms.MouseEventHandler(OnBaseMouseMove);
@@ -53,7 +53,7 @@ namespace GarminFitnessPlugin.View
             }
         }
 
-        void OnBaseSelectedChanged(object sender, EventArgs e)
+        void OnBaseSelectedItemsChanged(object sender, EventArgs e)
         {
             if (m_SelectionCancelled)
             {
@@ -65,9 +65,9 @@ namespace GarminFitnessPlugin.View
             }
             else
             {
-                if (SelectedChanged != null)
+                if (SelectedItemsChanged != null)
                 {
-                    SelectedChanged(sender, e);
+                    SelectedItemsChanged(sender, e);
                 }
                 m_LastSelection = Selected;
             }
@@ -222,7 +222,7 @@ namespace GarminFitnessPlugin.View
             set { m_DragAutoScrollSize = value; }
         }
 
-        public new event EventHandler SelectedChanged;
+        public new event EventHandler SelectedItemsChanged;
         public event EventHandler DragStart;
 
         private Byte m_DragAutoScrollSize = 20;

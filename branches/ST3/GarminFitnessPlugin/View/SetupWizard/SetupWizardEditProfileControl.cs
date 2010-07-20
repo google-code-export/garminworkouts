@@ -208,7 +208,7 @@ namespace GarminFitnessPlugin.View
             m_CurrentProfile.HRIsInPercentMax = PercentMaxRadioButton.Checked;
         }
 
-        private void HRZonesTreeList_SelectedChanged(object sender, EventArgs e)
+        private void HRZonesTreeList_SelectedItemsChanged(object sender, EventArgs e)
         {
             if (HRZonesTreeList.Selected.Count == 1)
             {
@@ -306,7 +306,7 @@ namespace GarminFitnessPlugin.View
             m_CurrentProfile.SpeedIsInPace = PaceRadioButton.Checked;
         }
 
-        private void SpeedZonesTreeList_SelectedChanged(object sender, EventArgs e)
+        private void SpeedZonesTreeList_SelectedItemsChanged(object sender, EventArgs e)
         {
             if (SpeedZonesTreeList.Selected.Count == 1)
             {

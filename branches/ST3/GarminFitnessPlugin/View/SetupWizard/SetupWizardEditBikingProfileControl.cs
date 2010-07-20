@@ -89,7 +89,7 @@ namespace GarminFitnessPlugin.View
             concreteProfile.FTP = UInt16.Parse(FTPTextBox.Text);
         }
 
-        private void PowerZonesTreeList_SelectedChanged(object sender, EventArgs e)
+        private void PowerZonesTreeList_SelectedItemsChanged(object sender, EventArgs e)
         {
             if (PowerZonesTreeList.Selected.Count == 1)
             {

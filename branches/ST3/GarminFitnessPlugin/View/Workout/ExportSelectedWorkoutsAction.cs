@@ -20,7 +20,7 @@ namespace GarminFitnessPlugin.View
             PropertyChanged += new System.ComponentModel.PropertyChangedEventHandler(WorkoutExportAction_PropertyChanged);
         }
 
-        #region IAction Members
+#region IAction Members
 
         public bool Enabled
         {
@@ -44,6 +44,16 @@ namespace GarminFitnessPlugin.View
             {
                 return global::GarminFitnessPlugin.Resources.Resources.Export;
             }
+        }
+
+        public bool Visible
+        {
+            get { return true; }
+        }
+
+        public IList<string> MenuPath
+        {
+            get { return null; }
         }
 
         public void Refresh()
@@ -85,7 +95,7 @@ namespace GarminFitnessPlugin.View
             }
         }
 
-        #endregion
+#endregion
 
         #region INotifyPropertyChanged Members
 

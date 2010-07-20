@@ -175,7 +175,7 @@ namespace GarminFitnessPlugin.View
             Options.Instance.AllowSplitWorkouts = AutoSplitCheckBox.Checked;
         }
 
-        private void ActivityCategoryList_SelectedChanged(object sender, System.EventArgs e)
+        private void ActivityCategoryList_SelectedItemsChanged(object sender, System.EventArgs e)
         {
             if (ActivityCategoryList.Selected.Count == 1)
             {

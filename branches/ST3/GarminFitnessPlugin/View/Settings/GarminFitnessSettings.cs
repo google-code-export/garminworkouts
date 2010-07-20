@@ -1,82 +1,86 @@
+using System.Collections.Generic;
 using System.ComponentModel;
+using System.Windows.Forms;
 using System.Globalization;
 using System.Reflection;
 using System.Resources;
 using ZoneFiveSoftware.Common.Visuals;
 using ZoneFiveSoftware.Common.Visuals.Fitness;
+using SportTracksPluginFramework;
 
 namespace GarminFitnessPlugin.View
 {
-    class GarminFitnessSettings : ISettingsPage
+    class GarminFitnessSettings : STFrameworkSettingsPage
     {
-        #region ISettingsPage Members
+#region STFrameworkSettingsPage Members
 
-        public System.Guid Id
+        public override System.Guid Id
         {
             get { return GUIDs.GarminFitnessSettings; }
         }
 
-        public System.Collections.Generic.IList<ISettingsPage> SubPages
+        public override IList<ISettingsPage> SubPages
         {
             get { return null; }
         }
 
-        #endregion
 
-        #region IDialogPage Members
-
-        public System.Windows.Forms.Control CreatePageControl()
+        public override Control SettingsPageControl
         {
-            if (m_SettingsControl == null)
+            get
             {
-                m_SettingsControl = new GarminFitnessSettingsControl();
-            }
+                if (m_SettingsControl == null)
+                {
+                    m_SettingsControl = new GarminFitnessSettingsControl();
+                }
 
-            return m_SettingsControl;
+                return m_SettingsControl;
+            }
         }
 
-        public bool HidePage()
+        public override bool HidePage()
         {
             return true;
         }
 
-        public string PageName
+        public override string PageName
         {
             get{ return GarminFitnessView.GetLocalizedString("SettingsPageNameText"); }
         }
 
-        public void ShowPage(string bookmark)
+        public override void ShowPage(string bookmark)
         {
             m_SettingsControl.UICultureChanged(GarminFitnessView.UICulture);
         }
 
-        public IPageStatus Status
+        public override IPageStatus Status
         {
             get { return null; }
         }
 
-        public void ThemeChanged(ITheme visualTheme)
+        public override void ThemeChanged(ITheme visualTheme)
         {
         }
 
-        public string Title
+        public override string Title
         {
             get { return GarminFitnessView.GetLocalizedString("SettingsPageNameText"); }
         }
 
-        public void UICultureChanged(CultureInfo culture)
+        public override void UICultureChanged(CultureInfo culture)
         {
             CreatePageControl();
             m_SettingsControl.UICultureChanged(culture);
         }
 
-        #endregion
+        public override System.Guid MainPluginId
+        {
+            get { return GUIDs.PluginMain; }
+        }
 
-        #region INotifyPropertyChanged Members
+        public override event System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
 
-        public event System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
-
-        #endregion
+#endregion
 
         public GarminFitnessSettings()
         {

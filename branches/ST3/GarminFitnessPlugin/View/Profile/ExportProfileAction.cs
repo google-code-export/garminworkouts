@@ -23,7 +23,7 @@ namespace GarminFitnessPlugin.View
             }
         }
 
-        #region IAction Members
+#region IAction Members
 
         public bool Enabled
         {
@@ -41,6 +41,16 @@ namespace GarminFitnessPlugin.View
             {
                 return global::GarminFitnessPlugin.Resources.Resources.Export;
             }
+        }
+
+        public bool Visible
+        {
+            get { return true; }
+        }
+
+        public IList<string> MenuPath
+        {
+            get { return null; }
         }
 
         public void Refresh()
@@ -85,7 +95,7 @@ namespace GarminFitnessPlugin.View
             }
         }
 
-        #endregion
+#endregion
 
         void OnDeviceManagerTaskCompleted(GarminDeviceManager manager, GarminDeviceManager.BasicTask task, bool succeeded, String errorText)
         {

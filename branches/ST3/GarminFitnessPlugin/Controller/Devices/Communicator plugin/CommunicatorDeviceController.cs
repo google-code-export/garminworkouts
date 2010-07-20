@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using ZoneFiveSoftware.SportTracks.Device.GarminAPI;
 using ZoneFiveSoftware.SportTracks.Device.GarminGPS;
 using GarminFitnessPlugin.Data;
 using System.IO;
