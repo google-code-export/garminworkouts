@@ -73,16 +73,14 @@
   </Target>
   -->
   <ItemGroup>
-    <Reference Include="Common.Data, Version=2.1.3478.21402, Culture=neutral, processorArchitecture=x86">
-      <SpecificVersion>False</SpecificVersion>
+    <Reference Include="Common.Data">
       <HintPath>D:\Zone Five Software\SportTracks 3\Common.Data.dll</HintPath>
     </Reference>
-    <Reference Include="Common.Visuals, Version=2.1.3478.21407, Culture=neutral, processorArchitecture=x86">
-      <SpecificVersion>False</SpecificVersion>
+    <Reference Include="Common.Visuals">
       <HintPath>D:\Zone Five Software\SportTracks 3\Common.Visuals.dll</HintPath>
     </Reference>
     <Reference Include="GarminAPIDevicePlugin">
-      <HintPath>C:\ProgramData\ZoneFiveSoftware\SportTracks\3\Plugins\Update\64c67771-aec3-4434-9ef1-ad6cabc1479e\GarminAPIDevicePlugin\GarminAPIDevicePlugin.dll</HintPath>
+      <HintPath>C:\ProgramData\ZoneFiveSoftware\SportTracks\3\Plugins\Installed\64c67771-aec3-4434-9ef1-ad6cabc1479e\GarminAPIDevicePlugin\GarminAPIDevicePlugin.dll</HintPath>
     </Reference>
     <Reference Include="GarXFaceNet, Version=1.0.3805.31245, Culture=neutral, processorArchitecture=x86">
       <SpecificVersion>False</SpecificVersion>
