@@ -1429,6 +1429,15 @@ namespace GarminFitnessPlugin.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Select workout.
+        /// </summary>
+        internal static string SelectWorkoutText {
+            get {
+                return ResourceManager.GetString("SelectWorkoutText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Garmin Fitness Settings.
         /// </summary>
         internal static string SettingsPageNameText {

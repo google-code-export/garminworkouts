@@ -684,4 +684,7 @@
   <data name="WorkoutsWereSplitText" xml:space="preserve">
     <value>Certains de vos entraînements ont plus de 20 étapes.  Ceux-ci doivent être découpés en parties pour refléter votre changement d'option.  Voulez-vous faire ceci maintenant?  Vous devrez le faire manuellement si vous répoondez "Non".</value>
   </data>
+  <data name="SelectWorkoutText" xml:space="preserve">
+    <value>Sélectionnez un entraînement</value>
+  </data>
 </root>

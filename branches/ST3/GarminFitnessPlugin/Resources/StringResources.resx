@@ -687,4 +687,7 @@
   <data name="ImportingWorkoutsText" xml:space="preserve">
     <value>importing workouts</value>
   </data>
+  <data name="SelectWorkoutText" xml:space="preserve">
+    <value>Select workout</value>
+  </data>
 </root>

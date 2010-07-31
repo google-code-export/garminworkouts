@@ -24,7 +24,7 @@ namespace GarminFitnessPlugin.Data
 
         public bool IsValid()
         {
-            Workout parent = GarminWorkoutManager.Instance.GetWorkoutWithName(ConcreteWorkout.Name);
+            Workout parent = GarminWorkoutManager.Instance.GetWorkout(ConcreteWorkout.Name);
 
             return parent != null && m_PartNumber < parent.GetSplitPartsCount();
         }
@@ -62,6 +62,14 @@ namespace GarminFitnessPlugin.Data
             }
         }
 
+        public override GarminFitnessGuid IdInternal
+        {
+            get
+            {
+                return ConcreteWorkout.IdInternal;
+            }
+        }
+
         public override GarminFitnessString NotesInternal
         {
             get
@@ -89,7 +97,7 @@ namespace GarminFitnessPlugin.Data
             get { return ConcreteWorkout.ScheduledDates; }
         }
 
-        public override System.Collections.Generic.List<IStep> Steps
+        public override WorkoutStepsList Steps
         {
             get { return m_FullWorkout.GetStepsForPart(m_PartNumber); }
         }

@@ -20,7 +20,8 @@ namespace GarminFitnessPlugin.Data
             m_Name.Value = name;
             Category = category;
 
-            AddStepToRoot(new RegularStep(this));
+            CreateStepsList();
+            Steps.AddStepToRoot(new RegularStep(this));
 
             WorkoutChanged += new WorkoutChangedEventHandler(OnWorkoutChanged);
         }
@@ -30,18 +31,36 @@ namespace GarminFitnessPlugin.Data
             m_Name.Value = name;
             Category = category;
 
-            AddStepsToRoot(steps);
+            CreateStepsList();
+            Steps.AddStepsToRoot(steps);
 
             WorkoutChanged += new WorkoutChangedEventHandler(OnWorkoutChanged);
         }
 
         public Workout(Stream stream, DataVersion version)
         {
+            CreateStepsList();
+
             Deserialize(stream, version);
 
             WorkoutChanged += new WorkoutChangedEventHandler(OnWorkoutChanged);
 
             UpdateSplitsCache();
+        }
+
+        void OnStepAdded(IStep addedStep)
+        {
+            RegisterStep(addedStep);
+        }
+
+        void OnStepRemoved(IStep removedStep)
+        {
+            UnregisterStep(removedStep);
+        }
+
+        void OnStepsListChanged(object sender, PropertyChangedEventArgs args)
+        {
+            TriggerWorkoutChangedEvent(args);
         }
 
         void OnWorkoutChanged(IWorkout modifiedWorkout, PropertyChangedEventArgs changedProperty)
@@ -54,20 +73,15 @@ namespace GarminFitnessPlugin.Data
 
         public override void Serialize(Stream stream)
         {
+            m_Id.Serialize(stream);
             m_Name.Serialize(stream);
-
             m_Notes.Serialize(stream);
 
             // Category ID
             stream.Write(BitConverter.GetBytes(Encoding.UTF8.GetByteCount(Category.ReferenceId)), 0, sizeof(Int32));
             stream.Write(Encoding.UTF8.GetBytes(Category.ReferenceId), 0, Encoding.UTF8.GetByteCount(Category.ReferenceId));
 
-            // Steps
-            stream.Write(BitConverter.GetBytes(Steps.Count), 0, sizeof(Int32));
-            for (int i = 0; i < Steps.Count; ++i)
-            {
-                Steps[i].Serialize(stream);
-            }
+            Steps.Serialize(stream);
 
             // Scheduled dates
             stream.Write(BitConverter.GetBytes(ScheduledDates.Count), 0, sizeof(Int32));
@@ -86,10 +100,8 @@ namespace GarminFitnessPlugin.Data
             byte[] intBuffer = new byte[sizeof(Int32)];
             byte[] stringBuffer;
             Int32 stringLength;
-            Int32 stepCount;
 
             m_Name.Deserialize(stream, version);
-
             m_Notes.Deserialize(stream, version);
 
             // Category
@@ -99,32 +111,13 @@ namespace GarminFitnessPlugin.Data
             stream.Read(stringBuffer, 0, stringLength);
             Category = Utils.FindCategoryByIDSafe(Encoding.UTF8.GetString(stringBuffer));
 
-            // Steps
-            stream.Read(intBuffer, 0, sizeof(Int32));
-            stepCount = BitConverter.ToInt32(intBuffer, 0);
-            Steps.Clear();
-            for (int i = 0; i < stepCount; ++i)
-            {
-                IStep.StepType type;
-
-                stream.Read(intBuffer, 0, sizeof(Int32));
-                type = (IStep.StepType)BitConverter.ToInt32(intBuffer, 0);
-
-                if (type == IStep.StepType.Regular)
-                {
-                    AddStepToRoot(new RegularStep(stream, version, this));
-                }
-                else
-                {
-                    AddStepToRoot(new RepeatStep(stream, version, this));
-                }
-            }
+            // steps
+            Steps.Deserialize(stream, version);
         }
 
         public void Deserialize_V4(Stream stream, DataVersion version)
         {
             byte[] intBuffer = new byte[sizeof(Int32)];
-            byte[] dateBuffer = new byte[sizeof(long)];
             Int32 scheduledDatesCount;
 
             Deserialize_V0(stream, version);
@@ -144,8 +137,6 @@ namespace GarminFitnessPlugin.Data
 
         public void Deserialize_V5(Stream stream, DataVersion version)
         {
-            byte[] dateBuffer = new byte[sizeof(long)];
-
             Deserialize_V4(stream, version);
 
             m_LastExportDate.Deserialize(stream, version);
@@ -153,17 +144,20 @@ namespace GarminFitnessPlugin.Data
 
         public void Deserialize_V12(Stream stream, DataVersion version)
         {
-            byte[] dateBuffer = new byte[sizeof(long)];
-
             Deserialize_V5(stream, version);
 
             m_AddToDailyViewOnSchedule.Deserialize(stream, version);
         }
 
+        public void Deserialize_V13(Stream stream, DataVersion version)
+        {
+            m_Id.Deserialize(stream, version);
+
+            Deserialize_V12(stream, version);
+        }
+
         public override void Deserialize(XmlNode parentNode)
         {
-            List<IStep> steps = new List<IStep>();
-            XmlNode StepsExtensionsNode = null;
             XmlNode STExtensionsNode = null;
             bool nameRead = false;
 
@@ -178,33 +172,10 @@ namespace GarminFitnessPlugin.Data
                     m_Name.Deserialize(child);
                     nameRead = true;
                 }
-                else if (child.Name == "Step")
+                // Steps handled by WorkoutStepList class
+/*                else if (child.Name == "Step")
                 {
-                    if (child.Attributes.Count == 1 && child.Attributes[0].Name == Constants.XsiTypeTCXString)
-                    {
-                        string stepTypeString = child.Attributes[0].Value;
-                        IStep newStep = null;
-
-                        if (stepTypeString == Constants.StepTypeTCXString[(int)IStep.StepType.Regular])
-                        {
-                            newStep = new RegularStep(this);
-                        }
-                        else if (stepTypeString == Constants.StepTypeTCXString[(int)IStep.StepType.Repeat])
-                        {
-                            newStep = new RepeatStep(this);
-                        }
-                        else
-                        {
-                            Debug.Assert(false);
-                        }
-
-                        if (newStep != null)
-                        {
-                            newStep.Deserialize(child);
-                            steps.Add(newStep);
-                        }
-                    }
-                }
+                }*/
                 else if (child.Name == "Notes")
                 {
                     m_Notes.Deserialize(child);
@@ -235,35 +206,18 @@ namespace GarminFitnessPlugin.Data
                         {
                             STExtensionsNode = currentNode;
                         }
-                        else if(currentNode.Name == "Steps")
-                        {
-                            StepsExtensionsNode = currentNode;
-                        }
                     }
                 }
             }
 
-            if (!nameRead || steps.Count < 1)
+            if (!nameRead)
             {
                 throw new GarminFitnessXmlDeserializationException("Information missing in the XML node", parentNode);
             }
-            else if( steps.Count > 20)
-            {
-                throw new GarminFitnessXmlDeserializationException("Too many steps in the XML node", parentNode);
-            }
 
             m_Name.Value = GarminWorkoutManager.Instance.GetUniqueName(Name);
-            Steps.Clear();
 
-            for (int i = 0; i < steps.Count; ++i)
-            {
-                AddStepToRoot(steps[i]);
-            }
-
-            if (StepsExtensionsNode != null)
-            {
-                HandleStepExtension(StepsExtensionsNode);
-            }
+            Steps.Deserialize(parentNode);
 
             if (STExtensionsNode != null)
             {
@@ -278,23 +232,7 @@ namespace GarminFitnessPlugin.Data
 
             Name = workout.GetName();
 
-            for (UInt32 i = 0; i < workout.GetNumValidSteps(); ++i)
-            {
-                GarXFaceNet._Workout._Step step = workout.GetStep(i);
-                IStep newStep;
-                
-                if(step.GetDurationType() == GarXFaceNet._Workout._Step.DurationTypes.Repeat)
-                {
-                    newStep = new RepeatStep(this);
-                }
-                else
-                {
-                    newStep = new RegularStep(this);
-                }
-
-                newStep.Deserialize(workout, i);
-                AddStepToRoot(newStep);
-            }           
+            Steps.Deserialize(workout);
         }
 
         public override void DeserializeOccurances(GarXFaceNet._WorkoutOccuranceList occuranceList)
@@ -310,6 +248,14 @@ namespace GarminFitnessPlugin.Data
                     ScheduleWorkout(new DateTime(1989, 12, 31) + new TimeSpan(0, 0, (int)occurance.GetDay()));
                 }
             }
+        }
+
+        private void CreateStepsList()
+        {
+            m_Steps = new WorkoutStepsList(this);
+            m_Steps.StepAdded += new WorkoutStepsList.StepAddedEventHandler(OnStepAdded);
+            m_Steps.StepRemoved += new WorkoutStepsList.StepRemovedEventHandler(OnStepRemoved);
+            m_Steps.ListChanged += new PropertyChangedEventHandler(OnStepsListChanged);
         }
 
         public Workout Clone()
@@ -344,46 +290,6 @@ namespace GarminFitnessPlugin.Data
             return result;
         }
 
-        private void HandleStepExtension(XmlNode extensionsNode)
-        {
-            for (int i = 0; i < extensionsNode.ChildNodes.Count; ++i)
-            {
-                XmlNode currentExtension = extensionsNode.ChildNodes[i];
-
-                if (currentExtension.Name == "Step")
-                {
-                    IStep step = null;
-
-                    for (int j = 0; j < currentExtension.ChildNodes.Count; ++j)
-                    {
-                        XmlNode childNode = currentExtension.ChildNodes[j];
-
-                        if (childNode.Name == "StepId")
-                        {
-                            try
-                            {
-                                Byte id = Byte.Parse(((XmlText)childNode.FirstChild).Value);
-
-                                step = GetStepById(id);
-                            }
-                            catch
-                            {
-                            }
-                        }
-                        else if (childNode.Name == "Target" && childNode.Attributes.Count == 1 &&
-                            childNode.Attributes[0].Name == Constants.XsiTypeTCXString &&
-                            childNode.Attributes[0].Value == Constants.TargetTypeTCXString[(int)ITarget.TargetType.Power])
-                        {
-                            Debug.Assert(step != null && step.Type == IStep.StepType.Regular);
-                            RegularStep concreteStep = (RegularStep)step;
-
-                            TargetFactory.Create(ITarget.TargetType.Power, childNode, concreteStep);
-                        }
-                    }
-                }
-            }
-        }
-
         private void HandleSTExtension(XmlNode extensionsNode)
         {
             for (int i = 0; i < extensionsNode.ChildNodes.Count; ++i)
@@ -410,7 +316,7 @@ namespace GarminFitnessPlugin.Data
                         XmlNode childNode = currentExtension.ChildNodes[j];
 
                         if (childNode.Name == "StepId" && childNode.ChildNodes.Count == 1 &&
-                            childNode.FirstChild.GetType() == typeof(XmlText) && 
+                            childNode.FirstChild.GetType() == typeof(XmlText) &&
                             Utils.IsTextIntegerInRange(childNode.FirstChild.Value, 1, 20))
                         {
                             idNode = childNode.FirstChild;
@@ -424,9 +330,9 @@ namespace GarminFitnessPlugin.Data
                     if (idNode != null && categoryNode != null)
                     {
                         int stepId = Byte.Parse(idNode.Value);
-                        IStep step = GetStepById(stepId);
+                        IStep step = Steps.GetStepById(stepId);
 
-                        if(step != null)
+                        if (step != null)
                         {
                             Debug.Assert(step.Type == IStep.StepType.Regular);
 
@@ -461,7 +367,7 @@ namespace GarminFitnessPlugin.Data
                     if (idNode != null && notesNode != null)
                     {
                         int stepId = Byte.Parse(idNode.Value);
-                        IStep step = GetStepById(stepId);
+                        IStep step = Steps.GetStepById(stepId);
 
                         step.Notes = notesNode.FirstChild.Value;
                     }
@@ -573,7 +479,7 @@ namespace GarminFitnessPlugin.Data
             get { return m_ScheduledDates; }
         }
 
-        public override List<IStep> Steps
+        public override WorkoutStepsList Steps
         {
             get { return m_Steps; }
         }
@@ -596,6 +502,11 @@ namespace GarminFitnessPlugin.Data
         public override GarminFitnessString NameInternal
         {
             get { return m_Name; }
+        }
+
+        public override GarminFitnessGuid IdInternal
+        {
+            get { return m_Id; }
         }
 
         public override GarminFitnessString NotesInternal
@@ -634,12 +545,13 @@ namespace GarminFitnessPlugin.Data
             set { Debug.Assert(false); }
         }
 
+        private GarminFitnessString m_Name = new GarminFitnessString("", 15);
+        private GarminFitnessGuid m_Id = new GarminFitnessGuid();
         private GarminFitnessDate m_LastExportDate = new GarminFitnessDate();
         private List<GarminFitnessDate> m_ScheduledDates = new List<GarminFitnessDate>();
-        private List<IStep> m_Steps = new List<IStep>();
+        private WorkoutStepsList m_Steps = null;
         private List<WorkoutPart> m_SplitParts = new List<WorkoutPart>();
         private IActivityCategory m_Category;
-        private GarminFitnessString m_Name = new GarminFitnessString("", 15);
         private GarminFitnessString m_Notes = new GarminFitnessString("", 30000);
         private GarminFitnessBool m_AddToDailyViewOnSchedule = new GarminFitnessBool(false);
     }

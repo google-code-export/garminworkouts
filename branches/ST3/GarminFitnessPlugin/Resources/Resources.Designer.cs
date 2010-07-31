@@ -137,6 +137,13 @@ namespace GarminFitnessPlugin.Resources {
             }
         }
         
+        internal static System.Drawing.Bitmap NewLinkStepButton {
+            get {
+                object obj = ResourceManager.GetObject("NewLinkStepButton", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
         internal static System.Drawing.Bitmap NewStepButton {
             get {
                 object obj = ResourceManager.GetObject("NewStepButton", resourceCulture);
@@ -154,6 +161,13 @@ namespace GarminFitnessPlugin.Resources {
         internal static System.Drawing.Bitmap PlanWorkout {
             get {
                 object obj = ResourceManager.GetObject("PlanWorkout", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        internal static System.Drawing.Bitmap RemoveAllButton {
+            get {
+                object obj = ResourceManager.GetObject("RemoveAllButton", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

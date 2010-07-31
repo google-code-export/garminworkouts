@@ -49,7 +49,7 @@ namespace GarminFitnessPlugin.View
             PasteButton.CenterImage = CommonResources.Images.Paste16;
             DonateButton.CenterImage = CommonResources.Images.Favorite16;
 
-            RegisterChildrenControlsGorFocus(this);
+            RegisterChildrenControlsForFocus(this);
 
             // Register on controller events
             GarminWorkoutManager.Instance.WorkoutListChanged += new GarminWorkoutManager.WorkoutListChangedEventHandler(OnGarminWorkoutManagerWorkoutListChanged);
@@ -67,6 +67,8 @@ namespace GarminFitnessPlugin.View
                                                       StringAlignment.Near));
             StepsList.Columns.Add(new TreeList.Column("AutoSplitPart", "Workout Part", 40,
                                   StringAlignment.Near));
+
+            //AddLinkStepButton.Enabled = GarminWorkoutManager.Instance.Workouts.Count > 1;
         }
 
         void OnOptionsChanged(PropertyChangedEventArgs changedProperty)
@@ -82,6 +84,8 @@ namespace GarminFitnessPlugin.View
             // This callback handles creation & deletion of workouts
             BuildWorkoutsList();
             RefreshWorkoutSelection();
+
+            //AddLinkStepButton.Enabled = GarminWorkoutManager.Instance.Workouts.Count > 1;
         }
 
         private void OnWorkoutChanged(IWorkout modifiedWorkout, PropertyChangedEventArgs changedProperty)
@@ -301,17 +305,12 @@ namespace GarminFitnessPlugin.View
                 if (workout.AddToDailyViewOnSchedule)
                 {
                     // Create new activity from template
-                    IActivity newActivity = PluginMain.GetApplication().Logbook.Activities.Add(WorkoutCalendar.SelectedDate - TimeZone.CurrentTimeZone.GetUtcOffset(DateTime.Now)); ;
+                    IActivity newActivity = PluginMain.GetApplication().Logbook.Activities.Add(new DateTime(WorkoutCalendar.SelectedDate.Year, WorkoutCalendar.SelectedDate.Month, WorkoutCalendar.SelectedDate.Day, 12, 0, 0));
 
                     newActivity.Category = workout.Category;
                     newActivity.Name = workout.Name;
                     newActivity.Notes = workout.Notes;
-                    // Adjust to GMT
-                    newActivity.StartTime = WorkoutCalendar.SelectedDate - TimeZone.CurrentTimeZone.GetUtcOffset(DateTime.Now);
                     newActivity.HasStartTime = true;
-
-                    // Add said activity to the logbook
-                    
                 }
 
                 // Schedule workout in plugin
@@ -324,6 +323,14 @@ namespace GarminFitnessPlugin.View
             foreach (Workout workout in SelectedConcreteWorkouts)
             {
                 workout.RemoveScheduledDate(WorkoutCalendar.SelectedDate);
+            }
+        }
+
+        private void RemoveAllScheduledButton_Click(object sender, EventArgs e)
+        {
+            foreach (Workout workout in SelectedConcreteWorkouts)
+            {
+                workout.RemoveAllScheduledDates();
             }
         }
 
@@ -1289,7 +1296,7 @@ namespace GarminFitnessPlugin.View
         {
             if (!(SelectedWorkout is WorkoutPart))
             {
-                Workout workoutWithSameName = GarminWorkoutManager.Instance.GetWorkoutWithName(WorkoutNameText.Text);
+                Workout workoutWithSameName = GarminWorkoutManager.Instance.GetWorkout(WorkoutNameText.Text);
 
                 if (WorkoutNameText.Text == String.Empty || (workoutWithSameName != null && workoutWithSameName != SelectedWorkout))
                 {
@@ -1569,11 +1576,11 @@ namespace GarminFitnessPlugin.View
             {
                 if (isInUpperHalf)
                 {
-                    SelectedWorkout.MoveStepsBeforeStep(stepsToMove, destinationStep);
+                    SelectedWorkout.Steps.MoveStepsBeforeStep(stepsToMove, destinationStep);
                 }
                 else
                 {
-                    SelectedWorkout.MoveStepsAfterStep(stepsToMove, destinationStep);
+                    SelectedWorkout.Steps.MoveStepsAfterStep(stepsToMove, destinationStep);
                 }
             }
             else
@@ -1589,11 +1596,11 @@ namespace GarminFitnessPlugin.View
                 // Add new items
                 if (isInUpperHalf)
                 {
-                    SelectedWorkout.InsertStepsBeforeStep(newSteps, destinationStep);
+                    SelectedWorkout.Steps.InsertStepsBeforeStep(newSteps, destinationStep);
                 }
                 else
                 {
-                    SelectedWorkout.InsertStepsAfterStep(newSteps, destinationStep);
+                    SelectedWorkout.Steps.InsertStepsAfterStep(newSteps, destinationStep);
                 }
 
                 SelectedSteps = newSteps;
@@ -1726,6 +1733,18 @@ namespace GarminFitnessPlugin.View
         private void AddRepeatButton_Click(object sender, EventArgs e)
         {
             AddNewStep(new RepeatStep(SelectedWorkout.ConcreteWorkout));
+        }
+
+        private void AddLinkStepButton_Click(object sender, EventArgs e)
+        {
+            WorkoutLinkSelectionDialog dlg = new WorkoutLinkSelectionDialog(SelectedWorkout.ConcreteWorkout);
+            DialogResult result = DialogResult.Cancel;
+
+            result = dlg.ShowDialog();
+            if (result == DialogResult.OK)
+            {
+                AddNewStep(new WorkoutLinkStep(SelectedWorkout.ConcreteWorkout, dlg.SelectedWorkout));
+            }
         }
 
         private void RemoveStepButton_Click(object sender, EventArgs e)
@@ -2253,6 +2272,17 @@ namespace GarminFitnessPlugin.View
 
                             break;
                         }
+                    case IStep.StepType.Link:
+                        {
+                            // Show correct panels/controls
+                            RepetitionPropertiesGroup.Visible = false;
+                            StepDurationGroup.Visible = false;
+                            StepTargetGroup.Visible = false;
+                            StepNameLabel.Visible = false;
+                            StepNameText.Visible = false;
+                            RestingCheckBox.Visible = false;
+                            break;
+                        }
                     default:
                         {
                             Debug.Assert(false);
@@ -2713,15 +2743,15 @@ namespace GarminFitnessPlugin.View
             {
                 bool foundSelectedDatePlanned = false;
 
-                for (int j = 0; j < currentWorkout.ScheduledDates.Count; ++j)
+                foreach (GarminFitnessDate date in currentWorkout.ScheduledDates)
                 {
-                    if (WorkoutCalendar.SelectedDate == currentWorkout.ScheduledDates[j])
+                    if (WorkoutCalendar.SelectedDate == date)
                     {
                         foundSelectedDatePlanned = true;
                         hasScheduledDate = true;
                     }
 
-                    markedDates.Add(currentWorkout.ScheduledDates[j]);
+                    markedDates.Add(date);
                 }
 
                 if (!checkBoxSet || currentWorkout.AddToDailyViewOnSchedule == addToDailyView)
@@ -2743,6 +2773,7 @@ namespace GarminFitnessPlugin.View
 
             ScheduleWorkoutButton.Enabled = SelectedConcreteWorkouts.Count > 0 && WorkoutCalendar.SelectedDate >= DateTime.Today && !areAllWorkoutsScheduledOnDate;
             RemoveScheduledDateButton.Enabled = SelectedConcreteWorkouts.Count > 0 && hasScheduledDate;
+            RemoveAllScheduledButton.Enabled = markedDates.Count > 0;
 
             AddDailyViewCheckBox.Enabled = SelectedConcreteWorkouts.Count > 0;
             if (areAllWorkoutsSameAddToDailyView)
@@ -2839,12 +2870,12 @@ namespace GarminFitnessPlugin.View
             if (SelectedStep != null)
             {
                 // Insert after selected
-                succeeded = SelectedWorkout.InsertStepAfterStep(newStep, SelectedStep);
+                succeeded = SelectedWorkout.Steps.InsertStepAfterStep(newStep, SelectedStep);
             }
             else
             {
                 // Insert as 1st element
-                succeeded = SelectedWorkout.InsertStepInRoot(0, newStep);
+                succeeded = SelectedWorkout.Steps.InsertStepInRoot(0, newStep);
             }
 
             if (succeeded)
@@ -3304,7 +3335,7 @@ namespace GarminFitnessPlugin.View
         {
             object nextSelection = StepsList.FindNextSelectedAfterDelete(GetStepWrapper(SelectedSteps[0]));
 
-            SelectedWorkout.RemoveSteps(SelectedSteps);
+            SelectedWorkout.Steps.RemoveSteps(SelectedSteps);
 
             if (nextSelection != null)
             {
@@ -3428,7 +3459,7 @@ namespace GarminFitnessPlugin.View
             StepsList.Focus();
         }
 
-        private void RegisterChildrenControlsGorFocus(Control parent)
+        private void RegisterChildrenControlsForFocus(Control parent)
         {
             foreach (Control control in parent.Controls)
             {
@@ -3436,7 +3467,7 @@ namespace GarminFitnessPlugin.View
 
                 if (control.Controls.Count > 0)
                 {
-                    RegisterChildrenControlsGorFocus(control);
+                    RegisterChildrenControlsForFocus(control);
                 }
             }
         }

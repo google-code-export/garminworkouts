@@ -21,6 +21,7 @@ namespace GarminFitnessPlugin.Data
         {
             Regular = 0,
             Repeat,
+            Link,
             StepTypeCount
         }
 

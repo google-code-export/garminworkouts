@@ -59,7 +59,7 @@ namespace GarminFitnessPlugin.Data
             stepCount = BitConverter.ToInt32(intBuffer, 0);
 
             // In case the repeat was already registered on the workout
-            ParentConcreteWorkout.RemoveSteps(StepsToRepeat);
+            ParentConcreteWorkout.Steps.RemoveSteps(StepsToRepeat);
             m_StepsToRepeat.Clear();
             for (int i = 0; i < stepCount; ++i)
             {
@@ -138,7 +138,7 @@ namespace GarminFitnessPlugin.Data
                 throw new GarminFitnessXmlDeserializationException("Information missing in the XML node", parentNode);
             }
 
-            ParentConcreteWorkout.RemoveSteps(m_StepsToRepeat);
+            ParentConcreteWorkout.Steps.RemoveSteps(m_StepsToRepeat);
             // In case the repeat wasn't yet registered on the workout
             m_StepsToRepeat.Clear();
             for (int i = 0; i < stepsToRepeat.Count; ++i)
@@ -192,7 +192,7 @@ namespace GarminFitnessPlugin.Data
             }
 
             // Officialize result in workout
-            ParentConcreteWorkout.RemoveSteps(stepsToRepeat);
+            ParentConcreteWorkout.Steps.RemoveSteps(stepsToRepeat);
             // In case the repeat wasn't yet registered on the workout
             StepsToRepeat.Clear();
             foreach (IStep currentStep in stepsToRepeat)

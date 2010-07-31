@@ -83,7 +83,7 @@ namespace GarminFitnessPlugin.Controller
                     if (dlg.ShowDialog() == System.Windows.Forms.DialogResult.Yes)
                     {
                         // Yes = replace, delete the current workout from the list
-                        Workout oldWorkout = GarminWorkoutManager.Instance.GetWorkoutWithName(workoutName);
+                        Workout oldWorkout = GarminWorkoutManager.Instance.GetWorkout(workoutName);
 
                         category = oldWorkout.Category;
                         GarminWorkoutManager.Instance.RemoveWorkout(oldWorkout);
@@ -143,7 +143,7 @@ namespace GarminFitnessPlugin.Controller
                             if (dlg.ShowDialog() == System.Windows.Forms.DialogResult.Yes)
                             {
                                 // Yes = replace, delete the current workout from the list
-                                Workout oldWorkout = GarminWorkoutManager.Instance.GetWorkoutWithName(name);
+                                Workout oldWorkout = GarminWorkoutManager.Instance.GetWorkout(name);
 
                                 category = oldWorkout.Category;
                                 GarminWorkoutManager.Instance.RemoveWorkout(oldWorkout);

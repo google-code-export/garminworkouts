@@ -86,9 +86,8 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\References\GarXFaceNet.dll</HintPath>
     </Reference>
-    <Reference Include="SportTracksPluginFramework1.0.1">
-      <HintPath>..\References\SportTracksPluginFramework\SportTracksPluginFramework1.0.1.dll</HintPath>
-      <Aliases>global</Aliases>
+    <Reference Include="SportTracksPluginFramework1.0.2">
+      <HintPath>..\References\SportTracksPluginFramework\SportTracksPluginFramework1.0.2.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
@@ -110,6 +109,7 @@
     <Compile Include="Controller\ProfileImporter.cs" />
     <Compile Include="Controller\GarminCategoryStringProviderAttribute.cs" />
     <Compile Include="Controller\GarminProfileManager.cs" />
+    <Compile Include="Data\BasicTypes\GarminFitnessGuid.cs" />
     <Compile Include="Data\BasicTypes\GarminFitnessInt32Range.cs" />
     <Compile Include="Data\BasicTypes\GarminFitnessDoubleRange.cs" />
     <Compile Include="Data\BasicTypes\GarminFitnessDate.cs" />
@@ -168,7 +168,9 @@
     <Compile Include="Controller\GarminWorkoutManager.cs" />
     <Compile Include="Controller\WorkoutExporter.cs" />
     <Compile Include="Controller\WorkoutImporter.cs" />
+    <Compile Include="Data\WorkoutElements\WorkoutLinkStep.cs" />
     <Compile Include="Data\WorkoutElements\WorkoutPart.cs" />
+    <Compile Include="Data\WorkoutElements\WorkoutStepsList.cs" />
     <Compile Include="GUIDs.cs" />
     <Compile Include="PluginMain.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -300,6 +302,12 @@
     </Compile>
     <Compile Include="View\SetupWizard\SetupWizardWelcomeControl.Designer.cs">
       <DependentUpon>SetupWizardWelcomeControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="View\Workout\WorkoutLinkSelectionDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="View\Workout\WorkoutLinkSelectionDialog.Designer.cs">
+      <DependentUpon>WorkoutLinkSelectionDialog.cs</DependentUpon>
     </Compile>
     <Compile Include="View\Workout\WorkoutPartWrapper.cs" />
     <Compile Include="View\Workout\ReplaceRenameDialog.cs">
@@ -523,6 +531,9 @@
       <SubType>Designer</SubType>
       <DependentUpon>TimeDurationUpDown.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="View\Workout\WorkoutLinkSelectionDialog.resx">
+      <DependentUpon>WorkoutLinkSelectionDialog.cs</DependentUpon>
+    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
@@ -576,7 +587,9 @@ IF $(ConfigurationName)==Debug GOTO end
     <Content Include="Resources\Help.png" />
     <Content Include="Resources\Import.png" />
     <None Include="Resources\WorkoutDirtyIcon.png" />
+    <Content Include="Resources\NewLinkStepButton.png" />
     <Content Include="Resources\PlanWorkout.png" />
+    <Content Include="Resources\RemoveAllButton.png" />
     <Content Include="Resources\WorkoutIcon.png" />
     <Content Include="Resources\WorkoutPartIcon.png" />
   </ItemGroup>

@@ -371,7 +371,20 @@ namespace GarminFitnessPlugin.Controller
             }
         }
 
-        public Workout GetWorkoutWithName(string name)
+        public Workout GetWorkout(Guid id)
+        {
+            foreach (Workout workout in m_Workouts)
+            {
+                if (workout.Id.Equals(id))
+                {
+                    return workout;
+                }
+            }
+
+            return null;
+        }
+
+        public Workout GetWorkout(string name)
         {
             foreach (Workout workout in m_Workouts)
             {
@@ -402,7 +415,7 @@ namespace GarminFitnessPlugin.Controller
 
         public bool IsWorkoutNameAvailable(string name, out bool isPart)
         {
-            Workout workoutWithSameName = GetWorkoutWithName(name);
+            Workout workoutWithSameName = GetWorkout(name);
 
             if (workoutWithSameName != null)
             {
@@ -418,7 +431,7 @@ namespace GarminFitnessPlugin.Controller
 
         public bool IsWorkoutNameValid(string name)
         {
-            IWorkout workoutWithSameName = GetWorkoutWithName(name);
+            IWorkout workoutWithSameName = GetWorkout(name);
 
             return name != String.Empty && workoutWithSameName == null;
         }
