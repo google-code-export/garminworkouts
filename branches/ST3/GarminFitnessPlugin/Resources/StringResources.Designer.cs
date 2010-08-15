@@ -1762,6 +1762,15 @@ namespace GarminFitnessPlugin.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Workout link: {0}.
+        /// </summary>
+        internal static string WorkoutLinkStepText {
+            get {
+                return ResourceManager.GetString("WorkoutLinkStepText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Workouts.
         /// </summary>
         internal static string WorkoutsText {

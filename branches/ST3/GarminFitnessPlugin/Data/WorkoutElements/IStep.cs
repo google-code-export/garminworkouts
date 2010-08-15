@@ -82,9 +82,12 @@ namespace GarminFitnessPlugin.Data
         public abstract UInt32 Serialize(GarXFaceNet._Workout workout, UInt32 stepIndex);
         public abstract void Deserialize(GarXFaceNet._Workout workout, UInt32 stepIndex);
 
-        public virtual byte GetStepCount()
+        public virtual UInt16 StepCount
         {
-            return 1;
+            get
+            {
+                return 1;
+            }
         }
 
         public abstract IStep Clone();
@@ -140,7 +143,7 @@ namespace GarminFitnessPlugin.Data
             }
         }
 
-        public Workout ParentConcreteWorkout
+        public virtual Workout ParentConcreteWorkout
         {
             get { return m_ParentWorkout; }
             set
@@ -170,7 +173,7 @@ namespace GarminFitnessPlugin.Data
         {
             get
             {
-                if (ParentConcreteWorkout.GetTopMostRepeatForStep(this) == null)
+                if (ParentConcreteWorkout.Steps.GetTopMostRepeatForStep(this) == null)
                 {
                     return m_ForceSplit;
                 }

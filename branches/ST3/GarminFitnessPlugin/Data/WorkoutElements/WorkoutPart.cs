@@ -38,7 +38,7 @@ namespace GarminFitnessPlugin.Data
         public override bool CanAcceptNewStep(int newStepCount, IStep destinationStep)
         {
             // Hard 20 step limit in the parts
-            return GetStepCount() + newStepCount <= Constants.MaxStepsPerWorkout;
+            return StepCount + newStepCount <= Constants.MaxStepsPerWorkout;
         }
 
         public override Workout ConcreteWorkout

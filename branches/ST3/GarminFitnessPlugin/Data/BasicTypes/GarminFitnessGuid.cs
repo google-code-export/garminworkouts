@@ -1,13 +1,20 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
 using System.Text;
 using System.Xml;
-using System.IO;
 
 namespace GarminFitnessPlugin.Data
 {
     class GarminFitnessGuid : IPluginSerializable, IXMLSerializable
     {
+        public GarminFitnessGuid(Guid value)
+        {
+            Debug.Assert(value != Guid.Empty);
+
+            Value = value;
+        }
         public GarminFitnessGuid()
         {
             Value = Guid.NewGuid();

@@ -13,7 +13,7 @@ namespace GarminFitnessPlugin.View
 {
     partial class WorkoutLinkSelectionDialog : Form
     {
-        public WorkoutLinkSelectionDialog(Workout parentWorkout)
+        public WorkoutLinkSelectionDialog(Workout parentWorkout, IStep destinationStep)
         {
             InitializeComponent();
 
@@ -24,13 +24,24 @@ namespace GarminFitnessPlugin.View
             WorkoutsListBox.Format += new ListControlConvertEventHandler(WorkoutsListBox_Format);
             foreach (Workout workout in GarminWorkoutManager.Instance.Workouts)
             {
-                if (workout != parentWorkout)
+                // Don't allow recursive workouts or the same workout link twice since
+                //  we can't tell the difference between substeps
+                if (workout != parentWorkout &&
+                    !workout.ContainsWorkoutLink(parentWorkout) &&
+                    parentWorkout.CanAcceptNewStep(workout.StepCount, destinationStep))
                 {
                     WorkoutsListBox.Items.Add(workout);
                 }
             }
 
-            WorkoutsListBox.SelectedIndex = 0;
+            if (WorkoutsListBox.Items.Count > 0)
+            {
+                WorkoutsListBox.SelectedIndex = 0;
+            }
+            else
+            {
+                OKButton.Enabled = false;
+            }
         }
 
         void WorkoutsListBox_Format(object sender, ListControlConvertEventArgs e)

@@ -687,4 +687,7 @@
   <data name="SelectWorkoutText" xml:space="preserve">
     <value>Sélectionnez un entraînement</value>
   </data>
+  <data name="WorkoutLinkStepText" xml:space="preserve">
+    <value>Lien vers entraînement: {0}</value>
+  </data>
 </root>

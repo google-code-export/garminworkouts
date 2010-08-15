@@ -678,4 +678,7 @@
   <data name="WorkoutsWereSplitText" xml:space="preserve">
     <value>Some of your workouts have more than 20 steps.  Those need to be split to reflect the changes in your options. Do you want to do this now?  You will need to do it manually if you choose "No".</value>
   </data>
+  <data name="WorkoutLinkStepText" xml:space="preserve">
+    <value>Workout link: {0}</value>
+  </data>
 </root>

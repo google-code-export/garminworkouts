@@ -71,6 +71,10 @@ namespace GarminFitnessPlugin.Data
                 {
                     m_StepsToRepeat.Add(new RegularStep(stream, version, ParentConcreteWorkout));
                 }
+                else if (type == IStep.StepType.Link)
+                {
+                    m_StepsToRepeat.Add(new WorkoutLinkStep(stream, version, ParentConcreteWorkout));
+                }
                 else
                 {
                     m_StepsToRepeat.Add(new RepeatStep(stream, version, ParentConcreteWorkout));
@@ -170,17 +174,17 @@ namespace GarminFitnessPlugin.Data
         public override void Deserialize(GarXFaceNet._Workout workout, UInt32 stepIndex)
         {
             GarXFaceNet._Workout._Step step = workout.GetStep(stepIndex);
-            UInt32 precedingStepsToRepeat = (step.GetDurationValue() - 1) - stepIndex;
+            Int32 precedingStepsToRepeat = (Int32)((step.GetDurationValue() - 1) - stepIndex);
             List<IStep> stepsToRepeat = new List<IStep>();
 
             while(precedingStepsToRepeat > 0)
             {
-                int precedingStepIndex = ParentWorkout.Steps.Count - 1;
-                int precedingStepCounter = ParentWorkout.Steps[precedingStepIndex].GetStepCount();
+                Int32 precedingStepIndex = ParentWorkout.Steps.Count - 1;
+                Int32 precedingStepCounter = ParentWorkout.Steps[precedingStepIndex].StepCount;
 
                 while (precedingStepCounter < precedingStepsToRepeat)
                 {
-                    precedingStepCounter += ParentWorkout.Steps[precedingStepIndex].GetStepCount();
+                    precedingStepCounter += ParentWorkout.Steps[precedingStepIndex].StepCount;
                     precedingStepIndex--;
                 }
 
@@ -188,7 +192,7 @@ namespace GarminFitnessPlugin.Data
 
                 stepsToRepeat.Add(precedingStep);
 
-                precedingStepsToRepeat -= precedingStep.GetStepCount();
+                precedingStepsToRepeat -= precedingStep.StepCount;
             }
 
             // Officialize result in workout
@@ -229,31 +233,42 @@ namespace GarminFitnessPlugin.Data
             return valueChanged;
         }
 
-        public override byte GetStepCount()
+        public override UInt16 StepCount
         {
-            byte stepCount = base.GetStepCount();
-
-            for (int i = 0; i < m_StepsToRepeat.Count; ++i)
+            get
             {
-                stepCount += m_StepsToRepeat[i].GetStepCount();
-            }
+                UInt16 stepCount = base.StepCount;
 
-            return stepCount;
+                foreach (IStep currentStep in m_StepsToRepeat)
+                {
+                    stepCount += currentStep.StepCount;
+                }
+
+                return stepCount;
+            }
         }
 
         public bool IsChildStep(IStep step)
         {
-            for (int i = 0; i < StepsToRepeat.Count; ++i)
+            if (StepsToRepeat.Contains(step))
             {
-                IStep currentStep = StepsToRepeat[i];
+                return true;
+            }
 
-                if (currentStep == step)
+            foreach (IStep currentStep in StepsToRepeat)
+            {
+                if (currentStep is WorkoutLinkStep)
                 {
-                    return true;
+                    WorkoutLinkStep linkStep = currentStep as WorkoutLinkStep;
+
+                    if (linkStep.LinkedWorkoutSteps.Contains(step))
+                    {
+                        return true;
+                    }
                 }
-                else if(currentStep.Type == StepType.Repeat)
+                else if (currentStep is RepeatStep)
                 {
-                    RepeatStep repeatStep = (RepeatStep)currentStep;
+                    RepeatStep repeatStep = currentStep as RepeatStep;
 
                     if (repeatStep.IsChildStep(step))
                     {
@@ -321,6 +336,20 @@ namespace GarminFitnessPlugin.Data
                     RepeatStep concreteStep = (RepeatStep)m_StepsToRepeat[i];
 
                     concreteStep.MarkAllPowerSTZoneTargetsAsDirty();
+                }
+            }
+        }
+
+        public override Workout ParentConcreteWorkout
+        {
+            get { return base.ParentConcreteWorkout; }
+            set
+            {
+                base.ParentConcreteWorkout = value;
+
+                foreach (IStep currentStep in StepsToRepeat)
+                {
+                    currentStep.ParentConcreteWorkout = value;
                 }
             }
         }

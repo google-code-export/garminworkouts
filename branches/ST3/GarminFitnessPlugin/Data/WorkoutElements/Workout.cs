@@ -15,6 +15,13 @@ namespace GarminFitnessPlugin.Data
 {
     class Workout : IWorkout, IDirty
     {
+        public Workout(Guid workoutId)
+        {
+            m_Id.Value = workoutId;
+
+            CreateStepsList();
+        }
+
         public Workout(string name, IActivityCategory category)
         {
             m_Name.Value = name;
@@ -375,16 +382,19 @@ namespace GarminFitnessPlugin.Data
             }
         }
 
-        public override int GetStepCount()
+        public override UInt16 StepCount
         {
-            byte stepCount = 0;
-
-            for (int i = 0; i < m_Steps.Count; ++i)
+            get
             {
-                stepCount += m_Steps[i].GetStepCount();
-            }
+                UInt16 stepCount = 0;
 
-            return stepCount;
+                foreach (IStep currentStep in Steps)
+                {
+                    stepCount += currentStep.StepCount;
+                }
+
+                return stepCount;
+            }
         }
 
         public List<WorkoutPart> GetSplitParts()
@@ -420,12 +430,12 @@ namespace GarminFitnessPlugin.Data
         public override bool CanAcceptNewStep(int newStepCount, IStep destinationStep)
         {
             // Hard limit at PluginMaxStepsPerWorkout steps
-            if (GetStepCount() + newStepCount > Constants.PluginMaxStepsPerWorkout)
+            if (StepCount + newStepCount > Constants.PluginMaxStepsPerWorkout)
             {
                 return false;
             }
 
-            IStep topMostRepeat = GetTopMostRepeatForStep(destinationStep);
+            IStep topMostRepeat = Steps.GetTopMostRepeatForStep(destinationStep);
 
             if (topMostRepeat == null)
             {
@@ -436,7 +446,7 @@ namespace GarminFitnessPlugin.Data
                 }
                 else
                 {
-                    return GetStepCount() + newStepCount <= Constants.MaxStepsPerWorkout;
+                    return StepCount + newStepCount <= Constants.MaxStepsPerWorkout;
                 }
             }
             else
@@ -446,13 +456,35 @@ namespace GarminFitnessPlugin.Data
                 //  level, check if we bust the limit
                 if (Options.Instance.AllowSplitWorkouts)
                 {
-                    return topMostRepeat.GetStepCount() + newStepCount <= Constants.MaxStepsPerWorkout;
+                    return topMostRepeat.StepCount + newStepCount <= Constants.MaxStepsPerWorkout;
                 }
                 else
                 {
-                    return GetStepCount() + newStepCount <= Constants.MaxStepsPerWorkout;
+                    return StepCount + newStepCount <= Constants.MaxStepsPerWorkout;
                 }
             }
+        }
+
+        public bool ContainsWorkoutLink(Workout workoutLink)
+        {
+            foreach(IStep currentStep in Steps)
+            {
+                if (currentStep is WorkoutLinkStep)
+                {
+                    WorkoutLinkStep linkStep = currentStep as WorkoutLinkStep;
+
+                    if (linkStep.LinkedWorkout == workoutLink)
+                    {
+                        return true;
+                    }
+                    else if (linkStep.LinkedWorkout.ContainsWorkoutLink(workoutLink))
+                    {
+                        return true;
+                    }
+                }
+            }
+
+            return false;
         }
 
         public override Workout ConcreteWorkout

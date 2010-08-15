@@ -66,9 +66,9 @@ namespace GarminFitnessPlugin.View
             StepsList.Columns.Add(new TreeList.Column("DisplayString", "Description", StepsList.Width - 60,
                                                       StringAlignment.Near));
             StepsList.Columns.Add(new TreeList.Column("AutoSplitPart", "Workout Part", 40,
-                                  StringAlignment.Near));
+                                                      StringAlignment.Near));
 
-            //AddLinkStepButton.Enabled = GarminWorkoutManager.Instance.Workouts.Count > 1;
+            AddLinkStepButton.Enabled = GarminWorkoutManager.Instance.Workouts.Count > 1;
         }
 
         void OnOptionsChanged(PropertyChangedEventArgs changedProperty)
@@ -85,7 +85,7 @@ namespace GarminFitnessPlugin.View
             BuildWorkoutsList();
             RefreshWorkoutSelection();
 
-            //AddLinkStepButton.Enabled = GarminWorkoutManager.Instance.Workouts.Count > 1;
+            AddLinkStepButton.Enabled = GarminWorkoutManager.Instance.Workouts.Count > 1;
         }
 
         private void OnWorkoutChanged(IWorkout modifiedWorkout, PropertyChangedEventArgs changedProperty)
@@ -144,7 +144,8 @@ namespace GarminFitnessPlugin.View
                 // When a property changes in a workout's step, this callback executes
                 if (SelectedStep == stepChanged)
                 {
-                    if (changedProperty.PropertyName == "ForceSplitOnStep" && SelectedWorkout is WorkoutPart)
+                    if ((changedProperty.PropertyName == "ForceSplitOnStep" && SelectedWorkout is WorkoutPart) ||
+                        changedProperty.PropertyName == "LinkSteps")
                     {
                         BuildStepsList();
                     }
@@ -355,9 +356,9 @@ namespace GarminFitnessPlugin.View
             List<IStep> newSelection = new List<IStep>();
 
             // We have multiple items selected
-            for (int i = 0; i < StepsList.Selected.Count; ++i)
+            foreach (StepWrapper currentWrapper in StepsList.Selected)
             {
-                newSelection.Add((IStep)((StepWrapper)StepsList.Selected[i]).Element);
+                newSelection.Add(currentWrapper.Element as IStep);
             }
 
             SelectedSteps = newSelection;
@@ -1607,6 +1608,7 @@ namespace GarminFitnessPlugin.View
             }
 
             renderer.IsInDrag = false;
+            UpdateUIFromSteps();
             StepsList.Invalidate();
         }
 
@@ -1616,7 +1618,7 @@ namespace GarminFitnessPlugin.View
 
             e.Effect = DragDropEffects.None;
 
-            if (stepsToMove != null)
+            if (stepsToMove != null && stepsToMove.Count > 0)
             {
                 bool isCtrlKeyDown = (e.KeyState & CTRL_KEY_CODE) != 0;
                 StepRowDataRenderer renderer = (StepRowDataRenderer)StepsList.RowDataRenderer;
@@ -1633,12 +1635,19 @@ namespace GarminFitnessPlugin.View
                 else
                 {
                     destinationStep = (IStep)((StepWrapper)item).Element;
+
+                    // Make sure you only consider the topmost workout link when we're a link child
+                    StepWrapper wrapper = GetStepWrapper(SelectedWorkout.ConcreteWorkout, destinationStep);
+                    while (wrapper.IsWorkoutLinkChild)
+                    {
+                        wrapper = GetStepWrapper(SelectedWorkout.ConcreteWorkout, wrapper.Parent as IStep);
+                    }
                 }
 
                 // We need to count the number of items being moved
                 for (int i = 0; i < stepsToMove.Count; ++i)
                 {
-                    stepsDragged += stepsToMove[i].GetStepCount();
+                    stepsDragged += stepsToMove[i].StepCount;
                 }
 
                 bool canMoveStep = true;
@@ -1648,18 +1657,18 @@ namespace GarminFitnessPlugin.View
                 }
                 else
                 {
-                    IStep destinationStepTopMostRepeat = SelectedWorkout.GetTopMostRepeatForStep(destinationStep);
+                    IStep destinationStepTopMostRepeat = SelectedWorkout.Steps.GetTopMostRepeatForStep(destinationStep);
 
                     for (int i = 0; i < stepsToMove.Count; ++i)
                     {
                         IStep currentMoveStep = stepsToMove[i];
-                        IStep currentMoveStepTopMostRepeat = SelectedWorkout.GetTopMostRepeatForStep(currentMoveStep);
+                        IStep currentMoveStepTopMostRepeat = SelectedWorkout.Steps.GetTopMostRepeatForStep(currentMoveStep);
 
                         if (destinationStepTopMostRepeat != null &&
                             currentMoveStepTopMostRepeat != destinationStepTopMostRepeat)
                         {
                             // It is not allowed to move a repeat inside the top most if we bust
-                            // the limit
+                            // the limit of 20 steps
                             if (!SelectedWorkout.CanAcceptNewStep(stepsDragged, destinationStep))
                             {
                                 canMoveStep = false;
@@ -1737,7 +1746,7 @@ namespace GarminFitnessPlugin.View
 
         private void AddLinkStepButton_Click(object sender, EventArgs e)
         {
-            WorkoutLinkSelectionDialog dlg = new WorkoutLinkSelectionDialog(SelectedWorkout.ConcreteWorkout);
+            WorkoutLinkSelectionDialog dlg = new WorkoutLinkSelectionDialog(SelectedWorkout.ConcreteWorkout, SelectedStep);
             DialogResult result = DialogResult.Cancel;
 
             result = dlg.ShowDialog();
@@ -2218,76 +2227,86 @@ namespace GarminFitnessPlugin.View
             {
                 StepNotesText.Text = SelectedStep.Notes;
                 ForceSplitCheckBox.Visible = Options.Instance.AllowSplitWorkouts || SelectedWorkout.GetSplitPartsCount() > 1;
-                ForceSplitCheckBox.Enabled = SelectedWorkout.GetTopMostRepeatForStep(SelectedStep) == null;
+                ForceSplitCheckBox.Enabled = SelectedWorkout.Steps.GetTopMostRepeatForStep(SelectedStep) == null;
                 ForceSplitCheckBox.Checked = SelectedStep.ForceSplitOnStep;
 
                 switch (SelectedStep.Type)
                 {
                     case IStep.StepType.Regular:
+                    {
+                        // Show correct panels/controls
+                        RepetitionPropertiesGroup.Visible = false;
+                        StepDurationGroup.Visible = true;
+                        StepTargetGroup.Visible = true;
+                        StepNameLabel.Visible = true;
+                        StepNameText.Visible = true;
+                        RestingCheckBox.Visible = true;
+
+                        StepWrapper wrapper = GetStepWrapper(SelectedWorkout.ConcreteWorkout, SelectedStep);
+
+                        StepSplit.Panel2.Enabled = !wrapper.IsWorkoutLinkChild;
+
+                        RegularStep concreteStep = (RegularStep)SelectedStep;
+
+                        if (concreteStep.Name != null && concreteStep.Name != String.Empty)
                         {
-                            // Show correct panels/controls
-                            RepetitionPropertiesGroup.Visible = false;
-                            StepDurationGroup.Visible = true;
-                            StepTargetGroup.Visible = true;
-                            StepNameLabel.Visible = true;
-                            StepNameText.Visible = true;
-                            RestingCheckBox.Visible = true;
-
-                            RegularStep concreteStep = (RegularStep)SelectedStep;
-
-                            if (concreteStep.Name != null && concreteStep.Name != String.Empty)
-                            {
-                                StepNameText.Text = concreteStep.Name;
-                            }
-                            else
-                            {
-                                StepNameText.Text = "";
-                            }
-                            RestingCheckBox.Checked = concreteStep.IsRestingStep;
-                            DurationComboBox.SelectedIndex = (int)concreteStep.Duration.Type;
-                            TargetComboBox.SelectedIndex = (int)concreteStep.Target.Type;
-
-                            // Update duration
-                            UpdateDurationPanelVisibility();
-                            UpdateUIFromDuration();
-
-                            // Update target
-                            UpdateTargetPanelVisibility();
-                            UpdateUIFromTarget();
-                            break;
+                            StepNameText.Text = concreteStep.Name;
                         }
-                    case IStep.StepType.Repeat:
+                        else
                         {
-                            // Show correct panels/controls
-                            RepetitionPropertiesGroup.Visible = true;
-                            StepDurationGroup.Visible = false;
-                            StepTargetGroup.Visible = false;
-                            StepNameLabel.Visible = false;
-                            StepNameText.Visible = false;
-                            RestingCheckBox.Visible = false;
-
-                            RepeatStep concreteStep = (RepeatStep)SelectedStep;
-
-                            RepetitionCountText.Text = concreteStep.RepetitionCount.ToString();
-
-                            break;
+                            StepNameText.Text = "";
                         }
-                    case IStep.StepType.Link:
-                        {
-                            // Show correct panels/controls
-                            RepetitionPropertiesGroup.Visible = false;
-                            StepDurationGroup.Visible = false;
-                            StepTargetGroup.Visible = false;
-                            StepNameLabel.Visible = false;
-                            StepNameText.Visible = false;
-                            RestingCheckBox.Visible = false;
-                            break;
-                        }
-                    default:
-                        {
-                            Debug.Assert(false);
-                            break;
-                        }
+                        RestingCheckBox.Checked = concreteStep.IsRestingStep;
+                        DurationComboBox.SelectedIndex = (int)concreteStep.Duration.Type;
+                        TargetComboBox.SelectedIndex = (int)concreteStep.Target.Type;
+
+                        // Update duration
+                        UpdateDurationPanelVisibility();
+                        UpdateUIFromDuration();
+
+                        // Update target
+                        UpdateTargetPanelVisibility();
+                        UpdateUIFromTarget();
+                        break;
+                    }
+                case IStep.StepType.Repeat:
+                    {
+                        // Show correct panels/controls
+                        RepetitionPropertiesGroup.Visible = true;
+                        StepDurationGroup.Visible = false;
+                        StepTargetGroup.Visible = false;
+                        StepNameLabel.Visible = false;
+                        StepNameText.Visible = false;
+                        RestingCheckBox.Visible = false;
+
+                        StepWrapper wrapper = GetStepWrapper(SelectedWorkout.ConcreteWorkout, SelectedStep);
+
+                        StepSplit.Panel2.Enabled = !wrapper.IsWorkoutLinkChild;
+
+                        RepeatStep concreteStep = SelectedStep as RepeatStep;
+
+                        RepetitionCountText.Text = concreteStep.RepetitionCount.ToString();
+
+                        break;
+                    }
+                case IStep.StepType.Link:
+                    {
+                        // Show correct panels/controls
+                        RepetitionPropertiesGroup.Visible = false;
+                        StepDurationGroup.Visible = false;
+                        StepTargetGroup.Visible = false;
+                        StepNameLabel.Visible = false;
+                        StepNameText.Visible = false;
+                        RestingCheckBox.Visible = false;
+
+                        StepSplit.Panel2.Enabled = true;
+                        break;
+                    }
+                default:
+                    {
+                        Debug.Assert(false);
+                        break;
+                    }
                 }
 
                 RefreshWorkoutSelectionControls();
@@ -2698,7 +2717,7 @@ namespace GarminFitnessPlugin.View
             {
                 IStep currentStep = SelectedSteps[i];
 
-                selection.Add(GetStepWrapper(currentStep, null));
+                selection.Add(GetStepWrapper(SelectedWorkout.ConcreteWorkout, currentStep, null));
             }
 
             StepsList.Selected = selection;
@@ -2816,6 +2835,8 @@ namespace GarminFitnessPlugin.View
                 StepSplit.Enabled = true;
                 AddStepButton.Enabled = SelectedWorkout.CanAcceptNewStep(1, SelectedStep);
                 AddRepeatButton.Enabled = SelectedWorkout.CanAcceptNewStep(2, SelectedStep);
+                AddLinkStepButton.Enabled = AddStepButton.Enabled &&
+                                            GarminWorkoutManager.Instance.Workouts.Count > 1;
                 CalendarSplit.Panel2.Enabled = true;
                 ExportDateTextLabel.Enabled = true;
                 ExportDateLabel.Enabled = true;
@@ -2885,31 +2906,41 @@ namespace GarminFitnessPlugin.View
             }
         }
 
-        private StepWrapper GetStepWrapper(IStep step)
+        private StepWrapper GetStepWrapper(Workout baseWorkout, IStep step)
         {
-            if (m_StepWrapperMap.ContainsKey(step))
+            if (m_StepWrapperMap.ContainsKey(baseWorkout) &&
+                m_StepWrapperMap[baseWorkout].ContainsKey(step))
             {
-                return m_StepWrapperMap[step];
+                return m_StepWrapperMap[baseWorkout][step];
             }
 
             return null;
         }
 
-        private StepWrapper GetStepWrapper(IStep step, StepWrapper parent)
+        private StepWrapper GetStepWrapper(Workout baseWorkout, IStep step, StepWrapper parent)
         {
             StepWrapper wrapper;
 
-            // If we already have a wrapper for this workout, use it
-            if (m_StepWrapperMap.ContainsKey(step))
+            if (!m_StepWrapperMap.ContainsKey(baseWorkout))
             {
-                wrapper = m_StepWrapperMap[step];
+                m_StepWrapperMap.Add(baseWorkout, new Dictionary<IStep, StepWrapper>());
+            }
+
+            // If we already have a wrapper for this workout, use it
+            if (m_StepWrapperMap[baseWorkout].ContainsKey(step))
+            {
+                wrapper = m_StepWrapperMap[baseWorkout][step];
             }
             else
             {
-                // Create a new wrapper
-                wrapper = new StepWrapper(parent, step);
+                bool isWorkoutLinkChild = parent != null &&
+                                          (parent.IsWorkoutLinkChild ||
+                                            (parent.Element as IStep) is WorkoutLinkStep);
 
-                m_StepWrapperMap[step] = wrapper;
+                // Create a new wrapper
+                wrapper = new StepWrapper(parent, step, baseWorkout, isWorkoutLinkChild);
+
+                m_StepWrapperMap[baseWorkout][step] = wrapper;
             }
 
             return wrapper;
@@ -3137,10 +3168,9 @@ namespace GarminFitnessPlugin.View
 
         private void AddStepsToList(List<TreeList.TreeListNode> list, List<IStep> steps, StepWrapper parent)
         {
-            for (int i = 0; i < steps.Count; ++i)
+            foreach (IStep currentStep in steps)
             {
-                IStep currentStep = steps[i];
-                StepWrapper wrapper = GetStepWrapper(currentStep, parent);
+                StepWrapper wrapper = GetStepWrapper(SelectedWorkout.ConcreteWorkout, currentStep, parent);
 
                 // Reset hierarchy
                 wrapper.Parent = null;
@@ -3156,11 +3186,17 @@ namespace GarminFitnessPlugin.View
                 }
                 wrapper.Parent = parent;
 
-                if (steps[i].Type == IStep.StepType.Repeat)
+                if (currentStep is RepeatStep)
                 {
-                    RepeatStep concreteStep = (RepeatStep)currentStep;
+                    RepeatStep concreteStep = currentStep as RepeatStep;
 
                     AddStepsToList(list, concreteStep.StepsToRepeat, wrapper);
+                }
+                else if (currentStep is WorkoutLinkStep)
+                {
+                    WorkoutLinkStep concreteStep = currentStep as WorkoutLinkStep;
+
+                    AddStepsToList(list, concreteStep.LinkedWorkoutSteps, wrapper);
                 }
             }
         }
@@ -3333,7 +3369,7 @@ namespace GarminFitnessPlugin.View
 
         private void DeleteSelectedSteps()
         {
-            object nextSelection = StepsList.FindNextSelectedAfterDelete(GetStepWrapper(SelectedSteps[0]));
+            object nextSelection = StepsList.FindNextSelectedAfterDelete(GetStepWrapper(SelectedWorkout.ConcreteWorkout, SelectedSteps[0]));
 
             SelectedWorkout.Steps.RemoveSteps(SelectedSteps);
 
@@ -3479,23 +3515,23 @@ namespace GarminFitnessPlugin.View
             List<RepeatStep> repeatSteps = new List<RepeatStep>();
 
             // 1st pass, add all the base repeat steps to the result list
-            for (int i = 0; i < steps.Count; ++i)
+            foreach (IStep currentStep in steps)
             {
-                if (steps[i].Type == IStep.StepType.Repeat)
+                if (currentStep is RepeatStep)
                 {
-                    repeatSteps.Add((RepeatStep)steps[i]);
+                    repeatSteps.Add(currentStep as RepeatStep);
                 }
             }
 
-            for (int i = 0; i < repeatSteps.Count; ++i)
+            foreach (RepeatStep currentRepeat in repeatSteps)
             {
-                RepeatStep currentRepeat = repeatSteps[i];
                 bool isChild = false;
 
                 // We must check if this repeat is a base, or a child of another repeat
-                for (int j = 0; j < repeatSteps.Count; j++)
+                foreach (RepeatStep currentRepeat2 in repeatSteps)
                 {
-                    if (i != j && repeatSteps[j].IsChildStep(currentRepeat))
+                    if (currentRepeat != currentRepeat2 &&
+                        currentRepeat2.IsChildStep(currentRepeat))
                     {
                         isChild = true;
                         break;
@@ -3510,32 +3546,36 @@ namespace GarminFitnessPlugin.View
 
             // We now have all base repeat steps in our result, check all regular steps
             //  for inheritance against that base
-            for (int i = 0; i < steps.Count; ++i)
+            foreach (IStep currentStep in steps)
             {
-                if (steps[i].Type == IStep.StepType.Regular)
+                if (!GetStepWrapper(SelectedWorkout.ConcreteWorkout, currentStep).IsWorkoutLinkChild)
                 {
-                    RegularStep currentStep = (RegularStep)steps[i];
-                    bool isChild = false;
-
-                    for (int j = 0; j < baseRepeatSteps.Count; ++j)
+                    if (currentStep is RepeatStep &&
+                             baseRepeatSteps.Contains(currentStep as RepeatStep))
                     {
-                        // We must check if this repeat is a base, or a child of another repeat
-                        if (baseRepeatSteps[j].IsChildStep(currentStep))
-                        {
-                            isChild = true;
-                            break;
-                        }
-                    }
-
-                    if (!isChild)
-                    {
+                        // Add repeats in the right order
                         result.Add(currentStep);
                     }
-                }
-                else if (baseRepeatSteps.Contains((RepeatStep)steps[i]))
-                {
-                    // Add repeats in the right order
-                    result.Add(steps[i]);
+                    else
+                    {
+                        // We cannot move steps that are inside another workout (workout link child step)
+                        bool isChild = false;
+
+                        for (int j = 0; j < baseRepeatSteps.Count; ++j)
+                        {
+                            // We must check if this repeat is a base, or a child of another repeat
+                            if (baseRepeatSteps[j].IsChildStep(currentStep))
+                            {
+                                isChild = true;
+                                break;
+                            }
+                        }
+
+                        if (!isChild)
+                        {
+                            result.Add(currentStep);
+                        }
+                    }
                 }
             }
 
@@ -3807,7 +3847,7 @@ namespace GarminFitnessPlugin.View
         private Dictionary<Workout, WorkoutWrapper> m_WorkoutWrapperMap = new Dictionary<Workout, WorkoutWrapper>();
         private Dictionary<WorkoutPart, WorkoutPartWrapper> m_WorkoutPartWrapperMap = new Dictionary<WorkoutPart, WorkoutPartWrapper>();
         private Dictionary<IActivityCategory, ActivityCategoryWrapper> m_CategoryWrapperMap = new Dictionary<IActivityCategory, ActivityCategoryWrapper>();
-        private Dictionary<IStep, StepWrapper> m_StepWrapperMap = new Dictionary<IStep, StepWrapper>();
+        private Dictionary<Workout, Dictionary<IStep, StepWrapper>> m_StepWrapperMap = new Dictionary<Workout, Dictionary<IStep, StepWrapper>>();
         private ClipboardControls m_LastClipboardControlFocused = ClipboardControls.Invalid;
         private ExtendedTextBox m_LastFocusTextBox;
     }

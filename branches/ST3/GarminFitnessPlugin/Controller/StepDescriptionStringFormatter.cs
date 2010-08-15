@@ -46,6 +46,13 @@ namespace GarminFitnessPlugin.Controller
                         result = String.Format(baseString, concreteStep.RepetitionCount);
                         break;
                     }
+                case IStep.StepType.Link:
+                    {
+                        WorkoutLinkStep concreteStep = (WorkoutLinkStep)step;
+
+                        result = String.Format(GarminFitnessView.GetLocalizedString("WorkoutLinkStepText"), concreteStep.LinkedWorkout.Name);
+                        break;
+                    }
                 default:
                     {
                         Debug.Assert(false);

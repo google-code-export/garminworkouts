@@ -185,7 +185,7 @@ namespace GarminFitnessPlugin
         public static readonly string Forerunner405UnitDescription = "FR405";
         public static readonly string Forerunner310XTUnitDescription = "310XT";
 
-        public static readonly DataVersion CurrentVersion = new DataVersion(13);
+        public static readonly DataVersion CurrentVersion = new DataVersion(14);
         public static readonly String DataHeaderIdString = "Garmin Workouts Plugin made by S->G";
    }
 }

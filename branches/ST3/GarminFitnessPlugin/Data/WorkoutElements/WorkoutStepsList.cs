@@ -195,6 +195,38 @@ namespace GarminFitnessPlugin.Data
             m_InternalStepList.Clear();
         }
 
+        public bool Contains(IStep step)
+        {
+            if (m_InternalStepList.Contains(step))
+            {
+                return true;
+            }
+
+            foreach (IStep currentStep in this)
+            {
+                if (currentStep is WorkoutLinkStep)
+                {
+                    WorkoutLinkStep linkStep = currentStep as WorkoutLinkStep;
+
+                    if (linkStep.LinkedWorkoutSteps.Contains(step))
+                    {
+                        return true;
+                    }
+                }
+                else if (currentStep is RepeatStep)
+                {
+                    RepeatStep repeatStep = currentStep as RepeatStep;
+
+                    if (repeatStep.IsChildStep(step))
+                    {
+                        return true;
+                    }
+                }
+            }
+
+            return false;
+        }
+
 #endregion
 
         public UInt32 Serialize(GarXFaceNet._Workout workout, UInt32 stepIndex)
@@ -294,17 +326,17 @@ namespace GarminFitnessPlugin.Data
             {
                 IStep currentStep = steps[i];
 
-                if (currentId + currentStep.GetStepCount() == id)
+                if (currentId + currentStep.StepCount == id)
                 {
                     return currentStep;
                 }
-                else if (currentStep.Type == IStep.StepType.Repeat && id <= currentId + currentStep.GetStepCount())
+                else if (currentStep.Type == IStep.StepType.Repeat && id <= currentId + currentStep.StepCount)
                 {
                     RepeatStep concreteStep = (RepeatStep)currentStep;
                     return GetStepByIdInternal(concreteStep.StepsToRepeat, id, currentId);
                 }
 
-                currentId += currentStep.GetStepCount();
+                currentId += currentStep.StepCount;
             }
 
             return null;
@@ -361,7 +393,7 @@ namespace GarminFitnessPlugin.Data
             // We need to count the number of items being moved
             for (int i = 0; i < stepsToAdd.Count; ++i)
             {
-                insertStepsCount += stepsToAdd[i].GetStepCount();
+                insertStepsCount += stepsToAdd[i].StepCount;
             }
 
             if (m_ParentWorkout.CanAcceptNewStep(insertStepsCount, previousStep))
@@ -390,7 +422,7 @@ namespace GarminFitnessPlugin.Data
             // We need to count the number of items being moved
             for (int i = 0; i < stepsToAdd.Count; ++i)
             {
-                insertStepsCount += stepsToAdd[i].GetStepCount();
+                insertStepsCount += stepsToAdd[i].StepCount;
             }
 
             if (m_ParentWorkout.CanAcceptNewStep(insertStepsCount, nextStep))
@@ -423,7 +455,7 @@ namespace GarminFitnessPlugin.Data
             if (!Utils.GetStepInfo(previousStep, m_ParentWorkout.ConcreteWorkout.Steps, out parentList, out previousPosition))
             {
                 addToEnd = true;
-                parentList = m_ParentWorkout.ConcreteWorkout.Steps;
+                parentList = this;
             }
 
             for (int i = 0; i < stepsToAdd.Count; ++i)
@@ -431,7 +463,7 @@ namespace GarminFitnessPlugin.Data
                 IStep currentStep = stepsToAdd[i];
 
                 // Make sure we don't duplicate the step in the list
-                Debug.Assert(!Utils.GetStepInfo(currentStep, m_ParentWorkout.ConcreteWorkout.Steps, out tempList, out tempPosition));
+                Debug.Assert(!Utils.GetStepInfo(currentStep, this, out tempList, out tempPosition));
 
                 TriggerStepAdded(currentStep);
 
@@ -478,7 +510,7 @@ namespace GarminFitnessPlugin.Data
                 for (int i = 0; i < stepsToAdd.Count; ++i)
                 {
                     // Make sure we don't duplicate the step in the list
-                    Debug.Assert(!Utils.GetStepInfo(stepsToAdd[i], m_ParentWorkout.ConcreteWorkout.Steps, out tempList, out tempPosition));
+                    Debug.Assert(!Utils.GetStepInfo(stepsToAdd[i], this, out tempList, out tempPosition));
 
                     TriggerStepAdded(stepsToAdd[i]);
 
@@ -574,22 +606,26 @@ namespace GarminFitnessPlugin.Data
 
             if (stepsToRemove.Count > 0)
             {
+                bool stepWasRemoved = false;
                 List<IStep> selectedList = null;
                 UInt16 selectedPosition = 0;
 
                 foreach (IStep step in stepsToRemove)
                 {
-                    if (Utils.GetStepInfo(step, m_ParentWorkout.ConcreteWorkout.Steps, out selectedList, out selectedPosition))
+                    if (Utils.GetStepInfo(step, this, out selectedList, out selectedPosition))
                     {
                         selectedList.RemoveAt(selectedPosition);
+                        stepWasRemoved = true;
 
                         TriggerStepRemoved(step);
                     }
                 }
 
-                CleanUpAfterDelete();
-
-                TriggerListChanged("Steps");
+                if (stepWasRemoved)
+                {
+                    CleanUpAfterDelete();
+                    TriggerListChanged("Steps");
+                }
 
                 if (preRemoveSplitCount != m_ParentWorkout.ConcreteWorkout.GetSplitPartsCount())
                 {
@@ -638,6 +674,52 @@ namespace GarminFitnessPlugin.Data
             {
                 // Cannot have an empty workout, recreate a base step
                 AddStepToRoot(new RegularStep(m_ParentWorkout.ConcreteWorkout));
+            }
+        }
+
+        public RepeatStep GetTopMostRepeatForStep(IStep step)
+        {
+            if (step != null)
+            {
+                foreach (IStep currentStep in this)
+                {
+                    if (currentStep is RepeatStep)
+                    {
+                        RepeatStep repeatStep = currentStep as RepeatStep;
+
+                        if (repeatStep.IsChildStep(step))
+                        {
+                            return repeatStep;
+                        }
+                    }
+                    else if (currentStep is WorkoutLinkStep)
+                    {
+                        WorkoutLinkStep workoutStep = currentStep as WorkoutLinkStep;
+                        RepeatStep topMostRepeat = workoutStep.LinkedWorkoutSteps.GetTopMostRepeatForStep(step);
+
+                        if (topMostRepeat != null)
+                        {
+                            return topMostRepeat;
+                        }
+                    }
+                }
+            }
+
+            return null;
+        }
+
+        public UInt16 StepCount
+        {
+            get
+            {
+                UInt16 stepCount = 0;
+
+                foreach (IStep currentStep in this)
+                {
+                    stepCount += currentStep.StepCount;
+                }
+
+                return stepCount;
             }
         }
 

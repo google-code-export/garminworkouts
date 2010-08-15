@@ -38,8 +38,6 @@ namespace GarminFitnessPlugin.Controller
 
         private void OnWorkoutChanged(IWorkout modifiedWorkout, PropertyChangedEventArgs changedProperty)
         {
-            Utils.SaveWorkoutsToLogbook();
-
             // Sort workouts to order them alphabetically in list
             if (changedProperty.PropertyName == "Name")
             {
@@ -52,6 +50,11 @@ namespace GarminFitnessPlugin.Controller
                 UpdateReservedNamesForWorkout(modifiedWorkout.ConcreteWorkout);
             }
 
+            if (!m_IsDeserializing)
+            {
+                Utils.SaveWorkoutsToLogbook();
+            }
+
             if (m_EventTriggerActive && WorkoutChanged != null)
             {
                 WorkoutChanged(modifiedWorkout, changedProperty);
@@ -60,7 +63,10 @@ namespace GarminFitnessPlugin.Controller
 
         void OnWorkoutStepChanged(IWorkout modifiedWorkout, IStep modifiedStep, PropertyChangedEventArgs changedProperty)
         {
-            Utils.SaveWorkoutsToLogbook();
+            if (!m_IsDeserializing)
+            {
+                Utils.SaveWorkoutsToLogbook();
+            }
 
             if (m_EventTriggerActive && WorkoutStepChanged != null)
             {
@@ -70,7 +76,10 @@ namespace GarminFitnessPlugin.Controller
 
         void OnStepDurationChanged(IWorkout modifiedWorkout, RegularStep modifiedStep, IDuration modifiedDuration, PropertyChangedEventArgs changedProperty)
         {
-            Utils.SaveWorkoutsToLogbook();
+            if (!m_IsDeserializing)
+            {
+                Utils.SaveWorkoutsToLogbook();
+            }
 
             if (m_EventTriggerActive && WorkoutStepDurationChanged != null)
             {
@@ -80,7 +89,10 @@ namespace GarminFitnessPlugin.Controller
 
         void OnStepTargetChanged(IWorkout modifiedWorkout, RegularStep modifiedStep, ITarget modifiedTarget, PropertyChangedEventArgs changedProperty)
         {
-            Utils.SaveWorkoutsToLogbook();
+            if (!m_IsDeserializing)
+            {
+                Utils.SaveWorkoutsToLogbook();
+            }
 
             if (m_EventTriggerActive && WorkoutStepTargetChanged != null)
             {
@@ -91,24 +103,33 @@ namespace GarminFitnessPlugin.Controller
         public override void Serialize(Stream stream)
         {
             stream.Write(BitConverter.GetBytes(Workouts.Count), 0, sizeof(int));
-            for (int i = 0; i < Workouts.Count; ++i)
+
+            foreach (Workout currentWorkout in Workouts)
             {
-                Workouts[i].Serialize(stream);
+                GarminFitnessGuid id = new GarminFitnessGuid(currentWorkout.Id);
+
+                id.Serialize(stream);
+            }
+
+            foreach (Workout currentWorkout in Workouts)
+            {
+                GarminFitnessGuid id = new GarminFitnessGuid(currentWorkout.Id);
+
+                id.Serialize(stream);
+                currentWorkout.Serialize(stream);
             }
         }
 
         public new void Deserialize(Stream stream, DataVersion version)
         {
             IsDeserializing = true;
-
             m_EventTriggerActive = false;
             {
                 RemoveAllWorkouts();
 
                 base.Deserialize(stream, version);
-
-                m_EventTriggerActive = true;
             }
+            m_EventTriggerActive = true;
             IsDeserializing = false;
 
             // Trigger list changed event
@@ -133,6 +154,35 @@ namespace GarminFitnessPlugin.Controller
             }
         }
 
+        public void Deserialize_V14(Stream stream, DataVersion version)
+        {
+            // We need to create all workout instances first, then deserialize them
+            //  This is because we need an instance when deserializing a link step
+            byte[] intBuffer = new byte[sizeof(Int32)];
+            int workoutCount;
+
+            // Read workouts
+            stream.Read(intBuffer, 0, sizeof(Int32));
+            workoutCount = BitConverter.ToInt32(intBuffer, 0);
+            for (int i = 0; i < workoutCount; ++i)
+            {
+                GarminFitnessGuid workoutGuid = new GarminFitnessGuid();
+
+                workoutGuid.Deserialize(stream, version);
+                CreateWorkout(workoutGuid);
+            }
+
+            for (int i = 0; i < workoutCount; ++i)
+            {
+                GarminFitnessGuid workoutGuid = new GarminFitnessGuid();
+                workoutGuid.Deserialize(stream, version);
+
+                GetWorkout(workoutGuid).Deserialize(stream, version);
+            }
+
+            m_Workouts.Sort(new WorkoutComparer());
+        }
+
         public static GarminWorkoutManager Instance
         {
             get { return m_Instance; }
@@ -150,6 +200,19 @@ namespace GarminFitnessPlugin.Controller
 
             uniqueName = GetUniqueName("NewWorkout 1");
             result = new Workout(uniqueName, category);
+
+            RegisterWorkout(result);
+
+            return result;
+        }
+
+        public Workout CreateWorkout(Guid workoutId)
+        {
+            Workout result;
+            string uniqueName;
+
+            uniqueName = GetUniqueName("NewWorkout 1");
+            result = new Workout(workoutId);
 
             RegisterWorkout(result);
 

@@ -204,13 +204,13 @@ namespace GarminFitnessPlugin.View
         {
             get
             {
-                Debug.Assert(typeof(ExtendedRowDataRenderer).IsInstanceOfType(base.RowDataRenderer));
+                Debug.Assert(base.RowDataRenderer is ExtendedRowDataRenderer);
 
                 return base.RowDataRenderer;
             }
             set
             {
-                Debug.Assert(typeof(ExtendedRowDataRenderer).IsInstanceOfType(value));
+                Debug.Assert(value is ExtendedRowDataRenderer);
 
                 base.RowDataRenderer = value;
             }
