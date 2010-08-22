@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
-using ZoneFiveSoftware.SportTracks.Device.GarminGPS;
 using GarminFitnessPlugin.View;
 
 namespace GarminFitnessPlugin.Controller

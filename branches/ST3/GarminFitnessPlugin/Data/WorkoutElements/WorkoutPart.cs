@@ -5,7 +5,6 @@ using System.Xml;
 using GarminFitnessPlugin.Controller;
 using GarminFitnessPlugin.View;
 using ZoneFiveSoftware.Common.Data.Fitness;
-using ZoneFiveSoftware.SportTracks.Device.GarminAPI.Xml;
 
 namespace GarminFitnessPlugin.Data
 {

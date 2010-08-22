@@ -20,16 +20,9 @@ namespace GarminFitnessPlugin.Controller
                 m_TimeoutTimer.Tick += new EventHandler(OnTimeoutTimerTick);
                 m_TimeoutTimer.Interval = 30000;
 
-/*                Logger.Instance.LogText("Adding GarXFace controller");
-
-                IGarminDeviceController newController = new GarXFaceDeviceController();
-                newController.InitializationCompleted += new DeviceControllerOperationCompletedEventHandler(OnControllerInitializationCompleted);
-                newController.FindDevicesCompleted += new DeviceControllerOperationCompletedEventHandler(OnControllerFindDevicesCompleted);
-                m_Controllers.Add(newController);*/
-
                 Logger.Instance.LogText("Adding Communicator controller");
 
-                IGarminDeviceController newController = new CommunicatorDeviceController();
+                IGarminDeviceController newController = new GarminFitnessCommunicatorDeviceController();
                 newController.InitializationCompleted += new DeviceControllerOperationCompletedEventHandler(OnControllerInitializationCompleted);
                 newController.FindDevicesCompleted += new DeviceControllerOperationCompletedEventHandler(OnControllerFindDevicesCompleted);
                 m_Controllers.Add(newController);
@@ -332,6 +325,10 @@ namespace GarminFitnessPlugin.Controller
                     CompleteCurrentTask(setDeviceSucceeded);
                 }
             }
+            else
+            {
+                CompleteCurrentTask(setDeviceSucceeded);
+            }
         }
 
         void OnWriteToDeviceCompleted(IGarminDevice device, DeviceOperations operation, Boolean succeeded)
@@ -480,7 +477,7 @@ namespace GarminFitnessPlugin.Controller
             public override void ExecuteTask(IGarminDevice device)
             {
                 // This function is not supported on the device
-                if (!device.SupportsReadWorkout)
+                if (!device.SupportsWriteWorkout)
                 {
                     throw new NoDeviceSupportException(device, "Export Workout");
                 }
@@ -511,7 +508,7 @@ namespace GarminFitnessPlugin.Controller
             public override void ExecuteTask(IGarminDevice device)
             {
                 // This function is not supported on the device
-                if (!device.SupportsReadProfile)
+                if (!device.SupportsWriteProfile)
                 {
                     throw new NoDeviceSupportException(device, "Export Profile");
                 }

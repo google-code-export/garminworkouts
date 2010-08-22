@@ -1663,6 +1663,15 @@ namespace GarminFitnessPlugin.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Transferring to device.
+        /// </summary>
+        internal static string TransferringToDeviceText {
+            get {
+                return ResourceManager.GetString("TransferringToDeviceText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Use custom category.
         /// </summary>
         internal static string UseCustomCategoryText {

@@ -6,7 +6,6 @@ using System.Reflection;
 using System.Resources;
 using System.Windows.Forms;
 using ZoneFiveSoftware.Common.Visuals;
-using ZoneFiveSoftware.SportTracks.Device.GarminGPS;
 using GarminFitnessPlugin.Controller;
 
 namespace GarminFitnessPlugin.View

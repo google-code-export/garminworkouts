@@ -79,9 +79,6 @@
     <Reference Include="Common.Visuals">
       <HintPath>D:\Zone Five Software\SportTracks 3\Common.Visuals.dll</HintPath>
     </Reference>
-    <Reference Include="GarminAPIDevicePlugin">
-      <HintPath>C:\ProgramData\ZoneFiveSoftware\SportTracks\3\Plugins\Installed\64c67771-aec3-4434-9ef1-ad6cabc1479e\GarminAPIDevicePlugin\GarminAPIDevicePlugin.dll</HintPath>
-    </Reference>
     <Reference Include="GarXFaceNet, Version=1.0.3805.31245, Culture=neutral, processorArchitecture=x86">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\References\GarXFaceNet.dll</HintPath>
@@ -97,8 +94,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Constants.cs" />
-    <Compile Include="Controller\Devices\Communicator plugin\CommunicatorDevice.cs" />
-    <Compile Include="Controller\Devices\Communicator plugin\CommunicatorDeviceController.cs" />
+    <Compile Include="Controller\Devices\GarminFitnessCommunicatorPlugin\GarminFitnessCommunicatorBridge.cs" />
+    <Compile Include="Controller\Devices\GarminFitnessCommunicatorPlugin\GarminFitnessCommunicatorDevice.cs" />
+    <Compile Include="Controller\Devices\GarminFitnessCommunicatorPlugin\GarminFitnessCommunicatorDeviceController.cs" />
     <Compile Include="Controller\Devices\GarXFace\GarXFaceDevice.cs" />
     <Compile Include="Controller\Devices\GarXFace\GarXFaceDeviceController.cs" />
     <Compile Include="Controller\Devices\IGarminDevice.cs" />
@@ -546,7 +544,7 @@ REM Copy to install folder
 IF NOT EXIST "%25INSTALLPATH%25\$(ProjectName)" mkdir "%25INSTALLPATH%25\$(ProjectName)"
 xcopy "$(TargetDir)$(ProjectName)*.dll" "%25INSTALLPATH%25\$(ProjectName)\" /S /Y
 xcopy "$(ProjectDir)..\plugin.xml" "%25INSTALLPATH%25\" /S /Y
-REM xcopy "$(TargetDir)GarXface*.dll" "%25INSTALLPATH%25\$(ProjectName)\" /S /Y
+xcopy "$(ProjectDir)\Communicator\*" "%25INSTALLPATH%25\Communicator\*" /S /Y
 xcopy "$(TargetDir)SportTracksPluginFramework*.dll" "%25INSTALLPATH%25\$(ProjectName)\" /S /Y
 
 REM Create installer
@@ -578,6 +576,7 @@ IF $(ConfigurationName)==Debug GOTO end
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\CategoryIcon.png" />
+    <Content Include="Communicator\GarminFitness.html" />
     <Content Include="Resources\Arrow.png" />
     <Content Include="Resources\btn_donate_LG.gif" />
     <Content Include="Resources\Cut.png" />
@@ -610,4 +609,5 @@ IF $(ConfigurationName)==Debug GOTO end
       <Install>true</Install>
     </BootstrapperPackage>
   </ItemGroup>
+  <ItemGroup />
 </Project>

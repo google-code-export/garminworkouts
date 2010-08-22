@@ -3,21 +3,55 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Text;
-using ZoneFiveSoftware.SportTracks.Device.GarminAPI;
-using ZoneFiveSoftware.SportTracks.Device.GarminGPS;
+using System.Xml;
 using GarminFitnessPlugin.Data;
 
 namespace GarminFitnessPlugin.Controller
 {
-    class CommunicatorDevice : IGarminDevice
+    class GarminFitnessCommunicatorDevice : IGarminDevice
     {
-        public CommunicatorDevice(CommunicatorDeviceController controller, Device device)
+        public GarminFitnessCommunicatorDevice(GarminFitnessCommunicatorDeviceController controller, XmlNode deviceXml)
         {
             m_Controller = controller;
-            m_Device = device;
+
+            foreach (XmlAttribute attribute in deviceXml.Attributes)
+            {
+                if (attribute.Name.Equals("Number"))
+                {
+                    m_DeviceNumber = Int32.Parse(attribute.Value);
+                }
+                else if (attribute.Name.Equals("DisplayName"))
+                {
+                    m_DisplayName = attribute.Value;
+                }
+                else if (attribute.Name.Equals("Id"))
+                {
+                    m_Id = attribute.Value;
+                }
+                else if (attribute.Name.Equals("SoftwareVersion"))
+                {
+                    m_SoftwareVersion = attribute.Value;
+                }
+                else if (attribute.Name.Equals("SupportReadWorkout"))
+                {
+                    m_SupportsReadWorkout = Boolean.Parse(attribute.Value);
+                }
+                else if (attribute.Name.Equals("SupportWriteWorkout"))
+                {
+                    m_SupportsWriteWorkout = Boolean.Parse(attribute.Value);
+                }
+                else if (attribute.Name.Equals("SupportReadProfile"))
+                {
+                    m_SupportsReadProfile = Boolean.Parse(attribute.Value);
+                }
+                else if (attribute.Name.Equals("SupportWriteProfile"))
+                {
+                    m_SupportsWriteProfile = Boolean.Parse(attribute.Value);
+                }
+            }
         }
 
-        void OnControllerFinishReadFromDevice(object sender, GarminDeviceControl.TransferCompleteEventArgs e)
+        private void OnBridgeReadFromDeviceCompleted(object sender, GarminFitnessCommunicatorBridge.TranferCompletedEventArgs e)
         {
             bool success = e.Success;
 
@@ -27,7 +61,7 @@ namespace GarminFitnessPlugin.Controller
                     {
                         Logger.Instance.LogText("Comm. : Profile read");
 
-                        MemoryStream stream = new MemoryStream(Encoding.UTF8.GetBytes(e.XmlData));
+                        MemoryStream stream = new MemoryStream(Encoding.UTF8.GetBytes(e.DataString));
 
                         success = ProfileImporter.ImportProfile(stream);
                         stream.Close();
@@ -38,7 +72,7 @@ namespace GarminFitnessPlugin.Controller
                     {
                         Logger.Instance.LogText("Comm. : Workouts read");
 
-                        MemoryStream stream = new MemoryStream(Encoding.UTF8.GetBytes(e.XmlData));
+                        MemoryStream stream = new MemoryStream(Encoding.UTF8.GetBytes(e.DataString));
 
                         success = WorkoutImporter.ImportWorkout(stream);
                         stream.Close();
@@ -58,11 +92,11 @@ namespace GarminFitnessPlugin.Controller
                 ReadFromDeviceCompleted(this, m_CurrentOperation, success);
             }
 
-            m_Controller.CommunicatorController.FinishReadFromDevice -= new GarminDeviceControl.TransferCompleteEventHandler(OnControllerFinishReadFromDevice);
+            m_Controller.CommunicatorBridge.ReadFromDeviceCompleted -= new EventHandler<GarminFitnessCommunicatorBridge.TranferCompletedEventArgs>(OnBridgeReadFromDeviceCompleted);
             m_CurrentOperation = DeviceOperations.Operation_Idle;
         }
 
-        void OnControllerFinishWriteToDevice(object sender, GarminDeviceControl.TransferCompleteEventArgs e)
+        private void OnBridgeWriteToDeviceCompleted(object sender, GarminFitnessCommunicatorBridge.TranferCompletedEventArgs e)
         {
             bool success = e.Success;
 
@@ -91,7 +125,7 @@ namespace GarminFitnessPlugin.Controller
                 WriteToDeviceCompleted(this, m_CurrentOperation, success);
             }
 
-            m_Controller.CommunicatorController.FinishWriteToDevice -= new GarminDeviceControl.TransferCompleteEventHandler(OnControllerFinishWriteToDevice);
+            m_Controller.CommunicatorBridge.WriteToDeviceCompleted -= new EventHandler<GarminFitnessCommunicatorBridge.TranferCompletedEventArgs>(OnBridgeWriteToDeviceCompleted);
             m_CurrentOperation = DeviceOperations.Operation_Idle;
         }
 
@@ -101,14 +135,14 @@ namespace GarminFitnessPlugin.Controller
         {
             Debug.Assert(m_CurrentOperation != DeviceOperations.Operation_Idle);
 
-            m_Controller.CommunicatorController.FireFinishWriteToDevice(false, "");
+            m_Controller.CommunicatorBridge.CancelWriteToDevice();
         }
 
         public void CancelRead()
         {
             Debug.Assert(m_CurrentOperation != DeviceOperations.Operation_Idle);
 
-            m_Controller.CommunicatorController.FireFinishReadFromDevice(false, "");
+            m_Controller.CommunicatorBridge.CancelReadFromDevice();
         }
 
         public void WriteWorkouts(List<IWorkout> workouts)
@@ -132,11 +166,11 @@ namespace GarminFitnessPlugin.Controller
             WorkoutExporter.ExportWorkout(workouts, textStream);
             string xmlCode = Encoding.UTF8.GetString(textStream.GetBuffer());
 
-            m_Controller.CommunicatorController.FinishWriteToDevice += new GarminDeviceControl.TransferCompleteEventHandler(OnControllerFinishWriteToDevice);
+            m_Controller.CommunicatorBridge.WriteToDeviceCompleted += new EventHandler<GarminFitnessCommunicatorBridge.TranferCompletedEventArgs>(OnBridgeWriteToDeviceCompleted);
             m_CurrentOperation = DeviceOperations.Operation_WriteWorkout;
-            m_Controller.CommunicatorController.WriteWorkouts(m_Device,
-                                                              xmlCode,
-                                                              fileName);
+
+            m_Controller.CommunicatorBridge.SetDeviceNumber(m_DeviceNumber);
+            m_Controller.CommunicatorBridge.WriteWorkoutsToFitnessDevice(xmlCode, fileName);
         }
 
         public void ReadWorkouts()
@@ -145,9 +179,11 @@ namespace GarminFitnessPlugin.Controller
 
             Debug.Assert(m_CurrentOperation == DeviceOperations.Operation_Idle);
 
-            m_Controller.CommunicatorController.FinishReadFromDevice += new GarminDeviceControl.TransferCompleteEventHandler(OnControllerFinishReadFromDevice);
+            m_Controller.CommunicatorBridge.ReadFromDeviceCompleted += new EventHandler<GarminFitnessCommunicatorBridge.TranferCompletedEventArgs>(OnBridgeReadFromDeviceCompleted);
             m_CurrentOperation = DeviceOperations.Operation_ReadWorkout;
-            m_Controller.CommunicatorController.ReadWktWorkouts(m_Device);
+
+            m_Controller.CommunicatorBridge.SetDeviceNumber(m_DeviceNumber);
+            m_Controller.CommunicatorBridge.ReadWorkoutsFromFitnessDevice();
         }
 
         public void WriteProfile(GarminFitnessPlugin.Data.GarminProfile profile)
@@ -162,11 +198,11 @@ namespace GarminFitnessPlugin.Controller
             ProfileExporter.ExportProfile(profile, textStream);
             string xmlCode = Encoding.UTF8.GetString(textStream.GetBuffer());
 
-            m_Controller.CommunicatorController.FinishWriteToDevice += new GarminDeviceControl.TransferCompleteEventHandler(OnControllerFinishWriteToDevice);
+            m_Controller.CommunicatorBridge.WriteToDeviceCompleted += new EventHandler<GarminFitnessCommunicatorBridge.TranferCompletedEventArgs>(OnBridgeWriteToDeviceCompleted);
             m_CurrentOperation = DeviceOperations.Operation_WriteProfile;
-            m_Controller.CommunicatorController.WriteUserProfile(m_Device,
-                                                                 xmlCode,
-                                                                 fileName);
+
+            m_Controller.CommunicatorBridge.SetDeviceNumber(m_DeviceNumber);
+            m_Controller.CommunicatorBridge.WriteProfileToFitnessDevice(xmlCode, fileName);
         }
 
         public void ReadProfile(GarminFitnessPlugin.Data.GarminProfile profile)
@@ -175,9 +211,11 @@ namespace GarminFitnessPlugin.Controller
 
             Debug.Assert(m_CurrentOperation == DeviceOperations.Operation_Idle);
 
-            m_Controller.CommunicatorController.FinishReadFromDevice += new GarminDeviceControl.TransferCompleteEventHandler(OnControllerFinishReadFromDevice);
+            m_Controller.CommunicatorBridge.ReadFromDeviceCompleted += new EventHandler<GarminFitnessCommunicatorBridge.TranferCompletedEventArgs>(OnBridgeReadFromDeviceCompleted);
             m_CurrentOperation = DeviceOperations.Operation_ReadProfile;
-            m_Controller.CommunicatorController.ReadTcxUserProfile(m_Device);
+
+            m_Controller.CommunicatorBridge.SetDeviceNumber(m_DeviceNumber);
+            m_Controller.CommunicatorBridge.ReadProfileFromFitnessDevice();
         }
 
         public IGarminDeviceController Controller
@@ -187,97 +225,37 @@ namespace GarminFitnessPlugin.Controller
 
         public bool SupportsReadWorkout
         {
-            get
-            {
-                bool isSupported = false;
-
-                // Check supported data types
-                foreach (DataType currentDataType in m_Device.DataTypes.DataType)
-                {
-                    if (currentDataType.Type.Equals("FitnessWorkouts"))
-                    {
-                        isSupported = currentDataType.CanRead;
-                        break;
-                    }
-                }
-
-                return isSupported;
-            }
+            get { return m_SupportsReadWorkout; }
         }
 
         public bool SupportsWriteWorkout
         {
-            get
-            {
-                bool isSupported = false;
-
-                // Check supported data types
-                foreach (DataType currentDataType in m_Device.DataTypes.DataType)
-                {
-                    if (currentDataType.Type.Equals("FitnessWorkouts"))
-                    {
-                        isSupported = currentDataType.CanWrite;
-                        break;
-                    }
-                }
-
-                return isSupported;
-            }
+            get { return m_SupportsWriteWorkout; }
         }
 
         public bool SupportsReadProfile
         {
-            get
-            {
-                bool isSupported = false;
-
-                // Check supported data types
-                foreach (DataType currentDataType in m_Device.DataTypes.DataType)
-                {
-                    if (currentDataType.Type.Equals("FitnessUserProfile"))
-                    {
-                        isSupported = currentDataType.CanRead;
-                        break;
-                    }
-                }
-
-                return isSupported;
-            }
+            get { return m_SupportsReadProfile; }
         }
 
         public bool SupportsWriteProfile
         {
-            get
-            {
-                bool isSupported = false;
-
-                // Check supported data types
-                foreach (DataType currentDataType in m_Device.DataTypes.DataType)
-                {
-                    if (currentDataType.Type.Equals("FitnessUserProfile"))
-                    {
-                        isSupported = currentDataType.CanWrite;
-                        break;
-                    }
-                }
-
-                return isSupported;
-            }
+            get { return m_SupportsWriteProfile; }
         }
 
         public string DeviceId
         {
-            get { return m_Device.Id; }
+            get { return m_Id; }
         }
 
         public string SoftwareVersion
         {
-            get { return m_Device.SoftwareVersion; }
+            get { return m_SoftwareVersion; }
         }
 
         public string DisplayName
         {
-            get { return m_Device.DisplayName; }
+            get { return m_DisplayName; }
         }
 
         public event DeviceOperationCompletedEventHandler WriteToDeviceCompleted;
@@ -285,8 +263,15 @@ namespace GarminFitnessPlugin.Controller
 
 #endregion
 
-        private CommunicatorDeviceController m_Controller = null;
-        private Device m_Device = null;
+        private GarminFitnessCommunicatorDeviceController m_Controller = null;
         private DeviceOperations m_CurrentOperation = DeviceOperations.Operation_Idle;
+        private Int32 m_DeviceNumber = -1;
+        private string m_DisplayName = String.Empty;
+        private string m_Id = string.Empty;
+        private string m_SoftwareVersion = string.Empty;
+        private bool m_SupportsReadWorkout = false;
+        private bool m_SupportsWriteWorkout = false;
+        private bool m_SupportsReadProfile = false;
+        private bool m_SupportsWriteProfile = false;
     }
 }
