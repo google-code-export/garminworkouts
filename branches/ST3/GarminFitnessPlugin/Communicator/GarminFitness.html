@@ -1,280 +1,224 @@
 <html>
-	<head>
-	<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" />
-	</head>
-    <body>
-	    <script type="text/javascript" src="js/json.js"></script>
-	    <script type="text/javascript" src="js/prototype/prototype.js"></script>
-	    <script type="text/javascript" src="js/garmin/util/Util-Broadcaster.js"></script>
-	    <script type="text/javascript" src="js/garmin/util/Util-BrowserDetect.js"></script>
-	    <script type="text/javascript" src="js/garmin/util/Util-DateTimeFormat.js"></script>
-	    <script type="text/javascript" src="js/garmin/util/Util-PluginDetect.js"></script>
-	    <script type="text/javascript" src="js/garmin/util/Util-XmlConverter.js"></script>
-	    <script type="text/javascript" src="js/garmin/device/GarminObjectGenerator.js"></script>
-	    <script type="text/javascript" src="js/garmin/device/GarminGpsDataStructures.js"></script>
-	    <script type="text/javascript" src="js/garmin/device/GarminPluginUtils.js"></script>
-	    <script type="text/javascript" src="js/garmin/device/GarminDevice.js"></script>
-	    <script type="text/javascript" src="js/garmin/device/GarminDevicePlugin.js"></script>
-	    <script type="text/javascript" src="js/garmin/device/GarminDeviceControl.js"></script>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" />
+</head>
+<body>
+    <script type="text/javascript" src="js/json.js"></script>
+    <script type="text/javascript" src="js/prototype/prototype.js"></script>
+    <script type="text/javascript" src="js/garmin/util/Util-Broadcaster.js"></script>
+    <script type="text/javascript" src="js/garmin/util/Util-BrowserDetect.js"></script>
+    <script type="text/javascript" src="js/garmin/util/Util-DateTimeFormat.js"></script>
+    <script type="text/javascript" src="js/garmin/util/Util-PluginDetect.js"></script>
+    <script type="text/javascript" src="js/garmin/util/Util-XmlConverter.js"></script>
+    <script type="text/javascript" src="js/garmin/device/GarminObjectGenerator.js"></script>
+    <script type="text/javascript" src="js/garmin/device/GarminGpsDataStructures.js"></script>
+    <script type="text/javascript" src="js/garmin/device/GarminPluginUtils.js"></script>
+    <script type="text/javascript" src="js/garmin/device/GarminDevice.js"></script>
+    <script type="text/javascript" src="js/garmin/device/GarminDevicePlugin.js"></script>
+    <script type="text/javascript" src="js/garmin/device/GarminDeviceControl.js"></script>
+    <script type="text/javascript">
+        var garminController = null;
+        var listener = Class.create();
+        var listenerHTML = Class.create();
 
-	    <script type="text/javascript">
-	        var garminController = null;
-	        var listener = Class.create();
-	        var listenerHTML = Class.create();
+        function escapeXmlChars(strInput) {
+            // replace special characters that will error out in xml
+            strInput = strInput.replace(/&/g, "&");
+            strInput = strInput.replace(/[<]/g, "<");
+            strInput = strInput.replace(/>/g, ">");
+            strInput = strInput.replace(/"/g, "");
+            strInput = strInput.replace(/'/g, "&apos;");
+            return (strInput);
+        }
 
-	        function escapeXmlChars(strInput)
-            {
-	            // replace special characters that will error out in xml
-	            strInput = strInput.replace(/&/g, "&");
-	            strInput = strInput.replace(/[<]/g, "<");
-	            strInput = strInput.replace(/>/g, ">");
-	            strInput = strInput.replace(/"/g, "");
-	            strInput = strInput.replace(/'/g, "&apos;");
-	            return (strInput);
-	        }
+        function booleanAttrVal(value) {
+            if (value) {
+                return "'true'";
+            }
 
-	        function booleanAttrVal(value)
-          {
-                if (value)
-                {
-                    return "'true'";
+            return "'false'";
+        }
+
+        function DevicesString(devices) {
+            var xml = "<Devices>";
+            if (devices !== null) {
+                for (var i = 0; i < devices.length; i++) {
+                    try {
+                        var deviceXml = "<Device";
+                        deviceXml += " Number=" + "'" + devices[i].getNumber() + "'";
+                        deviceXml += " DisplayName=" + "'" + escapeXmlChars(devices[i].getDisplayName()) + "'";
+                        deviceXml += " Id=" + "'" + devices[i].getId() + "'";
+                        deviceXml += " SoftwareVersion=" + "'" + escapeXmlChars(devices[i].getSoftwareVersion()) + "'";
+
+                        var dataTypes = devices[i].getDeviceDataTypes().values();
+                        for (var j = 0; j < dataTypes.length; j++) {
+                            if (dataTypes[j].getTypeName() == "FitnessWorkouts") {
+                                deviceXml += " SupportReadWorkout=" + booleanAttrVal(dataTypes[j].hasReadAccess());
+                                deviceXml += " SupportWriteWorkout=" + booleanAttrVal(dataTypes[j].hasWriteAccess());
+                            }
+                            else if (dataTypes[j].getTypeName() == "FitnessUserProfile") {
+                                deviceXml += " SupportReadProfile=" + booleanAttrVal(dataTypes[j].hasReadAccess());
+                                deviceXml += " SupportWriteProfile=" + booleanAttrVal(dataTypes[j].hasWriteAccess());
+                            }
+                        }
+
+                        // TODO add direct file & FIT support
+
+                        deviceXml += "/>";
+                        xml += deviceXml;
+                    }
+                    catch (e) {
+                    }
                 }
+            }
+            xml += "<\/Devices>";
+            return xml.toString();
+        }
 
-	            return "'false'";
-	        }
-
-          function DevicesString(devices)
+        listener.prototype =
           {
-	            var xml = "<Devices>";
-	            if (devices !== null)
-              {
-                  for (var i = 0; i < devices.length; i++)
-                  {
-                      try
-                      {
-	                        var deviceXml = "<Device";
-	                        deviceXml += " Number=" + "'" + devices[i].getNumber() + "'";
-	                        deviceXml += " DisplayName=" + "'" + escapeXmlChars(devices[i].getDisplayName()) + "'";
-	                        deviceXml += " Id=" + "'" + devices[i].getId() + "'";
-	                        deviceXml += " SoftwareVersion=" + "'" + escapeXmlChars(devices[i].getSoftwareVersion()) + "'";
-
-	                        var dataTypes = devices[i].getDeviceDataTypes().values();
-	                        for (var j = 0; j < dataTypes.length; j++)
-                          {
-	                            if (dataTypes[j].getTypeName() == "FitnessWorkouts")
-                              {
-	                                deviceXml += " SupportReadWorkout=" + booleanAttrVal(dataTypes[j].hasReadAccess());
-	                                deviceXml += " SupportWriteWorkout=" + booleanAttrVal(dataTypes[j].hasWriteAccess());
-	                            }
-	                            else if (dataTypes[j].getTypeName() == "FitnessUserProfile")
-                              {
-	                                deviceXml += " SupportReadProfile=" + booleanAttrVal(dataTypes[j].hasReadAccess());
-	                                deviceXml += " SupportWriteProfile=" + booleanAttrVal(dataTypes[j].hasWriteAccess());
-	                            }
-	                        }
-
-	                        // TODO add direct file & FIT support
-
-	                        deviceXml += "/>";
-	                        xml += deviceXml;
-	                    }
-	                    catch (e)
-                      {
-                      }
-	                }
-	            }
-	            xml += "<\/Devices>";
-	            return xml.toString();
-	        }
-
-	        listener.prototype =
-          {
-              initialize: function ()
-              {
+              initialize: function () {
               },
-              onStartFindDevices: function (json)
-              {
+              onStartFindDevices: function (json) {
                   window.external.OnStartFindDevices();
               },
-              onFinishFindDevices: function (json)
-              {
+              onFinishFindDevices: function (json) {
                   window.external.OnFinishFindDevices(DevicesString(json.controller.getDevices()));
               },
-              onProgressReadFromDevice: function (json)
-              {
+              onProgressReadFromDevice: function (json) {
                   window.external.OnProgressReadFromDevice(json.progress.getPercentage());
               },
-              onFinishReadFromDevice: function (json)
-              {
+              onFinishReadFromDevice: function (json) {
                   window.external.OnFinishReadFromDevice(json.success, json.controller.gpsDataString);
               },
-              onCancelReadFromDevice: function (json)
-              {
+              onCancelReadFromDevice: function (json) {
                   window.external.OnFinishReadFromDevice(false, "");
               },
-              onProgressWriteToDevice: function (json)
-              {
+              onProgressWriteToDevice: function (json) {
                   window.external.OnProgressWriteToDevice(json.progress.getPercentage());
               },
-              onFinishWriteToDevice: function (json)
-              {
+              onFinishWriteToDevice: function (json) {
                   window.external.OnFinishWriteToDevice(json.success, json.controller.gpsDataString);
               },
-              onCancelWriteToDevice: function (json)
-              {
+              onCancelWriteToDevice: function (json) {
                   window.external.OnFinishWriteToDevice(false, "");
               },
-              onException: function (json)
-              {
+              onException: function (json) {
                   window.external.OnExceptionTriggered(e.message);
               }
           };
 
-	        listenerHTML.prototype =
+        listenerHTML.prototype =
           {
-              initialize: function ()
-              {
+              initialize: function () {
               },
-              onStartFindDevices: function (json)
-              {
+              onStartFindDevices: function (json) {
               },
-              onFinishFindDevices: function (json)
-              {
-                  alert("Find devices finish");
+              onFinishFindDevices: function (json) {
+                  SetDeviceNumber(0);
+                  ReadWorkoutsFromFitnessDevice();
               },
-              onProgressReadFromDevice: function (json)
-              {
+              onProgressReadFromDevice: function (json) {
               },
-              onFinishReadFromDevice: function (json)
-              {
+              onFinishReadFromDevice: function (json) {
                   alert("Read from devices finish");
               },
-              onCancelReadFromDevice: function (json)
-              {
+              onCancelReadFromDevice: function (json) {
               },
-              onProgressWriteToDevice: function (json)
-              {
+              onProgressWriteToDevice: function (json) {
               },
-              onFinishWriteToDevice: function (json)
-              {
+              onFinishWriteToDevice: function (json) {
                   alert("Write to devices finish");
               },
-              onCancelWriteToDevice: function (json)
-              {
+              onCancelWriteToDevice: function (json) {
               },
-              onException: function (json)
-              {
+              onException: function (json) {
                   alert("Exception");
               }
           };
-          function Initialize()
-          {
-              try
-              {
-	                garminController = new Garmin.DeviceControl();
-                  garminController.register(new listener());
+        function Initialize() {
+            try {
+                garminController = new Garmin.DeviceControl();
+                garminController.register(new listener());
 
-	                if (garminController.isPluginInitialized())
-                  {
-	                    if (garminController.unlock(["http://code.google.com/p/garminworkouts/", "da513ad4456128dda202f2225970cba7"]))
-                      {
-	                        window.external.OnInitializeCompleted(true, "");
-	                    }
-	                    else
-                      {
-	                        garminController = null;
-	                        window.external.OnInitializeCompleted(false, "Garmin.DeviceControl.unlock() failed.");
-	                    }
-	                }
-	                else
-                  {
-	                    garminController = null;
-	                    window.external.OnInitializeCompleted(false, "Garmin.DeviceControl.isPluginInitialized() failed.");
-	                }
-	            }
-	            catch (e)
-              {
-	                garminController = null;
-	                window.external.OnInitializeCompleted(false, "Could not initialize Garmin.DeviceControl().\n" + e.message);
-	            }
-	        }
-	        
-          function InitializeHTML()
-          {
-              try
-              {
-	                garminController = new Garmin.DeviceControl();
-                  garminController.register(new listenerHTML());
+                if (garminController.isPluginInitialized()) {
+                    if (garminController.unlock(["http://code.google.com/p/garminworkouts/", "da513ad4456128dda202f2225970cba7"])) {
+                        window.external.OnInitializeCompleted(true, "");
+                    }
+                    else {
+                        garminController = null;
+                        window.external.OnInitializeCompleted(false, "Garmin.DeviceControl.unlock() failed.");
+                    }
+                }
+                else {
+                    garminController = null;
+                    window.external.OnInitializeCompleted(false, "Garmin.DeviceControl.isPluginInitialized() failed.");
+                }
+            }
+            catch (e) {
+                garminController = null;
+                window.external.OnInitializeCompleted(false, "Could not initialize Garmin.DeviceControl().\n" + e.message);
+            }
+        }
 
-	                if (garminController.isPluginInitialized())
-                  {
-	                    if (garminController.unlock(["http://code.google.com/p/garminworkouts/", "da513ad4456128dda202f2225970cba7"]))
-                      {
-	                        alert("Init success");
-	                    }
-	                    else
-                      {
-	                        alert("Init failed");
-	                    }
-	                }
-	                else
-                  {
-	                        alert("Init failed");
-	                }
-	            }
-	            catch (e)
-              {
-	                alert("Init failed");
-	            }
-	        }
-	        
-	        function FindDevices()
-          {
-	            garminController.findDevices();
-	        }
+        function InitializeHTML() {
+            try {
+                garminController = new Garmin.DeviceControl();
+                garminController.register(new listenerHTML());
 
-	        function SetDeviceNumber(deviceNum)
-          {
-	            garminController.setDeviceNumber(deviceNum);
-	        }
+                if (garminController.isPluginInitialized()) {
+                    if (garminController.unlock(["http://code.google.com/p/garminworkouts/", "da513ad4456128dda202f2225970cba7"])) {
+                        alert("Init success");
+                    }
+                    else {
+                        alert("Init failed");
+                    }
+                }
+                else {
+                    alert("Init failed");
+                }
+            }
+            catch (e) {
+                alert("Init failed");
+            }
+        }
 
-	        function ReadUserProfileFromFitnessDevice()
-	        {
-	            garminController.readUserProfileFromFitnessDevice();
-	        }
+        function FindDevices() {
+            garminController.findDevices();
+        }
 
-	        function ReadWorkoutsFromFitnessDevice()
-          {
-	            garminController.readWorkoutsFromFitnessDevice();
-	        }
+        function SetDeviceNumber(deviceNum) {
+            garminController.setDeviceNumber(deviceNum);
+        }
 
-	        function CancelReadFromDevice()
-          {
-	            garminController.cancelReadFromDevice();
-	        }
+        function ReadUserProfileFromFitnessDevice() {
+            garminController.readUserProfileFromFitnessDevice();
+        }
 
-	        function CancelWriteToDevice()
-          {
-	            garminController.cancelWriteToDevice();
-	        }
+        function ReadWorkoutsFromFitnessDevice() {
+            garminController.readWorkoutsFromFitnessDevice();
+        }
 
-	        function WriteUserProfileToFitnessDevice(tcxString, fileName)
-          {
-	            garminController.writeUserProfileToFitnessDevice(tcxString, fileName);
-	        }
+        function CancelReadFromDevice() {
+            garminController.cancelReadFromDevice();
+        }
 
-	        function WriteWorkoutsToFitnessDevice(tcxString, fileName)
-          {
-	            garminController.writeWorkoutsToFitnessDevice(tcxString, fileName);
-	        }
-        </script>
-        Garmin Fitness Communicator page
-        
-      	<form method="GET" action="">
-						<input type="button" 	onclick="InitializeHTML();" value="Initialize" /><br>
-						<input type="button" 	onclick="FindDevices();" value="Find devices" /><br>
-						<input type="button" 	onclick="SetDeviceNumber(0);" value="Set device number" /><br>
-						<input type="button" 	onclick="ReadWorkoutsFromFitnessDevice();" value="Read workouts" /><br>
-				</form>
-    </body>
+        function CancelWriteToDevice() {
+            garminController.cancelWriteToDevice();
+        }
+
+        function WriteUserProfileToFitnessDevice(tcxString, fileName) {
+            garminController.writeUserProfileToFitnessDevice(tcxString, fileName);
+        }
+
+        function WriteWorkoutsToFitnessDevice(tcxString, fileName) {
+            garminController.writeWorkoutsToFitnessDevice(tcxString, fileName);
+        }
+    </script>
+    Garmin Fitness Communicator page
+    <form method="GET" action="">
+    <input type="button" onclick="InitializeHTML();" value="Initialize" /><br>
+    <input type="button" onclick="FindDevices();" value="Find devices" /><br>
+    </form>
+</body>
 </html>

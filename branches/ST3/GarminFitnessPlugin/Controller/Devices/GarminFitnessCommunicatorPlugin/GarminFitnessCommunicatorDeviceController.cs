@@ -100,16 +100,10 @@ namespace GarminFitnessPlugin.Controller
             {
                 m_PendingInitialize = true;
             }
-            else if(!IsInitialized)
-            {
-                m_CommunicatorBridge.Initialize();
-            }
             else
             {
-                if (InitializationCompleted != null)
-                {
-                    InitializationCompleted(this, IsInitialized);
-                }
+                m_Initialized = false;
+                m_CommunicatorBridge.Initialize();
             }
         }
 

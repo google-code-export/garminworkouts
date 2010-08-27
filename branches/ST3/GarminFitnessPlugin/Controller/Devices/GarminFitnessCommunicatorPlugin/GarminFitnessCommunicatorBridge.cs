@@ -140,10 +140,9 @@ namespace GarminFitnessPlugin.Controller
             }
         }
 
-        public void OnProgressReadFromDevice(int percentage)
+        public void OnProgressReadFromDevice(string percentage)
         {
         }
-
 
         public void OnFinishReadFromDevice(bool success, string dataString)
         {
@@ -153,7 +152,7 @@ namespace GarminFitnessPlugin.Controller
             }
         }
 
-        public void OnProgressWriteToDevice(int percentage)
+        public void OnProgressWriteToDevice(string percentage)
         {
         }
 

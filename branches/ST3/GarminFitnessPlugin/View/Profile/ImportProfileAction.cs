@@ -87,7 +87,6 @@ namespace GarminFitnessPlugin.View
 
 #endregion
 
-
         void OnDeviceManagerTaskCompleted(GarminDeviceManager manager, GarminDeviceManager.BasicTask task, bool succeeded, String errorText)
         {
             if (!succeeded)

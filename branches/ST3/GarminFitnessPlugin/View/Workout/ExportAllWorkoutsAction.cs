@@ -59,7 +59,7 @@ namespace GarminFitnessPlugin.View
 
         public void Run(System.Drawing.Rectangle rectButton)
         {
-            if ((!GarminDeviceManager.Instance.IsInitialized && GarminDeviceManager.Instance.GetPendingTaskCount() == 1) ||
+            if ((!GarminDeviceManager.Instance.IsInitialized && GarminDeviceManager.Instance.PendingTaskCount == 1) ||
                 GarminDeviceManager.Instance.AreAllTasksFinished)
             {
                 GarminFitnessView currentView = (GarminFitnessView)PluginMain.GetApplication().ActiveView;
