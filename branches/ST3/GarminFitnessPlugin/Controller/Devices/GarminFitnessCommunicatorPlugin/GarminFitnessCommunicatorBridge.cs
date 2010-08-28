@@ -4,6 +4,7 @@ using System.Runtime.InteropServices;
 using System.Security.Permissions;
 using System.Text;
 using System.Windows.Forms;
+using System.Collections;
 
 namespace GarminFitnessPlugin.Controller
 {
@@ -62,6 +63,7 @@ namespace GarminFitnessPlugin.Controller
 
             private string m_DevicesString = String.Empty;
         }
+
         public class TranferCompletedEventArgs : EventArgs
         {
             public TranferCompletedEventArgs(bool success, string dataString)
@@ -83,22 +85,99 @@ namespace GarminFitnessPlugin.Controller
             private bool m_Success = false;
             private string m_DataString = String.Empty;
         }
+
+        [PermissionSet(SecurityAction.Demand, Name = "FullTrust")]
+        [ComVisibleAttribute(true)]
+        public class CommunicatorFileList : IList<String>
+        {
+#region IList<string> Members
+
+            public int IndexOf(string item)
+            {
+                return m_List.IndexOf(item);
+            }
+
+            public void Insert(int index, string item)
+            {
+                m_List.Insert(index, item);
+            }
+
+            public void RemoveAt(int index)
+            {
+                m_List.RemoveAt(index);
+            }
+
+            public string this[int index]
+            {
+                get { return m_List[index]; }
+                set { m_List[index] = value; }
+            }
+
+            public void Add(string item)
+            {
+                m_List.Add(item);
+            }
+
+            public void Clear()
+            {
+                m_List.Clear();
+            }
+
+            public bool Contains(string item)
+            {
+                return m_List.Contains(item);
+            }
+
+            public void CopyTo(string[] array, int arrayIndex)
+            {
+                m_List.CopyTo(array, arrayIndex);
+            }
+
+            public int Count
+            {
+                get { return m_List.Count; }
+            }
+
+            public bool IsReadOnly
+            {
+                get { return false; }
+            }
+
+            public bool Remove(string item)
+            {
+                return m_List.Remove(item);
+            }
+
+            public IEnumerator<string> GetEnumerator()
+            {
+                return m_List.GetEnumerator();
+            }
+
+            IEnumerator IEnumerable.GetEnumerator()
+            {
+                return m_List.GetEnumerator();
+            }
+
+#endregion
+
+            private List<String> m_List = new List<String>();
+        }
         
         public GarminFitnessCommunicatorBridge()
         {
             m_LocalWebPageLocation = typeof(PluginMain).Assembly.Location;
             m_LocalWebPageLocation = m_LocalWebPageLocation.Substring(0, m_LocalWebPageLocation.LastIndexOf('\\'));
             m_LocalWebPageLocation = m_LocalWebPageLocation.Substring(0, m_LocalWebPageLocation.LastIndexOf('\\'));
-            m_LocalWebPageLocation += "\\Communicator\\GarminFitness.html";
+            m_LocalWebPageLocation += "\\Communicator\\";
 
             m_HiddenWebBrowser.ObjectForScripting = this;
             m_HiddenWebBrowser.DocumentCompleted += new WebBrowserDocumentCompletedEventHandler(OnWebBrowserDocumentCompleted);
-            m_HiddenWebBrowser.Navigate(m_LocalWebPageLocation);
+            m_HiddenWebBrowser.Navigate(m_LocalWebPageLocation + "GarminFitness.html");
         }
 
         private void OnWebBrowserDocumentCompleted(object sender, WebBrowserDocumentCompletedEventArgs e)
         {
-            if (e.Url.LocalPath.Equals(m_LocalWebPageLocation))
+            if (e.Url.LocalPath.Equals(m_LocalWebPageLocation + "GarminFitness.html"))
             {
                 m_HiddenWebBrowser.DocumentCompleted -= new WebBrowserDocumentCompletedEventHandler(OnWebBrowserDocumentCompleted);
 
@@ -211,11 +290,44 @@ namespace GarminFitnessPlugin.Controller
                                                      new object[] { tcxString, fileName });
 	    }
 
-	    public void WriteWorkoutsToFitnessDevice(string tcxString, string fileName)
+        public void WriteWorkoutsToFitnessDevice(string tcxString, string fileName)
         {
-		    m_HiddenWebBrowser.Document.InvokeScript("WriteWorkoutsToFitnessDevice",
+            m_HiddenWebBrowser.Document.InvokeScript("WriteWorkoutsToFitnessDevice",
                                                      new object[] { tcxString, fileName });
-	    }
+        }
+
+        public void WriteWorkoutsToFile(List<string> files, string destinationPath)
+        {
+            try
+            {
+                CommunicatorFileList filesList = GenerateCommunicatorFileExportList(files, destinationPath);
+
+                string downloadXML = m_HiddenWebBrowser.Document.InvokeScript("BuildMultipleDeviceDownloadsXML",
+                                                                              new object[] { filesList }) as string;
+
+                m_HiddenWebBrowser.Document.InvokeScript("DownloadToDevice", new object[] { downloadXML });
+            }
+            catch (Exception e)
+            {
+                throw e;
+            }
+        }
+
+        private CommunicatorFileList GenerateCommunicatorFileExportList(List<string> files, string destinationPath)
+        {
+            CommunicatorFileList result = new CommunicatorFileList();
+
+            foreach (string filename in files)
+            {
+                string sourceFile = m_LocalWebPageLocation.Replace('\\', '/');
+
+                sourceFile = sourceFile.Replace(':', '|');
+                result.Add("file:///" + sourceFile + "temp/" + filename);
+                result.Add(destinationPath.Replace('/', '\\') + "\\" + filename);
+            }
+
+            return result;
+        }
 
         public bool IsControllerReady
         {

@@ -40,6 +40,10 @@ namespace GarminFitnessPlugin.Controller
                 {
                     m_SupportsWriteWorkout = Boolean.Parse(attribute.Value);
                 }
+                else if (attribute.Name.Equals("WorkoutFileTransferPath"))
+                {
+                    m_WorkoutFileTransferPath = attribute.Value;
+                }
                 else if (attribute.Name.Equals("SupportReadProfile"))
                 {
                     m_SupportsReadProfile = Boolean.Parse(attribute.Value);
@@ -151,26 +155,56 @@ namespace GarminFitnessPlugin.Controller
 
             Debug.Assert(m_CurrentOperation == DeviceOperations.Operation_Idle);
 
-            string fileName;
-
-            if (workouts.Count == 1)
+            if (SupportsWorkoutMassStorageTransfer)
             {
-                fileName = Utils.GetWorkoutFilename(workouts[0]);
+                List<String> filenames = new List<String>();
+                string fileDestination = typeof(PluginMain).Assembly.Location;
+
+                fileDestination = fileDestination.Substring(0, fileDestination.LastIndexOf('\\'));
+                fileDestination = fileDestination.Substring(0, fileDestination.LastIndexOf('\\'));
+                fileDestination = fileDestination  + "\\Communicator\\temp\\";
+
+                Directory.CreateDirectory(fileDestination);
+
+                foreach (IWorkout currentWorkout in workouts)
+                {
+                    string fileName = Utils.GetWorkoutFilename(currentWorkout);
+                    FileStream fileStream = File.Create(fileDestination + fileName);
+
+                    WorkoutExporter.ExportWorkout(currentWorkout, fileStream);
+                    fileStream.Close();
+                    filenames.Add(fileName);
+                }
+
+                m_CurrentOperation = DeviceOperations.Operation_WriteWorkout;
+
+                m_Controller.CommunicatorBridge.WriteToDeviceCompleted += new EventHandler<GarminFitnessCommunicatorBridge.TranferCompletedEventArgs>(OnBridgeWriteToDeviceCompleted);
+                m_Controller.CommunicatorBridge.SetDeviceNumber(m_DeviceNumber);
+                m_Controller.CommunicatorBridge.WriteWorkoutsToFile(filenames, WorkoutFileTransferPath);
             }
             else
             {
-                fileName = "Workouts.tcx";
+                string fileName;
+
+                if (workouts.Count == 1)
+                {
+                    fileName = Utils.GetWorkoutFilename(workouts[0]);
+                }
+                else
+                {
+                    fileName = "Workouts.tcx";
+                }
+                MemoryStream textStream = new MemoryStream();
+
+                WorkoutExporter.ExportWorkout(workouts, textStream);
+                string xmlCode = Encoding.UTF8.GetString(textStream.GetBuffer());
+
+                m_Controller.CommunicatorBridge.WriteToDeviceCompleted += new EventHandler<GarminFitnessCommunicatorBridge.TranferCompletedEventArgs>(OnBridgeWriteToDeviceCompleted);
+                m_CurrentOperation = DeviceOperations.Operation_WriteWorkout;
+
+                m_Controller.CommunicatorBridge.SetDeviceNumber(m_DeviceNumber);
+                m_Controller.CommunicatorBridge.WriteWorkoutsToFitnessDevice(xmlCode, fileName);
             }
-            MemoryStream textStream = new MemoryStream();
-
-            WorkoutExporter.ExportWorkout(workouts, textStream);
-            string xmlCode = Encoding.UTF8.GetString(textStream.GetBuffer());
-
-            m_Controller.CommunicatorBridge.WriteToDeviceCompleted += new EventHandler<GarminFitnessCommunicatorBridge.TranferCompletedEventArgs>(OnBridgeWriteToDeviceCompleted);
-            m_CurrentOperation = DeviceOperations.Operation_WriteWorkout;
-
-            m_Controller.CommunicatorBridge.SetDeviceNumber(m_DeviceNumber);
-            m_Controller.CommunicatorBridge.WriteWorkoutsToFitnessDevice(xmlCode, fileName);
         }
 
         public void ReadWorkouts()
@@ -233,6 +267,16 @@ namespace GarminFitnessPlugin.Controller
             get { return m_SupportsWriteWorkout; }
         }
 
+        public bool SupportsWorkoutMassStorageTransfer
+        {
+            get { return m_WorkoutFileTransferPath != String.Empty; }
+        }
+
+        public String WorkoutFileTransferPath
+        {
+            get { return m_WorkoutFileTransferPath; }
+        }
+
         public bool SupportsReadProfile
         {
             get { return m_SupportsReadProfile; }
@@ -271,6 +315,7 @@ namespace GarminFitnessPlugin.Controller
         private string m_SoftwareVersion = string.Empty;
         private bool m_SupportsReadWorkout = false;
         private bool m_SupportsWriteWorkout = false;
+        private string m_WorkoutFileTransferPath = String.Empty;
         private bool m_SupportsReadProfile = false;
         private bool m_SupportsWriteProfile = false;
     }

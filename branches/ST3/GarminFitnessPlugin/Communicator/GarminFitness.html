@@ -55,6 +55,13 @@
                             if (dataTypes[j].getTypeName() == "FitnessWorkouts") {
                                 deviceXml += " SupportReadWorkout=" + booleanAttrVal(dataTypes[j].hasReadAccess());
                                 deviceXml += " SupportWriteWorkout=" + booleanAttrVal(dataTypes[j].hasWriteAccess());
+
+                                if (dataTypes[j].getReadFilePath() !== "") {
+                                    deviceXml += " WorkoutFileTransferPath='" + dataTypes[j].getReadFilePath() + "'";
+                                }
+                                else if (dataTypes[j].getWriteFilePath() !== "") {
+                                    deviceXml += " WorkoutFileTransferPath='" + dataTypes[j].getReadFilePath() + "'";
+                                }
                             }
                             else if (dataTypes[j].getTypeName() == "FitnessUserProfile") {
                                 deviceXml += " SupportReadProfile=" + booleanAttrVal(dataTypes[j].hasReadAccess());
@@ -62,7 +69,7 @@
                             }
                         }
 
-                        // TODO add direct file & FIT support
+                        // TODO add FIT support
 
                         deviceXml += "/>";
                         xml += deviceXml;
@@ -136,6 +143,7 @@
                   alert("Exception");
               }
           };
+
         function Initialize() {
             try {
                 garminController = new Garmin.DeviceControl();
@@ -214,6 +222,21 @@
         function WriteWorkoutsToFitnessDevice(tcxString, fileName) {
             garminController.writeWorkoutsToFitnessDevice(tcxString, fileName);
         }
+
+        function BuildMultipleDeviceDownloadsXML(descriptionArray) {
+            var array = new Array();
+
+            for (var i = 0; i < descriptionArray.count(); i = i + 1) {
+                array[i] = descriptionArray.item(i);
+            }
+
+            return Garmin.GpiUtil.buildMultipleDeviceDownloadsXML(array);
+        }
+
+        function DownloadToDevice(downloadXML) {
+            garminController.downloadToDevice(downloadXML);
+        }
+
     </script>
     Garmin Fitness Communicator page
     <form method="GET" action="">
