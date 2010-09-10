@@ -20,6 +20,8 @@ namespace GarminFitnessPlugin.Data
             m_Id.Value = workoutId;
 
             CreateStepsList();
+
+            WorkoutChanged += new WorkoutChangedEventHandler(OnWorkoutChanged);
         }
 
         public Workout(string name, IActivityCategory category)
@@ -577,6 +579,16 @@ namespace GarminFitnessPlugin.Data
             set { Debug.Assert(false); }
         }
 
+        public override List<XmlNode> StepsExtensions
+        {
+            get { return m_StepsExtensions; }
+        }
+
+        public override List<XmlNode> STExtensions
+        {
+            get { return m_STExtensions; }
+        }
+
         private GarminFitnessString m_Name = new GarminFitnessString("", 15);
         private GarminFitnessGuid m_Id = new GarminFitnessGuid();
         private GarminFitnessDate m_LastExportDate = new GarminFitnessDate();
@@ -586,5 +598,7 @@ namespace GarminFitnessPlugin.Data
         private IActivityCategory m_Category;
         private GarminFitnessString m_Notes = new GarminFitnessString("", 30000);
         private GarminFitnessBool m_AddToDailyViewOnSchedule = new GarminFitnessBool(false);
+        private List<XmlNode> m_STExtensions = new List<XmlNode>();
+        private List<XmlNode> m_StepsExtensions = new List<XmlNode>();
     }
 }

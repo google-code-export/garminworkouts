@@ -54,15 +54,16 @@ namespace GarminFitnessPlugin.Data
         public virtual void Serialize(XmlNode parentNode, String nodeName, XmlDocument document)
         {
             XmlAttribute attribute = document.CreateAttribute(Constants.XsiTypeTCXString, Constants.xsins);
+            XmlNode childNode = document.CreateElement(nodeName);
 
+            parentNode.AppendChild(childNode);
             attribute.Value = Constants.StepTypeTCXString[(int)Type];
-            parentNode.Attributes.Append(attribute);
+            childNode.Attributes.Append(attribute);
 
             XmlNode idNode = document.CreateElement("StepId");
             idNode.AppendChild(document.CreateTextNode(ParentWorkout.GetStepExportId(this).ToString()));
-            parentNode.AppendChild(idNode);
+            childNode.AppendChild(idNode);
 
-            // Extension
             XmlNode valueNode;
             XmlNode extensionNode;
 
@@ -72,7 +73,7 @@ namespace GarminFitnessPlugin.Data
             extensionNode.AppendChild(valueNode);
             m_Notes.Serialize(extensionNode, "Notes", document);
 
-            ParentConcreteWorkout.AddSportTracksExtension(extensionNode);
+            ParentWorkout.AddSportTracksExtension(extensionNode);
         }
 
         public virtual void Deserialize(XmlNode parentNode)
@@ -136,7 +137,7 @@ namespace GarminFitnessPlugin.Data
                 }
                 else
                 {
-                    UInt16 partIndex = ParentConcreteWorkout.GetStepSplitPart(this);
+                    UInt16 partIndex = (UInt16)(ParentConcreteWorkout.GetStepSplitPart(this) - 1);
 
                     return GarminWorkoutManager.Instance.CreateWorkoutPart(ParentConcreteWorkout, partIndex);
                 }

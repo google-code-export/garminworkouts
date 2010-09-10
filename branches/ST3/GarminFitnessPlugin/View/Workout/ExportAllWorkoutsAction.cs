@@ -95,12 +95,33 @@ namespace GarminFitnessPlugin.View
             try
             {
                 GarminDeviceManager.Instance.TaskCompleted += new GarminDeviceManager.TaskCompletedEventHandler(OnDeviceManagerTaskCompleted);
+                List<IWorkout> workoutsToExport = new List<IWorkout>();
 
                 Utils.HijackMainWindow();
 
                 // Export using Communicator Plugin
                 GarminDeviceManager.Instance.SetOperatingDevice();
-                GarminDeviceManager.Instance.ExportWorkout(GarminWorkoutManager.Instance.Workouts);
+
+
+                foreach (IWorkout currentWorkout in GarminWorkoutManager.Instance.Workouts)
+                {
+                    if (currentWorkout.GetSplitPartsCount() > 1)
+                    {
+                        List<WorkoutPart> splitParts = currentWorkout.SplitInSeperateParts();
+
+                        // Replace the workout by it's parts
+                        foreach (WorkoutPart currentPart in splitParts)
+                        {
+                            workoutsToExport.Add(currentPart);
+                        }
+                    }
+                    else
+                    {
+                        workoutsToExport.Add(currentWorkout);
+                    }
+                }
+
+                GarminDeviceManager.Instance.ExportWorkout(workoutsToExport); 
             }
             catch (FileNotFoundException)
             {
@@ -185,7 +206,10 @@ namespace GarminFitnessPlugin.View
                 {
                     GarminDeviceManager.ExportWorkoutTask concreteTask = (GarminDeviceManager.ExportWorkoutTask)task;
 
-                    m_FailedExportList.AddRange(concreteTask.Workouts);
+                    if(!m_FailedExportList.Contains(concreteTask.Workout.ConcreteWorkout))
+                    {
+                        m_FailedExportList.Add(concreteTask.Workout.ConcreteWorkout);
+                    }
                 }
                 else
                 {

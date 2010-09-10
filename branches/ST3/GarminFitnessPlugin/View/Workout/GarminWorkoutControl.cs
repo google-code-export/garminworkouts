@@ -153,6 +153,15 @@ namespace GarminFitnessPlugin.View
                     UpdateUIFromStep();
                 }
             }
+            else if(SelectedStep is WorkoutLinkStep)
+            {
+                WorkoutLinkStep concreteStep = SelectedStep as WorkoutLinkStep;
+
+                if (modifiedWorkout.ConcreteWorkout == concreteStep.LinkedWorkout)
+                {
+                    UpdateUIFromStep();
+                }
+            }
         }
 
         void OnWorkoutStepDurationChanged(IWorkout modifiedWorkout, RegularStep modifiedStep, IDuration modifiedDuration, PropertyChangedEventArgs changedProperty)

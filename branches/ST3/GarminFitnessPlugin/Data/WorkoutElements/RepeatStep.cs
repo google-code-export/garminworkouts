@@ -38,9 +38,9 @@ namespace GarminFitnessPlugin.Data
             m_RepetitionCount.Serialize(stream);
 
             stream.Write(BitConverter.GetBytes(StepsToRepeat.Count), 0, sizeof(Int32));
-            for (int i = 0; i < StepsToRepeat.Count; ++i)
+            foreach (IStep currentStep in StepsToRepeat)
             {
-                StepsToRepeat[i].Serialize(stream);
+                currentStep.Serialize(stream);
             }
         }
 
@@ -86,15 +86,12 @@ namespace GarminFitnessPlugin.Data
         {
             base.Serialize(parentNode, nodeName, document);
 
-            m_RepetitionCount.Serialize(parentNode, "Repetitions", document);
+            m_RepetitionCount.Serialize(parentNode.LastChild, "Repetitions", document);
 
             // Export all children
-            for (int i = 0; i < StepsToRepeat.Count; ++i)
+            foreach(IStep currentStep in StepsToRepeat)
             {
-                XmlNode childNode = document.CreateElement("Child");
-
-                StepsToRepeat[i].Serialize(childNode, "Child", document);
-                parentNode.AppendChild(childNode);
+                currentStep.Serialize(parentNode.LastChild, "Child", document);
             }
         }
 

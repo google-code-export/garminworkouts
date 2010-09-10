@@ -104,6 +104,8 @@ namespace GarminFitnessPlugin.Data
 
         public override void Serialize(XmlNode parentNode, String nodeName, XmlDocument document)
         {
+            bool addNodeToExtensions = false;
+
             if (Target.Type == ITarget.TargetType.Power)
             {
                 // Power was added to the format as an extension which gives me a headache
@@ -113,32 +115,43 @@ namespace GarminFitnessPlugin.Data
 
                 // Create the fake target
                 TargetFactory.Create(ITarget.TargetType.Null, this);
-                Serialize(parentNode, "", document);
+                Serialize(parentNode, nodeName, document);
+
+                // Remove the step extension that was added so there's no duplicate
+                ParentWorkout.STExtensions.RemoveAt(ParentWorkout.STExtensions.Count - 1);
 
                 // Restore old target
                 Target = realTarget;
 
                 // Create new parent node and add it to the extensions
-                parentNode = document.CreateElement("Step");
-                ParentConcreteWorkout.AddStepExtension(parentNode);
+                nodeName = "Step";
+                addNodeToExtensions = true;
             }
 
             // Ok now this the real stuff but the target can either be the fake one or the real one
-            base.Serialize(parentNode, "", document);
+            base.Serialize(parentNode, nodeName, document);
 
             if (Name != String.Empty && Name != null)
             {
-                m_Name.Serialize(parentNode, "Name", document);
+                m_Name.Serialize(parentNode.LastChild, "Name", document);
             }
 
             // Duration
-            Duration.Serialize(parentNode, "Duration", document);
+            Duration.Serialize(parentNode.LastChild, "Duration", document);
 
             // Intensity
-            m_IsRestingStep.Serialize(parentNode, "Intensity", document);
+            m_IsRestingStep.Serialize(parentNode.LastChild, "Intensity", document);
 
             // Target
-            Target.Serialize(parentNode, "Target", document);
+            Target.Serialize(parentNode.LastChild, "Target", document);
+
+            if (addNodeToExtensions)
+            {
+                XmlNode extensionNode = parentNode.LastChild;
+
+                parentNode.RemoveChild(extensionNode);
+                ParentWorkout.AddStepExtension(extensionNode);
+            }
         }
 
         public override void Deserialize(XmlNode parentNode)

@@ -89,18 +89,14 @@ namespace GarminFitnessPlugin.Controller
             AddTask(new SetOperationDeviceTask());
         }
 
-        public void ExportWorkout(List<Workout> workouts)
+        public void ExportWorkout(List<IWorkout> workouts)
         {
-            String workoutsText = String.Empty;
-
-            foreach(Workout current in workouts)
+            foreach (IWorkout current in workouts)
             {
-                workoutsText += String.Format(", {0}", current.Name);
+                Logger.Instance.LogText(String.Format("Exporting workouts {0}", current.Name));
+
+                AddTask(new ExportWorkoutTask(current));
             }
-
-            Logger.Instance.LogText(String.Format("Exporting workouts({0}){1}", workouts.Count, workoutsText));
-
-            AddTask(new ExportWorkoutTask(workouts));
         }
 
         public void ImportWorkouts()
@@ -455,15 +451,15 @@ namespace GarminFitnessPlugin.Controller
 
         public class ExportWorkoutTask : BasicTask
         {
-            public ExportWorkoutTask(List<Workout> workouts) :
+            public ExportWorkoutTask(IWorkout workout) :
                 base(TaskTypes.TaskType_ExportWorkout)
             {
-                m_Workouts = workouts;
+                m_Workout = workout;
             }
 
-            public List<Workout> Workouts
+            public IWorkout Workout
             {
-                get { return m_Workouts; }
+                get { return m_Workout; }
             }
 
             public override void ExecuteTask(IGarminDevice device)
@@ -475,18 +471,11 @@ namespace GarminFitnessPlugin.Controller
                 }
                 else
                 {
-                    List<IWorkout> allWorkouts = new List<IWorkout>();
-
-                    foreach (IWorkout workout in m_Workouts)
-                    {
-                        allWorkouts.Add(workout);
-                    }
-
-                    device.WriteWorkouts(allWorkouts);
+                    device.WriteWorkout(m_Workout);
                 }
             }
 
-            private List<Workout> m_Workouts;
+            private IWorkout m_Workout;
         }
 
         public class ExportProfileTask : BasicTask

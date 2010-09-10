@@ -365,7 +365,7 @@ namespace GarminFitnessPlugin.Controller
                 GarminFitnessInt32Range zoneIndex = new GarminFitnessInt32Range(index);
                 zoneIndex.Serialize(categoryNode, "Index", document);
 
-                step.ParentConcreteWorkout.AddSportTracksExtension(extensionNode);
+                step.ParentWorkout.AddSportTracksExtension(extensionNode);
             }
         }
 

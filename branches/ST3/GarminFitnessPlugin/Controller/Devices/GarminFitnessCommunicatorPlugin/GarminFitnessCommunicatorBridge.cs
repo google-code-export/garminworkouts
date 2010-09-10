@@ -1,10 +1,11 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using System.Security.Permissions;
 using System.Text;
+using System.Threading;
 using System.Windows.Forms;
-using System.Collections;
 
 namespace GarminFitnessPlugin.Controller
 {
@@ -277,6 +278,9 @@ namespace GarminFitnessPlugin.Controller
         public void CancelReadFromDevice()
         {
             m_HiddenWebBrowser.Document.InvokeScript("CancelReadFromDevice");
+
+            m_CancelReadFitnessDirectory = true;
+            m_HiddenWebBrowser.Document.InvokeScript("CancelReadFitnessDirectory");
         }
 
         public void CancelWriteToDevice()
@@ -306,6 +310,47 @@ namespace GarminFitnessPlugin.Controller
                                                                               new object[] { filesList }) as string;
 
                 m_HiddenWebBrowser.Document.InvokeScript("DownloadToDevice", new object[] { downloadXML });
+            }
+            catch (Exception e)
+            {
+                throw e;
+            }
+        }
+
+        public List<string> GetWorkoutFiles()
+        {
+            bool readcompleted = false;
+            String directoryXml = String.Empty;
+
+            m_CancelReadFitnessDirectory = false;
+            m_HiddenWebBrowser.Document.InvokeScript("StartReadFitnessDirectory");
+
+            while(!readcompleted && !m_CancelReadFitnessDirectory)
+            {
+                object status = m_HiddenWebBrowser.Document.InvokeScript("FinishReadFitnessDirectory");
+
+/*                if (status == 3) // Finished
+                {
+                    readcompleted = true;
+                }
+                else if (status == 2) // Waiting
+                {
+                    m_HiddenWebBrowser.Document.InvokeScript("RespondToMessageBox", new object[] { 1 });
+                }*/
+
+                Thread.Sleep(100);
+            }
+
+            directoryXml = m_HiddenWebBrowser.Document.InvokeScript("GetDirectoryXml") as String;
+
+            return null;
+        }
+
+        public void GetBinaryFile(string filePath)
+        {
+            try
+            {
+                m_HiddenWebBrowser.Document.InvokeScript("GetBinaryFile", new object[] { filePath });
             }
             catch (Exception e)
             {
@@ -344,5 +389,6 @@ namespace GarminFitnessPlugin.Controller
         private WebBrowser m_HiddenWebBrowser = new WebBrowser();
         private static String m_LocalWebPageLocation;
         private bool m_ControllerReady = false;
+        private bool m_CancelReadFitnessDirectory = true;
     }
 }

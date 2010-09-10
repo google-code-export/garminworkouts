@@ -63,14 +63,9 @@ namespace GarminFitnessPlugin.Data
 
         public void Serialize(XmlNode parentNode, string nodeName, XmlDocument document)
         {
-            XmlNode childNode;
-
             foreach (IStep currentStep in m_InternalStepList)
             {
-                childNode = document.CreateElement("Step");
-
-                currentStep.Serialize(childNode, "Step", document);
-                parentNode.AppendChild(childNode);
+                currentStep.Serialize(parentNode, "Step", document);
             }
         }
 
@@ -483,6 +478,11 @@ namespace GarminFitnessPlugin.Data
                 TriggerListChanged("Steps");
             }
 
+            if (preAddSplitCount != m_ParentWorkout.ConcreteWorkout.GetSplitPartsCount())
+            {
+                TriggerListChanged("PartsCount");
+            }
+
             return true;
         }
 
@@ -521,6 +521,11 @@ namespace GarminFitnessPlugin.Data
                 if (stepAdded)
                 {
                     TriggerListChanged("Steps");
+                }
+
+                if (preAddSplitCount != m_ParentWorkout.ConcreteWorkout.GetSplitPartsCount())
+                {
+                    TriggerListChanged("PartsCount");
                 }
 
                 return true;

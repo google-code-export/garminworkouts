@@ -29,6 +29,9 @@ namespace GarminFitnessPlugin.Data
                 XmlNode workoutNode = document.CreateElement(nodeName);
                 XmlAttribute attribute;
 
+                StepsExtensions.Clear();
+                STExtensions.Clear();
+
                 parentNode.AppendChild(workoutNode);
 
                 // Sport attribute
@@ -59,26 +62,26 @@ namespace GarminFitnessPlugin.Data
                 workoutNode.AppendChild(childNode);
 
                 // Steps extensions
-                if (m_StepsExtensions.Count > 0)
+                if (StepsExtensions.Count > 0)
                 {
                     XmlNode extensionsNode = document.CreateElement("Steps");
                     attribute = document.CreateAttribute("xmlns");
                     attribute.Value = "http://www.garmin.com/xmlschemas/WorkoutExtension/v1";
                     extensionsNode.Attributes.Append(attribute);
 
-                    for (int i = 0; i < m_StepsExtensions.Count; ++i)
+                    for (int i = 0; i < StepsExtensions.Count; ++i)
                     {
-                        XmlNode currentExtension = m_StepsExtensions[i];
+                        XmlNode currentExtension = StepsExtensions[i];
 
                         extensionsNode.AppendChild(currentExtension);
                     }
                     childNode.AppendChild(extensionsNode);
 
-                    m_StepsExtensions.Clear();
+                    StepsExtensions.Clear();
                 }
 
                 // ST extension
-                if (m_STExtensions.Count > 0)
+                if (STExtensions.Count > 0)
                 {
                     XmlNode extensionsNode = document.CreateElement("SportTracksExtensions");
                     attribute = document.CreateAttribute("xmlns");
@@ -90,15 +93,15 @@ namespace GarminFitnessPlugin.Data
                     categoryNode.AppendChild(document.CreateTextNode(Category.ReferenceId));
                     extensionsNode.AppendChild(categoryNode);
 
-                    for (int i = 0; i < m_STExtensions.Count; ++i)
+                    for (int i = 0; i < STExtensions.Count; ++i)
                     {
-                        XmlNode currentExtension = m_STExtensions[i];
+                        XmlNode currentExtension = STExtensions[i];
 
                         extensionsNode.AppendChild(currentExtension);
                     }
                     childNode.AppendChild(extensionsNode);
 
-                    m_STExtensions.Clear();
+                    STExtensions.Clear();
                 }
             }
         }
@@ -183,12 +186,12 @@ namespace GarminFitnessPlugin.Data
 
         public void AddSportTracksExtension(XmlNode extensionNode)
         {
-            m_STExtensions.Add(extensionNode);
+            STExtensions.Add(extensionNode);
         }
 
         public void AddStepExtension(XmlNode extensionNode)
         {
-            m_StepsExtensions.Add(extensionNode);
+            StepsExtensions.Add(extensionNode);
         }
 
         void OnStepChanged(IStep modifiedStep, PropertyChangedEventArgs changedProperty)
@@ -380,15 +383,15 @@ namespace GarminFitnessPlugin.Data
                 stepToFind = topMostRepeat;
             }
 
+            if (stepsList.Count > 0 &&
+                stepsList[0].ForceSplitOnStep && stepsList[0] != Steps[0])
+            {
+                stepPart++;
+                stepCounter = 0;
+            }
+
             foreach (IStep currentStep in stepsList)
             {
-                if ((currentStep.ForceSplitOnStep && currentStep != Steps[0]) ||
-                    stepCounter > Constants.MaxStepsPerWorkout)
-                {
-                    stepPart++;
-                    stepCounter = 0;
-                }
-
                 if (currentStep is WorkoutLinkStep)
                 {
                     WorkoutLinkStep linkStep = currentStep as WorkoutLinkStep;
@@ -420,6 +423,13 @@ namespace GarminFitnessPlugin.Data
                 else
                 {
                     stepCounter += currentStep.StepCount;
+                }
+
+                if ((currentStep.ForceSplitOnStep && currentStep != Steps[0]) ||
+                    stepCounter > Constants.MaxStepsPerWorkout)
+                {
+                    stepPart++;
+                    stepCounter = 0;
                 }
 
                 if (currentStep == stepToFind)
@@ -531,48 +541,50 @@ namespace GarminFitnessPlugin.Data
         
         public int GetStepExportId(IStep step)
         {
-            int result = GetStepExportIdInternal(step.ParentWorkout.Steps.List, step);
+            UInt16 counter = 0;
+            bool result = GetStepExportIdInternal(step, Steps, ref counter);
 
-            Debug.Assert(result != -1);
+            Debug.Assert(result);
 
-            return result;
+            return counter;
         }
 
-        private int GetStepExportIdInternal(List<IStep> steps, IStep step)
+        private bool GetStepExportIdInternal(IStep step, List<IStep> stepsList, ref UInt16 stepCounter)
         {
-            int currentId = 0;
-
-            foreach (IStep currentStep in steps)
+            foreach (IStep currentStep in stepsList)
             {
                 if (currentStep is WorkoutLinkStep)
                 {
                     WorkoutLinkStep concreteStep = currentStep as WorkoutLinkStep;
-                    int temp = GetStepExportIdInternal(concreteStep.LinkedWorkoutSteps, step);
+                    UInt16 tempCounter = 0;
 
-                    if (temp != -1)
+                    if (GetStepExportIdInternal(step, concreteStep.LinkedWorkoutSteps, ref tempCounter))
                     {
-                        return currentId + temp;
+                        stepCounter += tempCounter;
+                        return true;
                     }
-                }
-                else if (currentStep == step)
-                {
-                    return currentId + currentStep.StepCount;
                 }
                 else if (currentStep is RepeatStep)
                 {
                     RepeatStep concreteStep = currentStep as RepeatStep;
-                    int temp = GetStepExportIdInternal(concreteStep.StepsToRepeat, step);
+                    UInt16 tempCounter = 0;
 
-                    if (temp != -1)
+                    if (GetStepExportIdInternal(step, concreteStep.StepsToRepeat, ref tempCounter))
                     {
-                        return currentId + temp;
+                        stepCounter += tempCounter;
+                        return true;
                     }
                 }
 
-                currentId += currentStep.StepCount;
+                stepCounter += currentStep.StepCount;
+
+                if (currentStep == step)
+                {
+                    return true;
+                }
             }
 
-            return -1;
+            return false;
         }
 
         public void ScheduleWorkout(DateTime date)
@@ -664,6 +676,7 @@ namespace GarminFitnessPlugin.Data
                 }
             }
         }
+
         public string Notes
         {
             get { return NotesInternal; }
@@ -678,6 +691,16 @@ namespace GarminFitnessPlugin.Data
                     TriggerWorkoutChangedEvent(new PropertyChangedEventArgs("Notes"));
                 }
             }
+        }
+
+        public virtual List<XmlNode> StepsExtensions
+        {
+            get { return ConcreteWorkout.StepsExtensions; }
+        }
+
+        public virtual List<XmlNode> STExtensions
+        {
+            get { return ConcreteWorkout.STExtensions; }
         }
 
         // Abstract mthods
@@ -706,8 +729,5 @@ namespace GarminFitnessPlugin.Data
         public event StepTargetChangedEventHandler StepTargetChanged;
 
         private bool m_EventsActive = true;
-
-        private List<XmlNode> m_STExtensions = new List<XmlNode>();
-        private List<XmlNode> m_StepsExtensions = new List<XmlNode>();
     }
 }

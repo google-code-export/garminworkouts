@@ -29,9 +29,9 @@ namespace GarminFitnessPlugin.Controller
         {
         }
 
-        public void WriteWorkouts(List<IWorkout> workouts)
+        public void WriteWorkout(IWorkout workout)
         {
-            Logger.Instance.LogText(String.Format("GarXFace : Writing workouts (%i)", workouts.Count));
+            Logger.Instance.LogText("GarXFace : Writing workout");
 
             int result;
             GarXFaceNet._Gps controller = m_Controller.GarXFaceController;
@@ -43,13 +43,10 @@ namespace GarminFitnessPlugin.Controller
             controller.GetWorkoutOccuranceList().Clear();
             Logger.Instance.LogText("GarXFace : Lists cleared");
 
-            foreach (IWorkout workout in workouts)
-            {
-                Logger.Instance.LogText(String.Format("GarXFace : Writing workout {0)", workout.Name));
+            Logger.Instance.LogText(String.Format("GarXFace : Writing workout {0)", workout.Name));
 
-                workout.Serialize(controller.GetWorkoutList());
-                workout.SerializeOccurances(controller.GetWorkoutOccuranceList());
-            }
+            workout.Serialize(controller.GetWorkoutList());
+            workout.SerializeOccurances(controller.GetWorkoutOccuranceList());
 
             m_CurrentOperation = DeviceOperations.Operation_WriteWorkout;
 

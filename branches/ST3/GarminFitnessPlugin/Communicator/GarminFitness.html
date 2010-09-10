@@ -192,49 +192,159 @@
         }
 
         function FindDevices() {
-            garminController.findDevices();
+            try {
+                garminController.findDevices();
+            }
+            catch (e) {
+                window.external.OnExceptionTriggered("FindDevices failed: " + e.message);
+            }
         }
 
         function SetDeviceNumber(deviceNum) {
-            garminController.setDeviceNumber(deviceNum);
+            try {
+                garminController.setDeviceNumber(deviceNum);
+            }
+            catch (e) {
+                window.external.OnExceptionTriggered("SetDeviceNumber failed: " + e.message);
+            }
         }
 
         function ReadUserProfileFromFitnessDevice() {
-            garminController.readUserProfileFromFitnessDevice();
+            try {
+                garminController.readUserProfileFromFitnessDevice();
+            }
+            catch (e) {
+                window.external.OnExceptionTriggered("ReadUserProfile failed: " + e.message);
+            }
         }
 
         function ReadWorkoutsFromFitnessDevice() {
-            garminController.readWorkoutsFromFitnessDevice();
+            try {
+                garminController.readWorkoutsFromFitnessDevice();
+            }
+            catch (e) {
+                window.external.OnExceptionTriggered("ReadWorkouts failed: " + e.message);
+            }
         }
 
         function CancelReadFromDevice() {
-            garminController.cancelReadFromDevice();
+            try {
+                garminController.cancelReadFromDevice();
+            }
+            catch (e) {
+                window.external.OnExceptionTriggered("CancelReadFromDevice failed: " + e.message);
+            }
         }
 
         function CancelWriteToDevice() {
-            garminController.cancelWriteToDevice();
+            try {
+                garminController.cancelWriteToDevice();
+            }
+            catch (e) {
+                window.external.OnExceptionTriggered("CancelWriteFromDevice failed: " + e.message);
+            }
         }
 
         function WriteUserProfileToFitnessDevice(tcxString, fileName) {
-            garminController.writeUserProfileToFitnessDevice(tcxString, fileName);
+            try {
+                garminController.writeUserProfileToFitnessDevice(tcxString, fileName);
+            }
+            catch (e) {
+                window.external.OnExceptionTriggered("WriteUserProfile failed: " + e.message);
+            }
         }
 
         function WriteWorkoutsToFitnessDevice(tcxString, fileName) {
-            garminController.writeWorkoutsToFitnessDevice(tcxString, fileName);
+            try {
+                garminController.writeWorkoutsToFitnessDevice(tcxString, fileName);
+            }
+            catch (e) {
+                window.external.OnExceptionTriggered("WriteWorkouts failed: " + e.message);
+            }
         }
 
         function BuildMultipleDeviceDownloadsXML(descriptionArray) {
-            var array = new Array();
+            try {
+                var array = new Array();
 
-            for (var i = 0; i < descriptionArray.count(); i = i + 1) {
-                array[i] = descriptionArray.item(i);
+                for (var i = 0; i < descriptionArray.count(); i = i + 1) {
+                    array[i] = descriptionArray.item(i);
+                }
+
+                return Garmin.GpiUtil.buildMultipleDeviceDownloadsXML(array);
             }
-
-            return Garmin.GpiUtil.buildMultipleDeviceDownloadsXML(array);
+            catch (e) {
+                window.external.OnExceptionTriggered("BuildMultipleDownloadXML failed: " + e.message);
+            }
         }
 
         function DownloadToDevice(downloadXML) {
-            garminController.downloadToDevice(downloadXML);
+            try {
+                garminController.downloadToDevice(downloadXML);
+            }
+            catch (e) {
+                window.external.OnExceptionTriggered("DownloadToDevice failed: " + e.message);
+            }
+        }
+
+        function StartReadFitnessDirectory() {
+            try {
+                garminController.startReadFitnessDirectory(garminController.getDeviceNumber(), Garmin.DeviceControl.FILE_TYPES.tcx);
+            }
+            catch (e) {
+                window.external.OnExceptionTriggered("StartReadFitnessDirectory failed: " + e.message);
+            }
+        }
+
+        function CancelReadFitnessDirectory() {
+            try {
+                garminController.cancelReadFitnessDirectory();
+            }
+            catch (e) {
+                window.external.OnExceptionTriggered("CancelReadFitnessDirectory failed: " + e.message);
+            }
+        }
+
+        function FinishReadFitnessDirectory() {
+            try {
+                alert("status");
+                var status = garminController.finishReadFitnessDirectory();
+                alert("value");
+
+                alert(status);
+
+                return status;
+            }
+            catch (e) {
+                window.external.OnExceptionTriggered("FinishReadFitnessDirectory failed: " + e.message);
+            }
+        }
+
+        function RespondToMessageBox(answer) {
+            try {
+                garminController.respondToMessageBox(answer);
+            }
+            catch (e) {
+                window.external.OnExceptionTriggered("RespondToMessageBox failed: " + e.message);
+            }
+        }
+
+        function GetDirectoryXml() {
+            try {
+                return garminController.getDirectoryXml();
+            }
+            catch (e) {
+                window.external.OnExceptionTriggered("GetDirectoryXml failed: " + e.message);
+            }
+        }
+
+        function GetBinaryFile(filePath) {
+            try {
+                garminController.getBinaryFile(garminController.getDeviceNumber(), filePath);
+            }
+            catch (e) {
+                window.external.OnExceptionTriggered("GetBinaryFile failed: " + e.message);
+            }
         }
 
     </script>

@@ -519,6 +519,8 @@ namespace GarminFitnessPlugin.Controller
 
         public List<string> GetReservedNamesForWorkout(Workout workout)
         {
+            Debug.Assert(m_WorkoutReservedNames.ContainsKey(workout));
+
             return m_WorkoutReservedNames[workout];
         }
 

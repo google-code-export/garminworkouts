@@ -20,6 +20,10 @@ namespace GarminFitnessPlugin.Data
             UpdateWorkoutStepsCopy();
             m_CurrentTopMostRepeat = ParentConcreteWorkout.Steps.GetTopMostRepeatForStep(this);
 
+            LinkedWorkout.StepChanged += new IWorkout.StepChangedEventHandler(OnWorkoutChanged);
+            LinkedWorkout.StepChanged += new IWorkout.StepChangedEventHandler(OnWorkoutStepChanged);
+            LinkedWorkout.StepDurationChanged += new IWorkout.StepDurationChangedEventHandler(OnWorkoutStepDurationChanged);
+            LinkedWorkout.StepTargetChanged += new IWorkout.StepTargetChangedEventHandler(OnWorkoutStepTargetChanged);
             LinkedWorkout.Steps.StepAdded += new WorkoutStepsList.StepAddedEventHandler(OnWorkoutStepsChanged);
             LinkedWorkout.Steps.StepRemoved += new WorkoutStepsList.StepRemovedEventHandler(OnWorkoutStepsChanged);
             LinkedWorkout.Steps.ListChanged += new PropertyChangedEventHandler(OnWorkoutStepsListChanged);
@@ -34,10 +38,38 @@ namespace GarminFitnessPlugin.Data
             Deserialize(stream, version);
             Debug.Assert(LinkedWorkout != null);
 
+            LinkedWorkout.StepChanged += new IWorkout.StepChangedEventHandler(OnWorkoutStepChanged);
+            LinkedWorkout.StepDurationChanged += new IWorkout.StepDurationChangedEventHandler(OnWorkoutStepDurationChanged);
+            LinkedWorkout.StepTargetChanged += new IWorkout.StepTargetChangedEventHandler(OnWorkoutStepTargetChanged);
             LinkedWorkout.Steps.StepAdded += new WorkoutStepsList.StepAddedEventHandler(OnWorkoutStepsChanged);
             LinkedWorkout.Steps.StepRemoved += new WorkoutStepsList.StepRemovedEventHandler(OnWorkoutStepsChanged);
             LinkedWorkout.Steps.ListChanged += new PropertyChangedEventHandler(OnWorkoutStepsListChanged);
             ParentConcreteWorkout.Steps.ListChanged += new PropertyChangedEventHandler(OnWorkoutStepsListChanged);
+        }
+
+        void OnWorkoutChanged(IWorkout modifiedWorkout, IStep modifiedStep, PropertyChangedEventArgs changedProperty)
+        {
+            if (changedProperty.PropertyName == "Steps")
+            {
+                UpdateWorkoutStepsCopy();
+            }
+
+            TriggerStepChanged(new PropertyChangedEventArgs("ParentWorkout"));
+        }
+
+        void OnWorkoutStepChanged(IWorkout modifiedWorkout, IStep modifiedStep, PropertyChangedEventArgs changedProperty)
+        {
+            UpdateWorkoutStepsCopy();
+        }
+
+        void OnWorkoutStepTargetChanged(IWorkout modifiedWorkout, RegularStep modifiedStep, ITarget modifiedTarget, PropertyChangedEventArgs changedProperty)
+        {
+            UpdateWorkoutStepsCopy();
+        }
+
+        void OnWorkoutStepDurationChanged(IWorkout modifiedWorkout, RegularStep modifiedStep, IDuration modifiedDuration, PropertyChangedEventArgs changedProperty)
+        {
+            UpdateWorkoutStepsCopy();
         }
 
         void OnWorkoutStepsChanged(IStep addedRemovedStep)
