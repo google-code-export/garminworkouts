@@ -182,3 +182,5 @@ http://garminworkouts.googlecode.com/files/Workout%20link%20step.gif
 Editing the linked workout will update the link steps accordingly.
 
 http://garminworkouts.googlecode.com/files/Workout%20link%20step%20updated.gif
+
+The steps of the linked workout are displayed as grayed out because they are not editable.  You must edit them in the corresponding workout.
