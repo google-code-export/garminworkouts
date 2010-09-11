@@ -144,13 +144,17 @@ namespace GarminFitnessPlugin.View
                 // When a property changes in a workout's step, this callback executes
                 if (SelectedStep == stepChanged)
                 {
-                    if ((changedProperty.PropertyName == "ForceSplitOnStep" && SelectedWorkout is WorkoutPart) ||
-                        changedProperty.PropertyName == "LinkSteps")
+                    if ((changedProperty.PropertyName == "ForceSplitOnStep" && SelectedWorkout is WorkoutPart))
                     {
                         BuildStepsList();
                     }
 
                     UpdateUIFromStep();
+                }
+
+                if (changedProperty.PropertyName == "LinkSteps")
+                {
+                    BuildStepsList();
                 }
             }
             else if(SelectedStep is WorkoutLinkStep)
@@ -1504,8 +1508,8 @@ namespace GarminFitnessPlugin.View
                     }
                 }
                 
-                if(e.KeyCode == Keys.V && SelectedWorkout != null &&
-                        Clipboard.ContainsData(Constants.StepsClipboardID))
+                if (e.KeyCode == Keys.V && SelectedWorkout != null &&
+                    Clipboard.ContainsData(Constants.StepsClipboardID))
                 {
                     PasteStepsFromClipboard();
 
@@ -3464,12 +3468,14 @@ namespace GarminFitnessPlugin.View
             baseSteps = GetMinimalStepsBase(SelectedSteps);
             // Number of steps to deserialize
             stepsData.WriteByte((Byte)baseSteps.Count);
-            for (int i = 0; i < baseSteps.Count; ++i)
+            foreach (IStep step in baseSteps)
             {
-                baseSteps[i].Serialize(stepsData);
+                step.Serialize(stepsData);
             }
 
             Clipboard.SetData(Constants.StepsClipboardID, stepsData);
+
+            stepsData.Close();
         }
 
         private void CutStepSelection()
@@ -3500,6 +3506,7 @@ namespace GarminFitnessPlugin.View
                                 GarminFitnessView.GetLocalizedString("ErrorText"),
                                 MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
+            pasteResult.Close();
 
             StepsList.Focus();
         }

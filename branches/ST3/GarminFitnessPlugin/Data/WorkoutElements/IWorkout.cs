@@ -169,9 +169,25 @@ namespace GarminFitnessPlugin.Data
                 {
                     deserializedSteps.Add(new RegularStep(stream, Constants.CurrentVersion, ConcreteWorkout));
                 }
-                else
+                else if (type == IStep.StepType.Repeat)
                 {
                     deserializedSteps.Add(new RepeatStep(stream, Constants.CurrentVersion, ConcreteWorkout));
+                }
+                else
+                {
+                    WorkoutLinkStep tempLink = new WorkoutLinkStep(stream, Constants.CurrentVersion, ConcreteWorkout);
+
+                    if (tempLink.LinkedWorkout != null)
+                    {
+                        deserializedSteps.Add(tempLink);
+                    }
+                    else
+                    {
+                        WorkoutStepsList linkSteps = new WorkoutStepsList(ConcreteWorkout);
+
+                        linkSteps.Deserialize(stream, Constants.CurrentVersion);
+                        deserializedSteps.AddRange(linkSteps);
+                    }
                 }
             }
 

@@ -73,7 +73,19 @@ namespace GarminFitnessPlugin.Data
                 }
                 else if (type == IStep.StepType.Link)
                 {
-                    m_StepsToRepeat.Add(new WorkoutLinkStep(stream, version, ParentConcreteWorkout));
+                    WorkoutLinkStep tempLink = new WorkoutLinkStep(stream, version, ParentConcreteWorkout);
+
+                    if (tempLink.LinkedWorkout != null)
+                    {
+                        m_StepsToRepeat.Add(tempLink);
+                    }
+                    else
+                    {
+                        WorkoutStepsList linkSteps = new WorkoutStepsList(ParentConcreteWorkout);
+
+                        linkSteps.Deserialize(stream, Constants.CurrentVersion);
+                        m_StepsToRepeat.AddRange(linkSteps);
+                    }
                 }
                 else
                 {

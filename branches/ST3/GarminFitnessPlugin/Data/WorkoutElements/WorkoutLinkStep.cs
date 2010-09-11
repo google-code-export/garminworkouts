@@ -15,41 +15,27 @@ namespace GarminFitnessPlugin.Data
             : base(StepType.Link, parent)
         {
             m_LinkedWorkout = linkedWorkout;
-            m_WorkoutStepsCopy = new WorkoutStepsList(ParentConcreteWorkout);
 
-            UpdateWorkoutStepsCopy();
-            m_CurrentTopMostRepeat = ParentConcreteWorkout.Steps.GetTopMostRepeatForStep(this);
-
-            LinkedWorkout.StepChanged += new IWorkout.StepChangedEventHandler(OnWorkoutChanged);
-            LinkedWorkout.StepChanged += new IWorkout.StepChangedEventHandler(OnWorkoutStepChanged);
-            LinkedWorkout.StepDurationChanged += new IWorkout.StepDurationChangedEventHandler(OnWorkoutStepDurationChanged);
-            LinkedWorkout.StepTargetChanged += new IWorkout.StepTargetChangedEventHandler(OnWorkoutStepTargetChanged);
-            LinkedWorkout.Steps.StepAdded += new WorkoutStepsList.StepAddedEventHandler(OnWorkoutStepsChanged);
-            LinkedWorkout.Steps.StepRemoved += new WorkoutStepsList.StepRemovedEventHandler(OnWorkoutStepsChanged);
-            LinkedWorkout.Steps.ListChanged += new PropertyChangedEventHandler(OnWorkoutStepsListChanged);
-            ParentConcreteWorkout.Steps.ListChanged += new PropertyChangedEventHandler(OnWorkoutStepsListChanged);
+            Initialize();
         }
 
         public WorkoutLinkStep(Stream stream, DataVersion version, Workout parent)
             : base(StepType.Link, parent)
         {
-            m_WorkoutStepsCopy = new WorkoutStepsList(ParentConcreteWorkout);
-
             Deserialize(stream, version);
-            Debug.Assert(LinkedWorkout != null);
 
-            LinkedWorkout.StepChanged += new IWorkout.StepChangedEventHandler(OnWorkoutStepChanged);
-            LinkedWorkout.StepDurationChanged += new IWorkout.StepDurationChangedEventHandler(OnWorkoutStepDurationChanged);
-            LinkedWorkout.StepTargetChanged += new IWorkout.StepTargetChangedEventHandler(OnWorkoutStepTargetChanged);
-            LinkedWorkout.Steps.StepAdded += new WorkoutStepsList.StepAddedEventHandler(OnWorkoutStepsChanged);
-            LinkedWorkout.Steps.StepRemoved += new WorkoutStepsList.StepRemovedEventHandler(OnWorkoutStepsChanged);
-            LinkedWorkout.Steps.ListChanged += new PropertyChangedEventHandler(OnWorkoutStepsListChanged);
-            ParentConcreteWorkout.Steps.ListChanged += new PropertyChangedEventHandler(OnWorkoutStepsListChanged);
+            // Make sure we found the linked workout, it is possible we are copy-pasting
+            //  an unavailable one, in which case this step is temporary and will be disposed
+            if (LinkedWorkout != null)
+            {
+                Initialize();
+            }
         }
 
-        void OnWorkoutChanged(IWorkout modifiedWorkout, IStep modifiedStep, PropertyChangedEventArgs changedProperty)
+        void OnWorkoutChanged(IWorkout modifiedWorkout, PropertyChangedEventArgs changedProperty)
         {
-            if (changedProperty.PropertyName == "Steps")
+            if (changedProperty.PropertyName == "Steps" ||
+                changedProperty.PropertyName == "PartsCount")
             {
                 UpdateWorkoutStepsCopy();
             }
@@ -119,6 +105,7 @@ namespace GarminFitnessPlugin.Data
             GarminFitnessGuid linkedWorkoutId = new GarminFitnessGuid(LinkedWorkout.Id);
 
             linkedWorkoutId.Serialize(stream);
+            m_WorkoutStepsCopy.Serialize(stream);
         }
 
         public void Deserialize_V14(Stream stream, DataVersion version)
@@ -129,9 +116,21 @@ namespace GarminFitnessPlugin.Data
 
             linkedWorkoutId.Deserialize(stream, version);
             m_LinkedWorkout = GarminWorkoutManager.Instance.GetWorkout(linkedWorkoutId);
+        }
 
-            UpdateWorkoutStepsCopy();
-            m_CurrentTopMostRepeat = ParentConcreteWorkout.Steps.GetTopMostRepeatForStep(this);
+        public void Deserialize_V15(Stream stream, DataVersion version)
+        {
+            Deserialize_V14(stream, version);
+
+            // Check if we found the workout link.  If we did deserialize the steps
+            //  list in a disposable one.  If we can't find the workout, then we must
+            //  not deserialize the list so it can simply add the steps the the workout
+            if (m_LinkedWorkout != null)
+            {
+                WorkoutStepsList tempStepsList = new WorkoutStepsList(ParentConcreteWorkout);
+
+                tempStepsList.Deserialize(stream, version);
+            }
         }
 
         public override void Serialize(XmlNode parentNode, String nodeName, XmlDocument document)
@@ -180,6 +179,22 @@ namespace GarminFitnessPlugin.Data
         }
 
 #endregion
+
+        private void Initialize()
+        {
+            m_WorkoutStepsCopy = new WorkoutStepsList(ParentConcreteWorkout);
+            
+            LinkedWorkout.WorkoutChanged += new IWorkout.WorkoutChangedEventHandler(OnWorkoutChanged);
+            LinkedWorkout.StepChanged += new IWorkout.StepChangedEventHandler(OnWorkoutStepChanged);
+            LinkedWorkout.StepDurationChanged += new IWorkout.StepDurationChangedEventHandler(OnWorkoutStepDurationChanged);
+            LinkedWorkout.StepTargetChanged += new IWorkout.StepTargetChangedEventHandler(OnWorkoutStepTargetChanged);
+            LinkedWorkout.Steps.StepAdded += new WorkoutStepsList.StepAddedEventHandler(OnWorkoutStepsChanged);
+            LinkedWorkout.Steps.StepRemoved += new WorkoutStepsList.StepRemovedEventHandler(OnWorkoutStepsChanged);
+            LinkedWorkout.Steps.ListChanged += new PropertyChangedEventHandler(OnWorkoutStepsListChanged);
+
+            UpdateWorkoutStepsCopy();
+            m_CurrentTopMostRepeat = ParentConcreteWorkout.Steps.GetTopMostRepeatForStep(this);
+        }
 
         private void UpdateWorkoutStepsCopy()
         {

@@ -54,7 +54,19 @@ namespace GarminFitnessPlugin.Data
                 }
                 else
                 {
-                    AddStepToRoot(new WorkoutLinkStep(stream, version, m_ParentWorkout.ConcreteWorkout));
+                    WorkoutLinkStep tempLink = new WorkoutLinkStep(stream, version, m_ParentWorkout.ConcreteWorkout);
+
+                    if (tempLink.LinkedWorkout != null)
+                    {
+                        AddStepToRoot(tempLink);
+                    }
+                    else
+                    {
+                        WorkoutStepsList linkSteps = new WorkoutStepsList(m_ParentWorkout.ConcreteWorkout);
+
+                        linkSteps.Deserialize(stream, Constants.CurrentVersion);
+                        AddStepsToRoot(linkSteps);
+                    }
                 }
             }
         }
