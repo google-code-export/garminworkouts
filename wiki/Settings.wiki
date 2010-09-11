@@ -30,7 +30,7 @@ Now that you have discovered how to change between Garmin and [http://www.zonefi
 == Specifying the zone categories ==
 In the settings page you will also have noticed that you can select the zone categories to use for cadence and power.  This allows you to select which zone category will be used for the cadence and power target respectively.  Opening the listbox will list all of the zones you have defined for either cadence or power.
 
-http://garminworkouts.googlecode.com/files/Settings%20expanded%20combo-d.gif
+http://garminworkouts.googlecode.com/files/Settings%20expanded%20combo-e.gif
 
 http://garminworkouts.googlecode.com/files/Categories%20view.gif
 
