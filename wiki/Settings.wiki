@@ -12,7 +12,7 @@ http://garminworkouts.googlecode.com/files/Settings%20access.gif
 
 Once clicked, this link will lead you to the settings page which has a special section for plugins.  In this section, you will find the "Garmin Fitness Settings".  An alternate way of accessing the settings page is to click on the settings button http://garminworkouts.googlecode.com/files/Settings%20Button.gif in the upper right corner of the Garmin Fitness view.  Both methods lead you to the following screen :
 
-http://garminworkouts.googlecode.com/files/Settings%20passive-d.gif
+http://garminworkouts.googlecode.com/files/Settings%20passive-e.gif
 
 = Zone categories =
 == Workouts and zone categories ==
