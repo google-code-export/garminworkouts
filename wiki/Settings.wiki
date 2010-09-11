@@ -45,6 +45,11 @@ Since I use information contained within the activity category, it is very impor
 
 You can also notice the reason why the user is given the selection of what cadence and power zone to use.  These options are simply not available in the activity categories.  At the moment, there is no option to select what zone to use on a per-activity category basis.
 
+For the heart rate, there is an extra option only available when you select to use [http://www.zonefivesoftware.com/SportTracks SportTracks] zones.  This allows you to select whether these targets will be exported as BPM or as a percent of maximum heart rate.  This option is only available in version 1.1.278 or later.
+
+http://garminworkouts.googlecode.com/files/Settings%20HR%20comboboxes.gif
+
+
 = Allow workouts with more than 20 steps =
 This option is also know as the "auto-split" feature.  The different Garmin Fitness units have a maximum of 20 steps per workout.  This limitation can definitely be annoying.  HENNES has found a clean workaround that the plugin implements.  It consists of splitting the workouts with more than 20 steps into multiple workouts that can be executed one after the other.  If you check this checkbox, this feature will be active, if not, the plugin will behave like Garmin Training Center and limit all workouts to 20 steps.
 
