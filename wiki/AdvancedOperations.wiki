@@ -167,3 +167,16 @@ So be careful when moving steps around and always remember the golden rule.
 
 == Copy-Pasting ==
 There is nothing new with steps copy-pasting.  The steps can be copied inside a workout, between workouts and between logbooks in the same manner that is done with workouts.  See the [http://code.google.com/p/garminworkouts/wiki/AdvancedOperations?ts=1232236954&updated=AdvancedOperations#Copy-Pasting above section] about copy-pasting for more details.
+
+== Workout link steps ==
+Starting with version 1.1.277, there is a new option that allows to link a workout inside another workout.  These special steps are called "Workout links".  You can notice that there is a new button available in the top bar, next to the "New repeat step" button http://garminworkouts.googlecode.com/files/Workout%20link%20button.gif.  To add a workout link, simply click on this button.  You will see a list of valid workouts appear
+
+http://garminworkouts.googlecode.com/files/Workout%20links%20list.gif
+
+The workouts in this list are those that can be added to the current workout.  This means that workouts which create a circular reference (A links B that links A) and those that have too many steps (if automatic part split is enabled) will not appear.  Simply select the desired workout in the list to add the step.
+
+http://garminworkouts.googlecode.com/files/Workout%20link%20step.gif
+
+Editing the linked workout will update the link steps accordingly.
+
+http://garminworkouts.googlecode.com/files/Workout%20link%20step%20updated.gif
