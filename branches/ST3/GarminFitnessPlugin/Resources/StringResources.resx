@@ -696,4 +696,7 @@
   <data name="TransferringToDeviceText" xml:space="preserve">
     <value>Transferring to device</value>
   </data>
+  <data name="ExportSTHRZonesAsLabelText" xml:space="preserve">
+    <value>Export heart rate zones as :</value>
+  </data>
 </root>

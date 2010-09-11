@@ -49,6 +49,9 @@ namespace GarminFitnessPlugin.Controller
                 // Mapped Garmin category
                 stream.Write(BitConverter.GetBytes((int)iter.Current.Value), 0, sizeof(int));
             }
+
+            // Export ST HR zones as percent max
+            stream.Write(BitConverter.GetBytes(ExportSportTracksHeartRateAsPercentMax), 0, sizeof(bool));
         }
 
         public new void Deserialize(Stream stream, DataVersion version)
@@ -217,6 +220,17 @@ namespace GarminFitnessPlugin.Controller
                 STToGarminCategoryMap[Utils.FindCategoryByIDSafe(Encoding.UTF8.GetString(stringBuffer))] = (GarminCategories)garminCategory;
             }
         }
+
+        public void Deserialize_V16(Stream stream, DataVersion version)
+        {
+            byte[] boolBuffer = new byte[sizeof(bool)];
+
+            Deserialize_V8(stream, version);
+
+            stream.Read(boolBuffer, 0, sizeof(bool));
+            ExportSportTracksHeartRateAsPercentMax = BitConverter.ToBoolean(boolBuffer, 0);
+        }
+
         public void Serialize(System.Xml.XmlNode parentNode, String nodeName, System.Xml.XmlDocument document)
         {
             XmlNode child;
@@ -530,6 +544,20 @@ namespace GarminFitnessPlugin.Controller
             }
         }
 
+        public bool ExportSportTracksHeartRateAsPercentMax
+        {
+            get { return m_ExportSportTracksHeartRateAsPercentMax; }
+            set
+            {
+                if (ExportSportTracksHeartRateAsPercentMax != value)
+                {
+                    m_ExportSportTracksHeartRateAsPercentMax = value;
+
+                    TriggerOptionsChangedEvent("ExportSportTracksHeartRateAsPercentMax");
+                }
+            }
+        }
+
         public bool UseSportTracksSpeedZones
         {
             get { return m_UseSportTracksSpeedZones; }
@@ -698,6 +726,7 @@ namespace GarminFitnessPlugin.Controller
         private int m_StepNotesSplitSize = 250;
 
         private bool m_UseSportTracksHeartRateZones;
+        private bool m_ExportSportTracksHeartRateAsPercentMax = true;
         private bool m_UseSportTracksSpeedZones;
         private bool m_UseSportTracksPowerZones;
         private IZoneCategory m_CadenceZoneCategory;

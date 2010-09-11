@@ -484,6 +484,15 @@ namespace GarminFitnessPlugin.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Export heart rate zones as :.
+        /// </summary>
+        internal static string ExportSTHRZonesAsLabelText {
+            get {
+                return ResourceManager.GetString("ExportSTHRZonesAsLabelText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Export.
         /// </summary>
         internal static string ExportText {

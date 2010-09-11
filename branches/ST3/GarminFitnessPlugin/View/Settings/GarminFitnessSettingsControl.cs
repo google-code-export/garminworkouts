@@ -53,6 +53,16 @@ namespace GarminFitnessPlugin.View
             Options.Instance.UseSportTracksHeartRateZones = HRSportTracksRadioButton.Checked;
         }
 
+        private void PercentMaxRadioButton_CheckedChanged(object sender, EventArgs e)
+        {
+            Options.Instance.ExportSportTracksHeartRateAsPercentMax = PercentMaxRadioButton.Checked;
+        }
+
+        private void BPMRadioButton_CheckedChanged(object sender, EventArgs e)
+        {
+            Options.Instance.ExportSportTracksHeartRateAsPercentMax = !BPMRadioButton.Checked;
+        }
+
         private void SpeedGarminRadioButton_CheckedChanged(object sender, System.EventArgs e)
         {
             Options.Instance.UseSportTracksSpeedZones = !SpeedGarminRadioButton.Checked;
@@ -234,6 +244,8 @@ namespace GarminFitnessPlugin.View
         {
             HRGarminRadioButton.Text = GarminFitnessView.GetLocalizedString("GarminText");
             HRSportTracksRadioButton.Text = GarminFitnessView.GetLocalizedString("SportTracksText");
+            PercentMaxRadioButton.Text = CommonResources.Text.LabelPercentOfMax;
+            BPMRadioButton.Text = CommonResources.Text.LabelBPM;
             SpeedGarminRadioButton.Text = GarminFitnessView.GetLocalizedString("GarminText");
             SpeedSportTracksRadioButton.Text = GarminFitnessView.GetLocalizedString("SportTracksText");
             PowerGarminRadioButton.Text = GarminFitnessView.GetLocalizedString("GarminText");
@@ -247,6 +259,7 @@ namespace GarminFitnessPlugin.View
             CategoriesGroupBox.Text = GarminFitnessView.GetLocalizedString("CategoriesText");
 
             DefaultHeartRateZonesLabel.Text = GarminFitnessView.GetLocalizedString("DefaultHeartRateZoneLabelText");
+            ExportSTHRZonesAsLabel.Text = GarminFitnessView.GetLocalizedString("ExportSTHRZonesAsLabelText");
             DefaultSpeedZoneLabel.Text = GarminFitnessView.GetLocalizedString("DefaultSpeedZoneLabelText");
             CadenceZoneSelectionLabel.Text = GarminFitnessView.GetLocalizedString("CadenceZoneSelectionLabelText");
             DefaultPowerZonesLabel.Text = GarminFitnessView.GetLocalizedString("DefaultPowerZoneLabelText");
@@ -304,6 +317,11 @@ namespace GarminFitnessPlugin.View
             // HR
             HRGarminRadioButton.Checked = !Options.Instance.UseSportTracksHeartRateZones;
             HRSportTracksRadioButton.Checked = Options.Instance.UseSportTracksHeartRateZones;
+            ExportSTHRZonesAsLabel.Enabled = Options.Instance.UseSportTracksHeartRateZones;
+            PercentMaxRadioButton.Enabled = Options.Instance.UseSportTracksHeartRateZones;
+            BPMRadioButton.Enabled = Options.Instance.UseSportTracksHeartRateZones;
+            PercentMaxRadioButton.Checked = Options.Instance.ExportSportTracksHeartRateAsPercentMax;
+            BPMRadioButton.Checked = !Options.Instance.ExportSportTracksHeartRateAsPercentMax;
 
             // Speed
             SpeedGarminRadioButton.Checked = !Options.Instance.UseSportTracksSpeedZones;

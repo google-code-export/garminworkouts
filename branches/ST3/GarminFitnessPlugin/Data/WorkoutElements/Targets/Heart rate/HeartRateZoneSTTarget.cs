@@ -112,6 +112,7 @@ namespace GarminFitnessPlugin.Data
 
         public override void Serialize(XmlNode parentNode, String nodeName, XmlDocument document)
         {
+
             base.Serialize(parentNode, nodeName, document);
 
             // This node was added by our parent...
@@ -120,6 +121,27 @@ namespace GarminFitnessPlugin.Data
             float lastMaxHR = PluginMain.GetApplication().Logbook.Athlete.InfoEntries.LastEntryAsOfDate(DateTime.Now).MaximumHeartRatePerMinute;
             XmlAttribute attribute;
             XmlNode childNode;
+            GarminFitnessBool exportAsPercentMax = new GarminFitnessBool(Options.Instance.ExportSportTracksHeartRateAsPercentMax, Constants.HeartRateReferenceTCXString[1], Constants.HeartRateReferenceTCXString[0]);
+            GarminFitnessByteRange lowValue = new GarminFitnessByteRange(0);
+            GarminFitnessByteRange highValue = new GarminFitnessByteRange(0);
+
+            if (float.IsNaN(lastMaxHR))
+            {
+                exportAsPercentMax.Value = false;
+            }
+
+            if (exportAsPercentMax)
+            {
+                float baseMultiplier = Constants.MaxHRInPercentMax / lastMaxHR;
+
+                lowValue.Value = (Byte)Math.Round(Zone.Low * baseMultiplier, 0, MidpointRounding.AwayFromZero);
+                highValue.Value = (Byte)Math.Min(Constants.MaxHRInPercentMax, Math.Round(Zone.High * baseMultiplier, 0, MidpointRounding.AwayFromZero));
+            }
+            else
+            {
+                lowValue.Value = (Byte)Utils.Clamp(Zone.Low, Constants.MinHRInBPM, Constants.MaxHRInBPM);
+                highValue.Value = (Byte)Utils.Clamp(Zone.High, Constants.MinHRInBPM, Constants.MaxHRInBPM);
+            }
 
             // Type
             attribute = document.CreateAttribute(Constants.XsiTypeTCXString, Constants.xsins);
@@ -127,45 +149,15 @@ namespace GarminFitnessPlugin.Data
             parentNode.Attributes.Append(attribute);
 
             // Low
-            GarminFitnessByteRange lowValue = new GarminFitnessByteRange(0);
             childNode = document.CreateElement("Low");
             parentNode.AppendChild(childNode);
-
-            attribute = document.CreateAttribute(Constants.XsiTypeTCXString, Constants.xsins);
-            childNode.Attributes.Append(attribute);
-            if (!float.IsNaN(lastMaxHR))
-            {
-                float baseMultiplier = Constants.MaxHRInPercentMax / lastMaxHR;
-
-                lowValue.Value = (Byte)Math.Round(Zone.Low * baseMultiplier, 0, MidpointRounding.AwayFromZero);
-                attribute.Value = Constants.HeartRateReferenceTCXString[1];
-            }
-            else
-            {
-                lowValue.Value = (Byte)Utils.Clamp(Zone.Low, Constants.MinHRInBPM, Constants.MaxHRInBPM);
-                attribute.Value = Constants.HeartRateReferenceTCXString[0];
-            }
+            exportAsPercentMax.SerializeAttribute(childNode, Constants.XsiTypeTCXString, Constants.xsins, document);
             lowValue.Serialize(childNode, Constants.ValueTCXString, document);
 
             // High
-            GarminFitnessByteRange highValue = new GarminFitnessByteRange(0);
             childNode = document.CreateElement("High");
             parentNode.AppendChild(childNode);
-
-            attribute = document.CreateAttribute(Constants.XsiTypeTCXString, Constants.xsins);
-            childNode.Attributes.Append(attribute);
-            if (!float.IsNaN(lastMaxHR))
-            {
-                float baseMultiplier = Constants.MaxHRInPercentMax / lastMaxHR;
-
-                highValue.Value = (Byte)Math.Min(Constants.MaxHRInPercentMax, Math.Round(Zone.High * baseMultiplier, 0, MidpointRounding.AwayFromZero));
-                attribute.Value = Constants.HeartRateReferenceTCXString[1];
-            }
-            else
-            {
-                highValue.Value = (Byte)Utils.Clamp(Zone.High, Constants.MinHRInBPM, Constants.MaxHRInBPM);
-                attribute.Value = Constants.HeartRateReferenceTCXString[0];
-            }
+            exportAsPercentMax.SerializeAttribute(childNode, Constants.XsiTypeTCXString, Constants.xsins, document);
             highValue.Serialize(childNode, Constants.ValueTCXString, document);
 
             // Extension
