@@ -56,27 +56,29 @@ To determine in what category your workouts will be pasted, simply select that c
 == Scheduling ==
 Scheduling your workouts should be an integral part of your training.  For this purpose, Garmin allows you to schedule dates on which you will do your workouts.  In this plugin, planning is done by using the calendar in the lower left.
 
-http://garminworkouts.googlecode.com/files/Workout%20schedule.gif
+http://garminworkouts.googlecode.com/files/Workout%20schedule-b.gif
 
 Planned dates are maked with a little red triangle on a certain date.  The selected date is marked with a full square.  The two buttons right above the calendar are used to respectively plan a workout or remove a planned date.
 
 === Scheduling a workout ===
 Scheduling a workout is very simple, simply select all the workouts you want to do on a given day, then select that day and click on the "schedule workout" button http://garminworkouts.googlecode.com/files/Schedule%20workout%20button.gif
 
-If you want to plan your workout on the 31st of October, start by selecting that date :
+If you want to plan your workout on the 30th of September, start by selecting that date :
 
-http://garminworkouts.googlecode.com/files/Workout%20scheduling%20operation-b.gif
+http://garminworkouts.googlecode.com/files/Workout%20scheduling%20operation-c.gif
 
 Then you click on the "schedule workout" button.  You get the following result.  Notice that the 31st now has a small red triangle in the upper left, which means your workout has been planned.
 
-http://garminworkouts.googlecode.com/files/Workout%20scheduling%20result-b.gif
+http://garminworkouts.googlecode.com/files/Workout%20scheduling%20result-c.gif
 
 Note that when selecting a date, it must be today or in the future.  Planning a workout in the past is useless so it is not allowed.
 
 === Removing a planned workout ===
 It seems some people make mistakes, so what are you going to do when you've planned your workout on the wrong date?  Remove it of course.  The button right next to the "schedule workout" button http://garminworkouts.googlecode.com/files/Delete%20Workout%20Button.gif is there for this exact purpose.  When you select a date with a workout planned it will be enabled.  Click it and the sheduling will be removed.
 
-For instance, with the above example, if we made a mistake and wanted to plan, not on the 31st but on the 1st of November.  After all we ate a lot of candy the previous evening and we have to lose that extra weight.  Start by selecting the 31st, then hit the "remove shedule" button.  The little red triangle disappears, all is good.
+For instance, with the above example, if we made a mistake and wanted to plan, not on the 30th but on the 1st of November.  After all we ate a lot of candy the previous evening and we have to lose that extra weight.  Start by selecting the 30th, then hit the "remove shedule" button.  The little red triangle disappears, all is good.
+
+There is also a button to remove all the planned dates for the selected workouts http://garminworkouts.googlecode.com/files/Remove%20all%20scheduled.gif
 
 === Workouts planned on a certain day ===
 Often, we would like to know what workouts were planned on a certain date, to prepare ourselves mentally I suppose.  For this purpose the plugin uses the  [http://www.zonefivesoftware.com/SportTracks SportTracks] calendar in the upper left corner.  You might not have noticed, but as you plan your workouts, the dates on which workouts are planned get highlighted.
