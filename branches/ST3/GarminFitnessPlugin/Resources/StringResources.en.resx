@@ -681,4 +681,7 @@
   <data name="WorkoutLinkStepText" xml:space="preserve">
     <value>Workout link: {0}</value>
   </data>
+  <data name="ExportSTHRZonesAsLabelText" xml:space="preserve">
+    <value>Export ST heart rate zones as :</value>
+  </data>
 </root>
