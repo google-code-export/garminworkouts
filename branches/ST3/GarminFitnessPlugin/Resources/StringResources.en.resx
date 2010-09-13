@@ -684,4 +684,16 @@
   <data name="ExportSTHRZonesAsLabelText" xml:space="preserve">
     <value>Export ST heart rate zones as :</value>
   </data>
+  <data name="ExportAsLabelText" xml:space="preserve">
+    <value>Export as:</value>
+  </data>
+  <data name="FitFileText" xml:space="preserve">
+    <value>FIT Files</value>
+  </data>
+  <data name="SelectFolderText" xml:space="preserve">
+    <value>Select Folder</value>
+  </data>
+  <data name="TCXFileText" xml:space="preserve">
+    <value>TCX Files</value>
+  </data>
 </root>

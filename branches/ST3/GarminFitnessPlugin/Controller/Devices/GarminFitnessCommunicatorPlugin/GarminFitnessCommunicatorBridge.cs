@@ -278,8 +278,6 @@ namespace GarminFitnessPlugin.Controller
         public void CancelReadFromDevice()
         {
             m_HiddenWebBrowser.Document.InvokeScript("CancelReadFromDevice");
-
-            m_CancelReadFitnessDirectory = true;
             m_HiddenWebBrowser.Document.InvokeScript("CancelReadFitnessDirectory");
         }
 
@@ -319,29 +317,9 @@ namespace GarminFitnessPlugin.Controller
 
         public List<string> GetWorkoutFiles()
         {
-            bool readcompleted = false;
             String directoryXml = String.Empty;
 
-            m_CancelReadFitnessDirectory = false;
-            m_HiddenWebBrowser.Document.InvokeScript("StartReadFitnessDirectory");
-
-            while(!readcompleted && !m_CancelReadFitnessDirectory)
-            {
-                object status = m_HiddenWebBrowser.Document.InvokeScript("FinishReadFitnessDirectory");
-
-/*                if (status == 3) // Finished
-                {
-                    readcompleted = true;
-                }
-                else if (status == 2) // Waiting
-                {
-                    m_HiddenWebBrowser.Document.InvokeScript("RespondToMessageBox", new object[] { 1 });
-                }*/
-
-                Thread.Sleep(100);
-            }
-
-            directoryXml = m_HiddenWebBrowser.Document.InvokeScript("GetDirectoryXml") as String;
+            directoryXml = m_HiddenWebBrowser.Document.InvokeScript("GetWorkoutFiles") as String;
 
             return null;
         }
@@ -389,6 +367,5 @@ namespace GarminFitnessPlugin.Controller
         private WebBrowser m_HiddenWebBrowser = new WebBrowser();
         private static String m_LocalWebPageLocation;
         private bool m_ControllerReady = false;
-        private bool m_CancelReadFitnessDirectory = true;
     }
 }

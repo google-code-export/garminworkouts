@@ -35,6 +35,8 @@ namespace GarminFitnessPlugin.Data
             m_ForceSplit.Serialize(stream);
         }
 
+        public abstract void SerializetoFIT(Stream stream);
+
         public void Deserialize_V0(Stream stream, DataVersion version)
         {
         }

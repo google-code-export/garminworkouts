@@ -108,6 +108,10 @@ namespace GarminFitnessPlugin.Data
             m_WorkoutStepsCopy.Serialize(stream);
         }
 
+        public override void SerializetoFIT(Stream stream)
+        {
+        }
+
         public void Deserialize_V14(Stream stream, DataVersion version)
         {
             base.Deserialize(typeof(IStep), stream, version);

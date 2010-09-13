@@ -457,6 +457,15 @@ namespace GarminFitnessPlugin.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Export as:.
+        /// </summary>
+        internal static string ExportAsLabelText {
+            get {
+                return ResourceManager.GetString("ExportAsLabelText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to There was an error while exporting the profile..
         /// </summary>
         internal static string ExportProfileFailedText {
@@ -543,6 +552,15 @@ namespace GarminFitnessPlugin.Resources {
         internal static string FinishLabelText {
             get {
                 return ResourceManager.GetString("FinishLabelText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to FIT Files.
+        /// </summary>
+        internal static string FitFileText {
+            get {
+                return ResourceManager.GetString("FitFileText", resourceCulture);
             }
         }
         
@@ -1438,6 +1456,15 @@ namespace GarminFitnessPlugin.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Select Folder.
+        /// </summary>
+        internal static string SelectFolderText {
+            get {
+                return ResourceManager.GetString("SelectFolderText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Select workout.
         /// </summary>
         internal static string SelectWorkoutText {
@@ -1596,6 +1623,15 @@ namespace GarminFitnessPlugin.Resources {
         internal static string SuccessText {
             get {
                 return ResourceManager.GetString("SuccessText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to TCX Files.
+        /// </summary>
+        internal static string TCXFileText {
+            get {
+                return ResourceManager.GetString("TCXFileText", resourceCulture);
             }
         }
         

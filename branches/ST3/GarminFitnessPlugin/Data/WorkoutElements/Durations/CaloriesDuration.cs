@@ -33,6 +33,10 @@ namespace GarminFitnessPlugin.Data
             m_CaloriesToSpend.Serialize(stream);
         }
 
+        public override void SerializetoFIT(Stream stream)
+        {
+        }
+
         public new void Deserialize_V0(Stream stream, DataVersion version)
         {
             // Call base deserialization

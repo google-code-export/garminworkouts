@@ -161,35 +161,37 @@ namespace GarminFitnessPlugin.View
         public void ToFileEventHandler(object sender, EventArgs args)
         {
             FileStream file = null;
-            FolderBrowserDialog dlg = new FolderBrowserDialog();
-
-            dlg.SelectedPath = Options.Instance.DefaultExportDirectory;
-            if (dlg.ShowDialog() == DialogResult.OK)
+            try
             {
-                try
+                GarminWorkoutControl viewControl = (GarminWorkoutControl)((GarminFitnessView)PluginMain.GetApplication().ActiveView).GetCurrentView();
+                List<IWorkout> workoutsToExport = new List<IWorkout>();
+                ExportWorkoutsDialog dlg;
+                bool containsFITOnlyFeatures = false;
+
+                // Populate list of workouts to export
+                foreach (Workout currentWorkout in viewControl.SelectedConcreteWorkouts)
                 {
-                    GarminWorkoutControl viewControl = (GarminWorkoutControl)((GarminFitnessView)PluginMain.GetApplication().ActiveView).GetCurrentView();
-                    List<IWorkout> workoutsToExport = new List<IWorkout>();
+                    containsFITOnlyFeatures = containsFITOnlyFeatures || currentWorkout.ContainsFITOnlyFeatures;
 
-                    // Populate list of workouts to export
-                    foreach (IWorkout currentWorkout in viewControl.SelectedConcreteWorkouts)
+                    if (currentWorkout.GetSplitPartsCount() > 1)
                     {
-                        if (currentWorkout.GetSplitPartsCount() > 1)
-                        {
-                            List<WorkoutPart> splitParts = currentWorkout.SplitInSeperateParts();
+                        List<WorkoutPart> splitParts = currentWorkout.SplitInSeperateParts();
 
-                            // Replace the workout by it's parts
-                            foreach (WorkoutPart currentPart in splitParts)
-                            {
-                                workoutsToExport.Add(currentPart);
-                            }
-                        }
-                        else
+                        // Replace the workout by it's parts
+                        foreach (WorkoutPart currentPart in splitParts)
                         {
-                            workoutsToExport.Add(currentWorkout);
+                            workoutsToExport.Add(currentPart);
                         }
                     }
+                    else
+                    {
+                        workoutsToExport.Add(currentWorkout);
+                    }
+                }
 
+                dlg = new ExportWorkoutsDialog(containsFITOnlyFeatures);
+                if (dlg.ShowDialog() == DialogResult.OK)
+                {
                     foreach (IWorkout currentWorkout in workoutsToExport)
                     {
                         string fileName = Utils.GetWorkoutFilename(currentWorkout);
@@ -210,18 +212,18 @@ namespace GarminFitnessPlugin.View
                     MessageBox.Show(String.Format(GarminFitnessView.GetLocalizedString("ExportWorkoutsSuccessText"), dlg.SelectedPath),
                                     GarminFitnessView.GetLocalizedString("SuccessText"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
-                catch
+            }
+            catch
+            {
+                MessageBox.Show(GarminFitnessView.GetLocalizedString("ExportWorkoutsFailedText"),
+                                GarminFitnessView.GetLocalizedString("ErrorText"),
+                                MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+            finally
+            {
+                if (file != null)
                 {
-                    MessageBox.Show(GarminFitnessView.GetLocalizedString("ExportWorkoutsFailedText"),
-                                    GarminFitnessView.GetLocalizedString("ErrorText"),
-                                    MessageBoxButtons.OK, MessageBoxIcon.Information);
-                }
-                finally
-                {
-                    if (file != null)
-                    {
-                        file.Close();
-                    }
+                    file.Close();
                 }
             }
         }

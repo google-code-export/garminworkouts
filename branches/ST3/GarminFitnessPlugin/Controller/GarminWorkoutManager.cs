@@ -169,15 +169,18 @@ namespace GarminFitnessPlugin.Controller
                 GarminFitnessGuid workoutGuid = new GarminFitnessGuid();
 
                 workoutGuid.Deserialize(stream, version);
-                CreateWorkout(workoutGuid);
+                CreateWorkout(workoutGuid, PluginMain.GetApplication().Logbook.ActivityCategories[0]);
             }
 
             for (int i = 0; i < workoutCount; ++i)
             {
                 GarminFitnessGuid workoutGuid = new GarminFitnessGuid();
+                Workout currentWorkout;
+
                 workoutGuid.Deserialize(stream, version);
 
-                GetWorkout(workoutGuid).Deserialize(stream, version);
+                currentWorkout = GetWorkout(workoutGuid);
+                currentWorkout.Deserialize(stream, version);
             }
 
             m_Workouts.Sort(new WorkoutComparer());
@@ -206,13 +209,13 @@ namespace GarminFitnessPlugin.Controller
             return result;
         }
 
-        public Workout CreateWorkout(Guid workoutId)
+        public Workout CreateWorkout(Guid workoutId, IActivityCategory category)
         {
             Workout result;
             string uniqueName;
 
             uniqueName = GetUniqueName("NewWorkout 1");
-            result = new Workout(workoutId);
+            result = new Workout(workoutId, uniqueName, category);
 
             RegisterWorkout(result);
 
@@ -379,6 +382,7 @@ namespace GarminFitnessPlugin.Controller
                 for (int i = 0; i < workoutCount; i++)
                 {
                     Workout newWorkout = GarminWorkoutManager.Instance.CreateWorkout(stream, Constants.CurrentVersion, category);
+                    newWorkout.Id = Guid.NewGuid();
 
                     deserializedWorkouts.Add(newWorkout);
                 }

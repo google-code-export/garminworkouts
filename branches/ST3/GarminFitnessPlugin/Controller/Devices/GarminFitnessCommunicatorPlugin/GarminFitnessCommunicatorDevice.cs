@@ -303,7 +303,7 @@ namespace GarminFitnessPlugin.Controller
 
         public bool SupportsWorkoutMassStorageTransfer
         {
-            get { return false; } // m_WorkoutFileTransferPath != String.Empty; }
+            get { return false; }// m_WorkoutFileTransferPath != String.Empty; }
         }
 
         public String WorkoutFileTransferPath

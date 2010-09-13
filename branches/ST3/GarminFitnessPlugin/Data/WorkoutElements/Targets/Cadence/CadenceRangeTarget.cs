@@ -34,6 +34,10 @@ namespace GarminFitnessPlugin.Data
             m_MaxCadence.Serialize(stream);
         }
 
+        public override void SerializetoFIT(Stream stream)
+        {
+        }
+
         public new void Deserialize_V0(Stream stream, DataVersion version)
         {
             // Call base deserialization

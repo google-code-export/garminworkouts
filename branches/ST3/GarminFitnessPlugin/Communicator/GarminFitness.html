@@ -18,8 +18,10 @@
     <script type="text/javascript" src="js/garmin/device/GarminDeviceControl.js"></script>
     <script type="text/javascript">
         var garminController = null;
+        var garminPlugin = null;
         var listener = Class.create();
         var listenerHTML = Class.create();
+        var cancelReadFitnessDirectory = false;
 
         function escapeXmlChars(strInput) {
             // replace special characters that will error out in xml
@@ -146,6 +148,22 @@
 
         function Initialize() {
             try {
+                var pluginElement;
+                if (window.ActiveXObject) { // IE
+                    pluginElement = $("GarminActiveXControl");
+                } else { // FireFox
+                    pluginElement = $("GarminNetscapePlugin");
+                }
+
+                // make sure the plugin object exists on the page
+                if (pluginElement == null) {
+                    var error = new Error(Garmin.DeviceControl.MESSAGES.missingPluginTag);
+                    error.name = "HtmlTagNotFoundException";
+                    throw error;
+                }
+
+                // instantiate a garmin plugin
+                garminPlugin = new Garmin.DevicePlugin(pluginElement);
                 garminController = new Garmin.DeviceControl();
                 garminController.register(new listener());
 
@@ -287,54 +305,52 @@
             }
         }
 
-        function StartReadFitnessDirectory() {
+        function GetWorkoutFiles() {
             try {
-                garminController.startReadFitnessDirectory(garminController.getDeviceNumber(), Garmin.DeviceControl.FILE_TYPES.tcx);
+                var status = 0;
+                var exitLoop = false;
+
+                cancelReadFitnessDirectory = false;
+                garminPlugin.startReadFitnessDirectory(garminController.getDeviceNumber(), Garmin.DeviceControl.FILE_TYPES.tcx);
+                alert("starting");
+
+                while (!exitLoop) {
+                    status = garminPlugin.finishReadFitnessDirectory();
+                    alert("poll status=" + status);
+
+                    if (status == 2) {              // 2 = waiting
+                        garminPlugin.respondToMessageBox(1);    // close msg box
+                    }
+                    else if (status == 3 ||         // 3 = finished
+                             cancelReadFitnessDirectory) {
+                        exitLoop = true;
+                    }
+                }
+
+                if (!cancelReadFitnessDirectory) {
+                    alert("success");
+                    var directoryXml = garminPlugin.getTcdXml();
+
+                    alert(directoryXml);
+
+                    return escapeXmlChars(directoryXml);
+                }
+                alert("failed");
+
+                return "";
             }
             catch (e) {
-                window.external.OnExceptionTriggered("StartReadFitnessDirectory failed: " + e.message);
+                window.external.OnExceptionTriggered("GetWorkoutFiles failed: " + e.message);
             }
         }
 
         function CancelReadFitnessDirectory() {
             try {
-                garminController.cancelReadFitnessDirectory();
+                this.cancelReadFitnessDirectory = true;
+                garminPlugin.cancelReadFitnessDirectory();
             }
             catch (e) {
                 window.external.OnExceptionTriggered("CancelReadFitnessDirectory failed: " + e.message);
-            }
-        }
-
-        function FinishReadFitnessDirectory() {
-            try {
-                alert("status");
-                var status = garminController.finishReadFitnessDirectory();
-                alert("value");
-
-                alert(status);
-
-                return status;
-            }
-            catch (e) {
-                window.external.OnExceptionTriggered("FinishReadFitnessDirectory failed: " + e.message);
-            }
-        }
-
-        function RespondToMessageBox(answer) {
-            try {
-                garminController.respondToMessageBox(answer);
-            }
-            catch (e) {
-                window.external.OnExceptionTriggered("RespondToMessageBox failed: " + e.message);
-            }
-        }
-
-        function GetDirectoryXml() {
-            try {
-                return garminController.getDirectoryXml();
-            }
-            catch (e) {
-                window.external.OnExceptionTriggered("GetDirectoryXml failed: " + e.message);
             }
         }
 

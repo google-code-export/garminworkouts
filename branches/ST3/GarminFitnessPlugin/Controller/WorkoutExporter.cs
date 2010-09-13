@@ -17,15 +17,29 @@ namespace GarminFitnessPlugin.Controller
 
             workouts.Add(workout);
 
-            ExportWorkout(workouts, exportStream, false);
+            ExportWorkouts(workouts, exportStream, false);
         }
 
-        public static void ExportWorkout(List<IWorkout> workouts, Stream exportStream)
+        public static void ExportWorkouts(List<IWorkout> workouts, Stream exportStream)
         {
-            ExportWorkout(workouts, exportStream, false);
+            ExportWorkouts(workouts, exportStream, false);
         }
 
-        public static void ExportWorkout(List<IWorkout> workouts, Stream exportStream, bool skipExtensions)
+        public static void ExportWorkoutToFIT(IWorkout workout, Stream exportStream)
+        {
+            List<IWorkout> workouts = new List<IWorkout>();
+
+            workouts.Add(workout);
+
+            ExportWorkoutsToFIT(workouts, exportStream, false);
+        }
+
+        public static void ExportWorkoutsToFIT(List<IWorkout> workouts, Stream exportStream)
+        {
+            ExportWorkoutsToFIT(workouts, exportStream, false);
+        }
+
+        private static void ExportWorkouts(List<IWorkout> workouts, Stream exportStream, bool skipExtensions)
         {
             Debug.Assert(exportStream.CanWrite && exportStream.Length == 0);
             XmlDocument document = new XmlDocument();
@@ -62,10 +76,18 @@ namespace GarminFitnessPlugin.Controller
             document.Save(new StreamWriter(exportStream));
         }
 
+        private static void ExportWorkoutsToFIT(List<IWorkout> workouts, Stream exportStream, bool skipExtensions)
+        {
+        }
+
         private static void ExportWorkoutInternal(IWorkout workout, XmlDocument document, XmlNode parentNode)
         {
             workout.LastExportDate = DateTime.Now;
             workout.Serialize(parentNode, "Workout", document);
+        }
+
+        private static void ExportWorkoutToFITInternal(IWorkout workout, XmlDocument document, XmlNode parentNode)
+        {
         }
     }
 }

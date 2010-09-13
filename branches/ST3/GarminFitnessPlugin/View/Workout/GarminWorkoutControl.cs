@@ -3059,7 +3059,10 @@ namespace GarminFitnessPlugin.View
 
                 WorkoutWrapper newItem = AddWorkoutToList(categories, currentWorkout);
 
-                expandedMap.Add(newItem, expandWorkout);
+                if (newItem != null)
+                {
+                    expandedMap.Add(newItem, expandWorkout);
+                }
             }
 
             WorkoutsList.RowData = categories;

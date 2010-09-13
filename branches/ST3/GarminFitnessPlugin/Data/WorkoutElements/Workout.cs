@@ -15,7 +15,8 @@ namespace GarminFitnessPlugin.Data
 {
     class Workout : IWorkout, IDirty
     {
-        public Workout(Guid workoutId)
+        public Workout(Guid workoutId, string name, IActivityCategory category) :
+            this(name, category)
         {
             m_Id.Value = workoutId;
 
@@ -104,6 +105,10 @@ namespace GarminFitnessPlugin.Data
             m_AddToDailyViewOnSchedule.Serialize(stream);
         }
 
+        public override void SerializetoFIT(Stream stream)
+        {
+        }
+
         public void Deserialize_V0(Stream stream, DataVersion version)
         {
             byte[] intBuffer = new byte[sizeof(Int32)];
@@ -162,6 +167,14 @@ namespace GarminFitnessPlugin.Data
         {
             m_Id.Deserialize(stream, version);
 
+            // To fix a bug in vesion 1.1.269 where multiple workouts could have the same GUID.
+            //  Since the GUID wasn't used, this only appeared later in 1.1.276, therefore we can
+            //  safely override the GUID if data version is exactly 13
+            if (version.VersionNumber == 13)
+            {
+                m_Id.Value = Guid.NewGuid();
+            }
+
             Deserialize_V12(stream, version);
         }
 
@@ -181,10 +194,6 @@ namespace GarminFitnessPlugin.Data
                     m_Name.Deserialize(child);
                     nameRead = true;
                 }
-                // Steps handled by WorkoutStepList class
-/*                else if (child.Name == "Step")
-                {
-                }*/
                 else if (child.Name == "Notes")
                 {
                     m_Notes.Deserialize(child);
@@ -278,6 +287,7 @@ namespace GarminFitnessPlugin.Data
             stream.Seek(0, SeekOrigin.Begin);
 
             result = GarminWorkoutManager.Instance.CreateWorkout(stream, Constants.CurrentVersion);
+            result.m_Id.Value = Guid.NewGuid();
 
             return result;
         }
@@ -293,6 +303,7 @@ namespace GarminFitnessPlugin.Data
             stream.Seek(0, SeekOrigin.Begin);
 
             result = GarminWorkoutManager.Instance.CreateWorkout(stream, Constants.CurrentVersion, newCategory);
+            result.m_Id.Value = Guid.NewGuid();
 
             stream.Close();
 
@@ -589,8 +600,13 @@ namespace GarminFitnessPlugin.Data
             get { return m_STExtensions; }
         }
 
+        public bool ContainsFITOnlyFeatures
+        {
+            get { return false; }
+        }
+
         private GarminFitnessString m_Name = new GarminFitnessString("", 15);
-        private GarminFitnessGuid m_Id = new GarminFitnessGuid();
+        private GarminFitnessGuid m_Id = new GarminFitnessGuid(Guid.NewGuid());
         private GarminFitnessDate m_LastExportDate = new GarminFitnessDate();
         private List<GarminFitnessDate> m_ScheduledDates = new List<GarminFitnessDate>();
         private WorkoutStepsList m_Steps = null;

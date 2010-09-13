@@ -34,6 +34,10 @@ namespace GarminFitnessPlugin.Data
             m_MaxPower.Serialize(stream);
         }
 
+        public override void SerializetoFIT(Stream stream)
+        {
+        }
+
         public void Deserialize_V1(Stream stream, DataVersion version)
         {
             // Call base deserialization
