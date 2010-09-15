@@ -80,6 +80,11 @@ namespace GarminFitnessPlugin.Data
             set;
         }
 
+        public virtual bool ContainsFITOnlyFeatures
+        {
+            get { return false; }
+        }
+
         public enum TargetType
         {
             [ComboBoxStringProviderAttribute("NullTargetComboBoxText")]

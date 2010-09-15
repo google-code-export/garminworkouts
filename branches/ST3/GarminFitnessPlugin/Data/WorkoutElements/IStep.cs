@@ -208,6 +208,11 @@ namespace GarminFitnessPlugin.Data
             set;
         }
 
+        public virtual bool ContainsFITOnlyFeatures
+        {
+            get { return false; }
+        }
+
         public delegate void StepChangedEventHandler(IStep modifiedStep, PropertyChangedEventArgs changedProperty);
         public event StepChangedEventHandler StepChanged;
 

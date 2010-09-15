@@ -602,7 +602,7 @@ namespace GarminFitnessPlugin.Data
 
         public bool ContainsFITOnlyFeatures
         {
-            get { return false; }
+            get { return m_Steps.ContainsFITOnlyFeatures; }
         }
 
         private GarminFitnessString m_Name = new GarminFitnessString("", 15);

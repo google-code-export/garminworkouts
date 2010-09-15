@@ -442,6 +442,15 @@ namespace GarminFitnessPlugin.Data
             }
         }
 
+        public override bool ContainsFITOnlyFeatures
+        {
+            get
+            {
+                return Target.ContainsFITOnlyFeatures ||
+                       Duration.ContainsFITOnlyFeatures;
+            }
+        }
+
         private IDuration m_Duration;
         private ITarget m_Target;
         private GarminFitnessString m_Name = new GarminFitnessString(String.Empty, Constants.MaxNameLength);

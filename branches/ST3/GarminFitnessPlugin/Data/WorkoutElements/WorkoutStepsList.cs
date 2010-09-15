@@ -778,6 +778,22 @@ namespace GarminFitnessPlugin.Data
             return value.m_InternalStepList;
         }
 
+        public bool ContainsFITOnlyFeatures
+        {
+            get
+            {
+                foreach (IStep step in m_InternalStepList)
+                {
+                    if (step.ContainsFITOnlyFeatures)
+                    {
+                        return true;
+                    }
+                }
+
+                return false;
+            }
+        }
+
         public delegate void StepAddedEventHandler(IStep addedStep);
         public event StepAddedEventHandler StepAdded;
 

@@ -74,6 +74,11 @@ namespace GarminFitnessPlugin.Data
             get { return m_ParentStep; }
         }
 
+        public virtual bool ContainsFITOnlyFeatures
+        {
+            get { return false; }
+        }
+
         public enum DurationType
         {
             [ComboBoxStringProviderAttribute("LapButtonDurationComboBoxText")]

@@ -408,6 +408,11 @@ namespace GarminFitnessPlugin.Data
             set { Debug.Assert(false); }
         }
 
+        public override bool ContainsFITOnlyFeatures
+        {
+            get { return false; }
+        }
+
         private GarminFitnessByteRange m_RepetitionCount = new GarminFitnessByteRange(Constants.MinRepeats, Constants.MinRepeats, Constants.MaxRepeats);
         private List<IStep> m_StepsToRepeat = new List<IStep>();
     }
