@@ -5,6 +5,7 @@ using System.Runtime.InteropServices;
 using System.Security.Permissions;
 using System.Text;
 using System.Threading;
+using System.Xml;
 using System.Windows.Forms;
 
 namespace GarminFitnessPlugin.Controller
@@ -317,11 +318,51 @@ namespace GarminFitnessPlugin.Controller
 
         public List<string> GetWorkoutFiles()
         {
+            List<string> result = new List<string>();
             String directoryXml = String.Empty;
+            XmlDocument directoryDocument = new XmlDocument();
 
-            directoryXml = m_HiddenWebBrowser.Document.InvokeScript("GetWorkoutFiles") as String;
+            try
+            {
+                directoryXml = m_HiddenWebBrowser.Document.InvokeScript("GetWorkoutFiles") as String;
 
-            return null;
+                // Akward bug fix : Remove last character if it's a non-printing character
+                for (int i = 0; i < 32; ++i)
+                {
+                    char currentCharacter = (char)i;
+
+                    if (directoryXml.EndsWith(currentCharacter.ToString()))
+                    {
+                        directoryXml = directoryXml.Substring(0, directoryXml.Length - 1);
+                        break;
+                    }
+                }
+
+                directoryDocument.LoadXml(directoryXml);
+                
+                // Extract all file names and path
+                if (directoryDocument.ChildNodes.Count >= 2 &&
+                    directoryDocument.ChildNodes.Item(1).Name == "DirectoryListing")
+                {
+                    foreach (XmlElement fileNode in directoryDocument.ChildNodes.Item(1).ChildNodes)
+                    {
+                        if (fileNode.Name == "File" && !String.IsNullOrEmpty(fileNode.GetAttribute("Path")))
+                        {
+                            result.Add(fileNode.GetAttribute("Path"));
+                        }
+                    }
+
+                    return result;
+                }
+
+                return null;
+            }
+            catch (Exception e)
+            {
+                return null;
+
+                throw e;
+            }
         }
 
         public void GetBinaryFile(string filePath)

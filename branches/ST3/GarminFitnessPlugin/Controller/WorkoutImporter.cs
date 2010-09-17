@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
+using System.Windows.Forms;
 using System.Xml;
 using ZoneFiveSoftware.Common.Data.Fitness;
 using GarminFitnessPlugin.View;
@@ -58,12 +59,12 @@ namespace GarminFitnessPlugin.Controller
             }
             catch (GarminFitnessXmlDeserializationException e)
             {
-                System.Windows.Forms.MessageBox.Show(e.Message + "\n\n" + e.ErroneousNode.OuterXml);
+                MessageBox.Show(e.Message + "\n\n" + e.ErroneousNode.OuterXml);
                 return false;
             }
             catch (Exception e)
             {
-                System.Windows.Forms.MessageBox.Show(e.Message + "\n\n" + e.StackTrace);
+                MessageBox.Show(e.Message + "\n\n" + e.StackTrace);
                 return false;
             }
         }
@@ -80,7 +81,7 @@ namespace GarminFitnessPlugin.Controller
                 {
                     ReplaceRenameDialog dlg = new ReplaceRenameDialog(GarminWorkoutManager.Instance.GetUniqueName(workoutName));
 
-                    if (dlg.ShowDialog() == System.Windows.Forms.DialogResult.Yes)
+                    if (dlg.ShowDialog() == DialogResult.Yes)
                     {
                         // Yes = replace, delete the current workout from the list
                         Workout oldWorkout = GarminWorkoutManager.Instance.GetWorkout(workoutName);
@@ -140,7 +141,7 @@ namespace GarminFitnessPlugin.Controller
                         {
                             ReplaceRenameDialog dlg = new ReplaceRenameDialog(GarminWorkoutManager.Instance.GetUniqueName(name));
 
-                            if (dlg.ShowDialog() == System.Windows.Forms.DialogResult.Yes)
+                            if (dlg.ShowDialog() == DialogResult.Yes)
                             {
                                 // Yes = replace, delete the current workout from the list
                                 Workout oldWorkout = GarminWorkoutManager.Instance.GetWorkout(name);

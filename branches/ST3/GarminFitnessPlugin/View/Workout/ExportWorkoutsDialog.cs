@@ -21,11 +21,11 @@ namespace GarminFitnessPlugin.View
             ExportButton.Text = CommonResources.Text.ActionExport;
             Cancel_Button.Text = CommonResources.Text.ActionCancel;
 
-//            if (!FITFormatOnly)
+            if (!FITFormatOnly)
             {
                 FileFormatsComboBox.Items.Add(GarminFitnessView.GetLocalizedString("TCXFileText"));
             }
-            //FileFormatsComboBox.Items.Add(GarminFitnessView.GetLocalizedString("FitFileText"));
+            FileFormatsComboBox.Items.Add(GarminFitnessView.GetLocalizedString("FitFileText"));
 
             FileFormatsComboBox.SelectedIndex = 0;
 

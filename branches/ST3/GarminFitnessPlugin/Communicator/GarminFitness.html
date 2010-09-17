@@ -21,14 +21,14 @@
         var garminPlugin = null;
         var listener = Class.create();
         var listenerHTML = Class.create();
-        var cancelReadFitnessDirectory = false;
+        var cancelReadableFileListing = false;
 
         function escapeXmlChars(strInput) {
             // replace special characters that will error out in xml
             strInput = strInput.replace(/&/g, "&");
             strInput = strInput.replace(/[<]/g, "<");
             strInput = strInput.replace(/>/g, ">");
-            strInput = strInput.replace(/"/g, "");
+            strInput = strInput.replace(/"/g, "\"");
             strInput = strInput.replace(/'/g, "&apos;");
             return (strInput);
         }
@@ -113,7 +113,7 @@
                   window.external.OnFinishWriteToDevice(false, "");
               },
               onException: function (json) {
-                  window.external.OnExceptionTriggered(e.message);
+                  window.external.OnExceptionTriggered(json.msg);
               }
           };
 
@@ -307,35 +307,41 @@
 
         function GetWorkoutFiles() {
             try {
-                var status = 0;
-                var exitLoop = false;
+                var dataTypes = garminController.getDevices()[garminController.getDeviceNumber()].getDeviceDataTypes().values();
+                var dataType = null;
 
-                cancelReadFitnessDirectory = false;
-                garminPlugin.startReadFitnessDirectory(garminController.getDeviceNumber(), Garmin.DeviceControl.FILE_TYPES.tcx);
-                alert("starting");
-
-                while (!exitLoop) {
-                    status = garminPlugin.finishReadFitnessDirectory();
-                    alert("poll status=" + status);
-
-                    if (status == 2) {              // 2 = waiting
-                        garminPlugin.respondToMessageBox(1);    // close msg box
-                    }
-                    else if (status == 3 ||         // 3 = finished
-                             cancelReadFitnessDirectory) {
-                        exitLoop = true;
+                for (var i = 0; i < dataTypes.length; i++) {
+                    if (dataTypes[i].getTypeName() == "FitnessWorkouts") {
+                        dataType = dataTypes[i];
+                        break;
                     }
                 }
 
-                if (!cancelReadFitnessDirectory) {
-                    alert("success");
-                    var directoryXml = garminPlugin.getTcdXml();
+                if (dataType != null) {
+                    var status = 0;
+                    var exitLoop = false;
 
-                    alert(directoryXml);
+                    cancelReadableFileListing = false;
+                    garminPlugin.startReadableFileListing(garminController.getDeviceNumber(), dataType.getTypeName(), dataType.getIdentifier(), true);
 
-                    return escapeXmlChars(directoryXml);
+                    while (!exitLoop) {
+                        status = garminPlugin.finishReadableFileListing();
+
+                        if (status == 2) {              // 2 = waiting
+                            garminPlugin.respondToMessageBox(1);    // close msg box
+                        }
+                        else if (status == 3 ||         // 3 = finished
+                                 cancelReadableFileListing) {
+                            exitLoop = true;
+                        }
+                    }
+
+                    if (!cancelReadableFileListing) {
+                        var directoryXml = garminPlugin.getDirectoryXml();
+
+                        return escapeXmlChars(directoryXml);
+                    }
                 }
-                alert("failed");
 
                 return "";
             }
@@ -344,13 +350,13 @@
             }
         }
 
-        function CancelReadFitnessDirectory() {
+        function CancelReadableFileListing() {
             try {
-                this.cancelReadFitnessDirectory = true;
-                garminPlugin.cancelReadFitnessDirectory();
+                this.cancelReadableFileListing = true;
+                garminPlugin.cancelReadableFileListing();
             }
             catch (e) {
-                window.external.OnExceptionTriggered("CancelReadFitnessDirectory failed: " + e.message);
+                window.external.OnExceptionTriggered("CancelReadableFileListing failed: " + e.message);
             }
         }
 

@@ -121,7 +121,7 @@ namespace GarminFitnessPlugin.View
                     }
                 }
 
-                GarminDeviceManager.Instance.ExportWorkout(workoutsToExport); 
+                GarminDeviceManager.Instance.ExportWorkouts(workoutsToExport); 
             }
             catch (FileNotFoundException)
             {

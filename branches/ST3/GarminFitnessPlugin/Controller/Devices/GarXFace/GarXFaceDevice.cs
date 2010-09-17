@@ -97,6 +97,11 @@ namespace GarminFitnessPlugin.Controller
 
                 WorkoutImporter.ImportWorkout(workout, controller.GetWorkoutOccuranceList());
 
+                if (OperationProgressed != null)
+                {
+                    OperationProgressed(this, m_CurrentOperation, (int)i + 1);
+                }
+
                 Logger.Instance.LogText(String.Format("GarXFace : Read workout {0}", workout.GetName()));
             }
 
@@ -278,6 +283,7 @@ namespace GarminFitnessPlugin.Controller
 
         public event DeviceOperationCompletedEventHandler WriteToDeviceCompleted;
         public event DeviceOperationCompletedEventHandler ReadFromDeviceCompleted;
+        public event DeviceOperationProgressedEventHandler OperationProgressed;
 
 #endregion
 

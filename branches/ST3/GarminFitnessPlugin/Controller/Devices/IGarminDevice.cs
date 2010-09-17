@@ -8,12 +8,14 @@ namespace GarminFitnessPlugin.Controller
     {
         Operation_Idle = 0,
         Operation_ReadWorkout,
+        Operation_ReadMassStorageWorkouts,
         Operation_WriteWorkout,
         Operation_ReadProfile,
         Operation_WriteProfile
     }
 
     delegate void DeviceOperationCompletedEventHandler(IGarminDevice device, DeviceOperations operation, Boolean succeeded);
+    delegate void DeviceOperationProgressedEventHandler(IGarminDevice device, DeviceOperations operation, int progress);
 
     interface IGarminDevice
     {
@@ -37,6 +39,7 @@ namespace GarminFitnessPlugin.Controller
         String DisplayName { get; }
 
         event DeviceOperationCompletedEventHandler WriteToDeviceCompleted;
+        event DeviceOperationProgressedEventHandler OperationProgressed;
         event DeviceOperationCompletedEventHandler ReadFromDeviceCompleted;
     }
 }

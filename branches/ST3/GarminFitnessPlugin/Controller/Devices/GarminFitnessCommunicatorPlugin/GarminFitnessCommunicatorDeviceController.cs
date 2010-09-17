@@ -47,9 +47,9 @@ namespace GarminFitnessPlugin.Controller
 
         private void OnCommunicatorBridgeFinishFindDevices(object sender, GarminFitnessCommunicatorBridge.FinishFindDevicesEventArgs e)
         {
-            m_Devices.Clear();
-
             XmlDocument devicesDocument = new XmlDocument();
+
+            m_Devices.Clear();
 
             try
             {
@@ -73,6 +73,10 @@ namespace GarminFitnessPlugin.Controller
                 }
                 catch
                 {
+                    if (FindDevicesCompleted != null)
+                    {
+                        FindDevicesCompleted(this, false);
+                    }
                 }
             }
 

@@ -448,6 +448,44 @@ Garmin.DevicePlugin.prototype = {
 		this.plugin.CancelReadFitnessDirectory();
 	},
 
+    //-----------------------------------------------------------------
+    /// List all of the files on the device.
+    ///
+    /// Minimum version 2.8.1.0
+    /// Starts an asynchronous file listing operation for the device.
+    /// Poll for finished with FinishReadableFileListing. The result is stored in
+    /// the property DirectoryListingXml. Only files that are output from the device are listed.
+    /// @sa CancelReadableFileListing FinishReadableFileListing DirectoryListingXml
+    startReadableFileListing: function (deviceNumber, dataType, dataTypeId, checkIntegrity) {
+        if (!this.bytesAvailable(deviceNumber, "") == -1) {
+            throw new Error("Your Communicator Plug-in version (" + this.getPluginVersionString() + ") does not support readable file listing.");
+        }
+        this.plugin.StartReadableFileListing(deviceNumber, dataType, dataTypeId, checkIntegrity);
+    },
+
+    //-----------------------------------------------------------------
+    /// Poll for completion of the asynchronous ReadableFileListing operation
+    ///
+    /// Minimum version 2.8.1.0
+    /// If the CompletionState is eMessageWaiting, call MessageBoxXml
+    /// to get a description of the message box to be displayed to
+    /// the user, and then call RespondToMessageBox with the value of the
+    /// selected button to resume operation. When the ReadableFileListing
+    /// operation has finished, the result will be stored in the
+    /// DirectoryListingXml property.
+    /// @return eFinished if the ReadableFileListing operation has completed
+    finishReadableFileListing: function () {
+        return this.plugin.FinishReadableFileListing();
+    },
+
+    //-----------------------------------------------------------------
+    /// Cancel the asynchronous ReadableFileListing operation
+    ///
+    /// Minimum version 2.8.1.0
+    cancelReadableFileListing: function () {
+        this.plugin.CancelReadableFileListing();
+    },
+
 	/** Cancel the asynchronous ReadFitDirectory operation. <br/>
 	 * <br/>
 	 * Minimum plugin version 2.7.2.0

@@ -89,7 +89,7 @@ namespace GarminFitnessPlugin.Controller
             AddTask(new SetOperationDeviceTask());
         }
 
-        public void ExportWorkout(List<IWorkout> workouts)
+        public void ExportWorkouts(List<IWorkout> workouts)
         {
             foreach (IWorkout current in workouts)
             {
@@ -158,6 +158,7 @@ namespace GarminFitnessPlugin.Controller
                 Debug.Assert(IsInitialized);
 
                 m_TimeoutTimer.Start();
+                m_LastProgressValue = 0;
                 CurrentTask.ExecuteTask(OperatingDevice);
             }
             catch (NoDeviceSupportException e)
@@ -357,7 +358,8 @@ namespace GarminFitnessPlugin.Controller
             {
                 Logger.Instance.LogText("Completed import workouts");
 
-                Debug.Assert(operation == DeviceOperations.Operation_ReadWorkout);
+                Debug.Assert(operation == DeviceOperations.Operation_ReadWorkout ||
+                             operation == DeviceOperations.Operation_ReadMassStorageWorkouts);
 
                 if (!succeeded)
                 {
@@ -378,6 +380,18 @@ namespace GarminFitnessPlugin.Controller
             }
 
             CompleteCurrentTask(succeeded, errorText);
+        }
+
+        private void OnOperationProgressed(IGarminDevice device, DeviceOperations operation, int progress)
+        {
+            if (progress > m_LastProgressValue)
+            {
+                // Restart timer
+                m_TimeoutTimer.Stop();
+                m_TimeoutTimer.Start();
+
+                m_LastProgressValue = progress;
+            }
         }
 
         private void OnTimeoutTimerTick(object sender, EventArgs e)
@@ -612,6 +626,7 @@ namespace GarminFitnessPlugin.Controller
                     {
                         OperatingDevice.ReadFromDeviceCompleted -= new DeviceOperationCompletedEventHandler(OnReadFromDeviceCompleted);
                         OperatingDevice.WriteToDeviceCompleted -= new DeviceOperationCompletedEventHandler(OnWriteToDeviceCompleted);
+                        OperatingDevice.OperationProgressed -= new DeviceOperationProgressedEventHandler(OnOperationProgressed);
                     }
 
                     m_OperatingDevice = value;
@@ -620,6 +635,7 @@ namespace GarminFitnessPlugin.Controller
                     {
                         OperatingDevice.ReadFromDeviceCompleted += new DeviceOperationCompletedEventHandler(OnReadFromDeviceCompleted);
                         OperatingDevice.WriteToDeviceCompleted += new DeviceOperationCompletedEventHandler(OnWriteToDeviceCompleted);
+                        OperatingDevice.OperationProgressed += new DeviceOperationProgressedEventHandler(OnOperationProgressed);
                     }
                 }
             }
@@ -633,6 +649,7 @@ namespace GarminFitnessPlugin.Controller
         private Dictionary<String, IGarminDevice> m_Devices = new Dictionary<String, IGarminDevice>();
         private IGarminDevice m_OperatingDevice = null;
         private System.Windows.Forms.Timer m_TimeoutTimer = new System.Windows.Forms.Timer();
+        private int m_LastProgressValue = 0;
 
         private static GarminDeviceManager m_Instance = null;
     }
