@@ -74,7 +74,11 @@ http://garminworkouts.googlecode.com/files/Running%20category%20modified%20detai
 
 You can notice that all the children have been updated to "Running".  That is because they all have the "Use parent category" setting.  If any one of those categories was overriden, it would have kept it's setting.
 
-= Default export directory =
+= Device Communication =
+== Default export directory ==
 The last option available in the settings page is the "Default Export Directory".  This option is used when you select to export your workouts to files.  Rather than asking for the directory at every time you export, the directory entered in this option will automatically be selected, speeding up the export process.
+
+== Pack workouts for export ==
+The Forerunner 405 is a special device for Garmin.  For some reason this devices has unique behaviors.  One of those behaviors is that it can only transfer 1 workout file at once.  For this reason, users of the FR405 should enable this option to "pack" all workouts in one file at export.  For users of other devices, this is unnecessary and can lead to problems at export so it should remain unchecked.
 
 Once you are done setting up the plugin, you can move on to the [BasicOperations basic operations].
