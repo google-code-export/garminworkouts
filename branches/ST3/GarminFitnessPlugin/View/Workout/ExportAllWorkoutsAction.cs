@@ -99,28 +99,13 @@ namespace GarminFitnessPlugin.View
 
                 Utils.HijackMainWindow();
 
-                // Export using Communicator Plugin
-                GarminDeviceManager.Instance.SetOperatingDevice();
-
-
                 foreach (IWorkout currentWorkout in GarminWorkoutManager.Instance.Workouts)
                 {
-                    if (currentWorkout.GetSplitPartsCount() > 1)
-                    {
-                        List<WorkoutPart> splitParts = currentWorkout.SplitInSeperateParts();
-
-                        // Replace the workout by it's parts
-                        foreach (WorkoutPart currentPart in splitParts)
-                        {
-                            workoutsToExport.Add(currentPart);
-                        }
-                    }
-                    else
-                    {
-                        workoutsToExport.Add(currentWorkout);
-                    }
+                    workoutsToExport.Add(currentWorkout);
                 }
 
+                // Export using Communicator Plugin
+                GarminDeviceManager.Instance.SetOperatingDevice();
                 GarminDeviceManager.Instance.ExportWorkouts(workoutsToExport); 
             }
             catch (FileNotFoundException)
@@ -206,10 +191,7 @@ namespace GarminFitnessPlugin.View
                 {
                     GarminDeviceManager.ExportWorkoutTask concreteTask = (GarminDeviceManager.ExportWorkoutTask)task;
 
-                    if(!m_FailedExportList.Contains(concreteTask.Workout.ConcreteWorkout))
-                    {
-                        m_FailedExportList.Add(concreteTask.Workout.ConcreteWorkout);
-                    }
+                    m_FailedExportList.AddRange(concreteTask.Workouts);
                 }
                 else
                 {
@@ -245,8 +227,8 @@ namespace GarminFitnessPlugin.View
             }
         }
 
-        private List<Workout> m_FailedExportList = new List<Workout>();
+        private List<IWorkout> m_FailedExportList = new List<IWorkout>();
 
-        public event System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
+        public event PropertyChangedEventHandler PropertyChanged;
     }
 }

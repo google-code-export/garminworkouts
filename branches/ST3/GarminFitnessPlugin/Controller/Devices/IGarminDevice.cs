@@ -22,7 +22,7 @@ namespace GarminFitnessPlugin.Controller
         void CancelWrite();
         void CancelRead();
 
-        void WriteWorkout(IWorkout workout);
+        void WriteWorkouts(List<IWorkout> workouts);
         void ReadWorkouts();
         void WriteProfile(GarminProfile profile);
         void ReadProfile(GarminProfile profile);

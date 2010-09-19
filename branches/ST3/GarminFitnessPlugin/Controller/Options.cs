@@ -268,7 +268,11 @@ namespace GarminFitnessPlugin.Controller
             child = document.CreateElement("EnableAutoSplitWorkouts");
             child.AppendChild(document.CreateTextNode(AllowSplitWorkouts.ToString()));
             parentNode.AppendChild(child);
-        }
+
+            child = document.CreateElement("PackWorkoutsOnExport");
+            child.AppendChild(document.CreateTextNode(PackWorkoutsOnExport.ToString()));
+            parentNode.AppendChild(child);
+       }
 
         public void Deserialize(System.Xml.XmlNode parentNode)
         {
@@ -354,6 +358,10 @@ namespace GarminFitnessPlugin.Controller
                 else if (child.Name == "EnableAutoSplitWorkouts" && child.ChildNodes.Count == 1)
                 {
                     Options.Instance.AllowSplitWorkouts = bool.Parse(child.FirstChild.Value);
+                }
+                else if (child.Name == "PackWorkoutsOnExport" && child.ChildNodes.Count == 1)
+                {
+                    Options.Instance.PackWorkoutsOnExport = bool.Parse(child.FirstChild.Value);
                 }
             }
 
@@ -692,6 +700,28 @@ namespace GarminFitnessPlugin.Controller
             }
         }
 
+        // This should be put in option.  for the moment, it's just a way to deactivate
+        //  mass storage until it works fine (Pending Garmin threads)
+        public bool EnableMassStorageMode
+        {
+            get { return false; }
+        }
+
+        // This should be put in option I believe
+        public bool PackWorkoutsOnExport
+        {
+            get { return m_PackWorkoutsOnExport; }
+            set
+            {
+                if (PackWorkoutsOnExport != value)
+                {
+                    m_PackWorkoutsOnExport = value;
+
+                    TriggerOptionsChangedEvent("PackWorkoutsOnExport");
+                }
+            }
+        }
+
         private Dictionary<IActivityCategory, GarminCategories>  STToGarminCategoryMap
         {
             get { return m_STToGarminCategoryMap; }
@@ -740,5 +770,7 @@ namespace GarminFitnessPlugin.Controller
 
         private bool m_IsPowerZoneDirty = false;
         private bool m_IsCadenceZoneDirty = false;
+
+        private bool m_PackWorkoutsOnExport = false;
     }
 }

@@ -38,9 +38,10 @@ namespace GarminFitnessPlugin.View
             this.PowerGarminRadioButton = new System.Windows.Forms.RadioButton();
             this.PowerSportTracksRadioButton = new System.Windows.Forms.RadioButton();
             this.HRSettingsGroupBox = new System.Windows.Forms.GroupBox();
-            this.ExportSTHRZonesAsLabel = new System.Windows.Forms.Label();
+            this.panel1 = new System.Windows.Forms.Panel();
             this.PercentMaxRadioButton = new System.Windows.Forms.RadioButton();
             this.BPMRadioButton = new System.Windows.Forms.RadioButton();
+            this.ExportSTHRZonesAsLabel = new System.Windows.Forms.Label();
             this.SpeedSettingsGroupBox = new System.Windows.Forms.GroupBox();
             this.CadenceSettingsGroupBox = new System.Windows.Forms.GroupBox();
             this.CadenceZoneComboBox = new System.Windows.Forms.ComboBox();
@@ -50,8 +51,10 @@ namespace GarminFitnessPlugin.View
             this.PowerZoneSelectionLabel = new System.Windows.Forms.Label();
             this.ExportDirectoryGroupBox = new System.Windows.Forms.GroupBox();
             this.BrowseButton = new System.Windows.Forms.Button();
+            this.ExportDirectoryTextBox = new GarminFitnessPlugin.View.ExtendedTextBox();
             this.CategoriesGroupBox = new System.Windows.Forms.GroupBox();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
+            this.ActivityCategoryList = new GarminFitnessPlugin.View.AutoExpandTreeList();
             this.CategorySelectionPanel = new System.Windows.Forms.Panel();
             this.GarminCategoriesPanel = new System.Windows.Forms.Panel();
             this.OtherRadioButton = new System.Windows.Forms.RadioButton();
@@ -63,10 +66,10 @@ namespace GarminFitnessPlugin.View
             this.DonateLabel = new System.Windows.Forms.Label();
             this.DonateImageLabel = new System.Windows.Forms.Label();
             this.AutoSplitCheckBox = new System.Windows.Forms.CheckBox();
-            this.ActivityCategoryList = new GarminFitnessPlugin.View.AutoExpandTreeList();
-            this.ExportDirectoryTextBox = new GarminFitnessPlugin.View.ExtendedTextBox();
-            this.panel1 = new System.Windows.Forms.Panel();
+            this.DeviceCommGroupBox = new System.Windows.Forms.GroupBox();
+            this.PackWorkoutsOnExportCheckBox = new System.Windows.Forms.CheckBox();
             this.HRSettingsGroupBox.SuspendLayout();
+            this.panel1.SuspendLayout();
             this.SpeedSettingsGroupBox.SuspendLayout();
             this.CadenceSettingsGroupBox.SuspendLayout();
             this.PowerSettingsGroupBox.SuspendLayout();
@@ -77,7 +80,7 @@ namespace GarminFitnessPlugin.View
             this.splitContainer1.SuspendLayout();
             this.CategorySelectionPanel.SuspendLayout();
             this.GarminCategoriesPanel.SuspendLayout();
-            this.panel1.SuspendLayout();
+            this.DeviceCommGroupBox.SuspendLayout();
             this.SuspendLayout();
             // 
             // DefaultHeartRateZonesLabel
@@ -193,15 +196,14 @@ namespace GarminFitnessPlugin.View
             this.HRSettingsGroupBox.TabStop = false;
             this.HRSettingsGroupBox.Text = "Heart Rate Settings";
             // 
-            // ExportSTHRZonesAsLabel
+            // panel1
             // 
-            this.ExportSTHRZonesAsLabel.AutoSize = true;
-            this.ExportSTHRZonesAsLabel.Enabled = false;
-            this.ExportSTHRZonesAsLabel.Location = new System.Drawing.Point(6, 39);
-            this.ExportSTHRZonesAsLabel.Name = "ExportSTHRZonesAsLabel";
-            this.ExportSTHRZonesAsLabel.Size = new System.Drawing.Size(136, 13);
-            this.ExportSTHRZonesAsLabel.TabIndex = 0;
-            this.ExportSTHRZonesAsLabel.Text = "Export heart rate zones as :";
+            this.panel1.Controls.Add(this.PercentMaxRadioButton);
+            this.panel1.Controls.Add(this.BPMRadioButton);
+            this.panel1.Location = new System.Drawing.Point(239, 33);
+            this.panel1.Name = "panel1";
+            this.panel1.Size = new System.Drawing.Size(245, 23);
+            this.panel1.TabIndex = 2;
             // 
             // PercentMaxRadioButton
             // 
@@ -228,6 +230,16 @@ namespace GarminFitnessPlugin.View
             this.BPMRadioButton.Text = "BPM";
             this.BPMRadioButton.UseVisualStyleBackColor = true;
             this.BPMRadioButton.CheckedChanged += new System.EventHandler(this.BPMRadioButton_CheckedChanged);
+            // 
+            // ExportSTHRZonesAsLabel
+            // 
+            this.ExportSTHRZonesAsLabel.AutoSize = true;
+            this.ExportSTHRZonesAsLabel.Enabled = false;
+            this.ExportSTHRZonesAsLabel.Location = new System.Drawing.Point(6, 39);
+            this.ExportSTHRZonesAsLabel.Name = "ExportSTHRZonesAsLabel";
+            this.ExportSTHRZonesAsLabel.Size = new System.Drawing.Size(136, 13);
+            this.ExportSTHRZonesAsLabel.TabIndex = 0;
+            this.ExportSTHRZonesAsLabel.Text = "Export heart rate zones as :";
             // 
             // SpeedSettingsGroupBox
             // 
@@ -328,6 +340,27 @@ namespace GarminFitnessPlugin.View
             this.BrowseButton.UseVisualStyleBackColor = true;
             this.BrowseButton.Click += new System.EventHandler(this.BrowseButton_Click);
             // 
+            // ExportDirectoryTextBox
+            // 
+            this.ExportDirectoryTextBox.AcceptsReturn = false;
+            this.ExportDirectoryTextBox.AcceptsTab = false;
+            this.ExportDirectoryTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.ExportDirectoryTextBox.BackColor = System.Drawing.Color.White;
+            this.ExportDirectoryTextBox.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(123)))), ((int)(((byte)(114)))), ((int)(((byte)(108)))));
+            this.ExportDirectoryTextBox.ButtonImage = null;
+            this.ExportDirectoryTextBox.Location = new System.Drawing.Point(6, 19);
+            this.ExportDirectoryTextBox.MaxLength = 65535;
+            this.ExportDirectoryTextBox.Multiline = false;
+            this.ExportDirectoryTextBox.Name = "ExportDirectoryTextBox";
+            this.ExportDirectoryTextBox.ReadOnly = true;
+            this.ExportDirectoryTextBox.ReadOnlyColor = System.Drawing.SystemColors.Control;
+            this.ExportDirectoryTextBox.ReadOnlyTextColor = System.Drawing.SystemColors.ControlLight;
+            this.ExportDirectoryTextBox.RightToLeft = System.Windows.Forms.RightToLeft.No;
+            this.ExportDirectoryTextBox.Size = new System.Drawing.Size(397, 20);
+            this.ExportDirectoryTextBox.TabIndex = 0;
+            this.ExportDirectoryTextBox.TextAlign = System.Windows.Forms.HorizontalAlignment.Left;
+            // 
             // CategoriesGroupBox
             // 
             this.CategoriesGroupBox.Controls.Add(this.splitContainer1);
@@ -355,6 +388,36 @@ namespace GarminFitnessPlugin.View
             this.splitContainer1.Size = new System.Drawing.Size(485, 133);
             this.splitContainer1.SplitterDistance = 284;
             this.splitContainer1.TabIndex = 6;
+            // 
+            // ActivityCategoryList
+            // 
+            this.ActivityCategoryList.AllowDrop = true;
+            this.ActivityCategoryList.BackColor = System.Drawing.SystemColors.Window;
+            this.ActivityCategoryList.Border = ZoneFiveSoftware.Common.Visuals.ControlBorder.Style.SmallRoundShadow;
+            this.ActivityCategoryList.CheckBoxes = false;
+            this.ActivityCategoryList.DefaultIndent = 15;
+            this.ActivityCategoryList.DefaultRowHeight = -1;
+            this.ActivityCategoryList.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.ActivityCategoryList.DragAutoScrollSize = ((byte)(20));
+            this.ActivityCategoryList.HeaderRowHeight = 21;
+            this.ActivityCategoryList.Location = new System.Drawing.Point(0, 0);
+            this.ActivityCategoryList.MultiSelect = false;
+            this.ActivityCategoryList.Name = "ActivityCategoryList";
+            this.ActivityCategoryList.NumHeaderRows = ZoneFiveSoftware.Common.Visuals.TreeList.HeaderRows.None;
+            this.ActivityCategoryList.NumLockedColumns = 0;
+            this.ActivityCategoryList.RowAlternatingColors = true;
+            this.ActivityCategoryList.RowHotlightColor = System.Drawing.Color.FromArgb(((int)(((byte)(200)))), ((int)(((byte)(51)))), ((int)(((byte)(153)))), ((int)(((byte)(255)))));
+            this.ActivityCategoryList.RowHotlightColorText = System.Drawing.SystemColors.HighlightText;
+            this.ActivityCategoryList.RowHotlightMouse = false;
+            this.ActivityCategoryList.RowSelectedColor = System.Drawing.SystemColors.Highlight;
+            this.ActivityCategoryList.RowSelectedColorText = System.Drawing.SystemColors.HighlightText;
+            this.ActivityCategoryList.RowSeparatorLines = true;
+            this.ActivityCategoryList.ShowLines = false;
+            this.ActivityCategoryList.ShowPlusMinus = false;
+            this.ActivityCategoryList.Size = new System.Drawing.Size(284, 133);
+            this.ActivityCategoryList.TabIndex = 5;
+            this.ActivityCategoryList.TabStop = false;
+            this.ActivityCategoryList.SelectedItemsChanged += new System.EventHandler(this.ActivityCategoryList_SelectedItemsChanged);
             // 
             // CategorySelectionPanel
             // 
@@ -442,8 +505,9 @@ namespace GarminFitnessPlugin.View
             // 
             // RunWizardLinkLabel
             // 
+            this.RunWizardLinkLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.RunWizardLinkLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F);
-            this.RunWizardLinkLabel.Location = new System.Drawing.Point(0, 477);
+            this.RunWizardLinkLabel.Location = new System.Drawing.Point(-1, 540);
             this.RunWizardLinkLabel.Name = "RunWizardLinkLabel";
             this.RunWizardLinkLabel.Size = new System.Drawing.Size(500, 23);
             this.RunWizardLinkLabel.TabIndex = 8;
@@ -453,9 +517,10 @@ namespace GarminFitnessPlugin.View
             // 
             // DonateLabel
             // 
+            this.DonateLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.DonateLabel.AutoSize = true;
             this.DonateLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F);
-            this.DonateLabel.Location = new System.Drawing.Point(5, 510);
+            this.DonateLabel.Location = new System.Drawing.Point(6, 564);
             this.DonateLabel.Name = "DonateLabel";
             this.DonateLabel.Size = new System.Drawing.Size(292, 20);
             this.DonateLabel.TabIndex = 9;
@@ -463,9 +528,10 @@ namespace GarminFitnessPlugin.View
             // 
             // DonateImageLabel
             // 
+            this.DonateImageLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.DonateImageLabel.Cursor = System.Windows.Forms.Cursors.Hand;
             this.DonateImageLabel.Image = global::GarminFitnessPlugin.Resources.Resources.DonateImage;
-            this.DonateImageLabel.Location = new System.Drawing.Point(303, 510);
+            this.DonateImageLabel.Location = new System.Drawing.Point(304, 562);
             this.DonateImageLabel.Name = "DonateImageLabel";
             this.DonateImageLabel.Size = new System.Drawing.Size(100, 23);
             this.DonateImageLabel.TabIndex = 10;
@@ -482,70 +548,32 @@ namespace GarminFitnessPlugin.View
             this.AutoSplitCheckBox.UseVisualStyleBackColor = true;
             this.AutoSplitCheckBox.CheckedChanged += new System.EventHandler(this.AutoSplitCheckBox_CheckedChanged);
             // 
-            // ActivityCategoryList
+            // DeviceCommGroupBox
             // 
-            this.ActivityCategoryList.AllowDrop = true;
-            this.ActivityCategoryList.BackColor = System.Drawing.SystemColors.Window;
-            this.ActivityCategoryList.Border = ZoneFiveSoftware.Common.Visuals.ControlBorder.Style.SmallRoundShadow;
-            this.ActivityCategoryList.CheckBoxes = false;
-            this.ActivityCategoryList.DefaultIndent = 15;
-            this.ActivityCategoryList.DefaultRowHeight = -1;
-            this.ActivityCategoryList.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.ActivityCategoryList.DragAutoScrollSize = ((byte)(20));
-            this.ActivityCategoryList.HeaderRowHeight = 21;
-            this.ActivityCategoryList.Location = new System.Drawing.Point(0, 0);
-            this.ActivityCategoryList.MultiSelect = false;
-            this.ActivityCategoryList.Name = "ActivityCategoryList";
-            this.ActivityCategoryList.NumHeaderRows = ZoneFiveSoftware.Common.Visuals.TreeList.HeaderRows.None;
-            this.ActivityCategoryList.NumLockedColumns = 0;
-            this.ActivityCategoryList.RowAlternatingColors = true;
-            this.ActivityCategoryList.RowHotlightColor = System.Drawing.Color.FromArgb(((int)(((byte)(200)))), ((int)(((byte)(51)))), ((int)(((byte)(153)))), ((int)(((byte)(255)))));
-            this.ActivityCategoryList.RowHotlightColorText = System.Drawing.SystemColors.HighlightText;
-            this.ActivityCategoryList.RowHotlightMouse = false;
-            this.ActivityCategoryList.RowSelectedColor = System.Drawing.SystemColors.Highlight;
-            this.ActivityCategoryList.RowSelectedColorText = System.Drawing.SystemColors.HighlightText;
-            this.ActivityCategoryList.RowSeparatorLines = true;
-            this.ActivityCategoryList.ShowLines = false;
-            this.ActivityCategoryList.ShowPlusMinus = false;
-            this.ActivityCategoryList.Size = new System.Drawing.Size(284, 133);
-            this.ActivityCategoryList.TabIndex = 5;
-            this.ActivityCategoryList.TabStop = false;
-            this.ActivityCategoryList.SelectedItemsChanged += new System.EventHandler(this.ActivityCategoryList_SelectedItemsChanged);
+            this.DeviceCommGroupBox.Controls.Add(this.PackWorkoutsOnExportCheckBox);
+            this.DeviceCommGroupBox.Location = new System.Drawing.Point(6, 475);
+            this.DeviceCommGroupBox.Name = "DeviceCommGroupBox";
+            this.DeviceCommGroupBox.Size = new System.Drawing.Size(484, 47);
+            this.DeviceCommGroupBox.TabIndex = 12;
+            this.DeviceCommGroupBox.TabStop = false;
+            this.DeviceCommGroupBox.Text = "Device Communication";
             // 
-            // ExportDirectoryTextBox
+            // PackWorkoutsOnExportCheckBox
             // 
-            this.ExportDirectoryTextBox.AcceptsReturn = false;
-            this.ExportDirectoryTextBox.AcceptsTab = false;
-            this.ExportDirectoryTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
-            this.ExportDirectoryTextBox.BackColor = System.Drawing.Color.White;
-            this.ExportDirectoryTextBox.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(123)))), ((int)(((byte)(114)))), ((int)(((byte)(108)))));
-            this.ExportDirectoryTextBox.ButtonImage = null;
-            this.ExportDirectoryTextBox.Location = new System.Drawing.Point(6, 19);
-            this.ExportDirectoryTextBox.MaxLength = 65535;
-            this.ExportDirectoryTextBox.Multiline = false;
-            this.ExportDirectoryTextBox.Name = "ExportDirectoryTextBox";
-            this.ExportDirectoryTextBox.ReadOnly = true;
-            this.ExportDirectoryTextBox.ReadOnlyColor = System.Drawing.SystemColors.Control;
-            this.ExportDirectoryTextBox.ReadOnlyTextColor = System.Drawing.SystemColors.ControlLight;
-            this.ExportDirectoryTextBox.RightToLeft = System.Windows.Forms.RightToLeft.No;
-            this.ExportDirectoryTextBox.Size = new System.Drawing.Size(397, 20);
-            this.ExportDirectoryTextBox.TabIndex = 0;
-            this.ExportDirectoryTextBox.TextAlign = System.Windows.Forms.HorizontalAlignment.Left;
-            // 
-            // panel1
-            // 
-            this.panel1.Controls.Add(this.PercentMaxRadioButton);
-            this.panel1.Controls.Add(this.BPMRadioButton);
-            this.panel1.Location = new System.Drawing.Point(239, 33);
-            this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(245, 23);
-            this.panel1.TabIndex = 2;
+            this.PackWorkoutsOnExportCheckBox.AutoSize = true;
+            this.PackWorkoutsOnExportCheckBox.Location = new System.Drawing.Point(9, 20);
+            this.PackWorkoutsOnExportCheckBox.Name = "PackWorkoutsOnExportCheckBox";
+            this.PackWorkoutsOnExportCheckBox.Size = new System.Drawing.Size(236, 17);
+            this.PackWorkoutsOnExportCheckBox.TabIndex = 0;
+            this.PackWorkoutsOnExportCheckBox.Text = "Pack workouts on export (Enable for FR405)";
+            this.PackWorkoutsOnExportCheckBox.UseVisualStyleBackColor = true;
+            this.PackWorkoutsOnExportCheckBox.CheckedChanged += new System.EventHandler(this.PackWorkoutsOnExportCheckBox_CheckedChanged);
             // 
             // GarminFitnessSettingsControl
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.Controls.Add(this.DeviceCommGroupBox);
             this.Controls.Add(this.AutoSplitCheckBox);
             this.Controls.Add(this.DonateImageLabel);
             this.Controls.Add(this.DonateLabel);
@@ -556,11 +584,13 @@ namespace GarminFitnessPlugin.View
             this.Controls.Add(this.SpeedSettingsGroupBox);
             this.Controls.Add(this.HRSettingsGroupBox);
             this.Controls.Add(this.PowerSettingsGroupBox);
-            this.MaximumSize = new System.Drawing.Size(500, 540);
+            this.MaximumSize = new System.Drawing.Size(500, 610);
             this.Name = "GarminFitnessSettingsControl";
-            this.Size = new System.Drawing.Size(500, 540);
+            this.Size = new System.Drawing.Size(500, 590);
             this.HRSettingsGroupBox.ResumeLayout(false);
             this.HRSettingsGroupBox.PerformLayout();
+            this.panel1.ResumeLayout(false);
+            this.panel1.PerformLayout();
             this.SpeedSettingsGroupBox.ResumeLayout(false);
             this.SpeedSettingsGroupBox.PerformLayout();
             this.CadenceSettingsGroupBox.ResumeLayout(false);
@@ -576,8 +606,8 @@ namespace GarminFitnessPlugin.View
             this.CategorySelectionPanel.PerformLayout();
             this.GarminCategoriesPanel.ResumeLayout(false);
             this.GarminCategoriesPanel.PerformLayout();
-            this.panel1.ResumeLayout(false);
-            this.panel1.PerformLayout();
+            this.DeviceCommGroupBox.ResumeLayout(false);
+            this.DeviceCommGroupBox.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -623,5 +653,7 @@ namespace GarminFitnessPlugin.View
         private System.Windows.Forms.RadioButton PercentMaxRadioButton;
         private System.Windows.Forms.RadioButton BPMRadioButton;
         private System.Windows.Forms.Panel panel1;
+        private System.Windows.Forms.GroupBox DeviceCommGroupBox;
+        private System.Windows.Forms.CheckBox PackWorkoutsOnExportCheckBox;
     }
 }

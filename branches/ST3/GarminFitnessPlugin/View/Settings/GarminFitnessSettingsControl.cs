@@ -240,6 +240,11 @@ namespace GarminFitnessPlugin.View
             System.Diagnostics.Process.Start("https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=H3VUJCWFVH2J2&lc=CA&item_name=PissedOffCil%20ST%20Plugins&item_number=Garmin%20Fitness&currency_code=USD&bn=PP%2dDonationsBF%3abtn_donateCC_LG%2egif%3aNonHosted");
         }
 
+        private void PackWorkoutsOnExportCheckBox_CheckedChanged(object sender, EventArgs e)
+        {
+            Options.Instance.PackWorkoutsOnExport = PackWorkoutsOnExportCheckBox.Checked;
+        }
+
         private void UpdateUIStrings()
         {
             HRGarminRadioButton.Text = GarminFitnessView.GetLocalizedString("GarminText");
@@ -269,6 +274,9 @@ namespace GarminFitnessPlugin.View
             RunWizardLinkLabel.Text = GarminFitnessView.GetLocalizedString("RunWizardText");
 
             AutoSplitCheckBox.Text = GarminFitnessView.GetLocalizedString("AutoSplitCheckBoxText");
+
+            DeviceCommGroupBox.Text = GarminFitnessView.GetLocalizedString("DeviceCommGroupBoxText");
+            PackWorkoutsOnExportCheckBox.Text = GarminFitnessView.GetLocalizedString("PackWorkoutsOnExportCheckBoxText");
 
             CadenceZoneComboBox.Items.Clear();
             for (int i = 0; i < PluginMain.GetApplication().Logbook.CadenceZones.Count; ++i)
@@ -342,6 +350,9 @@ namespace GarminFitnessPlugin.View
 
             // Default directory
             ExportDirectoryTextBox.Text = Options.Instance.DefaultExportDirectory;
+
+            // Device communication
+            PackWorkoutsOnExportCheckBox.Checked = Options.Instance.PackWorkoutsOnExport;
         }
 
         private void AddCategoryNode(STToGarminActivityCategoryWrapper categoryNode, STToGarminActivityCategoryWrapper parent)

@@ -45,6 +45,7 @@ namespace GarminFitnessPlugin.Controller
             XmlDocument document = new XmlDocument();
             XmlNode database;
             XmlAttribute attribute;
+            List<IWorkout> concreteWorkouts = new List<IWorkout>();
 
             document.AppendChild(document.CreateXmlDeclaration("1.0", "UTF-8", "no"));
             database = document.CreateNode(XmlNodeType.Element, "TrainingCenterDatabase", null);
@@ -68,9 +69,26 @@ namespace GarminFitnessPlugin.Controller
             XmlNode workoutsNode = document.CreateNode(XmlNodeType.Element, "Workouts", null);
             database.AppendChild(workoutsNode);
 
-            for (int i = 0; i < workouts.Count; ++i)
+            foreach (IWorkout currentWorkout in workouts)
             {
-                ExportWorkoutInternal(workouts[i], document, workoutsNode);
+                if (currentWorkout.GetSplitPartsCount() == 1)
+                {
+                    concreteWorkouts.Add(currentWorkout);
+                }
+                else
+                {
+                    List<WorkoutPart> parts = currentWorkout.SplitInSeperateParts();
+
+                    foreach (WorkoutPart part in parts)
+                    {
+                        concreteWorkouts.Add(part);
+                    }
+                }
+            }
+
+            foreach (IWorkout concreteWorkout in concreteWorkouts)
+            {
+                ExportWorkoutInternal(concreteWorkout, document, workoutsNode);
             }
 
             document.Save(new StreamWriter(exportStream));

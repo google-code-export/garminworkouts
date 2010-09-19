@@ -91,11 +91,35 @@ namespace GarminFitnessPlugin.Controller
 
         public void ExportWorkouts(List<IWorkout> workouts)
         {
-            foreach (IWorkout current in workouts)
-            {
-                Logger.Instance.LogText(String.Format("Exporting workouts {0}", current.Name));
+            String workoutsText = String.Empty;
 
-                AddTask(new ExportWorkoutTask(current));
+            foreach(Workout current in workouts)
+            {
+                workoutsText += String.Format(", {0}", current.Name);
+            }
+
+            Logger.Instance.LogText(String.Format("Exporting workouts({0}){1}", workouts.Count, workoutsText));
+
+            if (Options.Instance.PackWorkoutsOnExport)
+            {
+                AddTask(new ExportWorkoutTask(workouts));
+            }
+            else
+            {
+                foreach (Workout current in workouts)
+                {
+                    if (current.GetSplitPartsCount() > 1)
+                    {
+                        foreach (WorkoutPart part in current.GetSplitParts())
+                        {
+                            AddTask(new ExportWorkoutTask(part));
+                        }
+                    }
+                    else
+                    {
+                        AddTask(new ExportWorkoutTask(current));
+                    }
+                }
             }
         }
 
@@ -465,15 +489,22 @@ namespace GarminFitnessPlugin.Controller
 
         public class ExportWorkoutTask : BasicTask
         {
+            public ExportWorkoutTask(List<IWorkout> workouts) :
+                base(TaskTypes.TaskType_ExportWorkout)
+            {
+                m_Workouts = workouts;
+            }
+
             public ExportWorkoutTask(IWorkout workout) :
                 base(TaskTypes.TaskType_ExportWorkout)
             {
-                m_Workout = workout;
+                m_Workouts = new List<IWorkout>();
+                m_Workouts.Add(workout);
             }
 
-            public IWorkout Workout
+            public List<IWorkout> Workouts
             {
-                get { return m_Workout; }
+                get { return m_Workouts; }
             }
 
             public override void ExecuteTask(IGarminDevice device)
@@ -485,11 +516,11 @@ namespace GarminFitnessPlugin.Controller
                 }
                 else
                 {
-                    device.WriteWorkout(m_Workout);
+                    device.WriteWorkouts(m_Workouts);
                 }
             }
 
-            private IWorkout m_Workout;
+            private List<IWorkout> m_Workouts;
         }
 
         public class ExportProfileTask : BasicTask

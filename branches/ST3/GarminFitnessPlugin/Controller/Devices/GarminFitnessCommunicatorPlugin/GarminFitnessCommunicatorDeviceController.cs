@@ -23,7 +23,6 @@ namespace GarminFitnessPlugin.Controller
 
         private void OnCommunicatorBridgeExceptionTriggered(object sender, GarminFitnessCommunicatorBridge.ExceptionEventArgs e)
         {
-            throw new NotImplementedException();
         }
 
         void OnCommunicatorBridgeControllerReady(object sender, EventArgs e)

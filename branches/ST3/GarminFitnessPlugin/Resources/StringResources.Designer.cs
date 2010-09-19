@@ -358,6 +358,15 @@ namespace GarminFitnessPlugin.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Device communication.
+        /// </summary>
+        internal static string DeviceCommGroupBoxText {
+            get {
+                return ResourceManager.GetString("DeviceCommGroupBoxText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Unable to load the Garmin Cummunicator Plugin.  Please make sure you have SportTracks version 2.0.3170 or later and Garmin Cummunicator Plugin installed and activated in Internet Explorer..
         /// </summary>
         internal static string DeviceCommunicationErrorText {
@@ -1182,6 +1191,15 @@ namespace GarminFitnessPlugin.Resources {
         internal static string PaceRangeTargetDescriptionText {
             get {
                 return ResourceManager.GetString("PaceRangeTargetDescriptionText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Pack workouts on export (Enable for FR405).
+        /// </summary>
+        internal static string PackWorkoutsOnExportCheckBoxText {
+            get {
+                return ResourceManager.GetString("PackWorkoutsOnExportCheckBoxText", resourceCulture);
             }
         }
         

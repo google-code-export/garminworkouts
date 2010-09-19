@@ -696,4 +696,10 @@
   <data name="TCXFileText" xml:space="preserve">
     <value>TCX Files</value>
   </data>
+  <data name="DeviceCommGroupBoxText" xml:space="preserve">
+    <value>Device communication</value>
+  </data>
+  <data name="PackWorkoutsOnExportCheckBoxText" xml:space="preserve">
+    <value>Pack workouts on export (Enable for FR405)</value>
+  </data>
 </root>

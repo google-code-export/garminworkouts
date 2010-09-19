@@ -97,8 +97,6 @@
     <Compile Include="Controller\Devices\GarminFitnessCommunicatorPlugin\GarminFitnessCommunicatorBridge.cs" />
     <Compile Include="Controller\Devices\GarminFitnessCommunicatorPlugin\GarminFitnessCommunicatorDevice.cs" />
     <Compile Include="Controller\Devices\GarminFitnessCommunicatorPlugin\GarminFitnessCommunicatorDeviceController.cs" />
-    <Compile Include="Controller\Devices\GarXFace\GarXFaceDevice.cs" />
-    <Compile Include="Controller\Devices\GarXFace\GarXFaceDeviceController.cs" />
     <Compile Include="Controller\Devices\IGarminDevice.cs" />
     <Compile Include="Controller\Devices\IGarminDeviceController.cs" />
     <Compile Include="Controller\Logger.cs" />
