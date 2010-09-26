@@ -446,6 +446,13 @@ namespace GarminFitnessPlugin.Data
 
             foreach (IStep currentStep in stepsList)
             {
+                if ((currentStep.ForceSplitOnStep && currentStep != Steps[0]) ||
+                    stepCounter + currentStep.StepCount > Constants.MaxStepsPerWorkout)
+                {
+                    stepPart++;
+                    stepCounter = 0;
+                }
+
                 if (currentStep is WorkoutLinkStep)
                 {
                     WorkoutLinkStep linkStep = currentStep as WorkoutLinkStep;
@@ -477,13 +484,6 @@ namespace GarminFitnessPlugin.Data
                 else
                 {
                     stepCounter += currentStep.StepCount;
-                }
-
-                if ((currentStep.ForceSplitOnStep && currentStep != Steps[0]) ||
-                    stepCounter > Constants.MaxStepsPerWorkout)
-                {
-                    stepPart++;
-                    stepCounter = 0;
                 }
 
                 if (currentStep == stepToFind)

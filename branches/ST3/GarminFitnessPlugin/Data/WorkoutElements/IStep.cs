@@ -40,7 +40,7 @@ namespace GarminFitnessPlugin.Data
             FITMessage message = new FITMessage(FITGlobalMessageIds.WorkoutStep);
             FITMessageField stepId = new FITMessageField((Byte)FITWorkoutStepFieldIds.MessageIndex);
 
-            stepId.SetUInt16((UInt16)ParentWorkout.GetStepExportId(this));
+            stepId.SetUInt16((UInt16)(ParentWorkout.GetStepExportId(this) - 1));
             message.AddField(stepId);
 
             SerializetoFIT(message);

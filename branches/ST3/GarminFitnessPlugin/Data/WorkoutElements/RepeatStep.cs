@@ -64,7 +64,7 @@ namespace GarminFitnessPlugin.Data
 
             durationType.SetEnum((Byte)FITWorkoutStepDurationTypes.RepeatCount);
             message.AddField(durationType);
-            repeatFromStep.SetUInt32((UInt32)ParentWorkout.GetStepExportId(StepsToRepeat[0]));
+            repeatFromStep.SetUInt32((UInt32)(ParentWorkout.GetStepExportId(StepsToRepeat[0]) - 1));
             message.AddField(repeatFromStep);
             targetType.SetEnum((Byte)FITWorkoutStepTargetTypes.NoTarget);
             message.AddField(targetType);
