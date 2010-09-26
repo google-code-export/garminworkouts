@@ -161,6 +161,21 @@ namespace GarminFitnessPlugin.Controller
             return false;
         }
 
+        public static bool IsTextIntegerInRange(string text, UInt32 minRange, UInt32 maxRange)
+        {
+            UInt32 value;
+
+            if (UInt32.TryParse(text, out value))
+            {
+                if (value >= minRange && value <= maxRange)
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
         public static bool IsTextIntegerInRange(string text, UInt16 minRange, UInt16 maxRange)
         {
             UInt16 value;
@@ -369,7 +384,7 @@ namespace GarminFitnessPlugin.Controller
             }
         }
 
-        public static string GetWorkoutFilename(IWorkout workout)
+        public static string GetWorkoutFilename(IWorkout workout, GarminWorkoutManager.FileFormats format)
         {
             string fileName = workout.Name;
 
@@ -383,7 +398,19 @@ namespace GarminFitnessPlugin.Controller
             fileName = fileName.Replace('<', '_');
             fileName = fileName.Replace('>', '_');
             fileName = fileName.Replace('|', '_');
-            fileName += ".tcx";
+
+            if (format == GarminWorkoutManager.FileFormats.FileFormat_TCX)
+            {
+                fileName += ".tcx";
+            }
+            else if (format == GarminWorkoutManager.FileFormats.FileFormat_FIT)
+            {
+                fileName += ".fit";
+            }
+            else
+            {
+                Debug.Assert(false);
+            }
 
             return fileName;
         }

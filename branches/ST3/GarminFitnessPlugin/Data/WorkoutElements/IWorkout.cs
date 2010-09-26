@@ -149,7 +149,44 @@ namespace GarminFitnessPlugin.Data
             }
         }
 
-        public abstract void SerializetoFIT(Stream stream);
+        public virtual void SerializetoFIT(Stream stream)
+        {
+            if (GetSplitPartsCount() > 1)
+            {
+                List<WorkoutPart> splitParts = ConcreteWorkout.SplitInSeperateParts();
+
+                foreach (WorkoutPart part in splitParts)
+                {
+                    part.SerializetoFIT(stream);
+                }
+            }
+            else
+            {
+                FITMessage workoutMessage = new FITMessage(FITGlobalMessageIds.Workout);
+                FITMessageField sportType = new FITMessageField((Byte)FITWorkoutFieldIds.SportType);
+                FITMessageField numValidSteps = new FITMessageField((Byte)FITWorkoutFieldIds.NumSteps);
+                FITMessageField workoutName = new FITMessageField((Byte)FITWorkoutFieldIds.WorkoutName);
+
+                sportType.SetEnum((Byte)Options.Instance.GetFITSport(Category));
+                workoutMessage.AddField(sportType);
+                numValidSteps.SetUInt16(StepCount);
+                workoutMessage.AddField(numValidSteps);
+
+                if (!String.IsNullOrEmpty(Name))
+                {
+                    workoutName.SetString(Name);
+                    workoutMessage.AddField(workoutName);
+                }
+
+                workoutMessage.Serialize(stream);
+
+                foreach (IStep step in Steps)
+                {
+                    step.SerializetoFIT(stream);
+                }
+            }
+        }
+
         public abstract void Deserialize(GarXFaceNet._Workout workout);
         public abstract void DeserializeOccurances(GarXFaceNet._WorkoutOccuranceList occuranceList);
 

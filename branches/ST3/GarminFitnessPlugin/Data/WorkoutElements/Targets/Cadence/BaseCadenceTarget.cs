@@ -25,9 +25,7 @@ namespace GarminFitnessPlugin.Data
                 stream.Write(BitConverter.GetBytes((Int32)Type), 0, sizeof(Int32));
             }
 
-            public virtual void SerializetoFIT(Stream stream)
-            {
-            }
+            public abstract void SerializetoFIT(FITMessage message);
 
             public void Deserialize_V0(Stream stream, DataVersion version)
             {
@@ -102,6 +100,16 @@ namespace GarminFitnessPlugin.Data
             base.Serialize(stream);
 
             m_ConcreteTarget.Serialize(stream);
+        }
+
+        public override void SerializetoFIT(FITMessage message)
+        {
+            FITMessageField targetType = new FITMessageField((Byte)FITWorkoutStepFieldIds.TargetType);
+
+            targetType.SetEnum((Byte)FITWorkoutStepTargetTypes.Cadence);
+            message.AddField(targetType);
+
+            ConcreteTarget.SerializetoFIT(message);
         }
 
         public new void Deserialize_V0(Stream stream, DataVersion version)

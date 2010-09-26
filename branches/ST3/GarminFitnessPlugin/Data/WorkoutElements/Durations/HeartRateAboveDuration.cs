@@ -37,8 +37,23 @@ namespace GarminFitnessPlugin.Data
             InternalMaxHeartRate.Serialize(stream);
         }
 
-        public override void SerializetoFIT(Stream stream)
+        public override void SerializetoFIT(FITMessage message)
         {
+            FITMessageField durationType = new FITMessageField((Byte)FITWorkoutStepFieldIds.DurationType);
+            FITMessageField durationValue = new FITMessageField((Byte)FITWorkoutStepFieldIds.DurationValue);
+
+            durationType.SetEnum((Byte)FITWorkoutStepDurationTypes.HeartRateGreaterThan);
+            message.AddField(durationType);
+
+            if (IsPercentageMaxHeartRate)
+            {
+                durationValue.SetUInt32((UInt32)MaxHeartRate);
+            }
+            else
+            {
+                durationValue.SetUInt32((UInt32)MaxHeartRate + 100);
+            }
+            message.AddField(durationValue);
         }
 
         public new void Deserialize_V0(Stream stream, DataVersion version)

@@ -99,12 +99,19 @@
     <Compile Include="Controller\Devices\GarminFitnessCommunicatorPlugin\GarminFitnessCommunicatorDeviceController.cs" />
     <Compile Include="Controller\Devices\IGarminDevice.cs" />
     <Compile Include="Controller\Devices\IGarminDeviceController.cs" />
+    <Compile Include="Controller\FIT\FITConstants.cs" />
+    <Compile Include="Controller\FIT\FITMessage.cs" />
+    <Compile Include="Controller\FIT\FITMessageField.cs" />
     <Compile Include="Controller\Logger.cs" />
     <Compile Include="Controller\NoDeviceSupportException.cs" />
     <Compile Include="Controller\ProfileExporter.cs" />
     <Compile Include="Controller\ProfileImporter.cs" />
     <Compile Include="Controller\GarminCategoryStringProviderAttribute.cs" />
     <Compile Include="Controller\GarminProfileManager.cs" />
+    <Compile Include="Data\BasicTypes\GarminFitnessFloatRange.cs" />
+    <Compile Include="Data\BasicTypes\GarminFitnessInt16Range.cs" />
+    <Compile Include="Data\BasicTypes\GarminFitnessUInt32Range.cs" />
+    <Compile Include="Data\BasicTypes\GarminFitnessSByteRange.cs" />
     <Compile Include="Data\BasicTypes\GarminFitnessGuid.cs" />
     <Compile Include="Data\BasicTypes\GarminFitnessInt32Range.cs" />
     <Compile Include="Data\BasicTypes\GarminFitnessDoubleRange.cs" />
@@ -391,6 +398,10 @@
       <DependentUpon>StringResources.resx</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Resources\StringResources.zh-CN.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>StringResources.resx</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\StringResources.zh-TW.resx">
       <SubType>Designer</SubType>
       <DependentUpon>StringResources.resx</DependentUpon>
     </EmbeddedResource>

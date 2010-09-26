@@ -46,6 +46,30 @@ namespace GarminFitnessPlugin.Data
 
         public override void SerializetoFIT(Stream stream)
         {
+            // Serialize children first, followed by the repeat
+            foreach (IStep child in StepsToRepeat)
+            {
+                child.SerializetoFIT(stream);
+            }
+
+            base.SerializetoFIT(stream);
+        }
+
+        public override void SerializetoFIT(FITMessage message)
+        {
+            FITMessageField durationType = new FITMessageField((Byte)FITWorkoutStepFieldIds.DurationType);
+            FITMessageField repeatFromStep = new FITMessageField((Byte)FITWorkoutStepFieldIds.DurationValue);
+            FITMessageField targetType = new FITMessageField((Byte)FITWorkoutStepFieldIds.TargetType);
+            FITMessageField repeatCount = new FITMessageField((Byte)FITWorkoutStepFieldIds.TargetValue);
+
+            durationType.SetEnum((Byte)FITWorkoutStepDurationTypes.RepeatCount);
+            message.AddField(durationType);
+            repeatFromStep.SetUInt32((UInt32)ParentWorkout.GetStepExportId(StepsToRepeat[0]));
+            message.AddField(repeatFromStep);
+            targetType.SetEnum((Byte)FITWorkoutStepTargetTypes.NoTarget);
+            message.AddField(targetType);
+            repeatCount.SetUInt32((UInt32)RepetitionCount);
+            message.AddField(repeatCount);
         }
 
         public new void Deserialize_V0(Stream stream, DataVersion version)

@@ -35,7 +35,20 @@ namespace GarminFitnessPlugin.Data
             m_ForceSplit.Serialize(stream);
         }
 
-        public abstract void SerializetoFIT(Stream stream);
+        public virtual void SerializetoFIT(Stream stream)
+        {
+            FITMessage message = new FITMessage(FITGlobalMessageIds.WorkoutStep);
+            FITMessageField stepId = new FITMessageField((Byte)FITWorkoutStepFieldIds.MessageIndex);
+
+            stepId.SetUInt16((UInt16)ParentWorkout.GetStepExportId(this));
+            message.AddField(stepId);
+
+            SerializetoFIT(message);
+
+            message.Serialize(stream);
+        }
+
+        public abstract void SerializetoFIT(FITMessage message);
 
         public void Deserialize_V0(Stream stream, DataVersion version)
         {

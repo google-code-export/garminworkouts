@@ -263,7 +263,7 @@ namespace GarminFitnessPlugin.Controller
 
                 Directory.CreateDirectory(fileDestination);
 
-                string fileName = Utils.GetWorkoutFilename(workout);
+                string fileName = Utils.GetWorkoutFilename(workout, GarminWorkoutManager.FileFormats.FileFormat_TCX);
                 FileStream fileStream = File.Create(fileDestination + fileName);
 
                 WorkoutExporter.ExportWorkout(workout, fileStream);
@@ -276,7 +276,7 @@ namespace GarminFitnessPlugin.Controller
             }
             else
             {
-                string fileName = Utils.GetWorkoutFilename(workout);
+                string fileName = Utils.GetWorkoutFilename(workout, GarminWorkoutManager.FileFormats.FileFormat_TCX);
                 MemoryStream textStream = new MemoryStream();
 
                 WorkoutExporter.ExportWorkout(workout, textStream);
@@ -328,7 +328,7 @@ namespace GarminFitnessPlugin.Controller
 
                 foreach (IWorkout concreteWorkout in concreteWorkouts)
                 {
-                    string fileName = Utils.GetWorkoutFilename(concreteWorkout);
+                    string fileName = Utils.GetWorkoutFilename(concreteWorkout, GarminWorkoutManager.FileFormats.FileFormat_TCX);
                     FileStream fileStream = File.Create(fileDestination + fileName);
 
                     WorkoutExporter.ExportWorkout(concreteWorkout, fileStream);
@@ -347,7 +347,7 @@ namespace GarminFitnessPlugin.Controller
 
                 if (workouts.Count == 1)
                 {
-                    fileName = Utils.GetWorkoutFilename(workouts[0]);
+                    fileName = Utils.GetWorkoutFilename(workouts[0], GarminWorkoutManager.FileFormats.FileFormat_TCX);
                 }
 
                 WorkoutExporter.ExportWorkouts(workouts, textStream);

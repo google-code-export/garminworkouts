@@ -105,10 +105,6 @@ namespace GarminFitnessPlugin.Data
             m_AddToDailyViewOnSchedule.Serialize(stream);
         }
 
-        public override void SerializetoFIT(Stream stream)
-        {
-        }
-
         public void Deserialize_V0(Stream stream, DataVersion version)
         {
             byte[] intBuffer = new byte[sizeof(Int32)];

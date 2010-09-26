@@ -110,6 +110,15 @@ namespace GarminFitnessPlugin.Data
 
         public override void SerializetoFIT(Stream stream)
         {
+            foreach (IStep step in m_WorkoutStepsCopy)
+            {
+                step.SerializetoFIT(stream);
+            }
+        }
+
+        public override void SerializetoFIT(FITMessage message)
+        {
+            Debug.Assert(false);
         }
 
         public void Deserialize_V14(Stream stream, DataVersion version)

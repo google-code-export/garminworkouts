@@ -13,6 +13,12 @@ namespace GarminFitnessPlugin.Controller
 {
     class GarminWorkoutManager : IPluginSerializable
     {
+        public enum FileFormats
+        {
+            FileFormat_TCX = 0,
+            FileFormat_FIT
+        }
+
         private GarminWorkoutManager()
         {
             PluginMain.ZoneCategoryListChanged += new PluginMain.ZoneCategoryChangedEventHandler(OnZoneCategoryListChanged);

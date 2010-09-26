@@ -8,14 +8,14 @@ using GarminFitnessPlugin.Controller;
 
 namespace GarminFitnessPlugin.Data
 {
-    class GarminFitnessDoubleRange : IPluginSerializable, IXMLSerializable, IComparable<GarminFitnessDoubleRange>
+    class GarminFitnessFloatRange : IPluginSerializable, IXMLSerializable, IComparable<GarminFitnessFloatRange>
     {
-        public GarminFitnessDoubleRange(double value)
-            : this(value, double.MinValue, double.MaxValue)
+        public GarminFitnessFloatRange(float value)
+            : this(value, float.MinValue, float.MaxValue)
         {
         }
 
-        public GarminFitnessDoubleRange(double value, double minValue, double maxValue)
+        public GarminFitnessFloatRange(float value, float minValue, float maxValue)
         {
             m_MinimumValue = minValue;
             m_MaximumValue = maxValue;
@@ -23,13 +23,13 @@ namespace GarminFitnessPlugin.Data
             Value = value;
         }
 
-        public static implicit operator double(GarminFitnessDoubleRange value)
+        public static implicit operator float(GarminFitnessFloatRange value)
         {
             return value.m_Value;
         }
 
 #region IComparable Members
-        public int CompareTo(GarminFitnessDoubleRange obj)
+        public int CompareTo(GarminFitnessFloatRange obj)
         {
             return m_Value.CompareTo(obj.m_Value);
         }
@@ -37,15 +37,15 @@ namespace GarminFitnessPlugin.Data
 
         public override void Serialize(Stream stream)
         {
-            stream.Write(BitConverter.GetBytes(this), 0, sizeof(double));
+            stream.Write(BitConverter.GetBytes(this), 0, sizeof(float));
         }
 
         public void Deserialize_V0(Stream stream, DataVersion version)
         {
-            byte[] doubleBuffer = new byte[sizeof(double)];
+            byte[] floatBuffer = new byte[sizeof(float)];
 
-            stream.Read(doubleBuffer, 0, sizeof(double));
-            Value = BitConverter.ToDouble(doubleBuffer, 0);
+            stream.Read(floatBuffer, 0, sizeof(float));
+            Value = BitConverter.ToSingle(floatBuffer, 0);
         }
 
         public void Serialize(XmlNode parentNode, String nodeName, XmlDocument document)
@@ -68,18 +68,18 @@ namespace GarminFitnessPlugin.Data
             }
             else if (!Utils.IsTextFloatInRange(node.FirstChild.Value, m_MinimumValue, m_MaximumValue, culture))
             {
-                throw new GarminFitnessXmlDeserializationException("Invalid double for node", node);
+                throw new GarminFitnessXmlDeserializationException("Invalid float for node", node);
             }
 
-            Value = double.Parse(node.FirstChild.Value, NumberStyles.Float, culture.NumberFormat);
+            Value = float.Parse(node.FirstChild.Value, NumberStyles.Float, culture.NumberFormat);
         }
 
-        public bool IsInRange(double value)
+        public bool IsInRange(float value)
         {
             return value >= (m_MinimumValue - Constants.Delta) && value <= (m_MaximumValue + Constants.Delta);
         }
 
-        public double Value
+        public float Value
         {
             set
             {
@@ -89,8 +89,8 @@ namespace GarminFitnessPlugin.Data
             }
         }
 
-        private double m_Value;
-        private readonly double m_MinimumValue;
-        private readonly double m_MaximumValue;
+        private float m_Value;
+        private readonly float m_MinimumValue;
+        private readonly float m_MaximumValue;
     }
 }

@@ -65,8 +65,29 @@ namespace GarminFitnessPlugin.Data
             Target.Serialize(stream);
         }
 
-        public override void SerializetoFIT(Stream stream)
+        public override void SerializetoFIT(FITMessage message)
         {
+            FITMessageField stepName = new FITMessageField((Byte)FITWorkoutStepFieldIds.StepName);
+            FITMessageField intensity = new FITMessageField((Byte)FITWorkoutStepFieldIds.Intensity);
+
+            if (!String.IsNullOrEmpty(Name))
+            {
+                stepName.SetString(Name);
+                message.AddField(stepName);
+            }
+
+            Duration.SerializetoFIT(message);
+            Target.SerializetoFIT(message);
+
+            if (IsRestingStep)
+            {
+                intensity.SetEnum((Byte)FITWorkoutStepIntensity.Rest);
+            }
+            else
+            {
+                intensity.SetEnum((Byte)FITWorkoutStepIntensity.Active);
+            }
+            message.AddField(intensity);
         }
 
         public new void Deserialize_V0(Stream stream, DataVersion version)

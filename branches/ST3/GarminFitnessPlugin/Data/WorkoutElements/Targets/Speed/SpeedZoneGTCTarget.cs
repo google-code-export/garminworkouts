@@ -33,8 +33,12 @@ namespace GarminFitnessPlugin.Data
             m_Zone.Serialize(stream);
         }
 
-        public override void SerializetoFIT(Stream stream)
+        public override void SerializetoFIT(FITMessage message)
         {
+            FITMessageField speedZone = new FITMessageField((Byte)FITWorkoutStepFieldIds.TargetValue);
+
+            speedZone.SetUInt32(Zone);
+            message.AddField(speedZone);
         }
 
         public new void Deserialize_V0(Stream stream, DataVersion version)

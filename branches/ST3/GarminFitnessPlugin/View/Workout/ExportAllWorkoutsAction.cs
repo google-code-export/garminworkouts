@@ -127,21 +127,51 @@ namespace GarminFitnessPlugin.View
         public void ToFileEventHandler(object sender, EventArgs args)
         {
             FileStream file = null;
-            FolderBrowserDialog dlg = new FolderBrowserDialog();
+            List<IWorkout> workoutsToExport = new List<IWorkout>();
+            ExportWorkoutsDialog dlg;
+            bool containsFITOnlyFeatures = false;
 
-            dlg.SelectedPath = Options.Instance.DefaultExportDirectory;
+            // Populate list of workouts to export
+            foreach (Workout currentWorkout in GarminWorkoutManager.Instance.Workouts)
+            {
+                containsFITOnlyFeatures = containsFITOnlyFeatures || currentWorkout.ContainsFITOnlyFeatures;
+
+                if (currentWorkout.GetSplitPartsCount() > 1)
+                {
+                    List<WorkoutPart> splitParts = currentWorkout.SplitInSeperateParts();
+
+                    // Replace the workout by it's parts
+                    foreach (WorkoutPart currentPart in splitParts)
+                    {
+                        workoutsToExport.Add(currentPart);
+                    }
+                }
+                else
+                {
+                    workoutsToExport.Add(currentWorkout);
+                }
+            }
+
+            dlg = new ExportWorkoutsDialog(containsFITOnlyFeatures);
             if (dlg.ShowDialog() == DialogResult.OK)
             {
                 try
                 {
                     foreach (Workout currentWorkout in GarminWorkoutManager.Instance.Workouts)
                     {
-                        string fileName = Utils.GetWorkoutFilename(currentWorkout);
+                        string fileName = Utils.GetWorkoutFilename(currentWorkout, dlg.SelectedFormat);
 
                         file = File.Create(dlg.SelectedPath + "\\" + fileName);
                         if (file != null)
                         {
-                            WorkoutExporter.ExportWorkout(currentWorkout, file);
+                            if (dlg.SelectedFormat == GarminWorkoutManager.FileFormats.FileFormat_FIT)
+                            {
+                                WorkoutExporter.ExportWorkoutToFIT(currentWorkout, file);
+                            }
+                            else
+                            {
+                                WorkoutExporter.ExportWorkout(currentWorkout, file);
+                            }
                             file.Close();
                         }
                         else

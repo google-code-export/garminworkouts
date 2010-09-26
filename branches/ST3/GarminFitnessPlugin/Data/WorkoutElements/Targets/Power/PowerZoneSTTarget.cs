@@ -48,8 +48,18 @@ namespace GarminFitnessPlugin.Data
             dirty.Serialize(stream);
         }
 
-        public override void SerializetoFIT(Stream stream)
+        public override void SerializetoFIT(FITMessage message)
         {
+            FITMessageField powerZone = new FITMessageField((Byte)FITWorkoutStepFieldIds.TargetValue);
+            FITMessageField minPower = new FITMessageField((Byte)FITWorkoutStepFieldIds.TargetCustomValueLow);
+            FITMessageField maxPower = new FITMessageField((Byte)FITWorkoutStepFieldIds.TargetCustomValueHigh);
+
+            powerZone.SetUInt32((Byte)0);
+            message.AddField(powerZone);
+            minPower.SetUInt32((UInt32)Utils.Clamp(Zone.Low, Constants.MinPower, Constants.MaxPowerWorkout) + 1000);
+            message.AddField(minPower);
+            maxPower.SetUInt32((UInt32)Utils.Clamp(Zone.High, Constants.MinPower, Constants.MaxPowerWorkout) + 1000);
+            message.AddField(maxPower);
         }
 
         public void Deserialize_V1(Stream stream, DataVersion version)

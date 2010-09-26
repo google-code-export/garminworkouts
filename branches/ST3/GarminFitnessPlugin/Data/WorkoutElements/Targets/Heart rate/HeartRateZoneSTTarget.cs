@@ -48,8 +48,37 @@ namespace GarminFitnessPlugin.Data
             dirty.Serialize(stream);
         }
 
-        public override void SerializetoFIT(Stream stream)
+        public override void SerializetoFIT(FITMessage message)
         {
+            FITMessageField HRZone = new FITMessageField((Byte)FITWorkoutStepFieldIds.TargetValue);
+            FITMessageField minHR = new FITMessageField((Byte)FITWorkoutStepFieldIds.TargetCustomValueLow);
+            FITMessageField maxHR = new FITMessageField((Byte)FITWorkoutStepFieldIds.TargetCustomValueHigh);
+            bool exportAsPercentMax = Options.Instance.ExportSportTracksHeartRateAsPercentMax;
+            float lastMaxHR = PluginMain.GetApplication().Logbook.Athlete.InfoEntries.LastEntryAsOfDate(DateTime.Now).MaximumHeartRatePerMinute;
+
+            HRZone.SetUInt32((Byte)0);
+            message.AddField(HRZone);
+
+            if (float.IsNaN(lastMaxHR))
+            {
+                exportAsPercentMax = false;
+            }
+
+            if (exportAsPercentMax)
+            {
+                float baseMultiplier = Constants.MaxHRInPercentMax / lastMaxHR;
+
+                minHR.SetUInt32((UInt32)Math.Max(Constants.MinHRInPercentMax, Math.Round(Zone.Low * baseMultiplier, 0, MidpointRounding.AwayFromZero)));
+                maxHR.SetUInt32((UInt32)Math.Min(Constants.MaxHRInPercentMax, Math.Round(Zone.High * baseMultiplier, 0, MidpointRounding.AwayFromZero)));
+            }
+            else
+            {
+                minHR.SetUInt32((UInt32)Utils.Clamp(Zone.Low, Constants.MinHRInBPM, Constants.MaxHRInBPM) + 100);
+                maxHR.SetUInt32((UInt32)Utils.Clamp(Zone.High, Constants.MinHRInBPM, Constants.MaxHRInBPM) + 100);
+            }
+
+            message.AddField(minHR);
+            message.AddField(maxHR);
         }
 
         public void Deserialize_V1(Stream stream, DataVersion version)

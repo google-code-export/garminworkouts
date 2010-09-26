@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Xml;
+using GarminFitnessPlugin.Controller;
 
 namespace GarminFitnessPlugin.Data
 {
@@ -34,8 +35,18 @@ namespace GarminFitnessPlugin.Data
             m_MaxCadence.Serialize(stream);
         }
 
-        public override void SerializetoFIT(Stream stream)
+        public override void SerializetoFIT(FITMessage message)
         {
+            FITMessageField cadenceZone = new FITMessageField((Byte)FITWorkoutStepFieldIds.TargetValue);
+            FITMessageField minCadence = new FITMessageField((Byte)FITWorkoutStepFieldIds.TargetCustomValueLow);
+            FITMessageField maxCadence = new FITMessageField((Byte)FITWorkoutStepFieldIds.TargetCustomValueHigh);
+
+            cadenceZone.SetUInt32((Byte)0);
+            message.AddField(cadenceZone);
+            minCadence.SetUInt32((UInt32)MinCadence);
+            message.AddField(minCadence);
+            maxCadence.SetUInt32((UInt32)MaxCadence);
+            message.AddField(maxCadence);
         }
 
         public new void Deserialize_V0(Stream stream, DataVersion version)

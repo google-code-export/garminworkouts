@@ -34,11 +34,6 @@ namespace GarminFitnessPlugin.Data
             throw new System.Exception("There is no need to serialize a WorkoutPart");
         }
 
-        public override void SerializetoFIT(Stream stream)
-        {
-            throw new System.Exception("There is no need to serialize a WorkoutPart");
-        }
-
         public override bool CanAcceptNewStep(int newStepCount, IStep destinationStep)
         {
             // Hard 20 step limit in the parts

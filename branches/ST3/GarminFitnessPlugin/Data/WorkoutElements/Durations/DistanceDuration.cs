@@ -36,8 +36,16 @@ namespace GarminFitnessPlugin.Data
             m_Distance.Serialize(stream);
         }
 
-        public override void SerializetoFIT(Stream stream)
+        public override void SerializetoFIT(FITMessage message)
         {
+            FITMessageField durationType = new FITMessageField((Byte)FITWorkoutStepFieldIds.DurationType);
+            FITMessageField durationValue = new FITMessageField((Byte)FITWorkoutStepFieldIds.DurationValue);
+
+            durationType.SetEnum((Byte)FITWorkoutStepDurationTypes.Distance);
+            message.AddField(durationType);
+
+            durationValue.SetUInt32((UInt32)GetDistanceInUnits(Length.Units.Centimeter));
+            message.AddField(durationValue);
         }
 
         public new void Deserialize_V0(Stream stream, DataVersion version)

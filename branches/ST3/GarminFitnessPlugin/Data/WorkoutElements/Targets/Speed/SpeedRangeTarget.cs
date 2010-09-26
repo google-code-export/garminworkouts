@@ -44,8 +44,18 @@ namespace GarminFitnessPlugin.Data
             m_MaxMetersPerSecond.Serialize(stream);
         }
 
-        public override void SerializetoFIT(Stream stream)
+        public override void SerializetoFIT(FITMessage message)
         {
+            FITMessageField speedZone = new FITMessageField((Byte)FITWorkoutStepFieldIds.TargetValue);
+            FITMessageField minSpeed = new FITMessageField((Byte)FITWorkoutStepFieldIds.TargetCustomValueLow);
+            FITMessageField maxSpeed = new FITMessageField((Byte)FITWorkoutStepFieldIds.TargetCustomValueHigh);
+
+            speedZone.SetUInt32((Byte)0);
+            message.AddField(speedZone);
+            minSpeed.SetUInt32((UInt32)(MinMetersPerSecond * 1000));
+            message.AddField(minSpeed);
+            maxSpeed.SetUInt32((UInt32)(MaxMetersPerSecond * 1000));
+            message.AddField(maxSpeed);
         }
 
         public new void Deserialize_V0(Stream stream, DataVersion version)

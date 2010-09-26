@@ -49,7 +49,6 @@ namespace GarminFitnessPlugin.View
             this.PowerSettingsGroupBox = new System.Windows.Forms.GroupBox();
             this.PowerZoneComboBox = new System.Windows.Forms.ComboBox();
             this.PowerZoneSelectionLabel = new System.Windows.Forms.Label();
-            this.ExportDirectoryGroupBox = new System.Windows.Forms.GroupBox();
             this.BrowseButton = new System.Windows.Forms.Button();
             this.ExportDirectoryTextBox = new GarminFitnessPlugin.View.ExtendedTextBox();
             this.CategoriesGroupBox = new System.Windows.Forms.GroupBox();
@@ -68,12 +67,12 @@ namespace GarminFitnessPlugin.View
             this.AutoSplitCheckBox = new System.Windows.Forms.CheckBox();
             this.DeviceCommGroupBox = new System.Windows.Forms.GroupBox();
             this.PackWorkoutsOnExportCheckBox = new System.Windows.Forms.CheckBox();
+            this.DefaultExportDirectoryLabel = new System.Windows.Forms.Label();
             this.HRSettingsGroupBox.SuspendLayout();
             this.panel1.SuspendLayout();
             this.SpeedSettingsGroupBox.SuspendLayout();
             this.CadenceSettingsGroupBox.SuspendLayout();
             this.PowerSettingsGroupBox.SuspendLayout();
-            this.ExportDirectoryGroupBox.SuspendLayout();
             this.CategoriesGroupBox.SuspendLayout();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
@@ -318,21 +317,10 @@ namespace GarminFitnessPlugin.View
             this.PowerZoneSelectionLabel.TabIndex = 0;
             this.PowerZoneSelectionLabel.Text = "Use this power zone for my workouts :";
             // 
-            // ExportDirectoryGroupBox
-            // 
-            this.ExportDirectoryGroupBox.Controls.Add(this.BrowseButton);
-            this.ExportDirectoryGroupBox.Controls.Add(this.ExportDirectoryTextBox);
-            this.ExportDirectoryGroupBox.Location = new System.Drawing.Point(6, 418);
-            this.ExportDirectoryGroupBox.Name = "ExportDirectoryGroupBox";
-            this.ExportDirectoryGroupBox.Size = new System.Drawing.Size(491, 50);
-            this.ExportDirectoryGroupBox.TabIndex = 6;
-            this.ExportDirectoryGroupBox.TabStop = false;
-            this.ExportDirectoryGroupBox.Text = "Default Export Directory";
-            // 
             // BrowseButton
             // 
             this.BrowseButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.BrowseButton.Location = new System.Drawing.Point(409, 17);
+            this.BrowseButton.Location = new System.Drawing.Point(383, 34);
             this.BrowseButton.Name = "BrowseButton";
             this.BrowseButton.Size = new System.Drawing.Size(76, 23);
             this.BrowseButton.TabIndex = 1;
@@ -349,7 +337,7 @@ namespace GarminFitnessPlugin.View
             this.ExportDirectoryTextBox.BackColor = System.Drawing.Color.White;
             this.ExportDirectoryTextBox.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(123)))), ((int)(((byte)(114)))), ((int)(((byte)(108)))));
             this.ExportDirectoryTextBox.ButtonImage = null;
-            this.ExportDirectoryTextBox.Location = new System.Drawing.Point(6, 19);
+            this.ExportDirectoryTextBox.Location = new System.Drawing.Point(9, 36);
             this.ExportDirectoryTextBox.MaxLength = 65535;
             this.ExportDirectoryTextBox.Multiline = false;
             this.ExportDirectoryTextBox.Name = "ExportDirectoryTextBox";
@@ -357,7 +345,7 @@ namespace GarminFitnessPlugin.View
             this.ExportDirectoryTextBox.ReadOnlyColor = System.Drawing.SystemColors.Control;
             this.ExportDirectoryTextBox.ReadOnlyTextColor = System.Drawing.SystemColors.ControlLight;
             this.ExportDirectoryTextBox.RightToLeft = System.Windows.Forms.RightToLeft.No;
-            this.ExportDirectoryTextBox.Size = new System.Drawing.Size(397, 20);
+            this.ExportDirectoryTextBox.Size = new System.Drawing.Size(368, 20);
             this.ExportDirectoryTextBox.TabIndex = 0;
             this.ExportDirectoryTextBox.TextAlign = System.Windows.Forms.HorizontalAlignment.Left;
             // 
@@ -550,10 +538,13 @@ namespace GarminFitnessPlugin.View
             // 
             // DeviceCommGroupBox
             // 
+            this.DeviceCommGroupBox.Controls.Add(this.DefaultExportDirectoryLabel);
+            this.DeviceCommGroupBox.Controls.Add(this.BrowseButton);
             this.DeviceCommGroupBox.Controls.Add(this.PackWorkoutsOnExportCheckBox);
-            this.DeviceCommGroupBox.Location = new System.Drawing.Point(6, 475);
+            this.DeviceCommGroupBox.Controls.Add(this.ExportDirectoryTextBox);
+            this.DeviceCommGroupBox.Location = new System.Drawing.Point(6, 418);
             this.DeviceCommGroupBox.Name = "DeviceCommGroupBox";
-            this.DeviceCommGroupBox.Size = new System.Drawing.Size(484, 47);
+            this.DeviceCommGroupBox.Size = new System.Drawing.Size(484, 93);
             this.DeviceCommGroupBox.TabIndex = 12;
             this.DeviceCommGroupBox.TabStop = false;
             this.DeviceCommGroupBox.Text = "Device Communication";
@@ -561,13 +552,22 @@ namespace GarminFitnessPlugin.View
             // PackWorkoutsOnExportCheckBox
             // 
             this.PackWorkoutsOnExportCheckBox.AutoSize = true;
-            this.PackWorkoutsOnExportCheckBox.Location = new System.Drawing.Point(9, 20);
+            this.PackWorkoutsOnExportCheckBox.Location = new System.Drawing.Point(9, 66);
             this.PackWorkoutsOnExportCheckBox.Name = "PackWorkoutsOnExportCheckBox";
             this.PackWorkoutsOnExportCheckBox.Size = new System.Drawing.Size(236, 17);
             this.PackWorkoutsOnExportCheckBox.TabIndex = 0;
             this.PackWorkoutsOnExportCheckBox.Text = "Pack workouts on export (Enable for FR405)";
             this.PackWorkoutsOnExportCheckBox.UseVisualStyleBackColor = true;
             this.PackWorkoutsOnExportCheckBox.CheckedChanged += new System.EventHandler(this.PackWorkoutsOnExportCheckBox_CheckedChanged);
+            // 
+            // DefaultExportDirectoryLabel
+            // 
+            this.DefaultExportDirectoryLabel.AutoSize = true;
+            this.DefaultExportDirectoryLabel.Location = new System.Drawing.Point(9, 17);
+            this.DefaultExportDirectoryLabel.Name = "DefaultExportDirectoryLabel";
+            this.DefaultExportDirectoryLabel.Size = new System.Drawing.Size(122, 13);
+            this.DefaultExportDirectoryLabel.TabIndex = 2;
+            this.DefaultExportDirectoryLabel.Text = "Default export directory :";
             // 
             // GarminFitnessSettingsControl
             // 
@@ -579,7 +579,6 @@ namespace GarminFitnessPlugin.View
             this.Controls.Add(this.DonateLabel);
             this.Controls.Add(this.RunWizardLinkLabel);
             this.Controls.Add(this.CategoriesGroupBox);
-            this.Controls.Add(this.ExportDirectoryGroupBox);
             this.Controls.Add(this.CadenceSettingsGroupBox);
             this.Controls.Add(this.SpeedSettingsGroupBox);
             this.Controls.Add(this.HRSettingsGroupBox);
@@ -597,7 +596,6 @@ namespace GarminFitnessPlugin.View
             this.CadenceSettingsGroupBox.PerformLayout();
             this.PowerSettingsGroupBox.ResumeLayout(false);
             this.PowerSettingsGroupBox.PerformLayout();
-            this.ExportDirectoryGroupBox.ResumeLayout(false);
             this.CategoriesGroupBox.ResumeLayout(false);
             this.splitContainer1.Panel1.ResumeLayout(false);
             this.splitContainer1.Panel2.ResumeLayout(false);
@@ -632,7 +630,6 @@ namespace GarminFitnessPlugin.View
         private System.Windows.Forms.GroupBox PowerSettingsGroupBox;
         private System.Windows.Forms.ComboBox PowerZoneComboBox;
         private System.Windows.Forms.Label PowerZoneSelectionLabel;
-        private System.Windows.Forms.GroupBox ExportDirectoryGroupBox;
         private System.Windows.Forms.Button BrowseButton;
         private GarminFitnessPlugin.View.ExtendedTextBox ExportDirectoryTextBox;
         private System.Windows.Forms.GroupBox CategoriesGroupBox;
@@ -655,5 +652,6 @@ namespace GarminFitnessPlugin.View
         private System.Windows.Forms.Panel panel1;
         private System.Windows.Forms.GroupBox DeviceCommGroupBox;
         private System.Windows.Forms.CheckBox PackWorkoutsOnExportCheckBox;
+        private System.Windows.Forms.Label DefaultExportDirectoryLabel;
     }
 }

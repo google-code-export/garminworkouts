@@ -260,7 +260,6 @@ namespace GarminFitnessPlugin.View
             SpeedSettingsGroupBox.Text = GarminFitnessView.GetLocalizedString("SpeedSettingsGroupBoxText");
             CadenceSettingsGroupBox.Text = GarminFitnessView.GetLocalizedString("CadenceSettingsGroupBoxText");
             PowerSettingsGroupBox.Text = GarminFitnessView.GetLocalizedString("PowerSettingsGroupBoxText");
-            ExportDirectoryGroupBox.Text = GarminFitnessView.GetLocalizedString("DefaultExportDirectoryGroupBoxText");
             CategoriesGroupBox.Text = GarminFitnessView.GetLocalizedString("CategoriesText");
 
             DefaultHeartRateZonesLabel.Text = GarminFitnessView.GetLocalizedString("DefaultHeartRateZoneLabelText");
@@ -276,6 +275,7 @@ namespace GarminFitnessPlugin.View
             AutoSplitCheckBox.Text = GarminFitnessView.GetLocalizedString("AutoSplitCheckBoxText");
 
             DeviceCommGroupBox.Text = GarminFitnessView.GetLocalizedString("DeviceCommGroupBoxText");
+            DefaultExportDirectoryLabel.Text = GarminFitnessView.GetLocalizedString("DefaultExportDirectoryGroupBoxText");
             PackWorkoutsOnExportCheckBox.Text = GarminFitnessView.GetLocalizedString("PackWorkoutsOnExportCheckBoxText");
 
             CadenceZoneComboBox.Items.Clear();

@@ -7,10 +7,11 @@ using System.Text;
 using System.Windows.Forms;
 using ZoneFiveSoftware.Common.Visuals;
 using GarminFitnessPlugin.Controller;
+using System.Diagnostics;
 
 namespace GarminFitnessPlugin.View
 {
-    public partial class ExportWorkoutsDialog : Form
+    partial class ExportWorkoutsDialog : Form
     {
         public ExportWorkoutsDialog(bool FITFormatOnly)
         {
@@ -23,13 +24,38 @@ namespace GarminFitnessPlugin.View
 
             if (!FITFormatOnly)
             {
-                FileFormatsComboBox.Items.Add(GarminFitnessView.GetLocalizedString("TCXFileText"));
+                FileFormatsComboBox.Items.Add(GarminWorkoutManager.FileFormats.FileFormat_TCX);
             }
-            FileFormatsComboBox.Items.Add(GarminFitnessView.GetLocalizedString("FitFileText"));
+            FileFormatsComboBox.Items.Add(GarminWorkoutManager.FileFormats.FileFormat_FIT);
+            FileFormatsComboBox.Format += new ListControlConvertEventHandler(OnFileFormatsComboBoxFormat);
 
             FileFormatsComboBox.SelectedIndex = 0;
 
             DirectoryTree.SelectedPath = Options.Instance.DefaultExportDirectory;
+        }
+
+        void OnFileFormatsComboBoxFormat(object sender, ListControlConvertEventArgs e)
+        {
+            GarminWorkoutManager.FileFormats fileFormat = (GarminWorkoutManager.FileFormats)e.ListItem;
+
+            switch(fileFormat)
+            {
+                case GarminWorkoutManager.FileFormats.FileFormat_TCX:
+                    {
+                        e.Value = GarminFitnessView.GetLocalizedString("TCXFileText");
+                        break;
+                    }
+                case GarminWorkoutManager.FileFormats.FileFormat_FIT:
+                    {
+                        e.Value = GarminFitnessView.GetLocalizedString("FitFileText");
+                        break;
+                    }
+                default:
+                    {
+                        Debug.Assert(false);
+                        break;
+                    }
+            }
         }
 
         private void Cancel_Button_Click(object sender, EventArgs e)
@@ -46,6 +72,11 @@ namespace GarminFitnessPlugin.View
         {
             get { return DirectoryTree.SelectedPath; }
             set { DirectoryTree.SelectedPath = value; }
+        }
+
+        public GarminWorkoutManager.FileFormats SelectedFormat
+        {
+            get { return (GarminWorkoutManager.FileFormats)FileFormatsComboBox.SelectedItem; }
         }
     }
 }

@@ -180,12 +180,19 @@ namespace GarminFitnessPlugin.View
                 {
                     foreach (IWorkout currentWorkout in workoutsToExport)
                     {
-                        string fileName = Utils.GetWorkoutFilename(currentWorkout);
+                        string fileName = Utils.GetWorkoutFilename(currentWorkout, dlg.SelectedFormat);
 
                         file = File.Create(dlg.SelectedPath + "\\" + fileName);
                         if (file != null)
                         {
-                            WorkoutExporter.ExportWorkout(currentWorkout, file);
+                            if (dlg.SelectedFormat == GarminWorkoutManager.FileFormats.FileFormat_FIT)
+                            {
+                                WorkoutExporter.ExportWorkoutToFIT(currentWorkout, file);
+                            }
+                            else
+                            {
+                                WorkoutExporter.ExportWorkout(currentWorkout, file);
+                            }
                             file.Close();
                         }
                         else
