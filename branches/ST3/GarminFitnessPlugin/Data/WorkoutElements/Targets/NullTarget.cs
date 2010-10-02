@@ -25,7 +25,7 @@ namespace GarminFitnessPlugin.Data
             base.Serialize(stream);
         }
 
-        public override void SerializetoFIT(FITMessage message)
+        public override void FillFITStepMessage(FITMessage message)
         {
             FITMessageField targetType = new FITMessageField((Byte)FITWorkoutStepFieldIds.TargetType);
 

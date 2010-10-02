@@ -34,7 +34,7 @@ namespace GarminFitnessPlugin.Data
             m_MaxPower.Serialize(stream);
         }
 
-        public override void SerializetoFIT(FITMessage message)
+        public override void FillFITStepMessage(FITMessage message)
         {
             FITMessageField powerZone = new FITMessageField((Byte)FITWorkoutStepFieldIds.TargetValue);
             FITMessageField minPower = new FITMessageField((Byte)FITWorkoutStepFieldIds.TargetCustomValueLow);

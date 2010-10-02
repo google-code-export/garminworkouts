@@ -187,6 +187,7 @@ namespace GarminFitnessPlugin.Data
             }
         }
 
+        public abstract void DeserializeFromFIT(FITMessage workoutMessage);
         public abstract void Deserialize(GarXFaceNet._Workout workout);
         public abstract void DeserializeOccurances(GarXFaceNet._WorkoutOccuranceList occuranceList);
 

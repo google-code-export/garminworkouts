@@ -116,7 +116,12 @@ namespace GarminFitnessPlugin.Data
             }
         }
 
-        public override void SerializetoFIT(FITMessage message)
+        public override void FillFITStepMessage(FITMessage message)
+        {
+            Debug.Assert(false);
+        }
+
+        public override void DeserializeFromFIT(FITMessage stepMessage)
         {
             Debug.Assert(false);
         }

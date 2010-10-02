@@ -55,7 +55,53 @@ namespace GarminFitnessPlugin.Data
             base.SerializetoFIT(stream);
         }
 
-        public override void SerializetoFIT(FITMessage message)
+        public override void DeserializeFromFIT(FITMessage stepMessage)
+        {
+            FITMessageField stepsToRepeatField = stepMessage.GetField((Byte)FITWorkoutStepFieldIds.DurationValue);
+            FITMessageField repeatCountField = stepMessage.GetField((Byte)FITWorkoutStepFieldIds.TargetValue);
+
+            if (stepsToRepeatField != null &&
+                repeatCountField != null)
+            {
+                Int32 precedingStepsToRepeat = (Int32)(ParentWorkout.StepCount - stepsToRepeatField.GetUInt32());
+                List<IStep> stepsToRepeat = new List<IStep>();
+
+                while (precedingStepsToRepeat > 0)
+                {
+                    Int32 precedingStepIndex = ParentWorkout.Steps.Count - 1;
+                    Int32 precedingStepCounter = ParentWorkout.Steps[precedingStepIndex].StepCount;
+
+                    while (precedingStepCounter < precedingStepsToRepeat)
+                    {
+                        precedingStepCounter += ParentWorkout.Steps[precedingStepIndex].StepCount;
+                        precedingStepIndex--;
+                    }
+
+                    IStep precedingStep = ParentWorkout.Steps[precedingStepIndex];
+
+                    stepsToRepeat.Add(precedingStep);
+
+                    precedingStepsToRepeat -= precedingStep.StepCount;
+                }
+
+                // Officialize result in workout
+                ParentConcreteWorkout.Steps.RemoveSteps(stepsToRepeat);
+                // In case the repeat wasn't yet registered on the workout
+                StepsToRepeat.Clear();
+                foreach (IStep currentStep in stepsToRepeat)
+                {
+                    StepsToRepeat.Add(currentStep);
+                }
+
+                RepetitionCount = (Byte)repeatCountField.GetUInt32();
+            }
+            else
+            {
+                throw new FITParserException("Missing step to repeat or repetition count field");
+            }
+        }
+
+        public override void FillFITStepMessage(FITMessage message)
         {
             FITMessageField durationType = new FITMessageField((Byte)FITWorkoutStepFieldIds.DurationType);
             FITMessageField repeatFromStep = new FITMessageField((Byte)FITWorkoutStepFieldIds.DurationValue);

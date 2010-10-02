@@ -99,9 +99,12 @@
     <Compile Include="Controller\Devices\GarminFitnessCommunicatorPlugin\GarminFitnessCommunicatorDeviceController.cs" />
     <Compile Include="Controller\Devices\IGarminDevice.cs" />
     <Compile Include="Controller\Devices\IGarminDeviceController.cs" />
+    <Compile Include="Controller\FIT\FITParser.cs" />
     <Compile Include="Controller\FIT\FITConstants.cs" />
     <Compile Include="Controller\FIT\FITMessage.cs" />
     <Compile Include="Controller\FIT\FITMessageField.cs" />
+    <Compile Include="Controller\FIT\FITParserException.cs" />
+    <Compile Include="Controller\FIT\FITUtils.cs" />
     <Compile Include="Controller\Logger.cs" />
     <Compile Include="Controller\NoDeviceSupportException.cs" />
     <Compile Include="Controller\ProfileExporter.cs" />

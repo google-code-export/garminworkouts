@@ -264,6 +264,105 @@ namespace GarminFitnessPlugin.Data
             }
         }
 
+        public override void DeserializeFromFIT(FITMessage workoutMessage)
+        {
+            FITMessage stepMessage;
+            FITMessageField numStepsField = workoutMessage.GetField((Byte)FITWorkoutFieldIds.NumSteps);
+
+            if (numStepsField != null)
+            {
+                UInt16 numSteps = numStepsField.GetUInt16();
+
+                m_Steps.Clear();
+
+                do
+                {
+                    stepMessage = FITParser.Instance.ReadNextMessage();
+
+                    if (stepMessage != null)
+                    {
+                        switch (stepMessage.GlobalMessageType)
+                        {
+                            case FITGlobalMessageIds.WorkoutStep:
+                                {
+                                    FITMessageField stepTypeField = stepMessage.GetField((Byte)FITWorkoutStepFieldIds.DurationType);
+
+                                    if (stepTypeField != null)
+                                    {
+                                        FITWorkoutStepDurationTypes durationType = (FITWorkoutStepDurationTypes)stepTypeField.GetEnum();
+                                        IStep newStep = null;
+
+                                        switch (durationType)
+                                        {
+                                            case FITWorkoutStepDurationTypes.RepeatCount:
+                                                {
+                                                    newStep = new RepeatStep(this);
+                                                    newStep.DeserializeFromFIT(stepMessage);
+                                                    break;
+                                                }
+                                            case FITWorkoutStepDurationTypes.Calories:
+                                            case FITWorkoutStepDurationTypes.Distance:
+                                            case FITWorkoutStepDurationTypes.HeartRateGreaterThan:
+                                            case FITWorkoutStepDurationTypes.HeartRateLessThan:
+                                            case FITWorkoutStepDurationTypes.Open:
+                                            case FITWorkoutStepDurationTypes.Time:
+                                                {
+                                                    newStep = new RegularStep(this);
+                                                    newStep.DeserializeFromFIT(stepMessage);
+                                                    break;
+                                                }
+                                            case FITWorkoutStepDurationTypes.RepeatUntilCalories:
+                                            case FITWorkoutStepDurationTypes.RepeatUntilDistance:
+                                            case FITWorkoutStepDurationTypes.RepeatUntilHeartRateGreaterThan:
+                                            case FITWorkoutStepDurationTypes.RepeatUntilHeartRateLessThan:
+                                            case FITWorkoutStepDurationTypes.RepeatUntilPowerGreaterThan:
+                                            case FITWorkoutStepDurationTypes.RepeatUntilPowerLessThan:
+                                            case FITWorkoutStepDurationTypes.RepeatUntilTime:
+                                                {
+                                                    // Unsupported yet, don't deserialize
+                                                    newStep = new RepeatStep(this);
+                                                    break;
+                                                }
+                                            case FITWorkoutStepDurationTypes.PowerGreaterThan:
+                                            case FITWorkoutStepDurationTypes.PowerLessThan:
+                                            default:
+                                                {
+                                                    // Unsupported yet, don't deserialize
+                                                    newStep = new RegularStep(this);
+                                                    break;
+                                                }
+                                        }
+
+                                        m_Steps.AddStepToRoot(newStep);
+                                    }
+                                    else
+                                    {
+                                        throw new FITParserException("Missing duration type field");
+                                    }
+
+                                    break;
+                                }
+                            default:
+                                {
+                                    // Nothing to do
+                                    break;
+                                }
+                        }
+                    }
+                }
+                while (stepMessage != null && m_Steps.StepCount < numSteps);
+
+                if (m_Steps.StepCount < numSteps)
+                {
+                    throw new FITParserException("Unable to deserialize all steps");
+                }
+            }
+            else
+            {
+                throw new FITParserException("No step count field");
+            }
+        }
+
         private void CreateStepsList()
         {
             m_Steps = new WorkoutStepsList(this);

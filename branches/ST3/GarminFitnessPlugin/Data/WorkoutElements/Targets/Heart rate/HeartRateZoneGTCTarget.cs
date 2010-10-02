@@ -33,7 +33,7 @@ namespace GarminFitnessPlugin.Data
             m_Zone.Serialize(stream);
         }
 
-        public override void SerializetoFIT(FITMessage message)
+        public override void FillFITStepMessage(FITMessage message)
         {
             FITMessageField HRZone = new FITMessageField((Byte)FITWorkoutStepFieldIds.TargetValue);
 

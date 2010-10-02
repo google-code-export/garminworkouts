@@ -286,6 +286,17 @@ namespace GarminFitnessPlugin.Controller
             return new WorkoutPart(completeWorkout, partNumber);
         }
 
+        public Workout CreateWorkout(String workoutName, FITMessage workoutMessage, IActivityCategory category)
+        {
+            Workout result = new Workout(workoutName, category);
+
+            result.DeserializeFromFIT(workoutMessage);
+
+            RegisterWorkout(result);
+
+            return result;
+        }
+
         public List<IWorkout> CopyWorkouts(List<Workout> workoutsToMove, IActivityCategory newCategory)
         {
             List<IWorkout> newList = new List<IWorkout>();

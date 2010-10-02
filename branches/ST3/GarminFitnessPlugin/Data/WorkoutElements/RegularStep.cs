@@ -65,7 +65,7 @@ namespace GarminFitnessPlugin.Data
             Target.Serialize(stream);
         }
 
-        public override void SerializetoFIT(FITMessage message)
+        public override void FillFITStepMessage(FITMessage message)
         {
             FITMessageField stepName = new FITMessageField((Byte)FITWorkoutStepFieldIds.StepName);
             FITMessageField intensity = new FITMessageField((Byte)FITWorkoutStepFieldIds.Intensity);
@@ -76,8 +76,8 @@ namespace GarminFitnessPlugin.Data
                 message.AddField(stepName);
             }
 
-            Duration.SerializetoFIT(message);
-            Target.SerializetoFIT(message);
+            Duration.FillFITStepMessage(message);
+            Target.FillFITStepMessage(message);
 
             if (IsRestingStep)
             {
@@ -88,6 +88,26 @@ namespace GarminFitnessPlugin.Data
                 intensity.SetEnum((Byte)FITWorkoutStepIntensity.Active);
             }
             message.AddField(intensity);
+        }
+
+        public override void DeserializeFromFIT(FITMessage stepMessage)
+        {
+            FITMessageField nameField = stepMessage.GetField((Byte)FITWorkoutStepFieldIds.StepName);
+            FITMessageField intensityField = stepMessage.GetField((Byte)FITWorkoutStepFieldIds.Intensity);
+
+            if (nameField != null)
+            {
+                Name = nameField.GetString();
+            }
+
+            if (intensityField != null)
+            {
+                IsRestingStep = (FITWorkoutStepIntensity)intensityField.GetEnum() == FITWorkoutStepIntensity.Rest ||
+                                (FITWorkoutStepIntensity)intensityField.GetEnum() == FITWorkoutStepIntensity.Cooldown;
+            }
+
+            Duration = DurationFactory.Create(stepMessage, this);
+            Target = TargetFactory.Create(stepMessage, this);
         }
 
         public new void Deserialize_V0(Stream stream, DataVersion version)

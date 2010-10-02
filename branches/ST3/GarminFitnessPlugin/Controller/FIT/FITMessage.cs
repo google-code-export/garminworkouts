@@ -9,9 +9,15 @@ namespace GarminFitnessPlugin.Controller
 {
     class FITMessage
     {
-        public FITMessage(FITGlobalMessageIds messageType)
+        public FITMessage(FITGlobalMessageIds messageType) :
+            this(messageType, BitConverter.IsLittleEndian)
+        {
+        }
+
+        public FITMessage(FITGlobalMessageIds messageType, bool isLittleEndian)
         {
             m_GlobalMessageType = messageType;
+            m_LittleEndian = isLittleEndian;
         }
 
         public void AddField(FITMessageField field)
@@ -51,6 +57,35 @@ namespace GarminFitnessPlugin.Controller
             }
         }
 
+        public void DeserializeDataMessage(Stream stream)
+        {
+            foreach (FITMessageField field in m_Fields.Values)
+            {
+                field.DeserializeData(stream, m_LittleEndian);
+            }
+        }
+
+        public FITMessageField GetField(Byte fieldDefinitionNumber)
+        {
+            if (m_Fields.ContainsKey(fieldDefinitionNumber))
+            {
+                FITMessageField field = m_Fields[fieldDefinitionNumber];
+
+                if (field.IsValueValid)
+                {
+                    return field;
+                }
+            }
+
+            return null;
+        }
+
+        public FITGlobalMessageIds GlobalMessageType
+        {
+            get { return m_GlobalMessageType; }
+        }
+
+        private bool m_LittleEndian = true;
         private FITGlobalMessageIds m_GlobalMessageType = 0;
         private Dictionary<Byte, FITMessageField> m_Fields = new Dictionary<Byte, FITMessageField>();
     }

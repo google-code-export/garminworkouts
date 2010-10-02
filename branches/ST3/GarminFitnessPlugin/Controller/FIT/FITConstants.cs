@@ -4,7 +4,25 @@ using System.Text;
 
 namespace GarminFitnessPlugin.Controller
 {
-    public enum FITFileIds
+    public class FITConstants
+    {
+        public static readonly Byte FITProtocolMajorVersion = 1;
+        public static readonly Byte FITProtocolMinorVersion = 0;
+
+        public static readonly Byte FITProfileMajorVersion = 1;
+        public static readonly Byte FITProfileMinorVersion = 0;
+        public static readonly Byte FITProfileMajorVersionMultiplier = 100;
+
+        public static readonly String FITFileDescriptor = ".FIT";
+    }
+
+    public enum FITEndianness
+    {
+        LittleEndian = 0,
+        BigEndian,
+    }
+
+    public enum FITFileTypes
     {
         Workout = 5,
     }

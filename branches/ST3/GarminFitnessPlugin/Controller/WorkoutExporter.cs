@@ -109,7 +109,7 @@ namespace GarminFitnessPlugin.Controller
             FITMessageField serialNumber = new FITMessageField((Byte)FITFileIdFieldsIds.SerialNumber);
             FITMessageField exportDate = new FITMessageField((Byte)FITFileIdFieldsIds.ExportDate);
 
-            fileType.SetEnum((Byte)FITFileIds.Workout);
+            fileType.SetEnum((Byte)FITFileTypes.Workout);
             fileIdMessage.AddField(fileType);
             manufacturerId.SetUInt16(1);
             fileIdMessage.AddField(manufacturerId);
@@ -144,10 +144,9 @@ namespace GarminFitnessPlugin.Controller
 
             // Write FIT header at the start of the stream
             GarminFitnessByteRange headerSize = new GarminFitnessByteRange(12);
-            GarminFitnessByteRange protocolVersion = new GarminFitnessByteRange((1 << 4) | (0));            // 1.0
-            GarminFitnessUInt16Range profileVersion = new GarminFitnessUInt16Range((1 * 100) + (0));         // 1.0
+            GarminFitnessByteRange protocolVersion = new GarminFitnessByteRange((Byte)((FITConstants.FITProtocolMajorVersion << 4) | FITConstants.FITProtocolMinorVersion));
+            GarminFitnessUInt16Range profileVersion = new GarminFitnessUInt16Range((UInt16)((FITConstants.FITProfileMajorVersion * FITConstants.FITProfileMajorVersionMultiplier) + FITConstants.FITProfileMinorVersion));
             GarminFitnessInt32Range dataSize = new GarminFitnessInt32Range(0);
-            String fitFormatName = ".FIT";
 
             dataStream.Seek(0, SeekOrigin.Begin);
             dataSize.Value = (int)dataStream.Length - 12;
@@ -156,51 +155,15 @@ namespace GarminFitnessPlugin.Controller
             protocolVersion.Serialize(dataStream);
             profileVersion.Serialize(dataStream);
             dataSize.Serialize(dataStream);
-            dataStream.Write(Encoding.UTF8.GetBytes(fitFormatName), 0, 4);
+            dataStream.Write(Encoding.UTF8.GetBytes(FITConstants.FITFileDescriptor), 0, 4);
 
             // Write CRC
-            GarminFitnessUInt16Range crc = ComputeStreamCRC(dataStream);
+            GarminFitnessUInt16Range crc = new GarminFitnessUInt16Range(FITUtils.ComputeStreamCRC(dataStream));
             dataStream.Seek(0, SeekOrigin.End);
             crc.Serialize(dataStream);
 
             // Write all data to output stream
             exportStream.Write(dataStream.GetBuffer(), 0, (int)dataStream.Length);
-        }
-
-        private static GarminFitnessUInt16Range ComputeStreamCRC(MemoryStream dataStream)
-        {
-            UInt16 crc = 0;
-            Byte[] streamBuffer = dataStream.GetBuffer();
-
-            for (int i = 0; i < dataStream.Length; ++i)
-            {
-                crc = ComputeByteCRC(crc, streamBuffer[i]);
-            }
-
-            return new GarminFitnessUInt16Range(crc);
-        }
-
-        private static UInt16 ComputeByteCRC(UInt16 previousCRC, Byte newByte)
-        {
-            UInt16[] crc_table = new UInt16[]  {
-                0x0000, 0xCC01, 0xD801, 0x1400, 0xF001, 0x3C00, 0x2800, 0xE401,
-                0xA001, 0x6C00, 0x7800, 0xB401, 0x5000, 0x9C01, 0x8801, 0x4400
-            };
-
-            UInt16 tmp;
-            UInt16 crc = previousCRC;
-
-            // compute checksum of lower four bits of byte
-            tmp = crc_table[crc & 0xF];
-            crc = (UInt16)((crc >> 4) & 0x0FFF);
-            crc = (UInt16)(crc ^ tmp ^ crc_table[newByte & 0xF]);
-
-            // now compute checksum of upper four bits of byte
-            tmp = crc_table[crc & 0xF];
-            crc = (UInt16)((crc >> 4) & 0x0FFF);
-            crc = (UInt16)(crc ^ tmp ^ crc_table[(newByte >> 4) & 0xF]);
-
-            return crc;
         }
     }
 }

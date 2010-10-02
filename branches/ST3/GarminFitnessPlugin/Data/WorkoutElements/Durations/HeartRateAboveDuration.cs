@@ -37,7 +37,7 @@ namespace GarminFitnessPlugin.Data
             InternalMaxHeartRate.Serialize(stream);
         }
 
-        public override void SerializetoFIT(FITMessage message)
+        public override void FillFITStepMessage(FITMessage message)
         {
             FITMessageField durationType = new FITMessageField((Byte)FITWorkoutStepFieldIds.DurationType);
             FITMessageField durationValue = new FITMessageField((Byte)FITWorkoutStepFieldIds.DurationValue);

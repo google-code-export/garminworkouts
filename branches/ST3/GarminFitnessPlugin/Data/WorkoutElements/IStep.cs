@@ -43,12 +43,14 @@ namespace GarminFitnessPlugin.Data
             stepId.SetUInt16((UInt16)(ParentWorkout.GetStepExportId(this) - 1));
             message.AddField(stepId);
 
-            SerializetoFIT(message);
+            FillFITStepMessage(message);
 
             message.Serialize(stream);
         }
 
-        public abstract void SerializetoFIT(FITMessage message);
+        public abstract void DeserializeFromFIT(FITMessage stepMessage);
+
+        public abstract void FillFITStepMessage(FITMessage message);
 
         public void Deserialize_V0(Stream stream, DataVersion version)
         {

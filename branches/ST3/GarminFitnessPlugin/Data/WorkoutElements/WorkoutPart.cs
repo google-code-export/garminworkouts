@@ -125,6 +125,11 @@ namespace GarminFitnessPlugin.Data
             throw new Exception("Cannot deserialize a WorkoutPart");
         }
 
+        public override void DeserializeFromFIT(FITMessage workoutMessage)
+        {
+            throw new Exception("Cannot deserialize a WorkoutPart");
+        }
+
         Workout m_FullWorkout;
         int m_PartNumber;
     }

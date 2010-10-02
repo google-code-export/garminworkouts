@@ -123,6 +123,116 @@ namespace GarminFitnessPlugin.Controller
             return true;
         }
 
+        public static bool ImportWorkoutFromFIT(Stream importStream)
+        {
+            try
+            {
+                if (FITParser.Instance.Init(importStream))
+                {
+                    FITMessage parsedMessage;
+
+                    do
+                    {
+                        parsedMessage = FITParser.Instance.ReadNextMessage();
+
+                        if (parsedMessage != null)
+                        {
+                            switch (parsedMessage.GlobalMessageType)
+                            {
+                                case FITGlobalMessageIds.FileId:
+                                    {
+                                        // Make sure we have a workout file
+                                        FITMessageField fileTypeField = parsedMessage.GetField((Byte)FITFileIdFieldsIds.FileType);
+
+                                        if (fileTypeField != null &&
+                                            (FITFileTypes)fileTypeField.GetEnum() != FITFileTypes.Workout)
+                                        {
+                                            return false;
+                                        }
+
+                                        break;
+                                    }
+                                case FITGlobalMessageIds.Workout:
+                                    {
+                                        // Peek name
+                                        FITMessageField nameField = parsedMessage.GetField((Byte)FITWorkoutFieldIds.WorkoutName);
+                                        String workoutName = nameField.GetString();
+                                        bool isUsedByPart = false;
+                                        IActivityCategory category = null;
+
+                                        if (!GarminWorkoutManager.Instance.IsWorkoutNameAvailable(workoutName, out isUsedByPart))
+                                        {
+                                            if (!isUsedByPart)
+                                            {
+                                                ReplaceRenameDialog dlg = new ReplaceRenameDialog(GarminWorkoutManager.Instance.GetUniqueName(workoutName));
+
+                                                if (dlg.ShowDialog() == DialogResult.Yes)
+                                                {
+                                                    // Yes = replace, delete the current workout from the list
+                                                    Workout oldWorkout = GarminWorkoutManager.Instance.GetWorkout(workoutName);
+
+                                                    category = oldWorkout.Category;
+                                                    GarminWorkoutManager.Instance.RemoveWorkout(oldWorkout);
+                                                }
+                                                else
+                                                {
+                                                    // No = rename
+                                                    workoutName = dlg.NewName;
+                                                }
+                                            }
+                                            else
+                                            {
+                                                // Auto rename
+                                                workoutName = GarminWorkoutManager.Instance.GetUniqueName(workoutName);
+                                            }
+                                        }
+
+                                        if (category == null)
+                                        {
+                                            SelectCategoryDialog categoryDlg = new SelectCategoryDialog(workoutName);
+
+                                            categoryDlg.ShowDialog();
+                                            category = categoryDlg.SelectedCategory;
+                                        }
+
+                                        Workout newWorkout = GarminWorkoutManager.Instance.CreateWorkout(workoutName, parsedMessage, category);
+                                        break;
+                                    }
+                                default:
+                                    {
+                                        // Nothing to do, unsupported message
+                                        break;
+                                    }
+                            }
+                        }
+                    }
+                    while (parsedMessage != null);
+
+                    FITParser.Instance.Close();
+
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            catch (FITParserException e)
+            {
+                MessageBox.Show("Error parsing FIT file\n\n" +
+                                e.Message + "\n\n" +
+                                e.StackTrace);
+                return false;
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show("General error on import\n\n" +
+                                e.Message + "\n\n" +
+                                e.StackTrace);
+                return false;
+            }
+        }
+
         private static bool LoadWorkouts(XmlNode workoutsList)
         {
             for (int i = 0; i < workoutsList.ChildNodes.Count; ++i)
