@@ -100,27 +100,7 @@ namespace GarminFitnessPlugin.Controller
 
             Logger.Instance.LogText(String.Format("Exporting workouts({0}){1}", workouts.Count, workoutsText));
 
-            if (Options.Instance.PackWorkoutsOnExport)
-            {
-                AddTask(new ExportWorkoutTask(workouts));
-            }
-            else
-            {
-                foreach (Workout current in workouts)
-                {
-                    if (current.GetSplitPartsCount() > 1)
-                    {
-                        foreach (WorkoutPart part in current.GetSplitParts())
-                        {
-                            AddTask(new ExportWorkoutTask(part));
-                        }
-                    }
-                    else
-                    {
-                        AddTask(new ExportWorkoutTask(current));
-                    }
-                }
-            }
+            AddTask(new ExportWorkoutTask(workouts));
         }
 
         public void ImportWorkouts()

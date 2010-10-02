@@ -66,7 +66,6 @@ namespace GarminFitnessPlugin.View
             this.DonateImageLabel = new System.Windows.Forms.Label();
             this.AutoSplitCheckBox = new System.Windows.Forms.CheckBox();
             this.DeviceCommGroupBox = new System.Windows.Forms.GroupBox();
-            this.PackWorkoutsOnExportCheckBox = new System.Windows.Forms.CheckBox();
             this.DefaultExportDirectoryLabel = new System.Windows.Forms.Label();
             this.HRSettingsGroupBox.SuspendLayout();
             this.panel1.SuspendLayout();
@@ -495,7 +494,7 @@ namespace GarminFitnessPlugin.View
             // 
             this.RunWizardLinkLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.RunWizardLinkLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F);
-            this.RunWizardLinkLabel.Location = new System.Drawing.Point(-1, 540);
+            this.RunWizardLinkLabel.Location = new System.Drawing.Point(-1, 502);
             this.RunWizardLinkLabel.Name = "RunWizardLinkLabel";
             this.RunWizardLinkLabel.Size = new System.Drawing.Size(500, 23);
             this.RunWizardLinkLabel.TabIndex = 8;
@@ -508,7 +507,7 @@ namespace GarminFitnessPlugin.View
             this.DonateLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.DonateLabel.AutoSize = true;
             this.DonateLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F);
-            this.DonateLabel.Location = new System.Drawing.Point(6, 564);
+            this.DonateLabel.Location = new System.Drawing.Point(6, 526);
             this.DonateLabel.Name = "DonateLabel";
             this.DonateLabel.Size = new System.Drawing.Size(292, 20);
             this.DonateLabel.TabIndex = 9;
@@ -519,7 +518,7 @@ namespace GarminFitnessPlugin.View
             this.DonateImageLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.DonateImageLabel.Cursor = System.Windows.Forms.Cursors.Hand;
             this.DonateImageLabel.Image = global::GarminFitnessPlugin.Resources.Resources.DonateImage;
-            this.DonateImageLabel.Location = new System.Drawing.Point(304, 562);
+            this.DonateImageLabel.Location = new System.Drawing.Point(304, 524);
             this.DonateImageLabel.Name = "DonateImageLabel";
             this.DonateImageLabel.Size = new System.Drawing.Size(100, 23);
             this.DonateImageLabel.TabIndex = 10;
@@ -540,25 +539,13 @@ namespace GarminFitnessPlugin.View
             // 
             this.DeviceCommGroupBox.Controls.Add(this.DefaultExportDirectoryLabel);
             this.DeviceCommGroupBox.Controls.Add(this.BrowseButton);
-            this.DeviceCommGroupBox.Controls.Add(this.PackWorkoutsOnExportCheckBox);
             this.DeviceCommGroupBox.Controls.Add(this.ExportDirectoryTextBox);
             this.DeviceCommGroupBox.Location = new System.Drawing.Point(6, 418);
             this.DeviceCommGroupBox.Name = "DeviceCommGroupBox";
-            this.DeviceCommGroupBox.Size = new System.Drawing.Size(484, 93);
+            this.DeviceCommGroupBox.Size = new System.Drawing.Size(484, 65);
             this.DeviceCommGroupBox.TabIndex = 12;
             this.DeviceCommGroupBox.TabStop = false;
             this.DeviceCommGroupBox.Text = "Device Communication";
-            // 
-            // PackWorkoutsOnExportCheckBox
-            // 
-            this.PackWorkoutsOnExportCheckBox.AutoSize = true;
-            this.PackWorkoutsOnExportCheckBox.Location = new System.Drawing.Point(9, 66);
-            this.PackWorkoutsOnExportCheckBox.Name = "PackWorkoutsOnExportCheckBox";
-            this.PackWorkoutsOnExportCheckBox.Size = new System.Drawing.Size(236, 17);
-            this.PackWorkoutsOnExportCheckBox.TabIndex = 0;
-            this.PackWorkoutsOnExportCheckBox.Text = "Pack workouts on export (Enable for FR405)";
-            this.PackWorkoutsOnExportCheckBox.UseVisualStyleBackColor = true;
-            this.PackWorkoutsOnExportCheckBox.CheckedChanged += new System.EventHandler(this.PackWorkoutsOnExportCheckBox_CheckedChanged);
             // 
             // DefaultExportDirectoryLabel
             // 
@@ -585,7 +572,7 @@ namespace GarminFitnessPlugin.View
             this.Controls.Add(this.PowerSettingsGroupBox);
             this.MaximumSize = new System.Drawing.Size(500, 610);
             this.Name = "GarminFitnessSettingsControl";
-            this.Size = new System.Drawing.Size(500, 590);
+            this.Size = new System.Drawing.Size(500, 552);
             this.HRSettingsGroupBox.ResumeLayout(false);
             this.HRSettingsGroupBox.PerformLayout();
             this.panel1.ResumeLayout(false);
@@ -651,7 +638,6 @@ namespace GarminFitnessPlugin.View
         private System.Windows.Forms.RadioButton BPMRadioButton;
         private System.Windows.Forms.Panel panel1;
         private System.Windows.Forms.GroupBox DeviceCommGroupBox;
-        private System.Windows.Forms.CheckBox PackWorkoutsOnExportCheckBox;
         private System.Windows.Forms.Label DefaultExportDirectoryLabel;
     }
 }
