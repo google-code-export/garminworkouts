@@ -58,12 +58,12 @@ namespace GarminFitnessPlugin.Controller
 
             // xmlns:xsi namespace attribute
             attribute = document.CreateAttribute("xmlns", "xsi", Constants.xmlns);
-            attribute.Value = Constants.xsins;
+            attribute.Value = "http://www.w3.org/2001/XMLSchema-instance";
             database.Attributes.Append(attribute);
 
             // xsi:schemaLocation namespace attribute
             attribute = document.CreateAttribute("xsi", "schemaLocation", Constants.xsins);
-            attribute.Value = "http://www.garmin.com/xmlschemas/TrainingCenterDatabase/v2 http://www.garmin.com/xmlschemas/TrainingCenterDatabasev2.xsd";
+            attribute.Value = "http://www.garmin.com/xmlschemas/TrainingCenterDatabase/v2 http://www.garmin.com/xmlschemas/TrainingCenterDatabasev2.xsd http://www.garmin.com/xmlschemas/WorkoutExtension/v1 http://www.garmin.com/xmlschemas/WorkoutExtensionv1.xsd";
             database.Attributes.Append(attribute);
 
             XmlNode workoutsNode = document.CreateNode(XmlNodeType.Element, "Workouts", null);
