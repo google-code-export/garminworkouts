@@ -15,8 +15,8 @@ namespace GarminFitnessPlugin.Controller
     {
         public enum FileFormats
         {
-            FileFormat_TCX = 0,
-            FileFormat_FIT
+            TCX = 0,
+            FIT
         }
 
         private GarminWorkoutManager()

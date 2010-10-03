@@ -24,9 +24,9 @@ namespace GarminFitnessPlugin.View
 
             if (!FITFormatOnly)
             {
-                FileFormatsComboBox.Items.Add(GarminWorkoutManager.FileFormats.FileFormat_TCX);
+                FileFormatsComboBox.Items.Add(GarminWorkoutManager.FileFormats.TCX);
             }
-            FileFormatsComboBox.Items.Add(GarminWorkoutManager.FileFormats.FileFormat_FIT);
+            FileFormatsComboBox.Items.Add(GarminWorkoutManager.FileFormats.FIT);
             FileFormatsComboBox.Format += new ListControlConvertEventHandler(OnFileFormatsComboBoxFormat);
 
             FileFormatsComboBox.SelectedIndex = 0;
@@ -40,12 +40,12 @@ namespace GarminFitnessPlugin.View
 
             switch(fileFormat)
             {
-                case GarminWorkoutManager.FileFormats.FileFormat_TCX:
+                case GarminWorkoutManager.FileFormats.TCX:
                     {
                         e.Value = GarminFitnessView.GetLocalizedString("TCXFileText");
                         break;
                     }
-                case GarminWorkoutManager.FileFormats.FileFormat_FIT:
+                case GarminWorkoutManager.FileFormats.FIT:
                     {
                         e.Value = GarminFitnessView.GetLocalizedString("FitFileText");
                         break;

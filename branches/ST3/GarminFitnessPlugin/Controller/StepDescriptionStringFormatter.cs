@@ -32,10 +32,9 @@ namespace GarminFitnessPlugin.Controller
                             result = regularStep.Name;
                         }
 
-
-                        if (regularStep.IsRestingStep)
+                        if (regularStep.Intensity != RegularStep.StepIntensity.Active)
                         {
-                            result += " " + "(" + GarminFitnessView.GetLocalizedString("RestText") + ")";
+                            result += " " + "(" + GetStepIntensityText(regularStep.Intensity) +")";
                         }
                         break;
                     }
@@ -393,6 +392,31 @@ namespace GarminFitnessPlugin.Controller
             }
 
             return result;
+        }
+
+        static private String GetStepIntensityText(RegularStep.StepIntensity intensity)
+        {
+            switch(intensity)
+            {
+                case RegularStep.StepIntensity.Active:
+                    {
+                        return GarminFitnessView.GetLocalizedString("ActiveText");
+                    }
+                case RegularStep.StepIntensity.Cooldown:
+                    {
+                        return GarminFitnessView.GetLocalizedString("CooldownText");
+                    }
+                case RegularStep.StepIntensity.Warmup:
+                    {
+                        return GarminFitnessView.GetLocalizedString("WarmupText");
+                    }
+                case RegularStep.StepIntensity.Rest:
+                    {
+                        return GarminFitnessView.GetLocalizedString("RestText");
+                    }
+            }
+
+            return null;
         }
     }
 }

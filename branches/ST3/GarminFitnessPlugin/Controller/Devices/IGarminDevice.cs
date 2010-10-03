@@ -6,12 +6,12 @@ namespace GarminFitnessPlugin.Controller
 {
     public enum DeviceOperations
     {
-        Operation_Idle = 0,
-        Operation_ReadWorkout,
-        Operation_ReadMassStorageWorkouts,
-        Operation_WriteWorkout,
-        Operation_ReadProfile,
-        Operation_WriteProfile
+        Idle = 0,
+        ReadWorkout,
+        ReadMassStorageWorkouts,
+        WriteWorkout,
+        ReadProfile,
+        WriteProfile
     }
 
     delegate void DeviceOperationCompletedEventHandler(IGarminDevice device, DeviceOperations operation, Boolean succeeded);

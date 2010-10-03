@@ -399,11 +399,11 @@ namespace GarminFitnessPlugin.Controller
             fileName = fileName.Replace('>', '_');
             fileName = fileName.Replace('|', '_');
 
-            if (format == GarminWorkoutManager.FileFormats.FileFormat_TCX)
+            if (format == GarminWorkoutManager.FileFormats.TCX)
             {
                 fileName += ".tcx";
             }
-            else if (format == GarminWorkoutManager.FileFormats.FileFormat_FIT)
+            else if (format == GarminWorkoutManager.FileFormats.FIT)
             {
                 fileName += ".fit";
             }

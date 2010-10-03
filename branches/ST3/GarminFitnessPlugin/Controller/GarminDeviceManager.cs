@@ -67,7 +67,7 @@ namespace GarminFitnessPlugin.Controller
 
                 // Refresh devices is an optional sub-step of SetOperatingDevice, so insert it
                 //  first and trigger it manually.
-                m_TaskQueue.Insert(0, new BasicTask(BasicTask.TaskTypes.TaskType_RefreshDevices));
+                m_TaskQueue.Insert(0, new BasicTask(BasicTask.TaskTypes.RefreshDevices));
 
                 m_Controllers[0].FindDevices();
             }
@@ -189,7 +189,7 @@ namespace GarminFitnessPlugin.Controller
 
             if (success)
             {
-                if (PendingTaskCount > 0 && task.Type != BasicTask.TaskTypes.TaskType_RefreshDevices)
+                if (PendingTaskCount > 0 && task.Type != BasicTask.TaskTypes.RefreshDevices)
                 {
                     StartNextTask();
                 }
@@ -233,7 +233,7 @@ namespace GarminFitnessPlugin.Controller
 
                 if (TaskCompleted != null)
                 {
-                    TaskCompleted(this, new BasicTask(BasicTask.TaskTypes.TaskType_Initialize), false, String.Empty);
+                    TaskCompleted(this, new BasicTask(BasicTask.TaskTypes.Initialize), false, String.Empty);
                 }
 
                 CancelAllTasks();
@@ -286,7 +286,7 @@ namespace GarminFitnessPlugin.Controller
                 {
                     Logger.Instance.LogText(String.Format("All controllers found devices({0})", m_Devices.Count));
 
-                    if (CurrentTask.Type == BasicTask.TaskTypes.TaskType_SetOperatingDevice)
+                    if (CurrentTask.Type == BasicTask.TaskTypes.SetOperatingDevice)
                     {
                         if (Devices.Count == 1)
                         {
@@ -328,22 +328,22 @@ namespace GarminFitnessPlugin.Controller
         {
             String errorText = String.Empty;
 
-            if (CurrentTask.Type == BasicTask.TaskTypes.TaskType_ExportWorkout)
+            if (CurrentTask.Type == BasicTask.TaskTypes.ExportWorkout)
             {
                 Logger.Instance.LogText("Completed export workouts");
 
-                Debug.Assert(operation == DeviceOperations.Operation_WriteWorkout);
+                Debug.Assert(operation == DeviceOperations.WriteWorkout);
 
                 if (!succeeded)
                 {
                     errorText = GarminFitnessView.GetLocalizedString("ExportWorkoutsErrorText");
                 }
             }
-            else if (CurrentTask.Type == BasicTask.TaskTypes.TaskType_ExportProfile)
+            else if (CurrentTask.Type == BasicTask.TaskTypes.ExportProfile)
             {
                 Logger.Instance.LogText("Completed export profile");
 
-                Debug.Assert(operation == DeviceOperations.Operation_WriteProfile);
+                Debug.Assert(operation == DeviceOperations.WriteProfile);
 
                 if (!succeeded)
                 {
@@ -358,12 +358,12 @@ namespace GarminFitnessPlugin.Controller
         {
             String errorText = String.Empty;
 
-            if (CurrentTask.Type == BasicTask.TaskTypes.TaskType_ImportWorkouts)
+            if (CurrentTask.Type == BasicTask.TaskTypes.ImportWorkouts)
             {
                 Logger.Instance.LogText("Completed import workouts");
 
-                Debug.Assert(operation == DeviceOperations.Operation_ReadWorkout ||
-                             operation == DeviceOperations.Operation_ReadMassStorageWorkouts);
+                Debug.Assert(operation == DeviceOperations.ReadWorkout ||
+                             operation == DeviceOperations.ReadMassStorageWorkouts);
 
                 if (!succeeded)
                 {
@@ -371,11 +371,11 @@ namespace GarminFitnessPlugin.Controller
                 }
 
             }
-            else if (CurrentTask.Type == BasicTask.TaskTypes.TaskType_ImportProfile)
+            else if (CurrentTask.Type == BasicTask.TaskTypes.ImportProfile)
             {
                 Logger.Instance.LogText("Completed import profile");
 
-                Debug.Assert(operation == DeviceOperations.Operation_ReadProfile);
+                Debug.Assert(operation == DeviceOperations.ReadProfile);
 
                 if (!succeeded)
                 {
@@ -404,13 +404,13 @@ namespace GarminFitnessPlugin.Controller
 
             m_TimeoutTimer.Stop();
 
-            if (CurrentTask.Type == BasicTask.TaskTypes.TaskType_ExportWorkout ||
-                CurrentTask.Type == BasicTask.TaskTypes.TaskType_ExportProfile)
+            if (CurrentTask.Type == BasicTask.TaskTypes.ExportWorkout ||
+                CurrentTask.Type == BasicTask.TaskTypes.ExportProfile)
             {
                 OperatingDevice.CancelWrite();
             }
-            else if (CurrentTask.Type == BasicTask.TaskTypes.TaskType_ImportWorkouts ||
-                     CurrentTask.Type == BasicTask.TaskTypes.TaskType_ImportProfile)
+            else if (CurrentTask.Type == BasicTask.TaskTypes.ImportWorkouts ||
+                     CurrentTask.Type == BasicTask.TaskTypes.ImportProfile)
             {
                 OperatingDevice.CancelRead();
             }
@@ -430,13 +430,13 @@ namespace GarminFitnessPlugin.Controller
 
             public enum TaskTypes
             {
-                TaskType_Initialize,
-                TaskType_RefreshDevices,
-                TaskType_SetOperatingDevice,
-                TaskType_ExportWorkout,
-                TaskType_ImportWorkouts,
-                TaskType_ImportProfile,
-                TaskType_ExportProfile
+                Initialize,
+                RefreshDevices,
+                SetOperatingDevice,
+                ExportWorkout,
+                ImportWorkouts,
+                ImportProfile,
+                ExportProfile
             };
 
             public TaskTypes Type
@@ -454,7 +454,7 @@ namespace GarminFitnessPlugin.Controller
         public class SetOperationDeviceTask : BasicTask
         {
             public SetOperationDeviceTask() :
-                base(TaskTypes.TaskType_SetOperatingDevice)
+                base(TaskTypes.SetOperatingDevice)
             {
             }
 
@@ -470,13 +470,13 @@ namespace GarminFitnessPlugin.Controller
         public class ExportWorkoutTask : BasicTask
         {
             public ExportWorkoutTask(List<IWorkout> workouts) :
-                base(TaskTypes.TaskType_ExportWorkout)
+                base(TaskTypes.ExportWorkout)
             {
                 m_Workouts = workouts;
             }
 
             public ExportWorkoutTask(IWorkout workout) :
-                base(TaskTypes.TaskType_ExportWorkout)
+                base(TaskTypes.ExportWorkout)
             {
                 m_Workouts = new List<IWorkout>();
                 m_Workouts.Add(workout);
@@ -506,7 +506,7 @@ namespace GarminFitnessPlugin.Controller
         public class ExportProfileTask : BasicTask
         {
             public ExportProfileTask() :
-                base(TaskTypes.TaskType_ExportProfile)
+                base(TaskTypes.ExportProfile)
             {
             }
 
@@ -527,7 +527,7 @@ namespace GarminFitnessPlugin.Controller
         public class ImportWorkoutsTask : BasicTask
         {
             public ImportWorkoutsTask() :
-                base(TaskTypes.TaskType_ImportWorkouts)
+                base(TaskTypes.ImportWorkouts)
             {
             }
 
@@ -548,7 +548,7 @@ namespace GarminFitnessPlugin.Controller
         public class ImportProfileTask : BasicTask
         {
             public ImportProfileTask() :
-                base(TaskTypes.TaskType_ImportProfile)
+                base(TaskTypes.ImportProfile)
             {
             }
 

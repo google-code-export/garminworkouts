@@ -103,7 +103,7 @@ namespace GarminFitnessPlugin.View
 
             if (!succeeded)
             {
-                if (task.Type == GarminDeviceManager.BasicTask.TaskTypes.TaskType_Initialize)
+                if (task.Type == GarminDeviceManager.BasicTask.TaskTypes.Initialize)
                 {
                     exportCancelled = true;
 
@@ -111,11 +111,11 @@ namespace GarminFitnessPlugin.View
                                     GarminFitnessView.GetLocalizedString("ErrorText"),
                                     MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
-                else if (task.Type == GarminDeviceManager.BasicTask.TaskTypes.TaskType_SetOperatingDevice)
+                else if (task.Type == GarminDeviceManager.BasicTask.TaskTypes.SetOperatingDevice)
                 {
                     exportCancelled = true;
                 }
-                else if (task.Type == GarminDeviceManager.BasicTask.TaskTypes.TaskType_ExportProfile)
+                else if (task.Type == GarminDeviceManager.BasicTask.TaskTypes.ExportProfile)
                 {
                     MessageBox.Show(GarminFitnessView.GetLocalizedString("ExportProfileFailedText"),
                                     GarminFitnessView.GetLocalizedString("ErrorText"),

@@ -91,7 +91,7 @@ namespace GarminFitnessPlugin.View
         {
             if (!succeeded)
             {
-                if (task.Type == GarminDeviceManager.BasicTask.TaskTypes.TaskType_Initialize)
+                if (task.Type == GarminDeviceManager.BasicTask.TaskTypes.Initialize)
                 {
                     MessageBox.Show(GarminFitnessView.GetLocalizedString("DeviceCommunicationErrorText"),
                                     GarminFitnessView.GetLocalizedString("ErrorText"),

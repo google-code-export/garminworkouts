@@ -69,6 +69,39 @@ namespace GarminFitnessPlugin.View
                                                       StringAlignment.Near));
 
             AddLinkStepButton.Enabled = GarminWorkoutManager.Instance.Workouts.Count > 1;
+
+            IntensityComboBox.Format += new ListControlConvertEventHandler(IntensityComboBoxFormat);
+            for(int i = 0; i < (int)RegularStep.StepIntensity.IntensityCount; ++i)
+            {
+                IntensityComboBox.Items.Add((RegularStep.StepIntensity)i);
+            }
+        }
+
+        void IntensityComboBoxFormat(object sender, ListControlConvertEventArgs e)
+        {
+            switch((RegularStep.StepIntensity)e.ListItem)
+            {
+                case RegularStep.StepIntensity.Active:
+                    {
+                        e.Value = GarminFitnessView.GetLocalizedString("ActiveText");
+                        break;
+                    }
+                case RegularStep.StepIntensity.Rest:
+                    {
+                        e.Value = GarminFitnessView.GetLocalizedString("RestText");
+                        break;
+                    }
+                case RegularStep.StepIntensity.Warmup:
+                    {
+                        e.Value = GarminFitnessView.GetLocalizedString("WarmupText");
+                        break;
+                    }
+                case RegularStep.StepIntensity.Cooldown:
+                    {
+                        e.Value = GarminFitnessView.GetLocalizedString("CooldownText");
+                        break;
+                    }
+            }
         }
 
         void OnOptionsChanged(PropertyChangedEventArgs changedProperty)
@@ -435,12 +468,12 @@ namespace GarminFitnessPlugin.View
             concreteStep.Name = StepNameText.Text;
         }
 
-        private void RestingCheckBox_CheckedChanged(object sender, EventArgs e)
+        private void IntensityComboBox_SelectedIndexChanged(object sender, EventArgs e)
         {
             Debug.Assert(SelectedStep != null && SelectedStep.Type == IStep.StepType.Regular);
             RegularStep concreteStep = (RegularStep)SelectedStep;
 
-            concreteStep.IsRestingStep = RestingCheckBox.Checked;
+            concreteStep.Intensity = (RegularStep.StepIntensity)IntensityComboBox.SelectedItem;
         }
 
         private void ForceSplitCheckBox_CheckedChanged(object sender, EventArgs e)
@@ -1993,7 +2026,6 @@ namespace GarminFitnessPlugin.View
             WorkoutNotesLabel.Text = GarminFitnessView.GetLocalizedString("NotesLabelText");
             StepNotesLabel.Text = GarminFitnessView.GetLocalizedString("NotesLabelText");
             StepNameLabel.Text = GarminFitnessView.GetLocalizedString("StepNameLabelText");
-            RestingCheckBox.Text = GarminFitnessView.GetLocalizedString("RestingCheckBoxText");
             StepDurationGroup.Text = GarminFitnessView.GetLocalizedString("StepDurationGroupText");
             StepDurationLabel.Text = GarminFitnessView.GetLocalizedString("StepDurationLabelText");
             StepTargetGroup.Text = GarminFitnessView.GetLocalizedString("StepTargetGroupText");
@@ -2253,7 +2285,7 @@ namespace GarminFitnessPlugin.View
                         StepTargetGroup.Visible = true;
                         StepNameLabel.Visible = true;
                         StepNameText.Visible = true;
-                        RestingCheckBox.Visible = true;
+                        IntensityComboBox.Visible = true;
 
                         StepWrapper wrapper = GetStepWrapper(SelectedWorkout.ConcreteWorkout, SelectedStep);
 
@@ -2269,7 +2301,8 @@ namespace GarminFitnessPlugin.View
                         {
                             StepNameText.Text = "";
                         }
-                        RestingCheckBox.Checked = concreteStep.IsRestingStep;
+
+                        IntensityComboBox.SelectedItem = concreteStep.Intensity;
                         DurationComboBox.SelectedIndex = (int)concreteStep.Duration.Type;
                         TargetComboBox.SelectedIndex = (int)concreteStep.Target.Type;
 
@@ -2290,7 +2323,7 @@ namespace GarminFitnessPlugin.View
                         StepTargetGroup.Visible = false;
                         StepNameLabel.Visible = false;
                         StepNameText.Visible = false;
-                        RestingCheckBox.Visible = false;
+                        IntensityComboBox.Visible = false;
 
                         StepWrapper wrapper = GetStepWrapper(SelectedWorkout.ConcreteWorkout, SelectedStep);
 
@@ -2310,7 +2343,7 @@ namespace GarminFitnessPlugin.View
                         StepTargetGroup.Visible = false;
                         StepNameLabel.Visible = false;
                         StepNameText.Visible = false;
-                        RestingCheckBox.Visible = false;
+                        IntensityComboBox.Visible = false;
 
                         StepSplit.Panel2.Enabled = true;
                         break;

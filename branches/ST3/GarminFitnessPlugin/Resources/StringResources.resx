@@ -717,4 +717,13 @@
   <data name="PackWorkoutsOnExportCheckBoxText" xml:space="preserve">
     <value>Pack workouts on export (Enable for FR405)</value>
   </data>
+  <data name="CooldownText" xml:space="preserve">
+    <value>Cooldown</value>
+  </data>
+  <data name="WarmupText" xml:space="preserve">
+    <value>Warmup</value>
+  </data>
+  <data name="ActiveText" xml:space="preserve">
+    <value>Active</value>
+  </data>
 </root>

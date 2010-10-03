@@ -185,7 +185,7 @@ namespace GarminFitnessPlugin.View
                         file = File.Create(dlg.SelectedPath + "\\" + fileName);
                         if (file != null)
                         {
-                            if (dlg.SelectedFormat == GarminWorkoutManager.FileFormats.FileFormat_FIT)
+                            if (dlg.SelectedFormat == GarminWorkoutManager.FileFormats.FIT)
                             {
                                 WorkoutExporter.ExportWorkoutToFIT(currentWorkout, file);
                             }
@@ -227,7 +227,7 @@ namespace GarminFitnessPlugin.View
 
             if (!succeeded)
             {
-                if (task.Type == GarminDeviceManager.BasicTask.TaskTypes.TaskType_Initialize)
+                if (task.Type == GarminDeviceManager.BasicTask.TaskTypes.Initialize)
                 {
                     exportCancelled = true;
 
@@ -235,11 +235,11 @@ namespace GarminFitnessPlugin.View
                                     GarminFitnessView.GetLocalizedString("ErrorText"),
                                     MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
-                else if (task.Type == GarminDeviceManager.BasicTask.TaskTypes.TaskType_SetOperatingDevice)
+                else if (task.Type == GarminDeviceManager.BasicTask.TaskTypes.SetOperatingDevice)
                 {
                     exportCancelled = true;
                 }
-                else if (task.Type == GarminDeviceManager.BasicTask.TaskTypes.TaskType_ExportWorkout)
+                else if (task.Type == GarminDeviceManager.BasicTask.TaskTypes.ExportWorkout)
                 {
                     GarminDeviceManager.ExportWorkoutTask concreteTask = (GarminDeviceManager.ExportWorkoutTask)task;
 

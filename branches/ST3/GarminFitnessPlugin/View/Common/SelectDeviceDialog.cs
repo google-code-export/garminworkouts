@@ -91,7 +91,7 @@ namespace GarminFitnessPlugin.View
 
         private void OnManagerTaskCompleted(GarminDeviceManager manager, GarminDeviceManager.BasicTask task, bool succeeded, String errorText)
         {
-            if (task.Type == GarminDeviceManager.BasicTask.TaskTypes.TaskType_RefreshDevices)
+            if (task.Type == GarminDeviceManager.BasicTask.TaskTypes.RefreshDevices)
             {
                 OKButton.Enabled = true;
                 Cancel_Button.Enabled = true;

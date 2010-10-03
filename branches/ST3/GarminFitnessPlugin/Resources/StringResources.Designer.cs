@@ -61,6 +61,15 @@ namespace GarminFitnessPlugin.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Active.
+        /// </summary>
+        internal static string ActiveText {
+            get {
+                return ResourceManager.GetString("ActiveText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Add to logbook.
         /// </summary>
         internal static string AddDailyViewCheckBoxText {
@@ -291,6 +300,15 @@ namespace GarminFitnessPlugin.Resources {
         internal static string ContinueLabelText {
             get {
                 return ResourceManager.GetString("ContinueLabelText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Cooldown.
+        /// </summary>
+        internal static string CooldownText {
+            get {
+                return ResourceManager.GetString("CooldownText", resourceCulture);
             }
         }
         
@@ -1758,6 +1776,15 @@ namespace GarminFitnessPlugin.Resources {
         internal static string ValueValidationTitleText {
             get {
                 return ResourceManager.GetString("ValueValidationTitleText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Warmup.
+        /// </summary>
+        internal static string WarmupText {
+            get {
+                return ResourceManager.GetString("WarmupText", resourceCulture);
             }
         }
         

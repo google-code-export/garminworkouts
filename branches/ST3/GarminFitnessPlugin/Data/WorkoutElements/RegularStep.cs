@@ -13,6 +13,15 @@ namespace GarminFitnessPlugin.Data
 {
     class RegularStep : IStep
     {
+        public enum StepIntensity
+        {
+            Active = 0,
+            Rest,
+            Warmup,
+            Cooldown,
+            IntensityCount
+        };
+
         public RegularStep(Workout parent)
             : base(StepType.Regular, parent)
         {
@@ -57,12 +66,13 @@ namespace GarminFitnessPlugin.Data
 
         public override void Serialize(Stream stream)
         {
+            GarminFitnessByteRange intensity = new GarminFitnessByteRange((Byte)m_Intensity);
             base.Serialize(stream);
 
             m_Name.Serialize(stream);
-            m_IsRestingStep.Serialize(stream);
             Duration.Serialize(stream);
             Target.Serialize(stream);
+            intensity.Serialize(stream);
         }
 
         public override void FillFITStepMessage(FITMessage message)
@@ -79,14 +89,7 @@ namespace GarminFitnessPlugin.Data
             Duration.FillFITStepMessage(message);
             Target.FillFITStepMessage(message);
 
-            if (IsRestingStep)
-            {
-                intensity.SetEnum((Byte)FITWorkoutStepIntensity.Rest);
-            }
-            else
-            {
-                intensity.SetEnum((Byte)FITWorkoutStepIntensity.Active);
-            }
+            intensity.SetEnum((Byte)Intensity);
             message.AddField(intensity);
         }
 
@@ -102,8 +105,7 @@ namespace GarminFitnessPlugin.Data
 
             if (intensityField != null)
             {
-                IsRestingStep = (FITWorkoutStepIntensity)intensityField.GetEnum() == FITWorkoutStepIntensity.Rest ||
-                                (FITWorkoutStepIntensity)intensityField.GetEnum() == FITWorkoutStepIntensity.Cooldown;
+                Intensity = (StepIntensity)intensityField.GetEnum();
             }
 
             Duration = DurationFactory.Create(stepMessage, this);
@@ -112,13 +114,23 @@ namespace GarminFitnessPlugin.Data
 
         public new void Deserialize_V0(Stream stream, DataVersion version)
         {
+            GarminFitnessBool isRestingStep = new GarminFitnessBool(false);
             // Call base deserialization
             Deserialize(typeof(IStep), stream, version);
 
             byte[] intBuffer = new byte[sizeof(Int32)];
 
             m_Name.Deserialize(stream, version);
-            m_IsRestingStep.Deserialize(stream, version);
+            isRestingStep.Deserialize(stream, version);
+
+            if (isRestingStep)
+            {
+                m_Intensity = StepIntensity.Rest;
+            }
+            else
+            {
+                m_Intensity = StepIntensity.Active;
+            }
 
             // Duration
             stream.Read(intBuffer, 0, sizeof(Int32));
@@ -145,6 +157,47 @@ namespace GarminFitnessPlugin.Data
             }
 
             TargetFactory.Create((ITarget.TargetType)type, stream, version, this);
+        }
+
+        public void Deserialize_V17(Stream stream, DataVersion version)
+        {
+            GarminFitnessByteRange intensity = new GarminFitnessByteRange(0);
+
+            // Call base deserialization
+            Deserialize(typeof(IStep), stream, version);
+
+            byte[] intBuffer = new byte[sizeof(Int32)];
+
+            m_Name.Deserialize(stream, version);
+
+            // Duration
+            stream.Read(intBuffer, 0, sizeof(Int32));
+            DurationFactory.Create((IDuration.DurationType)BitConverter.ToInt32(intBuffer, 0), stream, version, this);
+
+            // Target
+            stream.Read(intBuffer, 0, sizeof(Int32));
+            Int32 type = BitConverter.ToInt32(intBuffer, 0);
+
+            // This sucks but I changed the order of the enum between version 0 and 1,
+            //  so make sure the version is right
+            if (version.VersionNumber == 0)
+            {
+                if (type == 3)
+                {
+                    // Null was #3, now #0
+                    type = 0;
+                }
+                else
+                {
+                    // Everything else is pushed up 1 position
+                    ++type;
+                }
+            }
+
+            TargetFactory.Create((ITarget.TargetType)type, stream, version, this);
+
+            intensity.Deserialize(stream, Constants.CurrentVersion);
+            m_Intensity = (StepIntensity)(Byte)intensity;
         }
 
         public override void Serialize(XmlNode parentNode, String nodeName, XmlDocument document)
@@ -185,7 +238,9 @@ namespace GarminFitnessPlugin.Data
             Duration.Serialize(parentNode.LastChild, "Duration", document);
 
             // Intensity
-            m_IsRestingStep.Serialize(parentNode.LastChild, "Intensity", document);
+            GarminFitnessBool isRestingStep = new GarminFitnessBool(Intensity == StepIntensity.Rest ||
+                                                                    Intensity == StepIntensity.Cooldown);
+            isRestingStep.Serialize(parentNode.LastChild, "Intensity", document);
 
             // Target
             Target.Serialize(parentNode.LastChild, "Target", document);
@@ -251,7 +306,18 @@ namespace GarminFitnessPlugin.Data
                 }
                 else if (child.Name == "Intensity")
                 {
-                    m_IsRestingStep.Deserialize(child);
+                    GarminFitnessBool isRestingStep = new GarminFitnessBool(false);
+                    isRestingStep.Deserialize(child);
+
+                    if (isRestingStep)
+                    {
+                        Intensity = StepIntensity.Rest;
+                    }
+                    else
+                    {
+                        Intensity = StepIntensity.Active;
+                    }
+
                     intensityLoaded = true;
                 }
             }
@@ -267,7 +333,9 @@ namespace GarminFitnessPlugin.Data
             GarXFaceNet._Workout._Step step = workout.GetStep(stepIndex);
 
             step.SetCustomName(Name);
-            step.SetIntensity(this.IsRestingStep ? GarXFaceNet._Workout._Step.IntensityTypes.Rest : GarXFaceNet._Workout._Step.IntensityTypes.Active);
+            step.SetIntensity((Intensity == StepIntensity.Rest || Intensity == StepIntensity.Cooldown) ?
+                                GarXFaceNet._Workout._Step.IntensityTypes.Rest :
+                                GarXFaceNet._Workout._Step.IntensityTypes.Active);
 
             Duration.Serialize(step);
             Target.Serialize(step);
@@ -280,7 +348,15 @@ namespace GarminFitnessPlugin.Data
             GarXFaceNet._Workout._Step step = workout.GetStep(stepIndex);
 
             Name = step.GetCustomName();
-            IsRestingStep = step.GetIntensity() == GarXFaceNet._Workout._Step.IntensityTypes.Rest;
+
+            if (step.GetIntensity() == GarXFaceNet._Workout._Step.IntensityTypes.Rest)
+            {
+                Intensity = StepIntensity.Rest;
+            }
+            else
+            {
+                Intensity = StepIntensity.Active;
+            }
 
             Duration.Deserialize(step);
 
@@ -469,16 +545,16 @@ namespace GarminFitnessPlugin.Data
             set { Debug.Assert(false); }
         }
 
-        public bool IsRestingStep
+        public StepIntensity Intensity
         {
-            get { return m_IsRestingStep; }
+            get { return m_Intensity; }
             set
             {
-                if (m_IsRestingStep != value)
+                if (m_Intensity != value)
                 {
-                    m_IsRestingStep.Value = value;
-                    
-                    TriggerStepChanged( new PropertyChangedEventArgs("IsRestingStep"));
+                    m_Intensity = value;
+
+                    TriggerStepChanged(new PropertyChangedEventArgs("Intensity"));
                 }
             }
         }
@@ -495,6 +571,6 @@ namespace GarminFitnessPlugin.Data
         private IDuration m_Duration;
         private ITarget m_Target;
         private GarminFitnessString m_Name = new GarminFitnessString(String.Empty, Constants.MaxNameLength);
-        private GarminFitnessBool m_IsRestingStep = new GarminFitnessBool(false, Constants.StepIntensityZoneTCXString[1], Constants.StepIntensityZoneTCXString[0]);
+        private StepIntensity m_Intensity = StepIntensity.Active;
     }
 }
