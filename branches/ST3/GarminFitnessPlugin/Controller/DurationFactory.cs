@@ -45,6 +45,16 @@ namespace GarminFitnessPlugin.Controller
                         newDuration = new CaloriesDuration(parent);
                         break;
                     }
+                case IDuration.DurationType.PowerAbove:
+                    {
+                        newDuration = new PowerAboveDuration(parent);
+                        break;
+                    }
+                case IDuration.DurationType.PowerBelow:
+                    {
+                        newDuration = new PowerBelowDuration(parent);
+                        break;
+                    }
                 default:
                     {
                         Debug.Assert(false);

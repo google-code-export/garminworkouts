@@ -238,8 +238,10 @@ namespace GarminFitnessPlugin.Data
             Duration.Serialize(parentNode.LastChild, "Duration", document);
 
             // Intensity
-            GarminFitnessBool isRestingStep = new GarminFitnessBool(Intensity == StepIntensity.Rest ||
-                                                                    Intensity == StepIntensity.Cooldown);
+            GarminFitnessBool isRestingStep = new GarminFitnessBool(Intensity == StepIntensity.Active ||
+                                                                    Intensity == StepIntensity.Warmup,
+                                                                    Constants.StepIntensityZoneTCXString[0],
+                                                                    Constants.StepIntensityZoneTCXString[1]);
             isRestingStep.Serialize(parentNode.LastChild, "Intensity", document);
 
             // Target

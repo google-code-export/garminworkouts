@@ -41,7 +41,9 @@ namespace GarminFitnessPlugin.View
                 TimeDurationPanel,
                 HeartRateDurationPanel,
                 HeartRateDurationPanel,
-                CaloriesDurationPanel
+                CaloriesDurationPanel,
+                PowerDurationPanel,
+                PowerDurationPanel
             };
 
             SettingsButton.CenterImage = CommonResources.Images.Settings16;
@@ -172,6 +174,7 @@ namespace GarminFitnessPlugin.View
             if (SelectedWorkout != null && SelectedWorkout.ConcreteWorkout == modifiedWorkout.ConcreteWorkout)
             {
                 // Refresh the steps list so it updates the name/description
+                WorkoutsList.Invalidate();
                 StepsList.Invalidate();
 
                 // When a property changes in a workout's step, this callback executes
@@ -596,6 +599,119 @@ namespace GarminFitnessPlugin.View
             }
         }
 
+        private void PowerDurationReferenceComboBox_SelectionChangedCommited(object sender, EventArgs e)
+        {
+            Debug.Assert(SelectedStep != null && SelectedStep.Type == IStep.StepType.Regular);
+            RegularStep concreteStep = (RegularStep)SelectedStep;
+            Debug.Assert(concreteStep.Duration != null);
+            bool isPercentFTP = PowerDurationReferenceComboBox.SelectedIndex == 1;
+
+            if (concreteStep.Duration.Type == IDuration.DurationType.PowerAbove)
+            {
+                PowerAboveDuration concreteDuration = (PowerAboveDuration)concreteStep.Duration;
+
+                if (isPercentFTP && concreteDuration.MaxPower > Constants.MaxPowerInPercentFTP)
+                {
+                    concreteDuration.MaxPower = Constants.MaxPowerInPercentFTP;
+                }
+                else if (!isPercentFTP && concreteDuration.MaxPower < Constants.MinPowerInWatts)
+                {
+                    concreteDuration.MaxPower = Constants.MinPowerInWatts;
+                }
+
+                concreteDuration.IsPercentFTP = isPercentFTP;
+            }
+            else if (concreteStep.Duration.Type == IDuration.DurationType.PowerBelow)
+            {
+                PowerBelowDuration concreteDuration = (PowerBelowDuration)concreteStep.Duration;
+
+                if (isPercentFTP && concreteDuration.MinPower > Constants.MaxPowerInPercentFTP)
+                {
+                    concreteDuration.MinPower = Constants.MaxPowerInPercentFTP;
+                }
+                else if (!isPercentFTP && concreteDuration.MinPower < Constants.MinPowerInWatts)
+                {
+                    concreteDuration.MinPower = Constants.MinPowerInWatts;
+                }
+
+                concreteDuration.IsPercentFTP = isPercentFTP;
+            }
+            else
+            {
+                Debug.Assert(false);
+            }
+        }
+
+        private void PowerDurationText_Validating(object sender, CancelEventArgs e)
+        {
+            Debug.Assert(SelectedStep != null && SelectedStep.Type == IStep.StepType.Regular);
+            RegularStep concreteStep = (RegularStep)SelectedStep;
+            Debug.Assert(concreteStep.Duration != null && (concreteStep.Duration.Type == IDuration.DurationType.PowerAbove || concreteStep.Duration.Type == IDuration.DurationType.PowerBelow));
+            bool isPercentFTP;
+            UInt16 oldValue, minRange, maxRange;
+
+            if (concreteStep.Duration.Type == IDuration.DurationType.PowerAbove)
+            {
+                PowerAboveDuration concreteDuration = (PowerAboveDuration)concreteStep.Duration;
+
+                isPercentFTP = concreteDuration.IsPercentFTP;
+                oldValue = concreteDuration.MaxPower;
+            }
+            else
+            {
+                PowerBelowDuration concreteDuration = (PowerBelowDuration)concreteStep.Duration;
+
+                isPercentFTP = concreteDuration.IsPercentFTP;
+                oldValue = concreteDuration.MinPower;
+            }
+
+            if (isPercentFTP)
+            {
+                minRange = Constants.MinPowerInPercentFTP;
+                maxRange = Constants.MaxPowerInPercentFTP;
+            }
+            else
+            {
+                minRange = Constants.MinPowerInPercentFTP;
+                maxRange = Constants.MaxPowerInPercentFTP;
+            }
+
+            e.Cancel = !Utils.IsTextIntegerInRange(PowerDurationText.Text, minRange, maxRange);
+            if (e.Cancel)
+            {
+                MessageBox.Show(String.Format(GarminFitnessView.GetLocalizedString("IntegerRangeValidationText"), minRange, maxRange),
+                                GarminFitnessView.GetLocalizedString("ValueValidationTitleText"), MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                System.Media.SystemSounds.Asterisk.Play();
+
+                // Reset old valid value
+                PowerDurationText.Text = oldValue.ToString();
+            }
+        }
+
+        private void PowerDurationText_Validated(object sender, EventArgs e)
+        {
+            Debug.Assert(SelectedStep != null && SelectedStep.Type == IStep.StepType.Regular);
+            RegularStep concreteStep = (RegularStep)SelectedStep;
+            Debug.Assert(concreteStep.Duration != null && (concreteStep.Duration.Type == IDuration.DurationType.PowerAbove || concreteStep.Duration.Type == IDuration.DurationType.PowerBelow));
+
+            if (concreteStep.Duration.Type == IDuration.DurationType.PowerAbove)
+            {
+                PowerAboveDuration concreteDuration = (PowerAboveDuration)concreteStep.Duration;
+
+                concreteDuration.MaxPower = UInt16.Parse(PowerDurationText.Text);
+            }
+            else if (concreteStep.Duration.Type == IDuration.DurationType.PowerBelow)
+            {
+                PowerBelowDuration concreteDuration = (PowerBelowDuration)concreteStep.Duration;
+
+                concreteDuration.MinPower = UInt16.Parse(PowerDurationText.Text);
+            }
+            else
+            {
+                Debug.Assert(false);
+            }
+        }
+
         private void DistanceDurationText_Validating(object sender, CancelEventArgs e)
         {
             Debug.Assert(SelectedStep != null && SelectedStep.Type == IStep.StepType.Regular);
@@ -815,7 +931,7 @@ namespace GarminFitnessPlugin.View
                                 PowerRangeTarget concreteTarget = (PowerRangeTarget)baseTarget.ConcreteTarget;
 
                                 oldValue = concreteTarget.MinPower.ToString();
-                                intMin = Constants.MinPower;
+                                intMin = Constants.MinPowerInWatts;
                                 intMax = Constants.MaxPowerWorkout;
                                 inputType = RangeValidationInputType.Integer;
 
@@ -984,7 +1100,7 @@ namespace GarminFitnessPlugin.View
                             }
                             else
                             {
-                                concreteTarget.SetValues(newValue, newValue);
+                                concreteTarget.SetValues(newValue, newValue, concreteTarget.IsPercentFTP);
                                 forceSelectHighTargetText = true;
                             }
                             break;
@@ -1107,7 +1223,7 @@ namespace GarminFitnessPlugin.View
                                 PowerRangeTarget concreteTarget = (PowerRangeTarget)baseTarget.ConcreteTarget;
 
                                 oldValue = concreteTarget.MaxPower.ToString();
-                                intMin = Constants.MinPower;
+                                intMin = Constants.MinPowerInWatts;
                                 intMax = Constants.MaxPowerWorkout;
                                 inputType = RangeValidationInputType.Integer;
 
@@ -1276,7 +1392,7 @@ namespace GarminFitnessPlugin.View
                             }
                             else
                             {
-                                concreteTarget.SetValues(newValue, newValue);
+                                concreteTarget.SetValues(newValue, newValue, concreteTarget.IsPercentFTP);
                                 forceSelectLowTargetText = true;
                             }
                             break;
@@ -1401,6 +1517,39 @@ namespace GarminFitnessPlugin.View
             }
 
             concreteTarget.SetValues(newMin, newMax, isPercentMax);
+        }
+        
+        private void PowerRangeReferenceComboBox_SelectionChangedCommited(object sender, EventArgs e)
+        {
+            Debug.Assert(SelectedStep != null && SelectedStep.Type == IStep.StepType.Regular);
+            RegularStep concreteStep = (RegularStep)SelectedStep;
+            Debug.Assert(concreteStep.Target != null && concreteStep.Target.Type == ITarget.TargetType.Power);
+            BasePowerTarget baseTarget = (BasePowerTarget)concreteStep.Target;
+            Debug.Assert(baseTarget.ConcreteTarget != null && baseTarget.ConcreteTarget.Type == BasePowerTarget.IConcretePowerTarget.PowerTargetType.Range);
+            PowerRangeTarget concreteTarget = (PowerRangeTarget)baseTarget.ConcreteTarget;
+            bool isPercentFTP = PowerRangeReferenceComboBox.SelectedIndex == 1;
+            UInt16 newMin = concreteTarget.MinPower;
+            UInt16 newMax = concreteTarget.MaxPower;
+
+            if (isPercentFTP && newMin > Constants.MaxPowerInPercentFTP)
+            {
+                newMin = Constants.MaxPowerInPercentFTP;
+            }
+            else if (!isPercentFTP && newMin < Constants.MinPowerInWatts)
+            {
+                newMin = Constants.MinPowerInWatts;
+            }
+
+            if (isPercentFTP && newMax > Constants.MaxPowerInPercentFTP)
+            {
+                newMax = Constants.MaxPowerInPercentFTP;
+            }
+            else if (!isPercentFTP && newMax < Constants.MinPowerInWatts)
+            {
+                newMax = Constants.MinPowerInWatts;
+            }
+
+            concreteTarget.SetValues(newMin, newMax, isPercentFTP);
         }
 
         private void WorkoutsList_KeyDown(object sender, KeyEventArgs e)
@@ -2033,6 +2182,7 @@ namespace GarminFitnessPlugin.View
             CaloriesDurationLabel.Text = GarminFitnessView.GetLocalizedString("CaloriesDurationLabelText");
             DistanceDurationLabel.Text = GarminFitnessView.GetLocalizedString("DistanceDurationLabelText");
             HeartRateDurationLabel.Text = GarminFitnessView.GetLocalizedString("HeartRateDurationLabelText");
+            PowerDurationLabel.Text = GarminFitnessView.GetLocalizedString("PowerDurationLabelText");
             TimeDurationLabel.Text = GarminFitnessView.GetLocalizedString("TimeDurationLabelText");
             ZoneLabel.Text = GarminFitnessView.GetLocalizedString("WhichZoneText");
             LowRangeTargetLabel.Text = GarminFitnessView.GetLocalizedString("BetweenText");
@@ -2058,16 +2208,25 @@ namespace GarminFitnessPlugin.View
                 }
             }
 
-
             // Update duration heart rate reference combo box text
             HeartRateDurationReferenceComboBox.Items.Clear();
             HeartRateDurationReferenceComboBox.Items.Add(CommonResources.Text.LabelBPM);
             HeartRateDurationReferenceComboBox.Items.Add(CommonResources.Text.LabelPercentOfMax);
 
+            // Update duration heart rate reference combo box text
+            PowerDurationReferenceComboBox.Items.Clear();
+            PowerDurationReferenceComboBox.Items.Add(CommonResources.Text.LabelWatts);
+            PowerDurationReferenceComboBox.Items.Add(GarminFitnessView.GetLocalizedString("PercentFTPText"));
+
             // Update target heart rate reference combo box text
             HRRangeReferenceComboBox.Items.Clear();
             HRRangeReferenceComboBox.Items.Add(CommonResources.Text.LabelBPM);
             HRRangeReferenceComboBox.Items.Add(CommonResources.Text.LabelPercentOfMax);
+
+            // Update target power reference combo box text
+            PowerRangeReferenceComboBox.Items.Clear();
+            PowerRangeReferenceComboBox.Items.Add(CommonResources.Text.LabelWatts);
+            PowerRangeReferenceComboBox.Items.Add(GarminFitnessView.GetLocalizedString("PercentFTPText"));
 
             // Update duration combo box
             int currentSelection = DurationComboBox.SelectedIndex;
@@ -2144,6 +2303,7 @@ namespace GarminFitnessPlugin.View
 
                         RangeTargetUnitsLabel.Visible = true;
                         HRRangeReferenceComboBox.Visible = false;
+                        PowerRangeReferenceComboBox.Visible = false;
 
                         BuildSpeedComboBox(baseTarget);
                         SetRangeTargetControlsVisibility(baseTarget.ConcreteTarget.Type == BaseSpeedTarget.IConcreteSpeedTarget.SpeedTargetType.Range);
@@ -2155,6 +2315,7 @@ namespace GarminFitnessPlugin.View
 
                         RangeTargetUnitsLabel.Visible = true;
                         HRRangeReferenceComboBox.Visible = false;
+                        PowerRangeReferenceComboBox.Visible = false;
 
                         BuildCadenceComboBox(baseTarget);
                         SetRangeTargetControlsVisibility(baseTarget.ConcreteTarget.Type == BaseCadenceTarget.IConcreteCadenceTarget.CadenceTargetType.Range);
@@ -2164,24 +2325,24 @@ namespace GarminFitnessPlugin.View
                     {
                         BaseHeartRateTarget baseTarget = (BaseHeartRateTarget)target;
 
-                        RangeTargetUnitsLabel.Visible = false;
-                        HRRangeReferenceComboBox.Visible = true;
-
                         BuildHRComboBox(baseTarget);
                         SetRangeTargetControlsVisibility(baseTarget.ConcreteTarget.Type == BaseHeartRateTarget.IConcreteHeartRateTarget.HeartRateTargetType.Range);
-                        HRRangeReferenceComboBox.Visible = baseTarget.ConcreteTarget.Type == BaseHeartRateTarget.IConcreteHeartRateTarget.HeartRateTargetType.Range;
+
                         RangeTargetUnitsLabel.Visible = false;
+                        HRRangeReferenceComboBox.Visible = baseTarget.ConcreteTarget.Type == BaseHeartRateTarget.IConcreteHeartRateTarget.HeartRateTargetType.Range;
+                        PowerRangeReferenceComboBox.Visible = false;
                         break;
                     }
                 case ITarget.TargetType.Power:
                     {
                         BasePowerTarget baseTarget = (BasePowerTarget)target;
 
-                        RangeTargetUnitsLabel.Visible = true;
-                        HRRangeReferenceComboBox.Visible = false;
-
                         BuildPowerComboBox(baseTarget);
                         SetRangeTargetControlsVisibility(baseTarget.ConcreteTarget.Type == BasePowerTarget.IConcretePowerTarget.PowerTargetType.Range);
+
+                        RangeTargetUnitsLabel.Visible = false;
+                        HRRangeReferenceComboBox.Visible = false;
+                        PowerRangeReferenceComboBox.Visible = baseTarget.ConcreteTarget.Type == BasePowerTarget.IConcretePowerTarget.PowerTargetType.Range;
                         break;
                     }
                 default:
@@ -2405,6 +2566,20 @@ namespace GarminFitnessPlugin.View
                         CaloriesDurationText.Text = concreteDuration.CaloriesToSpend.ToString();
                         break;
                     }
+                case IDuration.DurationType.PowerAbove:
+                    {
+                        PowerAboveDuration concreteDuration = (PowerAboveDuration)concreteStep.Duration;
+                        PowerDurationText.Text = concreteDuration.MaxPower.ToString();
+                        PowerDurationReferenceComboBox.SelectedIndex = concreteDuration.IsPercentFTP ? 1 : 0;
+                        break;
+                    }
+                case IDuration.DurationType.PowerBelow:
+                    {
+                        PowerBelowDuration concreteDuration = (PowerBelowDuration)concreteStep.Duration;
+                        PowerDurationText.Text = concreteDuration.MinPower.ToString();
+                        PowerDurationReferenceComboBox.SelectedIndex = concreteDuration.IsPercentFTP ? 1 : 0;
+                        break;
+                    }
                 default:
                     {
                         Debug.Assert(false);
@@ -2537,8 +2712,6 @@ namespace GarminFitnessPlugin.View
                     }
                 case ITarget.TargetType.Power:
                     {
-                        HRRangeReferenceComboBox.Visible = false;
-
                         BasePowerTarget baseTarget = (BasePowerTarget)target;
 
                         BuildPowerComboBox(baseTarget);
@@ -2561,10 +2734,10 @@ namespace GarminFitnessPlugin.View
                                 {
                                     PowerRangeTarget concreteTarget = (PowerRangeTarget)baseTarget.ConcreteTarget;
 
-                                    RangeTargetUnitsLabel.Text = CommonResources.Text.LabelWatts;
                                     ZoneComboBox.SelectedIndex = 0;
                                     LowRangeTargetText.Text = concreteTarget.MinPower.ToString();
                                     HighRangeTargetText.Text = concreteTarget.MaxPower.ToString();
+                                    PowerRangeReferenceComboBox.SelectedIndex = concreteTarget.IsPercentFTP ? 1 : 0;
                                     break;
                                 }
                         }

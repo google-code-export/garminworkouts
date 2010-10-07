@@ -18,6 +18,10 @@ namespace GarminFitnessPlugin.View
                 {
                     return global::GarminFitnessPlugin.Resources.Resources.DirtyWarning;
                 }
+                else if (((IStep)wrapper.Element).ContainsFITOnlyFeatures)
+                {
+                    return global::GarminFitnessPlugin.Resources.Resources.FITLogo;
+                }
             }
 
             return base.GetImage(element, column);

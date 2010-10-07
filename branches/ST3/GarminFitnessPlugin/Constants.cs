@@ -57,9 +57,11 @@ namespace GarminFitnessPlugin
         public static readonly double MaxPaceMetric = Utils.TimeToFloat("37:16");
 
         // Power limits
-        public static readonly UInt16 MinPower = 20;
+        public static readonly UInt16 MinPowerInWatts = 20;
         public static readonly UInt16 MaxPowerWorkout = 999;
         public static readonly UInt16 MaxPowerProfile = 3999;
+        public static readonly Byte MinPowerInPercentFTP = 0;
+        public static readonly Byte MaxPowerInPercentFTP = 199;
 
         // Repeat limits
         public static readonly Byte MinRepeats = 2;
@@ -133,6 +135,11 @@ namespace GarminFitnessPlugin
                 "CustomSpeedZone_t",
                 "PredefinedSpeedZone_t"
             };
+        public static readonly string[] PowerReferenceTCXString =
+            {
+                "PowerInWatts_t",
+                "PowerAsPercentOfFTP_t"
+            };
         public static readonly string[] StepIntensityZoneTCXString =
             {
                 "Active",
@@ -185,7 +192,7 @@ namespace GarminFitnessPlugin
         public static readonly string Forerunner405UnitDescription = "FR405";
         public static readonly string Forerunner310XTUnitDescription = "310XT";
 
-        public static readonly DataVersion CurrentVersion = new DataVersion(17);
+        public static readonly DataVersion CurrentVersion = new DataVersion(18);
         public static readonly String DataHeaderIdString = "Garmin Workouts Plugin made by S->G";
    }
 }

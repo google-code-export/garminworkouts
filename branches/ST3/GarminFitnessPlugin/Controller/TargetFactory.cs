@@ -247,10 +247,18 @@ namespace GarminFitnessPlugin.Controller
                                     {
                                         PowerRangeTarget concreteTarget = new PowerRangeTarget(powerTarget);
 
-                                        Debug.Assert(targetCustomLowField.GetUInt32() > 1000);
-
-                                        concreteTarget.SetValues((UInt16)(targetCustomLowField.GetUInt32() - 1000),
-                                                                 (UInt16)(targetCustomHighField.GetUInt32() - 1000));
+                                        if (targetCustomLowField.GetUInt32() > 1000)
+                                        {
+                                            concreteTarget.SetValues((UInt16)(targetCustomLowField.GetUInt32() - 1000),
+                                                                     (UInt16)(targetCustomHighField.GetUInt32() - 1000),
+                                                                     false);
+                                        }
+                                        else
+                                        {
+                                            concreteTarget.SetValues((UInt16)(targetCustomLowField.GetUInt32()),
+                                                                     (UInt16)(targetCustomHighField.GetUInt32()),
+                                                                     true);
+                                        }
                                         powerTarget.ConcreteTarget = concreteTarget;
                                     }
                                     else

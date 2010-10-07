@@ -799,7 +799,7 @@ namespace GarminFitnessPlugin.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Go until me heart rate gets above {0} {1}..
+        ///   Looks up a localized string similar to Go until my heart rate gets above {0} {1}..
         /// </summary>
         internal static string HeartRateAboveDurationDescriptionText {
             get {
@@ -817,7 +817,7 @@ namespace GarminFitnessPlugin.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Go until me heart rate gets below {0} {1}..
+        ///   Looks up a localized string similar to Go until my heart rate gets below {0} {1}..
         /// </summary>
         internal static string HeartRateBelowDurationDescriptionText {
             get {
@@ -1240,6 +1240,15 @@ namespace GarminFitnessPlugin.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to %FTP.
+        /// </summary>
+        internal static string PercentFTPText {
+            get {
+                return ResourceManager.GetString("PercentFTPText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to /h.
         /// </summary>
         internal static string PerHourText {
@@ -1249,7 +1258,52 @@ namespace GarminFitnessPlugin.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Try to keep my power between {0} and {1} watts..
+        ///   Looks up a localized string similar to When my power gets above a certain level.
+        /// </summary>
+        internal static string PowerAboveDurationComboBoxText {
+            get {
+                return ResourceManager.GetString("PowerAboveDurationComboBoxText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Go until my power gets above {0} {1}..
+        /// </summary>
+        internal static string PowerAboveDurationDescriptionText {
+            get {
+                return ResourceManager.GetString("PowerAboveDurationDescriptionText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to When my power gets below a certain level.
+        /// </summary>
+        internal static string PowerBelowDurationComboBoxText {
+            get {
+                return ResourceManager.GetString("PowerBelowDurationComboBoxText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Go until my power gets below {0} {1}..
+        /// </summary>
+        internal static string PowerBelowDurationDescriptionText {
+            get {
+                return ResourceManager.GetString("PowerBelowDurationDescriptionText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to What power level?.
+        /// </summary>
+        internal static string PowerDurationLabelText {
+            get {
+                return ResourceManager.GetString("PowerDurationLabelText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Try to keep my power between {0} and {1} {2}..
         /// </summary>
         internal static string PowerRangeTargetDescriptionText {
             get {

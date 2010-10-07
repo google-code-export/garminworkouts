@@ -337,13 +337,13 @@
     <value>When my heart rate gets above a certain level</value>
   </data>
   <data name="HeartRateAboveDurationDescriptionText" xml:space="preserve">
-    <value>Go until me heart rate gets above {0} {1}.</value>
+    <value>Go until my heart rate gets above {0} {1}.</value>
   </data>
   <data name="HeartRateBelowDurationComboBoxText" xml:space="preserve">
     <value>When my heart rate gets below a certain level</value>
   </data>
   <data name="HeartRateBelowDurationDescriptionText" xml:space="preserve">
-    <value>Go until me heart rate gets below {0} {1}.</value>
+    <value>Go until my heart rate gets below {0} {1}.</value>
   </data>
   <data name="HeartRateDurationLabelText" xml:space="preserve">
     <value>What heart rate level?</value>
@@ -469,7 +469,7 @@
     <value>/h</value>
   </data>
   <data name="PowerRangeTargetDescriptionText" xml:space="preserve">
-    <value>Try to keep my power between {0} and {1} watts.</value>
+    <value>Try to keep my power between {0} and {1} {2}.</value>
   </data>
   <data name="PowerSettingsGroupBoxText" xml:space="preserve">
     <value>Power Settings</value>
@@ -725,5 +725,23 @@
   </data>
   <data name="ActiveText" xml:space="preserve">
     <value>Active</value>
+  </data>
+  <data name="PowerAboveDurationComboBoxText" xml:space="preserve">
+    <value>When my power gets above a certain level</value>
+  </data>
+  <data name="PowerAboveDurationDescriptionText" xml:space="preserve">
+    <value>Go until my power gets above {0} {1}.</value>
+  </data>
+  <data name="PowerBelowDurationComboBoxText" xml:space="preserve">
+    <value>When my power gets below a certain level</value>
+  </data>
+  <data name="PowerBelowDurationDescriptionText" xml:space="preserve">
+    <value>Go until my power gets below {0} {1}.</value>
+  </data>
+  <data name="PercentFTPText" xml:space="preserve">
+    <value>%FTP</value>
+  </data>
+  <data name="PowerDurationLabelText" xml:space="preserve">
+    <value>What power level?</value>
   </data>
 </root>

@@ -484,7 +484,7 @@
     <value>/t</value>
   </data>
   <data name="PowerRangeTargetDescriptionText" xml:space="preserve">
-    <value>Forsøk å holde effekten mellom {0} and {1} watt.</value>
+    <value>Forsøk å holde effekten mellom {0} and {1} {2}.</value>
   </data>
   <data name="PowerSettingsGroupBoxText" xml:space="preserve">
     <value>Effektinnstillinger</value>

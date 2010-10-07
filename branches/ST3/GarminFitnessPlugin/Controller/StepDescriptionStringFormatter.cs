@@ -132,6 +132,40 @@ namespace GarminFitnessPlugin.Controller
                         result = String.Format(baseString, concreteDuration.CaloriesToSpend);
                         break;
                     }
+                case IDuration.DurationType.PowerAbove:
+                    {
+                        PowerAboveDuration concreteDuration = (PowerAboveDuration)duration;
+                        string unitsString;
+
+                        if (concreteDuration.IsPercentFTP)
+                        {
+                            unitsString = GarminFitnessView.GetLocalizedString("PercentFTPText");
+                        }
+                        else
+                        {
+                            unitsString = CommonResources.Text.LabelWatts;
+                        }
+
+                        result = String.Format(baseString, concreteDuration.MaxPower, unitsString);
+                        break;
+                    }
+                case IDuration.DurationType.PowerBelow:
+                    {
+                        PowerBelowDuration concreteDuration = (PowerBelowDuration)duration;
+                        string unitsString;
+
+                        if (concreteDuration.IsPercentFTP)
+                        {
+                            unitsString = GarminFitnessView.GetLocalizedString("PercentFTPText");
+                        }
+                        else
+                        {
+                            unitsString = CommonResources.Text.LabelWatts;
+                        }
+
+                        result = String.Format(baseString, concreteDuration.MinPower, unitsString);
+                        break;
+                    }
                 default:
                     {
                         Debug.Assert(false);
@@ -367,6 +401,11 @@ namespace GarminFitnessPlugin.Controller
                     {
                         PowerRangeTarget concreteTarget = (PowerRangeTarget)target;
                         string unitsString = CommonResources.Text.LabelWatts;
+
+                        if (concreteTarget.IsPercentFTP)
+                        {
+                            unitsString = GarminFitnessView.GetLocalizedString("PercentFTPText");
+                        }
 
                         result = String.Format(baseString, concreteTarget.MinPower, concreteTarget.MaxPower, unitsString);
                         break;

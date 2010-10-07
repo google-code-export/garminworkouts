@@ -56,9 +56,9 @@ namespace GarminFitnessPlugin.Data
 
             powerZone.SetUInt32((Byte)0);
             message.AddField(powerZone);
-            minPower.SetUInt32((UInt32)Utils.Clamp(Zone.Low, Constants.MinPower, Constants.MaxPowerWorkout) + 1000);
+            minPower.SetUInt32((UInt32)Utils.Clamp(Zone.Low, Constants.MinPowerInWatts, Constants.MaxPowerWorkout) + 1000);
             message.AddField(minPower);
-            maxPower.SetUInt32((UInt32)Utils.Clamp(Zone.High, Constants.MinPower, Constants.MaxPowerWorkout) + 1000);
+            maxPower.SetUInt32((UInt32)Utils.Clamp(Zone.High, Constants.MinPowerInWatts, Constants.MaxPowerWorkout) + 1000);
             message.AddField(maxPower);
         }
 
@@ -140,7 +140,7 @@ namespace GarminFitnessPlugin.Data
             parentNode.Attributes.Append(attribute);
 
             // Low
-            GarminFitnessUInt16Range zoneLow = new GarminFitnessUInt16Range((UInt16)Utils.Clamp(Zone.Low, Constants.MinPower, Constants.MaxPowerWorkout));
+            GarminFitnessUInt16Range zoneLow = new GarminFitnessUInt16Range((UInt16)Utils.Clamp(Zone.Low, Constants.MinPowerInWatts, Constants.MaxPowerWorkout));
             childNode = document.CreateElement("Low");
             parentNode.AppendChild(childNode);
 
@@ -151,7 +151,7 @@ namespace GarminFitnessPlugin.Data
             zoneLow.Serialize(childNode, Constants.ValueTCXString, document);
 
             // High
-            GarminFitnessUInt16Range zoneHigh = new GarminFitnessUInt16Range((UInt16)Utils.Clamp(Zone.High, Constants.MinPower, Constants.MaxPowerWorkout));
+            GarminFitnessUInt16Range zoneHigh = new GarminFitnessUInt16Range((UInt16)Utils.Clamp(Zone.High, Constants.MinPowerInWatts, Constants.MaxPowerWorkout));
             childNode = document.CreateElement("High");
             parentNode.AppendChild(childNode);
 

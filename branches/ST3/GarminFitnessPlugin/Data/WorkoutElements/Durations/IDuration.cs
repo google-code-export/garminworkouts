@@ -97,6 +97,12 @@ namespace GarminFitnessPlugin.Data
             [ComboBoxStringProviderAttribute("CaloriesDurationComboBoxText")]
             [StepDescriptionStringProviderAttribute("CaloriesDurationDescriptionText")]
             Calories,
+            [ComboBoxStringProviderAttribute("PowerAboveDurationComboBoxText")]
+            [StepDescriptionStringProviderAttribute("PowerAboveDurationDescriptionText")]
+            PowerAbove,
+            [ComboBoxStringProviderAttribute("PowerBelowDurationComboBoxText")]
+            [StepDescriptionStringProviderAttribute("PowerBelowDurationDescriptionText")]
+            PowerBelow,
             DurationTypeCount
         }
 

@@ -139,6 +139,8 @@
     <Compile Include="Data\ProfileElements\GarminFitnessNamedLowHighZone.cs" />
     <Compile Include="Data\ProfileElements\GarminFitnessValueRange.cs" />
     <Compile Include="Data\ProfileElements\GarminProfile.cs" />
+    <Compile Include="Data\WorkoutElements\Durations\PowerAboveDuration.cs" />
+    <Compile Include="Data\WorkoutElements\Durations\PowerBelowDuration.cs" />
     <Compile Include="Data\WorkoutElements\IWorkout.cs" />
     <Compile Include="Data\WorkoutElements\Targets\Cadence\BaseCadenceTarget.cs" />
     <Compile Include="Data\WorkoutElements\Targets\Cadence\CadenceZoneSTTarget.cs" />
@@ -603,6 +605,8 @@ IF $(ConfigurationName)==Debug GOTO end
     <Content Include="Resources\Cut.png" />
     <Content Include="Resources\DirtyWarning.png" />
     <Content Include="Resources\Export.png" />
+    <Content Include="Resources\FITLogo.png" />
+    <None Include="Resources\FITWorkoutIcon.png" />
     <Content Include="Resources\GarminLogo.PNG" />
     <Content Include="Resources\Help.png" />
     <Content Include="Resources\Import.png" />

@@ -487,10 +487,10 @@ namespace GarminFitnessPlugin.View
 
         private void FTPTextBox_Validating(object sender, System.ComponentModel.CancelEventArgs e)
         {
-            e.Cancel = !Utils.IsTextIntegerInRange(FTPTextBox.Text, Constants.MinPower, Constants.MaxPowerProfile);
+            e.Cancel = !Utils.IsTextIntegerInRange(FTPTextBox.Text, Constants.MinPowerInWatts, Constants.MaxPowerProfile);
             if (e.Cancel)
             {
-                MessageBox.Show(String.Format(GarminFitnessView.GetLocalizedString("IntegerRangeValidationText"), Constants.MinPower, Constants.MaxPowerProfile),
+                MessageBox.Show(String.Format(GarminFitnessView.GetLocalizedString("IntegerRangeValidationText"), Constants.MinPowerInWatts, Constants.MaxPowerProfile),
                                 GarminFitnessView.GetLocalizedString("ValueValidationTitleText"),
                                 MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 System.Media.SystemSounds.Asterisk.Play();
@@ -523,10 +523,10 @@ namespace GarminFitnessPlugin.View
 
         private void LowPowerTextBox_Validating(object sender, System.ComponentModel.CancelEventArgs e)
         {
-            e.Cancel = !Utils.IsTextIntegerInRange(LowPowerTextBox.Text, Constants.MinPower, Constants.MaxPowerProfile);
+            e.Cancel = !Utils.IsTextIntegerInRange(LowPowerTextBox.Text, Constants.MinPowerInWatts, Constants.MaxPowerProfile);
             if (e.Cancel)
             {
-                MessageBox.Show(String.Format(GarminFitnessView.GetLocalizedString("IntegerRangeValidationText"), Constants.MinPower, Constants.MaxPowerProfile),
+                MessageBox.Show(String.Format(GarminFitnessView.GetLocalizedString("IntegerRangeValidationText"), Constants.MinPowerInWatts, Constants.MaxPowerProfile),
                                 GarminFitnessView.GetLocalizedString("ValueValidationTitleText"),
                                 MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 System.Media.SystemSounds.Asterisk.Play();
@@ -548,10 +548,10 @@ namespace GarminFitnessPlugin.View
 
         private void HighPowerTextBox_Validating(object sender, System.ComponentModel.CancelEventArgs e)
         {
-            e.Cancel = !Utils.IsTextIntegerInRange(HighPowerTextBox.Text, Constants.MinPower, Constants.MaxPowerProfile);
+            e.Cancel = !Utils.IsTextIntegerInRange(HighPowerTextBox.Text, Constants.MinPowerInWatts, Constants.MaxPowerProfile);
             if (e.Cancel)
             {
-                MessageBox.Show(String.Format(GarminFitnessView.GetLocalizedString("IntegerRangeValidationText"), Constants.MinPower, Constants.MaxPowerProfile),
+                MessageBox.Show(String.Format(GarminFitnessView.GetLocalizedString("IntegerRangeValidationText"), Constants.MinPowerInWatts, Constants.MaxPowerProfile),
                                 GarminFitnessView.GetLocalizedString("ValueValidationTitleText"),
                                 MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 System.Media.SystemSounds.Asterisk.Play();

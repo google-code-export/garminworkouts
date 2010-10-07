@@ -20,8 +20,8 @@ namespace GarminFitnessPlugin.Data
             UInt16 powerStep = 50;
             for (int i = 0; i < Constants.GarminPowerZoneCount; ++i)
             {
-                m_PowerZones.Add(new GarminFitnessValueRange<GarminFitnessUInt16Range>(new GarminFitnessUInt16Range(currentPower, Constants.MinPower, Constants.MaxPowerProfile),
-                                                                                       new GarminFitnessUInt16Range((UInt16)(currentPower + powerStep), Constants.MinPower, Constants.MaxPowerProfile)));
+                m_PowerZones.Add(new GarminFitnessValueRange<GarminFitnessUInt16Range>(new GarminFitnessUInt16Range(currentPower, Constants.MinPowerInWatts, Constants.MaxPowerProfile),
+                                                                                       new GarminFitnessUInt16Range((UInt16)(currentPower + powerStep), Constants.MinPowerInWatts, Constants.MaxPowerProfile)));
 
                 currentPower += powerStep;
             }
@@ -296,7 +296,7 @@ namespace GarminFitnessPlugin.Data
 
             if (m_PowerZones[index].Lower != value)
             {
-                m_PowerZones[index].Lower = new GarminFitnessUInt16Range(value, Constants.MinPower, Constants.MaxPowerProfile);
+                m_PowerZones[index].Lower = new GarminFitnessUInt16Range(value, Constants.MinPowerInWatts, Constants.MaxPowerProfile);
 
                 TriggerChangedEvent(new PropertyChangedEventArgs("PowerZoneLimit"));
             }
@@ -308,7 +308,7 @@ namespace GarminFitnessPlugin.Data
 
             if (m_PowerZones[index].Upper != value)
             {
-                m_PowerZones[index].Upper = new GarminFitnessUInt16Range(value, Constants.MinPower, Constants.MaxPowerProfile);
+                m_PowerZones[index].Upper = new GarminFitnessUInt16Range(value, Constants.MinPowerInWatts, Constants.MaxPowerProfile);
 
                 TriggerChangedEvent(new PropertyChangedEventArgs("PowerZoneLimit"));
             }
@@ -342,7 +342,7 @@ namespace GarminFitnessPlugin.Data
             }
         }
 
-        private GarminFitnessUInt16Range m_FTP = new GarminFitnessUInt16Range(300, Constants.MinPower, Constants.MaxPowerProfile);
+        private GarminFitnessUInt16Range m_FTP = new GarminFitnessUInt16Range(300, Constants.MinPowerInWatts, Constants.MaxPowerProfile);
         private List<GarminFitnessValueRange<GarminFitnessUInt16Range>> m_PowerZones = new List<GarminFitnessValueRange<GarminFitnessUInt16Range>>();
         private GarminBikeProfile[] m_Bikes = new GarminBikeProfile[3];
     }

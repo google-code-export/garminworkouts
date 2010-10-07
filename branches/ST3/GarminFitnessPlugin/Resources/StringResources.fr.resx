@@ -490,7 +490,7 @@
     <value>/h</value>
   </data>
   <data name="PowerRangeTargetDescriptionText" xml:space="preserve">
-    <value>Essayer de maintenir ma puissance entre {0} et {1} watts.</value>
+    <value>Essayer de maintenir ma puissance entre {0} et {1} {2}.</value>
   </data>
   <data name="PowerSettingsGroupBoxText" xml:space="preserve">
     <value>Paramètres de puissance</value>

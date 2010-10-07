@@ -102,6 +102,20 @@ namespace GarminFitnessPlugin.Resources {
             }
         }
         
+        internal static System.Drawing.Bitmap FITLogo {
+            get {
+                object obj = ResourceManager.GetObject("FITLogo", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        internal static System.Drawing.Bitmap FITWorkoutIcon {
+            get {
+                object obj = ResourceManager.GetObject("FITWorkoutIcon", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
         internal static System.Drawing.Bitmap GarminLogo {
             get {
                 object obj = ResourceManager.GetObject("GarminLogo", resourceCulture);
