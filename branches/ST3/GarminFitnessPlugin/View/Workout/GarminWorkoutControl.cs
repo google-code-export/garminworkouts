@@ -3450,7 +3450,7 @@ namespace GarminFitnessPlugin.View
             else if (baseTarget.ConcreteTarget.Type == BaseSpeedTarget.IConcreteSpeedTarget.SpeedTargetType.Range &&
                     selectedIndex != 0)
             {
-                if (Options.Instance.UseSportTracksHeartRateZones)
+                if (Options.Instance.UseSportTracksSpeedZones)
                 {
                     baseTarget.ConcreteTarget = new SpeedZoneSTTarget(baseTarget.ParentStep.ParentConcreteWorkout.Category.SpeedZone.Zones[selectedIndex - 1], baseTarget);
                 }
@@ -3513,7 +3513,7 @@ namespace GarminFitnessPlugin.View
                      selectedIndex != 0)
             {
                 // ST zone
-                if (Options.Instance.UseSportTracksHeartRateZones)
+                if (Options.Instance.UseSportTracksPowerZones)
                 {
                     baseTarget.ConcreteTarget = new PowerZoneSTTarget(Options.Instance.PowerZoneCategory.Zones[selectedIndex - 1], baseTarget);
                 }
