@@ -794,6 +794,22 @@ namespace GarminFitnessPlugin.Data
             }
         }
 
+        public bool ContainsTCXExtensionFeatures
+        {
+            get
+            {
+                foreach (IStep step in m_InternalStepList)
+                {
+                    if (step.ContainsTCXExtensionFeatures)
+                    {
+                        return true;
+                    }
+                }
+
+                return false;
+            }
+        }
+
         public delegate void StepAddedEventHandler(IStep addedStep);
         public event StepAddedEventHandler StepAdded;
 

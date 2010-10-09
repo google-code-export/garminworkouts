@@ -9,6 +9,7 @@ namespace GarminFitnessPlugin.Controller
         Idle = 0,
         ReadWorkout,
         ReadMassStorageWorkouts,
+        ReadFITWorkouts,
         WriteWorkout,
         ReadProfile,
         WriteProfile

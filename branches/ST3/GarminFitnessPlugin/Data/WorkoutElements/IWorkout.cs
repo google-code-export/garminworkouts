@@ -11,7 +11,7 @@ namespace GarminFitnessPlugin.Data
 {
     abstract class IWorkout : IPluginSerializable, IXMLSerializable
     {
-#region IXMLSerializable Members
+        #region IXMLSerializable Members
         public void Serialize(XmlNode parentNode, String nodeName, XmlDocument document)
         {
             if (GetSplitPartsCount() > 1)
@@ -108,7 +108,7 @@ namespace GarminFitnessPlugin.Data
 
         public abstract void Deserialize(XmlNode parentNode);
 
-#endregion
+        #endregion
 
         public void Serialize(GarXFaceNet._WorkoutList workoutList)
         {
@@ -593,7 +593,7 @@ namespace GarminFitnessPlugin.Data
             stepToUnregister.DurationChanged -= new IStep.StepDurationChangedEventHandler(OnDurationChanged);
             stepToUnregister.TargetChanged -= new IStep.StepTargetChangedEventHandler(OnTargetChanged);
         }
-        
+
         public int GetStepExportId(IStep step)
         {
             UInt16 counter = 0;
@@ -756,6 +756,16 @@ namespace GarminFitnessPlugin.Data
         public virtual List<XmlNode> STExtensions
         {
             get { return ConcreteWorkout.STExtensions; }
+        }
+
+        public bool ContainsFITOnlyFeatures
+        {
+            get { return Steps.ContainsFITOnlyFeatures; }
+        }
+
+        public bool ContainsTCXExtensionFeatures
+        {
+            get { return Steps.ContainsTCXExtensionFeatures; }
         }
 
         // Abstract mthods

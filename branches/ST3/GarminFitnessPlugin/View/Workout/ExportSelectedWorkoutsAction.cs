@@ -244,6 +244,7 @@ namespace GarminFitnessPlugin.View
                     GarminDeviceManager.ExportWorkoutTask concreteTask = (GarminDeviceManager.ExportWorkoutTask)task;
 
                     m_FailedExportList.AddRange(concreteTask.Workouts);
+                    m_FailedExportErrors.Add(errorText);
                 }
             }
 
@@ -257,15 +258,29 @@ namespace GarminFitnessPlugin.View
                 {
                     if (m_FailedExportList.Count == 0)
                     {
+
                         MessageBox.Show(GarminFitnessView.GetLocalizedString("ExportWorkoutsSuccessText"),
                                         GarminFitnessView.GetLocalizedString("SuccessText"),
                                         MessageBoxButtons.OK, MessageBoxIcon.Information);
                     }
                     else
                     {
-                        m_FailedExportList.Clear();
+                        String allErrors = String.Empty;
 
-                        MessageBox.Show(GarminFitnessView.GetLocalizedString("ExportWorkoutsFailedText"),
+                        if (m_FailedExportErrors.Count > 0)
+                        {
+                            allErrors = "\n\n";
+
+                            foreach (String error in m_FailedExportErrors)
+                            {
+                                allErrors += error + "\n";
+                            }
+                        }
+
+                        m_FailedExportList.Clear();
+                        m_FailedExportErrors.Clear();
+
+                        MessageBox.Show(GarminFitnessView.GetLocalizedString("ExportWorkoutsFailedText") + allErrors,
                                         GarminFitnessView.GetLocalizedString("ErrorText"),
                                         MessageBoxButtons.OK, MessageBoxIcon.Information);
                     }
@@ -274,5 +289,6 @@ namespace GarminFitnessPlugin.View
         }
 
         private List<IWorkout> m_FailedExportList = new List<IWorkout>();
+        private List<String> m_FailedExportErrors = new List<String>();
     }
 }

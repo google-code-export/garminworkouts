@@ -106,6 +106,7 @@ namespace GarminFitnessPlugin.Data
             get { return m_FullWorkout.AddToDailyViewOnSchedule; }
             set { throw new Exception("Cannot assign AddToDailyViewOnSchedule on a WorkoutPart");  }
         }
+
 #endregion
 
 #region IXMLSerializable Members

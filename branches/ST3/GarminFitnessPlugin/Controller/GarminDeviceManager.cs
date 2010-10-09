@@ -92,15 +92,53 @@ namespace GarminFitnessPlugin.Controller
         public void ExportWorkouts(List<IWorkout> workouts)
         {
             String workoutsText = String.Empty;
+            List<IWorkout> regularWorkouts = new List<IWorkout>();
+            List<IWorkout> extensionWorkouts = new List<IWorkout>();
 
             foreach(Workout current in workouts)
             {
                 workoutsText += String.Format(", {0}", current.Name);
+
+                if (current.GetSplitPartsCount() == 1)
+                {
+                    if (!current.ContainsTCXExtensionFeatures)
+                    {
+                        regularWorkouts.Add(current);
+                    }
+                    else
+                    {
+                        extensionWorkouts.Add(current);
+                    }
+                }
+                else
+                {
+                    List<WorkoutPart> parts = current.SplitInSeperateParts();
+
+                    foreach (WorkoutPart part in parts)
+                    {
+                        if (!part.ContainsTCXExtensionFeatures)
+                        {
+                            regularWorkouts.Add(part);
+                        }
+                        else
+                        {
+                            extensionWorkouts.Add(part);
+                        }
+                    }
+                }
             }
 
             Logger.Instance.LogText(String.Format("Exporting workouts({0}){1}", workouts.Count, workoutsText));
 
-            AddTask(new ExportWorkoutTask(workouts));
+            if (regularWorkouts.Count > 0)
+            {
+                AddTask(new ExportWorkoutTask(regularWorkouts));
+            }
+
+            if (extensionWorkouts.Count > 0)
+            {
+                AddTask(new ExportWorkoutTask(extensionWorkouts));
+            }
         }
 
         public void ImportWorkouts()
@@ -363,7 +401,8 @@ namespace GarminFitnessPlugin.Controller
                 Logger.Instance.LogText("Completed import workouts");
 
                 Debug.Assert(operation == DeviceOperations.ReadWorkout ||
-                             operation == DeviceOperations.ReadMassStorageWorkouts);
+                             operation == DeviceOperations.ReadMassStorageWorkouts ||
+                             operation == DeviceOperations.ReadFITWorkouts);
 
                 if (!succeeded)
                 {
@@ -492,7 +531,7 @@ namespace GarminFitnessPlugin.Controller
                 // This function is not supported on the device
                 if (!device.SupportsWriteWorkout)
                 {
-                    throw new NoDeviceSupportException(device, "Export Workout");
+                    throw new NoDeviceSupportException(device, GarminFitnessView.GetLocalizedString("ExportWorkoutsText"));
                 }
                 else
                 {
@@ -515,7 +554,7 @@ namespace GarminFitnessPlugin.Controller
                 // This function is not supported on the device
                 if (!device.SupportsWriteProfile)
                 {
-                    throw new NoDeviceSupportException(device, "Export Profile");
+                    throw new NoDeviceSupportException(device, GarminFitnessView.GetLocalizedString("ExportProfileText"));
                 }
                 else
                 {
@@ -536,7 +575,7 @@ namespace GarminFitnessPlugin.Controller
                 // This function is not supported on the device
                 if (!device.SupportsReadWorkout)
                 {
-                    throw new NoDeviceSupportException(device, "Import Workouts");
+                    throw new NoDeviceSupportException(device, GarminFitnessView.GetLocalizedString("ImportWorkoutsText"));
                 }
                 else
                 {
@@ -557,7 +596,7 @@ namespace GarminFitnessPlugin.Controller
                 // This function is not supported on the device
                 if (!device.SupportsReadProfile)
                 {
-                    throw new NoDeviceSupportException(device, "Import Profile");
+                    throw new NoDeviceSupportException(device, GarminFitnessView.GetLocalizedString("ImportProfileText"));
                 }
                 else
                 {

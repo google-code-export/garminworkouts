@@ -264,6 +264,11 @@ namespace GarminFitnessPlugin.Data
             set { Debug.Assert(false); }
         }
 
+        public override bool ContainsTCXExtensionFeatures
+        {
+            get { return true; }
+        }
+
         private  BasePowerTarget.IConcretePowerTarget m_ConcreteTarget = null;
     }
 }

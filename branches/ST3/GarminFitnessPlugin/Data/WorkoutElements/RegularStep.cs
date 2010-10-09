@@ -570,6 +570,15 @@ namespace GarminFitnessPlugin.Data
             }
         }
 
+        public override bool ContainsTCXExtensionFeatures
+        {
+            get
+            {
+                return Target.ContainsTCXExtensionFeatures ||
+                       Duration.ContainsTCXExtensionFeatures;
+            }
+        }
+
         private IDuration m_Duration;
         private ITarget m_Target;
         private GarminFitnessString m_Name = new GarminFitnessString(String.Empty, Constants.MaxNameLength);

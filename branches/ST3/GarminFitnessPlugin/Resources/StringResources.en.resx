@@ -729,4 +729,28 @@
   <data name="PowerDurationLabelText" xml:space="preserve">
     <value>What power level?</value>
   </data>
+  <data name="ExportProfileText" xml:space="preserve">
+    <value>profile export</value>
+  </data>
+  <data name="ExportWorkoutsText" xml:space="preserve">
+    <value>workouts export</value>
+  </data>
+  <data name="ImportProfileText" xml:space="preserve">
+    <value>profile import</value>
+  </data>
+  <data name="ImportWorkoutsText" xml:space="preserve">
+    <value>workouts import</value>
+  </data>
+  <data name="NoMassStorageSupportText" xml:space="preserve">
+    <value>mass storage transfer</value>
+  </data>
+  <data name="NoDeviceSupportText" xml:space="preserve">
+    <value>The device {0} does not support {1}.  This is required for proper functioning.</value>
+  </data>
+  <data name="FITExportText" xml:space="preserve">
+    <value>FIT export</value>
+  </data>
+  <data name="FITImportText" xml:space="preserve">
+    <value>FIT import</value>
+  </data>
 </root>

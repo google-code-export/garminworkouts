@@ -712,7 +712,7 @@ namespace GarminFitnessPlugin.Controller
         //  mass storage until it works fine (Pending Garmin threads)
         public bool EnableMassStorageMode
         {
-            get { return false; }
+            get { return true; }
         }
 
         private Dictionary<IActivityCategory, GarminCategories>  STToGarminCategoryMap

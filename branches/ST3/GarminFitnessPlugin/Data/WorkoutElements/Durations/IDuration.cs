@@ -77,6 +77,11 @@ namespace GarminFitnessPlugin.Data
             get { return false; }
         }
 
+        public bool ContainsTCXExtensionFeatures
+        {
+            get { return false; }
+        }
+
         public enum DurationType
         {
             [ComboBoxStringProviderAttribute("LapButtonDurationComboBoxText")]

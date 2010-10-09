@@ -3,8 +3,10 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Text;
+using System.Threading;
 using System.Xml;
 using GarminFitnessPlugin.Data;
+using GarminFitnessPlugin.View;
 
 namespace GarminFitnessPlugin.Controller
 {
@@ -43,6 +45,18 @@ namespace GarminFitnessPlugin.Controller
                 else if (attribute.Name.Equals("WorkoutFileTransferPath"))
                 {
                     m_WorkoutFileTransferPath = attribute.Value;
+                }
+                else if (attribute.Name.Equals("SupportReadFIT"))
+                {
+                    m_SupportsReadFIT = Boolean.Parse(attribute.Value);
+                }
+                else if (attribute.Name.Equals("SupportWriteFIT"))
+                {
+                    m_SupportsWriteFIT = Boolean.Parse(attribute.Value);
+                }
+                else if (attribute.Name.Equals("FItFileTransferPath"))
+                {
+                    m_FITFileTransferPath = attribute.Value;
                 }
                 else if (attribute.Name.Equals("SupportReadProfile"))
                 {
@@ -107,10 +121,9 @@ namespace GarminFitnessPlugin.Controller
                             OperationProgressed(this, m_CurrentOperation, ++m_WorkoutsReadCount);
                         }
 
-                        success = ImportWorkoutFileResult(e.DataString);
+                        ImportWorkoutFileResult(e.DataString);
 
-                        if (success &&
-                            m_WorkoutFilesToDownload != null &&
+                        if (m_WorkoutFilesToDownload != null &&
                             m_WorkoutFilesToDownload.Count > 0)
                         {
                             String workoutFilename = m_WorkoutFilesToDownload[0];
@@ -126,6 +139,36 @@ namespace GarminFitnessPlugin.Controller
                     }
 
                     break;
+                }
+                case DeviceOperations.ReadFITWorkouts:
+                {
+                    Logger.Instance.LogText("Comm. : Mass storage workouts read");
+
+                    if (success)
+                    {
+                        if (OperationProgressed != null)
+                        {
+                            OperationProgressed(this, m_CurrentOperation, ++m_WorkoutsReadCount);
+                        }
+
+                        ImportFITWorkoutFileResult(e.DataString);
+
+                        if (m_WorkoutFilesToDownload != null &&
+                            m_WorkoutFilesToDownload.Count > 0)
+                        {
+                            String workoutFilename = m_WorkoutFilesToDownload[0];
+
+                            operationCompleted = false;
+                            m_WorkoutFilesToDownload.RemoveAt(0);
+                            m_Controller.CommunicatorBridge.GetBinaryFile(workoutFilename);
+                        }
+                    }
+                    else
+                    {
+                        m_WorkoutFilesToDownload.Clear();
+                    }
+
+                    break; 
                 }
                 case DeviceOperations.ReadWorkout:
                 {
@@ -227,6 +270,37 @@ namespace GarminFitnessPlugin.Controller
             }
         }
 
+        private bool ImportFITWorkoutFileResult(String workoutData)
+        {
+            try
+            {
+                bool result = false;
+
+                // UU encoduded base 64, decode first
+                if (workoutData.StartsWith("begin-base64"))
+                {
+                    Byte[] decodedBytes;
+
+                    workoutData = workoutData.Substring(workoutData.IndexOf('\n') + 1);
+                    workoutData = workoutData.Substring(0, workoutData.LastIndexOf("===="));
+
+                    decodedBytes = System.Convert.FromBase64String(workoutData);
+                    workoutData = Encoding.UTF8.GetString(decodedBytes);
+                }
+
+                MemoryStream stream = new MemoryStream(Encoding.UTF8.GetBytes(workoutData));
+
+                result = WorkoutImporter.ImportWorkoutFromFIT(stream);
+                stream.Close();
+
+                return result;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
         public void CancelWrite()
         {
             Debug.Assert(m_CurrentOperation != DeviceOperations.Idle);
@@ -241,67 +315,70 @@ namespace GarminFitnessPlugin.Controller
             m_Controller.CommunicatorBridge.CancelReadFromDevice();
         }
 
-        public void WriteWorkout(IWorkout workout)
-        {
-            Logger.Instance.LogText("Comm. : Writing workouts");
-
-            Debug.Assert(m_CurrentOperation == DeviceOperations.Idle);
-
-            m_Controller.CommunicatorBridge.ExceptionTriggered += new EventHandler<GarminFitnessCommunicatorBridge.ExceptionEventArgs>(OnBridgeExceptionTriggered);
-            m_Controller.CommunicatorBridge.WriteToDeviceCompleted += new EventHandler<GarminFitnessCommunicatorBridge.TranferCompletedEventArgs>(OnBridgeWriteToDeviceCompleted);
-            m_CurrentOperation = DeviceOperations.WriteWorkout;
-            m_Controller.CommunicatorBridge.SetDeviceNumber(m_DeviceNumber);
-
-            if (SupportsWorkoutMassStorageTransfer)
-            {
-                List<String> filenames = new List<String>();
-                string fileDestination = typeof(PluginMain).Assembly.Location;
-
-                fileDestination = fileDestination.Substring(0, fileDestination.LastIndexOf('\\'));
-                fileDestination = fileDestination.Substring(0, fileDestination.LastIndexOf('\\'));
-                fileDestination = fileDestination  + "\\Communicator\\temp\\";
-
-                Directory.CreateDirectory(fileDestination);
-
-                string fileName = Utils.GetWorkoutFilename(workout, GarminWorkoutManager.FileFormats.TCX);
-                FileStream fileStream = File.Create(fileDestination + fileName);
-
-                WorkoutExporter.ExportWorkout(workout, fileStream);
-                fileStream.Close();
-                filenames.Add(fileName);
-
-                m_CurrentOperation = DeviceOperations.WriteWorkout;
-
-                m_Controller.CommunicatorBridge.WriteWorkoutsToFile(filenames, WorkoutFileTransferPath);
-            }
-            else
-            {
-                string fileName = Utils.GetWorkoutFilename(workout, GarminWorkoutManager.FileFormats.TCX);
-                MemoryStream textStream = new MemoryStream();
-
-                WorkoutExporter.ExportWorkout(workout, textStream);
-                string xmlCode = Encoding.UTF8.GetString(textStream.GetBuffer());
-
-                m_Controller.CommunicatorBridge.WriteWorkoutsToFitnessDevice(xmlCode, fileName);
-            }
-        }
-
         public void WriteWorkouts(List<IWorkout> workouts)
         {
             Logger.Instance.LogText("Comm. : Writing workouts");
 
             Debug.Assert(m_CurrentOperation == DeviceOperations.Idle);
 
-            m_Controller.CommunicatorBridge.ExceptionTriggered += new EventHandler<GarminFitnessCommunicatorBridge.ExceptionEventArgs>(OnBridgeExceptionTriggered);
-            m_Controller.CommunicatorBridge.WriteToDeviceCompleted += new EventHandler<GarminFitnessCommunicatorBridge.TranferCompletedEventArgs>(OnBridgeWriteToDeviceCompleted);
-            m_CurrentOperation = DeviceOperations.WriteWorkout;
+            List<IWorkout> concreteWorkouts = new List<IWorkout>();
+            bool exportExtended = false;
+            bool exportToFIT = false;
+
+            // Split workouts for the right export method
+            foreach (IWorkout currentWorkout in workouts)
+            {
+                if (currentWorkout.ContainsFITOnlyFeatures)
+                {
+                    exportToFIT = true;
+                }
+                else if (currentWorkout.ContainsTCXExtensionFeatures)
+                {
+                    exportExtended = true;
+                }
+
+                if (currentWorkout.GetSplitPartsCount() == 1)
+                {
+                    concreteWorkouts.Add(currentWorkout);
+                }
+                else
+                {
+                    List<WorkoutPart> parts = currentWorkout.SplitInSeperateParts();
+
+                    foreach (WorkoutPart part in parts)
+                    {
+                        concreteWorkouts.Add(part);
+                    }
+                }
+            }
+
             m_Controller.CommunicatorBridge.SetDeviceNumber(m_DeviceNumber);
 
-            if (SupportsWorkoutMassStorageTransfer)
+            if (!exportExtended && !exportToFIT && !SupportsWriteFIT)
             {
-                List<IWorkout> concreteWorkouts = new List<IWorkout>();
+                // Basic TCX export
+                string fileName = "Default.tcx";
+                MemoryStream textStream = new MemoryStream();
+
+                if (concreteWorkouts.Count == 1)
+                {
+                    fileName = Utils.GetWorkoutFilename(concreteWorkouts[0], GarminWorkoutManager.FileFormats.TCX);
+                }
+
+                WorkoutExporter.ExportWorkouts(concreteWorkouts, textStream);
+
+                m_Controller.CommunicatorBridge.ExceptionTriggered += new EventHandler<GarminFitnessCommunicatorBridge.ExceptionEventArgs>(OnBridgeExceptionTriggered);
+                m_Controller.CommunicatorBridge.WriteToDeviceCompleted += new EventHandler<GarminFitnessCommunicatorBridge.TranferCompletedEventArgs>(OnBridgeWriteToDeviceCompleted);
+                m_CurrentOperation = DeviceOperations.WriteWorkout;
+
+                string xmlCode = Encoding.UTF8.GetString(textStream.GetBuffer());
+                m_Controller.CommunicatorBridge.WriteWorkoutsToFitnessDevice(xmlCode, fileName);
+            }
+            else
+            {
                 List<String> filenames = new List<String>();
                 string fileDestination = typeof(PluginMain).Assembly.Location;
+                string exportPath = String.Empty;
 
                 fileDestination = fileDestination.Substring(0, fileDestination.LastIndexOf('\\'));
                 fileDestination = fileDestination.Substring(0, fileDestination.LastIndexOf('\\'));
@@ -309,51 +386,56 @@ namespace GarminFitnessPlugin.Controller
 
                 Directory.CreateDirectory(fileDestination);
 
-                foreach (IWorkout currentWorkout in workouts)
+                if (exportToFIT || SupportsWriteFIT)
                 {
-                    if (currentWorkout.GetSplitPartsCount() == 1)
+                    // FIT export
+                    if (SupportsWriteFIT)
                     {
-                        concreteWorkouts.Add(currentWorkout);
+                        foreach (IWorkout currentWorkout in concreteWorkouts)
+                        {
+                            string fileName = Utils.GetWorkoutFilename(currentWorkout, GarminWorkoutManager.FileFormats.FIT);
+                            FileStream fileStream = File.Create(fileDestination + fileName);
+
+                            WorkoutExporter.ExportWorkoutToFIT(currentWorkout, fileStream);
+                            fileStream.Close();
+                            filenames.Add(fileName);
+                        }
+
+                        exportPath = FITFileTransferPath;
                     }
                     else
                     {
-                        List<WorkoutPart> parts = currentWorkout.SplitInSeperateParts();
-
-                        foreach (WorkoutPart part in parts)
+                        throw new NoDeviceSupportException(this, GarminFitnessView.GetLocalizedString("FITExportText"));
+                    }
+                }
+                else
+                {
+                    // Extended TCX export
+                    if (SupportsWorkoutMassStorageTransfer)
+                    {
+                        foreach (IWorkout currentWorkout in concreteWorkouts)
                         {
-                            concreteWorkouts.Add(part);
+                            string fileName = Utils.GetWorkoutFilename(currentWorkout, GarminWorkoutManager.FileFormats.TCX);
+                            FileStream fileStream = File.Create(fileDestination + fileName);
+
+                            WorkoutExporter.ExportWorkout(currentWorkout, fileStream);
+                            fileStream.Close();
+                            filenames.Add(fileName);
                         }
+
+                        exportPath = WorkoutFileTransferPath;
+                    }
+                    else
+                    {
+                        throw new NoDeviceSupportException(this, GarminFitnessView.GetLocalizedString("NoMassStorageSupportText"));
                     }
                 }
 
-                foreach (IWorkout concreteWorkout in concreteWorkouts)
-                {
-                    string fileName = Utils.GetWorkoutFilename(concreteWorkout, GarminWorkoutManager.FileFormats.TCX);
-                    FileStream fileStream = File.Create(fileDestination + fileName);
-
-                    WorkoutExporter.ExportWorkout(concreteWorkout, fileStream);
-                    fileStream.Close();
-                    filenames.Add(fileName);
-                }
-
+                m_Controller.CommunicatorBridge.ExceptionTriggered += new EventHandler<GarminFitnessCommunicatorBridge.ExceptionEventArgs>(OnBridgeExceptionTriggered);
+                m_Controller.CommunicatorBridge.WriteToDeviceCompleted += new EventHandler<GarminFitnessCommunicatorBridge.TranferCompletedEventArgs>(OnBridgeWriteToDeviceCompleted);
                 m_CurrentOperation = DeviceOperations.WriteWorkout;
 
-                m_Controller.CommunicatorBridge.WriteWorkoutsToFile(filenames, WorkoutFileTransferPath);
-            }
-            else
-            {
-                string fileName = "Default.tcx";
-                MemoryStream textStream = new MemoryStream();
-
-                if (workouts.Count == 1)
-                {
-                    fileName = Utils.GetWorkoutFilename(workouts[0], GarminWorkoutManager.FileFormats.TCX);
-                }
-
-                WorkoutExporter.ExportWorkouts(workouts, textStream);
-
-                string xmlCode = Encoding.UTF8.GetString(textStream.GetBuffer());
-                m_Controller.CommunicatorBridge.WriteWorkoutsToFitnessDevice(xmlCode, fileName);
+                m_Controller.CommunicatorBridge.WriteWorkoutsToFile(filenames, exportPath);
             }
         }
 
@@ -367,7 +449,27 @@ namespace GarminFitnessPlugin.Controller
             m_Controller.CommunicatorBridge.ReadFromDeviceCompleted += new EventHandler<GarminFitnessCommunicatorBridge.TranferCompletedEventArgs>(OnBridgeReadFromDeviceCompleted);
 
             m_Controller.CommunicatorBridge.SetDeviceNumber(m_DeviceNumber);
-            if (SupportsWorkoutMassStorageTransfer)
+
+            if (SupportsReadFIT)
+            {
+                m_CurrentOperation = DeviceOperations.ReadFITWorkouts;
+                m_WorkoutsReadCount = 0;
+
+                m_WorkoutFilesToDownload = m_Controller.CommunicatorBridge.GetFITWorkoutFiles();
+
+                if (m_WorkoutFilesToDownload != null)
+                {
+                    String workoutFilename = m_WorkoutFilesToDownload[0];
+
+                    m_WorkoutFilesToDownload.RemoveAt(0);
+                    m_Controller.CommunicatorBridge.GetBinaryFile(workoutFilename);
+                }
+                else
+                {
+                    m_Controller.CommunicatorBridge.ReadWorkoutsFromFitnessDevice();
+                }
+            }
+            else if (SupportsWorkoutMassStorageTransfer)
             {
                 m_CurrentOperation = DeviceOperations.ReadMassStorageWorkouts;
                 m_WorkoutsReadCount = 0;
@@ -448,9 +550,24 @@ namespace GarminFitnessPlugin.Controller
                          m_WorkoutFileTransferPath != String.Empty; }
         }
 
+        public bool SupportsReadFIT
+        {
+            get { return m_SupportsReadFIT; }
+        }
+
+        public bool SupportsWriteFIT
+        {
+            get { return m_SupportsWriteFIT; }
+        }
+
         public String WorkoutFileTransferPath
         {
             get { return m_WorkoutFileTransferPath; }
+        }
+
+        public String FITFileTransferPath
+        {
+            get { return m_FITFileTransferPath; }
         }
 
         public bool SupportsReadProfile
@@ -486,16 +603,19 @@ namespace GarminFitnessPlugin.Controller
 
         private GarminFitnessCommunicatorDeviceController m_Controller = null;
         private DeviceOperations m_CurrentOperation = DeviceOperations.Idle;
+        private List<String> m_WorkoutFilesToDownload = null;
         private Int32 m_DeviceNumber = -1;
         private string m_DisplayName = String.Empty;
         private string m_Id = string.Empty;
         private string m_SoftwareVersion = string.Empty;
+        private string m_WorkoutFileTransferPath = String.Empty;
+        private string m_FITFileTransferPath = String.Empty;
+        private int m_WorkoutsReadCount = 0;
         private bool m_SupportsReadWorkout = false;
         private bool m_SupportsWriteWorkout = false;
-        private string m_WorkoutFileTransferPath = String.Empty;
         private bool m_SupportsReadProfile = false;
         private bool m_SupportsWriteProfile = false;
-        private List<String> m_WorkoutFilesToDownload = null;
-        private int m_WorkoutsReadCount = 0;
+        private bool m_SupportsReadFIT = false;
+        private bool m_SupportsWriteFIT = false;
     }
 }

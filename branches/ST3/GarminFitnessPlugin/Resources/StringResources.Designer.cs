@@ -511,6 +511,15 @@ namespace GarminFitnessPlugin.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to profile export.
+        /// </summary>
+        internal static string ExportProfileText {
+            get {
+                return ResourceManager.GetString("ExportProfileText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Export Selected.
         /// </summary>
         internal static string ExportSelectedText {
@@ -556,6 +565,15 @@ namespace GarminFitnessPlugin.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to workouts export.
+        /// </summary>
+        internal static string ExportWorkoutsText {
+            get {
+                return ResourceManager.GetString("ExportWorkoutsText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Female.
         /// </summary>
         internal static string FemaleText {
@@ -583,11 +601,29 @@ namespace GarminFitnessPlugin.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to FIT export.
+        /// </summary>
+        internal static string FITExportText {
+            get {
+                return ResourceManager.GetString("FITExportText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to FIT Files.
         /// </summary>
         internal static string FitFileText {
             get {
                 return ResourceManager.GetString("FitFileText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to FIT import.
+        /// </summary>
+        internal static string FITImportText {
+            get {
+                return ResourceManager.GetString("FITImportText", resourceCulture);
             }
         }
         
@@ -943,6 +979,15 @@ namespace GarminFitnessPlugin.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to profile import.
+        /// </summary>
+        internal static string ImportProfileText {
+            get {
+                return ResourceManager.GetString("ImportProfileText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Import my profile from my unit.
         /// </summary>
         internal static string ImportRadioButtonText {
@@ -957,6 +1002,15 @@ namespace GarminFitnessPlugin.Resources {
         internal static string ImportWorkoutsErrorText {
             get {
                 return ResourceManager.GetString("ImportWorkoutsErrorText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to workouts import.
+        /// </summary>
+        internal static string ImportWorkoutsText {
+            get {
+                return ResourceManager.GetString("ImportWorkoutsText", resourceCulture);
             }
         }
         
@@ -1132,11 +1186,20 @@ namespace GarminFitnessPlugin.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The device {0} does not support {1}..
+        ///   Looks up a localized string similar to The device {0} does not support {1}.  This is required for proper functioning..
         /// </summary>
         internal static string NoDeviceSupportText {
             get {
                 return ResourceManager.GetString("NoDeviceSupportText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to mass storage transfer.
+        /// </summary>
+        internal static string NoMassStorageSupportText {
+            get {
+                return ResourceManager.GetString("NoMassStorageSupportText", resourceCulture);
             }
         }
         

@@ -22,6 +22,7 @@
         var listener = Class.create();
         var listenerHTML = Class.create();
         var cancelReadableFileListing = false;
+        var cancelReadFitDirectory = false;
 
         function escapeXmlChars(strInput) {
             // replace special characters that will error out in xml
@@ -68,6 +69,17 @@
                             else if (dataTypes[j].getTypeName() == "FitnessUserProfile") {
                                 deviceXml += " SupportReadProfile=" + booleanAttrVal(dataTypes[j].hasReadAccess());
                                 deviceXml += " SupportWriteProfile=" + booleanAttrVal(dataTypes[j].hasWriteAccess());
+                            }
+                            else if (dataTypes[j].getTypeName() == "FITBinary") {
+                                deviceXml += " SupportReadFIT=" + booleanAttrVal(dataTypes[j].hasReadAccess());
+                                deviceXml += " SupportWriteFIT=" + booleanAttrVal(dataTypes[j].hasWriteAccess());
+
+                                if (dataTypes[j].getReadFilePath() !== "") {
+                                    deviceXml += " FITFileTransferPath='" + dataTypes[j].getReadFilePath() + "'";
+                                }
+                                else if (dataTypes[j].getWriteFilePath() !== "") {
+                                    deviceXml += " FITFileTransferPath='" + dataTypes[j].getReadFilePath() + "'";
+                                }
                             }
                         }
 
@@ -305,6 +317,39 @@
             }
         }
 
+        function ReadFITDirectory() {
+            try {
+                var status = 0;
+                var exitLoop = false;
+
+                cancelReadFitDirectory = false;
+                garminPlugin.startReadFitDirectory(garminController.getDeviceNumber());
+
+                while (!exitLoop) {
+                    status = garminPlugin.finishReadFitDirectory();
+
+                    if (status == 2) {              // 2 = waiting
+                        garminPlugin.respondToMessageBox(1);    // close msg box
+                    }
+                    else if (status == 3 ||         // 3 = finished
+                             cancelReadFitDirectory) {
+                        exitLoop = true;
+                    }
+                }
+
+                if (!cancelReadFitDirectory) {
+                    var directoryXml = garminPlugin.getDirectoryXml();
+
+                    return escapeXmlChars(directoryXml);
+                }
+
+                return "";
+            }
+            catch (e) {
+                window.external.OnExceptionTriggered("GetWorkoutFiles failed: " + e.message);
+            }
+        }
+
         function GetWorkoutFiles() {
             try {
                 var dataTypes = garminController.getDevices()[garminController.getDeviceNumber()].getDeviceDataTypes().values();
@@ -360,6 +405,15 @@
             }
         }
 
+        function CancelReadFitDirectory() {
+            try {
+                this.cancelReadFitDirectory = true;
+                garminPlugin.cancelReadFitDirectory();
+            }
+            catch (e) {
+                window.external.OnExceptionTriggered("CancelReadFitDirectory failed: " + e.message);
+            }
+        }
         function GetBinaryFile(filePath) {
             try {
                 garminController.getBinaryFile(garminController.getDeviceNumber(), filePath);

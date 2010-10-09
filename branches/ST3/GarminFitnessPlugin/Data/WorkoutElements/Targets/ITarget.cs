@@ -83,6 +83,11 @@ namespace GarminFitnessPlugin.Data
             get { return false; }
         }
 
+        public virtual bool ContainsTCXExtensionFeatures
+        {
+            get { return false; }
+        }
+
         public enum TargetType
         {
             [ComboBoxStringProviderAttribute("NullTargetComboBoxText")]

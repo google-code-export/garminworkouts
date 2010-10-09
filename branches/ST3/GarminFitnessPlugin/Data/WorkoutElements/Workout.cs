@@ -695,11 +695,6 @@ namespace GarminFitnessPlugin.Data
             get { return m_STExtensions; }
         }
 
-        public bool ContainsFITOnlyFeatures
-        {
-            get { return m_Steps.ContainsFITOnlyFeatures; }
-        }
-
         private GarminFitnessString m_Name = new GarminFitnessString("", 15);
         private GarminFitnessGuid m_Id = new GarminFitnessGuid(Guid.NewGuid());
         private GarminFitnessDate m_LastExportDate = new GarminFitnessDate();
