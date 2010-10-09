@@ -54,7 +54,7 @@ namespace GarminFitnessPlugin.Data
             FITMessageField minHR = new FITMessageField((Byte)FITWorkoutStepFieldIds.TargetCustomValueLow);
             FITMessageField maxHR = new FITMessageField((Byte)FITWorkoutStepFieldIds.TargetCustomValueHigh);
             bool exportAsPercentMax = Options.Instance.ExportSportTracksHeartRateAsPercentMax;
-            float lastMaxHR = PluginMain.GetApplication().Logbook.Athlete.InfoEntries.LastEntryAsOfDate(DateTime.Now).MaximumHeartRatePerMinute;
+            float lastMaxHR = GarminProfileManager.Instance.UserProfile.GetProfileForActivity(Options.Instance.GetGarminCategory(BaseTarget.ParentStep.ParentWorkout.Category)).MaximumHeartRate;
 
             HRZone.SetUInt32((Byte)0);
             message.AddField(HRZone);

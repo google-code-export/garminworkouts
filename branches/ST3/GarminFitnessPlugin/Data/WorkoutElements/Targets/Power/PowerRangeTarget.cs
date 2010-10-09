@@ -99,13 +99,13 @@ namespace GarminFitnessPlugin.Data
             childNode = document.CreateElement("Low");
             parentNode.AppendChild(childNode);
             m_IsPercentFTP.SerializeAttribute(childNode, Constants.XsiTypeTCXString, Constants.xsins, document);
-            m_MinPowerWatts.Serialize(childNode, Constants.ValueTCXString, document);
+            InternalMinPower.Serialize(childNode, Constants.ValueTCXString, document);
 
             // High
             childNode = document.CreateElement("High");
             parentNode.AppendChild(childNode);
             m_IsPercentFTP.SerializeAttribute(childNode, Constants.XsiTypeTCXString, Constants.xsins, document);
-            m_MaxPowerWatts.Serialize(childNode, Constants.ValueTCXString, document);
+            InternalMaxPower.Serialize(childNode, Constants.ValueTCXString, document);
         }
 
         public override void Deserialize(XmlNode parentNode)
@@ -185,6 +185,13 @@ namespace GarminFitnessPlugin.Data
             }
 
             SetValues(Math.Min(MinPower, MaxPower), Math.Max(MinPower, MaxPower), isPercentFTP);
+        }
+
+        public void SetIsPercentFTP(bool isPercentFTP)
+        {
+            IsPercentFTP = isPercentFTP;
+
+            ValidateValue(MinPower, MaxPower, IsPercentFTP);
         }
 
         public void SetMinPower(UInt16 minPower)
@@ -306,8 +313,8 @@ namespace GarminFitnessPlugin.Data
 
         private GarminFitnessUInt16Range m_MinPowerPercent = new GarminFitnessUInt16Range(70, Constants.MinPowerInPercentFTP, Constants.MaxPowerInPercentFTP);
         private GarminFitnessUInt16Range m_MaxPowerPercent = new GarminFitnessUInt16Range(90, Constants.MinPowerInPercentFTP, Constants.MaxPowerInPercentFTP);
-        private GarminFitnessUInt16Range m_MinPowerWatts = new GarminFitnessUInt16Range(75, Constants.MinPowerInWatts, Constants.MaxPowerWorkout);
-        private GarminFitnessUInt16Range m_MaxPowerWatts = new GarminFitnessUInt16Range(165, Constants.MinPowerInWatts, Constants.MaxPowerWorkout);
+        private GarminFitnessUInt16Range m_MinPowerWatts = new GarminFitnessUInt16Range(150, Constants.MinPowerInWatts, Constants.MaxPowerWorkoutInWatts);
+        private GarminFitnessUInt16Range m_MaxPowerWatts = new GarminFitnessUInt16Range(200, Constants.MinPowerInWatts, Constants.MaxPowerWorkoutInWatts);
         private GarminFitnessBool m_IsPercentFTP = new GarminFitnessBool(false, Constants.PowerReferenceTCXString[1], Constants.PowerReferenceTCXString[0]);
     }
 }

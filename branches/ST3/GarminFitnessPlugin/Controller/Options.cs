@@ -52,6 +52,9 @@ namespace GarminFitnessPlugin.Controller
 
             // Export ST HR zones as percent max
             stream.Write(BitConverter.GetBytes(ExportSportTracksHeartRateAsPercentMax), 0, sizeof(bool));
+
+            // Export ST power zones as percent max
+            stream.Write(BitConverter.GetBytes(ExportSportTracksPowerAsPercentFTP), 0, sizeof(bool));
         }
 
         public new void Deserialize(Stream stream, DataVersion version)
@@ -229,6 +232,16 @@ namespace GarminFitnessPlugin.Controller
 
             stream.Read(boolBuffer, 0, sizeof(bool));
             ExportSportTracksHeartRateAsPercentMax = BitConverter.ToBoolean(boolBuffer, 0);
+        }
+
+        public void Deserialize_V19(Stream stream, DataVersion version)
+        {
+            byte[] boolBuffer = new byte[sizeof(bool)];
+
+            Deserialize_V16(stream, version);
+
+            stream.Read(boolBuffer, 0, sizeof(bool));
+            ExportSportTracksPowerAsPercentFTP = BitConverter.ToBoolean(boolBuffer, 0);
         }
 
         public void Serialize(System.Xml.XmlNode parentNode, String nodeName, System.Xml.XmlDocument document)
@@ -574,6 +587,20 @@ namespace GarminFitnessPlugin.Controller
             }
         }
 
+        public bool ExportSportTracksPowerAsPercentFTP
+        {
+            get { return m_ExportSportTracksPowerAsPercentFTP; }
+            set
+            {
+                if (ExportSportTracksPowerAsPercentFTP != value)
+                {
+                    m_ExportSportTracksPowerAsPercentFTP = value;
+
+                    TriggerOptionsChangedEvent("ExportSportTracksPowerAsPercentFTP");
+                }
+            }
+        }
+
         public bool UseSportTracksSpeedZones
         {
             get { return m_UseSportTracksSpeedZones; }
@@ -752,6 +779,7 @@ namespace GarminFitnessPlugin.Controller
         private bool m_ExportSportTracksHeartRateAsPercentMax = true;
         private bool m_UseSportTracksSpeedZones;
         private bool m_UseSportTracksPowerZones;
+        private bool m_ExportSportTracksPowerAsPercentFTP = false;
         private IZoneCategory m_CadenceZoneCategory;
         private IZoneCategory m_PowerZoneCategory;
         private Dictionary<IActivityCategory, GarminCategories> m_STToGarminCategoryMap = new Dictionary<IActivityCategory, GarminCategories>();

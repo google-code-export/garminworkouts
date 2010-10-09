@@ -58,7 +58,7 @@ namespace GarminFitnessPlugin
 
         // Power limits
         public static readonly UInt16 MinPowerInWatts = 20;
-        public static readonly UInt16 MaxPowerWorkout = 999;
+        public static readonly UInt16 MaxPowerWorkoutInWatts = 999;
         public static readonly UInt16 MaxPowerProfile = 3999;
         public static readonly Byte MinPowerInPercentFTP = 0;
         public static readonly Byte MaxPowerInPercentFTP = 199;
@@ -192,7 +192,7 @@ namespace GarminFitnessPlugin
         public static readonly string Forerunner405UnitDescription = "FR405";
         public static readonly string Forerunner310XTUnitDescription = "310XT";
 
-        public static readonly DataVersion CurrentVersion = new DataVersion(18);
+        public static readonly DataVersion CurrentVersion = new DataVersion(19);
         public static readonly String DataHeaderIdString = "Garmin Workouts Plugin made by S->G";
    }
 }

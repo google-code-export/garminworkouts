@@ -931,8 +931,17 @@ namespace GarminFitnessPlugin.View
                                 PowerRangeTarget concreteTarget = (PowerRangeTarget)baseTarget.ConcreteTarget;
 
                                 oldValue = concreteTarget.MinPower.ToString();
-                                intMin = Constants.MinPowerInWatts;
-                                intMax = Constants.MaxPowerWorkout;
+
+                                if (concreteTarget.IsPercentFTP)
+                                {
+                                    intMin = Constants.MinPowerInPercentFTP;
+                                    intMax = Constants.MaxPowerInPercentFTP;
+                                }
+                                else
+                                {
+                                    intMin = Constants.MinPowerInWatts;
+                                    intMax = Constants.MaxPowerWorkoutInWatts;
+                                }
                                 inputType = RangeValidationInputType.Integer;
 
                                 break;
@@ -1223,8 +1232,17 @@ namespace GarminFitnessPlugin.View
                                 PowerRangeTarget concreteTarget = (PowerRangeTarget)baseTarget.ConcreteTarget;
 
                                 oldValue = concreteTarget.MaxPower.ToString();
-                                intMin = Constants.MinPowerInWatts;
-                                intMax = Constants.MaxPowerWorkout;
+
+                                if (concreteTarget.IsPercentFTP)
+                                {
+                                    intMin = Constants.MinPowerInPercentFTP;
+                                    intMax = Constants.MaxPowerInPercentFTP;
+                                }
+                                else
+                                {
+                                    intMin = Constants.MinPowerInWatts;
+                                    intMax = Constants.MaxPowerWorkoutInWatts;
+                                }
                                 inputType = RangeValidationInputType.Integer;
 
                                 break;
@@ -1494,29 +1512,8 @@ namespace GarminFitnessPlugin.View
             BaseHeartRateTarget baseTarget = (BaseHeartRateTarget)concreteStep.Target;
             Debug.Assert(baseTarget.ConcreteTarget != null && baseTarget.ConcreteTarget.Type == BaseHeartRateTarget.IConcreteHeartRateTarget.HeartRateTargetType.Range);
             HeartRateRangeTarget concreteTarget = (HeartRateRangeTarget)baseTarget.ConcreteTarget;
-            bool isPercentMax = HRRangeReferenceComboBox.SelectedIndex == 1;
-            Byte newMin = concreteTarget.MinHeartRate;
-            Byte newMax = concreteTarget.MaxHeartRate;
 
-            if (isPercentMax && newMin > Constants.MaxHRInPercentMax)
-            {
-                newMin = Constants.MaxHRInPercentMax;
-            }
-            else if (!isPercentMax && newMin < Constants.MinHRInBPM)
-            {
-                newMin = Constants.MinHRInBPM;
-            }
-
-            if (isPercentMax && newMax > Constants.MaxHRInPercentMax)
-            {
-                newMax = Constants.MaxHRInPercentMax;
-            }
-            else if (!isPercentMax && newMax < Constants.MinHRInBPM)
-            {
-                newMax = Constants.MinHRInBPM;
-            }
-
-            concreteTarget.SetValues(newMin, newMax, isPercentMax);
+            concreteTarget.SetIsPercentMax(HRRangeReferenceComboBox.SelectedIndex == 1);
         }
         
         private void PowerRangeReferenceComboBox_SelectionChangedCommited(object sender, EventArgs e)
@@ -1527,29 +1524,8 @@ namespace GarminFitnessPlugin.View
             BasePowerTarget baseTarget = (BasePowerTarget)concreteStep.Target;
             Debug.Assert(baseTarget.ConcreteTarget != null && baseTarget.ConcreteTarget.Type == BasePowerTarget.IConcretePowerTarget.PowerTargetType.Range);
             PowerRangeTarget concreteTarget = (PowerRangeTarget)baseTarget.ConcreteTarget;
-            bool isPercentFTP = PowerRangeReferenceComboBox.SelectedIndex == 1;
-            UInt16 newMin = concreteTarget.MinPower;
-            UInt16 newMax = concreteTarget.MaxPower;
 
-            if (isPercentFTP && newMin > Constants.MaxPowerInPercentFTP)
-            {
-                newMin = Constants.MaxPowerInPercentFTP;
-            }
-            else if (!isPercentFTP && newMin < Constants.MinPowerInWatts)
-            {
-                newMin = Constants.MinPowerInWatts;
-            }
-
-            if (isPercentFTP && newMax > Constants.MaxPowerInPercentFTP)
-            {
-                newMax = Constants.MaxPowerInPercentFTP;
-            }
-            else if (!isPercentFTP && newMax < Constants.MinPowerInWatts)
-            {
-                newMax = Constants.MinPowerInWatts;
-            }
-
-            concreteTarget.SetValues(newMin, newMax, isPercentFTP);
+            concreteTarget.SetIsPercentFTP(PowerRangeReferenceComboBox.SelectedIndex == 1);
         }
 
         private void WorkoutsList_KeyDown(object sender, KeyEventArgs e)

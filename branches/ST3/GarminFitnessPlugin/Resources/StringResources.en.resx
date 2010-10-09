@@ -753,4 +753,7 @@
   <data name="FITImportText" xml:space="preserve">
     <value>FIT import</value>
   </data>
+  <data name="ExportSTPowerZonesAsLabelText" xml:space="preserve">
+    <value>Export ST power zones as :</value>
+  </data>
 </root>

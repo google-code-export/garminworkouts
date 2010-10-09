@@ -538,6 +538,15 @@ namespace GarminFitnessPlugin.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Export ST power zones as :.
+        /// </summary>
+        internal static string ExportSTPowerZonesAsLabelText {
+            get {
+                return ResourceManager.GetString("ExportSTPowerZonesAsLabelText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Export.
         /// </summary>
         internal static string ExportText {

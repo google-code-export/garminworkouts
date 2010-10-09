@@ -152,7 +152,7 @@ namespace GarminFitnessPlugin.Data
             }
         }
 
-        private GarminFitnessUInt16Range m_MaxPowerWatts = new GarminFitnessUInt16Range(250, Constants.MinPowerInWatts, Constants.MaxPowerWorkout);
+        private GarminFitnessUInt16Range m_MaxPowerWatts = new GarminFitnessUInt16Range(250, Constants.MinPowerInWatts, Constants.MaxPowerWorkoutInWatts);
         private GarminFitnessUInt16Range m_MaxPowerPercent = new GarminFitnessUInt16Range(90, Constants.MinPowerInPercentFTP, Constants.MaxPowerInPercentFTP);
         private GarminFitnessBool m_IsPercentFTP = new GarminFitnessBool(false, Constants.PowerReferenceTCXString[1], Constants.PowerReferenceTCXString[0]);
     }

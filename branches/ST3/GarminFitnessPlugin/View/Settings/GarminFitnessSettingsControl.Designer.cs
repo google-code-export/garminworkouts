@@ -47,6 +47,10 @@ namespace GarminFitnessPlugin.View
             this.CadenceZoneComboBox = new System.Windows.Forms.ComboBox();
             this.CadenceZoneSelectionLabel = new System.Windows.Forms.Label();
             this.PowerSettingsGroupBox = new System.Windows.Forms.GroupBox();
+            this.panel2 = new System.Windows.Forms.Panel();
+            this.PercentFTPRadioButton = new System.Windows.Forms.RadioButton();
+            this.WattsRadioButton = new System.Windows.Forms.RadioButton();
+            this.ExportSTPowerZonesAsLabel = new System.Windows.Forms.Label();
             this.PowerZoneComboBox = new System.Windows.Forms.ComboBox();
             this.PowerZoneSelectionLabel = new System.Windows.Forms.Label();
             this.BrowseButton = new System.Windows.Forms.Button();
@@ -72,6 +76,7 @@ namespace GarminFitnessPlugin.View
             this.SpeedSettingsGroupBox.SuspendLayout();
             this.CadenceSettingsGroupBox.SuspendLayout();
             this.PowerSettingsGroupBox.SuspendLayout();
+            this.panel2.SuspendLayout();
             this.CategoriesGroupBox.SuspendLayout();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
@@ -284,6 +289,8 @@ namespace GarminFitnessPlugin.View
             // 
             // PowerSettingsGroupBox
             // 
+            this.PowerSettingsGroupBox.Controls.Add(this.panel2);
+            this.PowerSettingsGroupBox.Controls.Add(this.ExportSTPowerZonesAsLabel);
             this.PowerSettingsGroupBox.Controls.Add(this.PowerZoneComboBox);
             this.PowerSettingsGroupBox.Controls.Add(this.DefaultPowerZonesLabel);
             this.PowerSettingsGroupBox.Controls.Add(this.PowerZoneSelectionLabel);
@@ -291,10 +298,55 @@ namespace GarminFitnessPlugin.View
             this.PowerSettingsGroupBox.Controls.Add(this.PowerSportTracksRadioButton);
             this.PowerSettingsGroupBox.Location = new System.Drawing.Point(6, 158);
             this.PowerSettingsGroupBox.Name = "PowerSettingsGroupBox";
-            this.PowerSettingsGroupBox.Size = new System.Drawing.Size(491, 66);
+            this.PowerSettingsGroupBox.Size = new System.Drawing.Size(491, 91);
             this.PowerSettingsGroupBox.TabIndex = 5;
             this.PowerSettingsGroupBox.TabStop = false;
             this.PowerSettingsGroupBox.Text = "Power Settings";
+            // 
+            // panel2
+            // 
+            this.panel2.Controls.Add(this.PercentFTPRadioButton);
+            this.panel2.Controls.Add(this.WattsRadioButton);
+            this.panel2.Location = new System.Drawing.Point(239, 59);
+            this.panel2.Name = "panel2";
+            this.panel2.Size = new System.Drawing.Size(245, 23);
+            this.panel2.TabIndex = 4;
+            // 
+            // PercentFTPRadioButton
+            // 
+            this.PercentFTPRadioButton.AutoSize = true;
+            this.PercentFTPRadioButton.Checked = true;
+            this.PercentFTPRadioButton.Enabled = false;
+            this.PercentFTPRadioButton.Location = new System.Drawing.Point(12, 3);
+            this.PercentFTPRadioButton.Name = "PercentFTPRadioButton";
+            this.PercentFTPRadioButton.Size = new System.Drawing.Size(56, 17);
+            this.PercentFTPRadioButton.TabIndex = 1;
+            this.PercentFTPRadioButton.TabStop = true;
+            this.PercentFTPRadioButton.Text = "% FTP";
+            this.PercentFTPRadioButton.UseVisualStyleBackColor = true;
+            this.PercentFTPRadioButton.CheckedChanged += new System.EventHandler(this.PercentFTPRadioButton_CheckedChanged);
+            // 
+            // WattsRadioButton
+            // 
+            this.WattsRadioButton.AutoSize = true;
+            this.WattsRadioButton.Enabled = false;
+            this.WattsRadioButton.Location = new System.Drawing.Point(130, 3);
+            this.WattsRadioButton.Name = "WattsRadioButton";
+            this.WattsRadioButton.Size = new System.Drawing.Size(53, 17);
+            this.WattsRadioButton.TabIndex = 1;
+            this.WattsRadioButton.Text = "Watts";
+            this.WattsRadioButton.UseVisualStyleBackColor = true;
+            this.WattsRadioButton.CheckedChanged += new System.EventHandler(this.WattsRadioButton_CheckedChanged);
+            // 
+            // ExportSTPowerZonesAsLabel
+            // 
+            this.ExportSTPowerZonesAsLabel.AutoSize = true;
+            this.ExportSTPowerZonesAsLabel.Enabled = false;
+            this.ExportSTPowerZonesAsLabel.Location = new System.Drawing.Point(6, 65);
+            this.ExportSTPowerZonesAsLabel.Name = "ExportSTPowerZonesAsLabel";
+            this.ExportSTPowerZonesAsLabel.Size = new System.Drawing.Size(120, 13);
+            this.ExportSTPowerZonesAsLabel.TabIndex = 3;
+            this.ExportSTPowerZonesAsLabel.Text = "Export power zones as :";
             // 
             // PowerZoneComboBox
             // 
@@ -351,7 +403,7 @@ namespace GarminFitnessPlugin.View
             // CategoriesGroupBox
             // 
             this.CategoriesGroupBox.Controls.Add(this.splitContainer1);
-            this.CategoriesGroupBox.Location = new System.Drawing.Point(6, 260);
+            this.CategoriesGroupBox.Location = new System.Drawing.Point(6, 283);
             this.CategoriesGroupBox.Name = "CategoriesGroupBox";
             this.CategoriesGroupBox.Size = new System.Drawing.Size(491, 152);
             this.CategoriesGroupBox.TabIndex = 7;
@@ -494,7 +546,7 @@ namespace GarminFitnessPlugin.View
             // 
             this.RunWizardLinkLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.RunWizardLinkLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F);
-            this.RunWizardLinkLabel.Location = new System.Drawing.Point(-1, 502);
+            this.RunWizardLinkLabel.Location = new System.Drawing.Point(-1, 528);
             this.RunWizardLinkLabel.Name = "RunWizardLinkLabel";
             this.RunWizardLinkLabel.Size = new System.Drawing.Size(500, 23);
             this.RunWizardLinkLabel.TabIndex = 8;
@@ -507,7 +559,7 @@ namespace GarminFitnessPlugin.View
             this.DonateLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.DonateLabel.AutoSize = true;
             this.DonateLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F);
-            this.DonateLabel.Location = new System.Drawing.Point(6, 526);
+            this.DonateLabel.Location = new System.Drawing.Point(6, 552);
             this.DonateLabel.Name = "DonateLabel";
             this.DonateLabel.Size = new System.Drawing.Size(292, 20);
             this.DonateLabel.TabIndex = 9;
@@ -518,7 +570,7 @@ namespace GarminFitnessPlugin.View
             this.DonateImageLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.DonateImageLabel.Cursor = System.Windows.Forms.Cursors.Hand;
             this.DonateImageLabel.Image = global::GarminFitnessPlugin.Resources.Resources.DonateImage;
-            this.DonateImageLabel.Location = new System.Drawing.Point(304, 524);
+            this.DonateImageLabel.Location = new System.Drawing.Point(304, 550);
             this.DonateImageLabel.Name = "DonateImageLabel";
             this.DonateImageLabel.Size = new System.Drawing.Size(100, 23);
             this.DonateImageLabel.TabIndex = 10;
@@ -527,7 +579,7 @@ namespace GarminFitnessPlugin.View
             // AutoSplitCheckBox
             // 
             this.AutoSplitCheckBox.AutoSize = true;
-            this.AutoSplitCheckBox.Location = new System.Drawing.Point(15, 235);
+            this.AutoSplitCheckBox.Location = new System.Drawing.Point(15, 258);
             this.AutoSplitCheckBox.Name = "AutoSplitCheckBox";
             this.AutoSplitCheckBox.Size = new System.Drawing.Size(201, 17);
             this.AutoSplitCheckBox.TabIndex = 11;
@@ -540,7 +592,7 @@ namespace GarminFitnessPlugin.View
             this.DeviceCommGroupBox.Controls.Add(this.DefaultExportDirectoryLabel);
             this.DeviceCommGroupBox.Controls.Add(this.BrowseButton);
             this.DeviceCommGroupBox.Controls.Add(this.ExportDirectoryTextBox);
-            this.DeviceCommGroupBox.Location = new System.Drawing.Point(6, 418);
+            this.DeviceCommGroupBox.Location = new System.Drawing.Point(6, 441);
             this.DeviceCommGroupBox.Name = "DeviceCommGroupBox";
             this.DeviceCommGroupBox.Size = new System.Drawing.Size(484, 65);
             this.DeviceCommGroupBox.TabIndex = 12;
@@ -572,7 +624,7 @@ namespace GarminFitnessPlugin.View
             this.Controls.Add(this.PowerSettingsGroupBox);
             this.MaximumSize = new System.Drawing.Size(500, 610);
             this.Name = "GarminFitnessSettingsControl";
-            this.Size = new System.Drawing.Size(500, 552);
+            this.Size = new System.Drawing.Size(500, 578);
             this.HRSettingsGroupBox.ResumeLayout(false);
             this.HRSettingsGroupBox.PerformLayout();
             this.panel1.ResumeLayout(false);
@@ -583,6 +635,8 @@ namespace GarminFitnessPlugin.View
             this.CadenceSettingsGroupBox.PerformLayout();
             this.PowerSettingsGroupBox.ResumeLayout(false);
             this.PowerSettingsGroupBox.PerformLayout();
+            this.panel2.ResumeLayout(false);
+            this.panel2.PerformLayout();
             this.CategoriesGroupBox.ResumeLayout(false);
             this.splitContainer1.Panel1.ResumeLayout(false);
             this.splitContainer1.Panel2.ResumeLayout(false);
@@ -639,5 +693,9 @@ namespace GarminFitnessPlugin.View
         private System.Windows.Forms.Panel panel1;
         private System.Windows.Forms.GroupBox DeviceCommGroupBox;
         private System.Windows.Forms.Label DefaultExportDirectoryLabel;
+        private System.Windows.Forms.Panel panel2;
+        private System.Windows.Forms.RadioButton PercentFTPRadioButton;
+        private System.Windows.Forms.RadioButton WattsRadioButton;
+        private System.Windows.Forms.Label ExportSTPowerZonesAsLabel;
     }
 }

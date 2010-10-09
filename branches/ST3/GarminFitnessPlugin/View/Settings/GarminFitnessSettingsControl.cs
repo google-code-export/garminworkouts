@@ -85,6 +85,16 @@ namespace GarminFitnessPlugin.View
             Options.Instance.UseSportTracksPowerZones = !PowerGarminRadioButton.Checked;
         }
 
+        private void PercentFTPRadioButton_CheckedChanged(object sender, EventArgs e)
+        {
+            Options.Instance.ExportSportTracksPowerAsPercentFTP = PercentFTPRadioButton.Checked;
+        }
+
+        private void WattsRadioButton_CheckedChanged(object sender, EventArgs e)
+        {
+            Options.Instance.ExportSportTracksPowerAsPercentFTP = !WattsRadioButton.Checked;
+        }
+
         private void PowerSportTracksRadioButton_CheckedChanged(object sender, System.EventArgs e)
         {
             Options.Instance.UseSportTracksPowerZones = PowerSportTracksRadioButton.Checked;
@@ -242,35 +252,44 @@ namespace GarminFitnessPlugin.View
 
         private void UpdateUIStrings()
         {
+            // HR settings
+            HRSettingsGroupBox.Text = GarminFitnessView.GetLocalizedString("HRSettingsGroupBoxText");
             HRGarminRadioButton.Text = GarminFitnessView.GetLocalizedString("GarminText");
             HRSportTracksRadioButton.Text = GarminFitnessView.GetLocalizedString("SportTracksText");
-            PercentMaxRadioButton.Text = CommonResources.Text.LabelPercentOfMax;
-            BPMRadioButton.Text = CommonResources.Text.LabelBPM;
-            SpeedGarminRadioButton.Text = GarminFitnessView.GetLocalizedString("GarminText");
-            SpeedSportTracksRadioButton.Text = GarminFitnessView.GetLocalizedString("SportTracksText");
-            PowerGarminRadioButton.Text = GarminFitnessView.GetLocalizedString("GarminText");
-            PowerSportTracksRadioButton.Text = GarminFitnessView.GetLocalizedString("SportTracksText");
-
-            HRSettingsGroupBox.Text = GarminFitnessView.GetLocalizedString("HRSettingsGroupBoxText");
-            SpeedSettingsGroupBox.Text = GarminFitnessView.GetLocalizedString("SpeedSettingsGroupBoxText");
-            CadenceSettingsGroupBox.Text = GarminFitnessView.GetLocalizedString("CadenceSettingsGroupBoxText");
-            PowerSettingsGroupBox.Text = GarminFitnessView.GetLocalizedString("PowerSettingsGroupBoxText");
-            CategoriesGroupBox.Text = GarminFitnessView.GetLocalizedString("CategoriesText");
-
             DefaultHeartRateZonesLabel.Text = GarminFitnessView.GetLocalizedString("DefaultHeartRateZoneLabelText");
             ExportSTHRZonesAsLabel.Text = GarminFitnessView.GetLocalizedString("ExportSTHRZonesAsLabelText");
+            PercentMaxRadioButton.Text = CommonResources.Text.LabelPercentOfMax;
+            BPMRadioButton.Text = CommonResources.Text.LabelBPM;
+
+            // Speed settings
+            SpeedSettingsGroupBox.Text = GarminFitnessView.GetLocalizedString("SpeedSettingsGroupBoxText");
             DefaultSpeedZoneLabel.Text = GarminFitnessView.GetLocalizedString("DefaultSpeedZoneLabelText");
+            SpeedGarminRadioButton.Text = GarminFitnessView.GetLocalizedString("GarminText");
+            SpeedSportTracksRadioButton.Text = GarminFitnessView.GetLocalizedString("SportTracksText");
+
+            // Cadence settings
+            CadenceSettingsGroupBox.Text = GarminFitnessView.GetLocalizedString("CadenceSettingsGroupBoxText");
             CadenceZoneSelectionLabel.Text = GarminFitnessView.GetLocalizedString("CadenceZoneSelectionLabelText");
+
+            // Power settings
+            PowerSettingsGroupBox.Text = GarminFitnessView.GetLocalizedString("PowerSettingsGroupBoxText");
+            PowerGarminRadioButton.Text = GarminFitnessView.GetLocalizedString("GarminText");
+            PowerSportTracksRadioButton.Text = GarminFitnessView.GetLocalizedString("SportTracksText");
             DefaultPowerZonesLabel.Text = GarminFitnessView.GetLocalizedString("DefaultPowerZoneLabelText");
             PowerZoneSelectionLabel.Text = GarminFitnessView.GetLocalizedString("PowerZoneSelectionLabelText");
-            BrowseButton.Text = GarminFitnessView.GetLocalizedString("BrowseButtonText");
-
-            RunWizardLinkLabel.Text = GarminFitnessView.GetLocalizedString("RunWizardText");
+            ExportSTPowerZonesAsLabel.Text = GarminFitnessView.GetLocalizedString("ExportSTPowerZonesAsLabelText");
+            PercentFTPRadioButton.Text = GarminFitnessView.GetLocalizedString("PercentFTPText");
+            WattsRadioButton.Text = CommonResources.Text.LabelWatts;
 
             AutoSplitCheckBox.Text = GarminFitnessView.GetLocalizedString("AutoSplitCheckBoxText");
 
+            CategoriesGroupBox.Text = GarminFitnessView.GetLocalizedString("CategoriesText");
+
             DeviceCommGroupBox.Text = GarminFitnessView.GetLocalizedString("DeviceCommGroupBoxText");
             DefaultExportDirectoryLabel.Text = GarminFitnessView.GetLocalizedString("DefaultExportDirectoryGroupBoxText");
+            BrowseButton.Text = GarminFitnessView.GetLocalizedString("BrowseButtonText");
+
+            RunWizardLinkLabel.Text = GarminFitnessView.GetLocalizedString("RunWizardText");
 
             CadenceZoneComboBox.Items.Clear();
             for (int i = 0; i < PluginMain.GetApplication().Logbook.CadenceZones.Count; ++i)
@@ -338,6 +357,11 @@ namespace GarminFitnessPlugin.View
             PowerGarminRadioButton.Checked = !Options.Instance.UseSportTracksPowerZones;
             PowerSportTracksRadioButton.Checked = Options.Instance.UseSportTracksPowerZones;
             PowerZoneComboBox.SelectedIndex = powerSelectedIndex;
+            PercentFTPRadioButton.Checked = Options.Instance.ExportSportTracksPowerAsPercentFTP;
+            WattsRadioButton.Checked = !Options.Instance.ExportSportTracksPowerAsPercentFTP;
+            ExportSTPowerZonesAsLabel.Enabled = Options.Instance.UseSportTracksPowerZones;
+            PercentFTPRadioButton.Enabled = Options.Instance.UseSportTracksPowerZones;
+            WattsRadioButton.Enabled = Options.Instance.UseSportTracksPowerZones;
 
             // Auto-split workouts
             AutoSplitCheckBox.Checked = Options.Instance.AllowSplitWorkouts;

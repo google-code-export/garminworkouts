@@ -53,12 +53,38 @@ namespace GarminFitnessPlugin.Data
             FITMessageField powerZone = new FITMessageField((Byte)FITWorkoutStepFieldIds.TargetValue);
             FITMessageField minPower = new FITMessageField((Byte)FITWorkoutStepFieldIds.TargetCustomValueLow);
             FITMessageField maxPower = new FITMessageField((Byte)FITWorkoutStepFieldIds.TargetCustomValueHigh);
+            bool exportAsPercentFTP = Options.Instance.ExportSportTracksPowerAsPercentFTP;
+            GarminCategories category = Options.Instance.GetGarminCategory(BaseTarget.ParentStep.ParentWorkout.Category);
+            float lastFTP = 0;
+
+            if (category == GarminCategories.Biking)
+            {
+                GarminBikingActivityProfile profile = (GarminBikingActivityProfile)GarminProfileManager.Instance.UserProfile.GetProfileForActivity(category);
+
+                lastFTP = profile.FTP;
+            }
+            else
+            {
+                exportAsPercentFTP = false;
+            }
 
             powerZone.SetUInt32((Byte)0);
             message.AddField(powerZone);
-            minPower.SetUInt32((UInt32)Utils.Clamp(Zone.Low, Constants.MinPowerInWatts, Constants.MaxPowerWorkout) + 1000);
+
+            if (exportAsPercentFTP)
+            {
+                float baseMultiplier = Constants.MaxPowerInPercentFTP / lastFTP;
+
+                minPower.SetUInt32((UInt32)Utils.Clamp(Math.Round(Zone.Low * baseMultiplier, 0, MidpointRounding.AwayFromZero), Constants.MinPowerInPercentFTP, Constants.MaxPowerInPercentFTP));
+                maxPower.SetUInt32((UInt32)Utils.Clamp(Math.Round(Zone.High * baseMultiplier, 0, MidpointRounding.AwayFromZero), Constants.MinPowerInPercentFTP, Constants.MaxPowerInPercentFTP));
+            }
+            else
+            {
+                minPower.SetUInt32((UInt32)Utils.Clamp(Zone.Low, Constants.MinPowerInWatts, Constants.MaxPowerWorkoutInWatts) + 1000);
+                maxPower.SetUInt32((UInt32)Utils.Clamp(Zone.High, Constants.MinPowerInWatts, Constants.MaxPowerWorkoutInWatts) + 1000);
+            }
+
             message.AddField(minPower);
-            maxPower.SetUInt32((UInt32)Utils.Clamp(Zone.High, Constants.MinPowerInWatts, Constants.MaxPowerWorkout) + 1000);
             message.AddField(maxPower);
         }
 
@@ -127,39 +153,59 @@ namespace GarminFitnessPlugin.Data
         public override void Serialize(XmlNode parentNode, String nodeName, XmlDocument document)
         {
             base.Serialize(parentNode, nodeName, document);
+            bool exportAsPercentFTP = Options.Instance.ExportSportTracksPowerAsPercentFTP;
+            GarminCategories category = Options.Instance.GetGarminCategory(BaseTarget.ParentStep.ParentWorkout.Category);
+            float lastFTP = 0;
+
+            if (category == GarminCategories.Biking)
+            {
+                GarminBikingActivityProfile profile = (GarminBikingActivityProfile)GarminProfileManager.Instance.UserProfile.GetProfileForActivity(category);
+
+                lastFTP = profile.FTP;
+            }
+            else
+            {
+                exportAsPercentFTP = false;
+            }
 
             // This node was added by our parent...
             parentNode = parentNode.LastChild;
 
             XmlAttribute attribute;
             XmlNode childNode;
+            GarminFitnessBool exportAsPercentMax = new GarminFitnessBool(exportAsPercentFTP, Constants.PowerReferenceTCXString[1], Constants.PowerReferenceTCXString[0]);
+            GarminFitnessUInt32Range lowValue = new GarminFitnessUInt32Range(0);
+            GarminFitnessUInt32Range highValue = new GarminFitnessUInt32Range(0);
 
             // Type
             attribute = document.CreateAttribute(Constants.XsiTypeTCXString, Constants.xsins);
             attribute.Value = "CustomPowerZone_t";
             parentNode.Attributes.Append(attribute);
 
+            if (exportAsPercentMax)
+            {
+                float baseMultiplier = Constants.MaxHRInPercentMax / lastFTP;
+
+                lowValue.Value = (UInt32)Utils.Clamp(Math.Round(Zone.Low * baseMultiplier, 0, MidpointRounding.AwayFromZero), Constants.MinPowerInPercentFTP, Constants.MaxPowerInPercentFTP);
+                highValue.Value = (UInt32)Utils.Clamp(Math.Round(Zone.High * baseMultiplier, 0, MidpointRounding.AwayFromZero), Constants.MinPowerInPercentFTP, Constants.MaxPowerInPercentFTP);
+            }
+            else
+            {
+                lowValue.Value = (UInt32)Utils.Clamp(Zone.Low, Constants.MinPowerInWatts, Constants.MaxPowerWorkoutInWatts);
+                highValue.Value = (UInt32)Utils.Clamp(Zone.High, Constants.MinPowerInWatts, Constants.MaxPowerWorkoutInWatts);
+            }
+
             // Low
-            GarminFitnessUInt16Range zoneLow = new GarminFitnessUInt16Range((UInt16)Utils.Clamp(Zone.Low, Constants.MinPowerInWatts, Constants.MaxPowerWorkout));
             childNode = document.CreateElement("Low");
             parentNode.AppendChild(childNode);
-
-            attribute = document.CreateAttribute(Constants.XsiTypeTCXString, Constants.xsins);
-            childNode.Attributes.Append(attribute);
-            attribute.Value = "PowerInWatts_t";
-
-            zoneLow.Serialize(childNode, Constants.ValueTCXString, document);
+            exportAsPercentMax.SerializeAttribute(childNode, Constants.XsiTypeTCXString, Constants.xsins, document);
+            lowValue.Serialize(childNode, Constants.ValueTCXString, document);
 
             // High
-            GarminFitnessUInt16Range zoneHigh = new GarminFitnessUInt16Range((UInt16)Utils.Clamp(Zone.High, Constants.MinPowerInWatts, Constants.MaxPowerWorkout));
             childNode = document.CreateElement("High");
             parentNode.AppendChild(childNode);
-
-            attribute = document.CreateAttribute(Constants.XsiTypeTCXString, Constants.xsins);
-            childNode.Attributes.Append(attribute);
-            attribute.Value = "PowerInWatts_t";
-
-            zoneHigh.Serialize(childNode, Constants.ValueTCXString, document);
+            exportAsPercentMax.SerializeAttribute(childNode, Constants.XsiTypeTCXString, Constants.xsins, document);
+            highValue.Serialize(childNode, Constants.ValueTCXString, document);
 
             // Extension
             Utils.SerializeSTZoneInfoXML(BaseTarget.ParentStep,
