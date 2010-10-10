@@ -71,19 +71,9 @@
                                 deviceXml += " SupportWriteProfile=" + booleanAttrVal(dataTypes[j].hasWriteAccess());
                             }
                             else if (dataTypes[j].getTypeName() == "FITBinary") {
-                                deviceXml += " SupportReadFIT=" + booleanAttrVal(dataTypes[j].hasReadAccess());
-                                deviceXml += " SupportWriteFIT=" + booleanAttrVal(dataTypes[j].hasWriteAccess());
-
-                                if (dataTypes[j].getReadFilePath() !== "") {
-                                    deviceXml += " FITFileTransferPath='" + dataTypes[j].getReadFilePath() + "'";
-                                }
-                                else if (dataTypes[j].getWriteFilePath() !== "") {
-                                    deviceXml += " FITFileTransferPath='" + dataTypes[j].getReadFilePath() + "'";
-                                }
+                                deviceXml += " SupportsFITFormat=" + booleanAttrVal(true);
                             }
                         }
-
-                        // TODO add FIT support
 
                         deviceXml += "/>";
                         xml += deviceXml;

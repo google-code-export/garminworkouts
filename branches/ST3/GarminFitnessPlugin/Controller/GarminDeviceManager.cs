@@ -573,7 +573,7 @@ namespace GarminFitnessPlugin.Controller
             public override void ExecuteTask(IGarminDevice device)
             {
                 // This function is not supported on the device
-                if (!device.SupportsReadWorkout)
+                if (!device.SupportsReadWorkout && !device.SupportsFITFormat)
                 {
                     throw new NoDeviceSupportException(device, GarminFitnessView.GetLocalizedString("ImportWorkoutsText"));
                 }

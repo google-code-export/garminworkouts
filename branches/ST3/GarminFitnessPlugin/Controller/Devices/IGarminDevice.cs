@@ -34,6 +34,7 @@ namespace GarminFitnessPlugin.Controller
         Boolean SupportsWriteWorkout { get; }
         Boolean SupportsReadProfile { get; }
         Boolean SupportsWriteProfile { get; }
+        Boolean SupportsFITFormat { get; }
 
         String DeviceId { get; }
         String SoftwareVersion { get; }
