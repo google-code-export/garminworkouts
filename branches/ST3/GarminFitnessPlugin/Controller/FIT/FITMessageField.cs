@@ -295,7 +295,22 @@ namespace GarminFitnessPlugin.Controller
                     }
                 case DataType.String:
                     {
-                        stream.Write(m_ByteArrayValue, 0, m_ByteArrayValue.Length);
+                        String text = Encoding.UTF8.GetString(m_ByteArrayValue);
+                        Byte[] valueByte = Encoding.UTF8.GetBytes(text);
+                        Byte[] valueStored = new Byte[m_ByteArrayValue.Length];
+
+                        for(int i = 0; i < valueStored.Length; ++i)
+                        {
+                            if(i < valueByte.Length)
+                            {
+                                valueStored[i] = valueByte[i];
+                            }
+                            else
+                            {
+                                valueStored[i] = 0;
+                            }
+                        }
+                        stream.Write(valueStored, 0, valueStored.Length);
                         break;
                     }
                 case DataType.Byte:
