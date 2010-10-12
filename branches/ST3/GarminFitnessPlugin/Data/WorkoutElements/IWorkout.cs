@@ -174,7 +174,7 @@ namespace GarminFitnessPlugin.Data
 
                 if (!String.IsNullOrEmpty(Name))
                 {
-                    workoutName.SetString(Name);
+                    workoutName.SetString(Name, (Byte)(Constants.MaxNameLength + 1));
                     workoutMessage.AddField(workoutName);
                 }
 

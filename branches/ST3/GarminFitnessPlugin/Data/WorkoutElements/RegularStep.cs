@@ -82,7 +82,7 @@ namespace GarminFitnessPlugin.Data
 
             if (!String.IsNullOrEmpty(Name))
             {
-                stepName.SetString(Name);
+                stepName.SetString(Name, (Byte)(Constants.MaxNameLength + 1));
                 message.AddField(stepName);
             }
 
@@ -500,6 +500,8 @@ namespace GarminFitnessPlugin.Data
                     }
 
                     m_Duration = value;
+                    Debug.Assert(m_Duration != null);
+
                     m_Duration.DurationChanged += new IDuration.DurationChangedEventHandler(OnDurationChanged);
 
                     TriggerStepChanged( new PropertyChangedEventArgs("Duration"));

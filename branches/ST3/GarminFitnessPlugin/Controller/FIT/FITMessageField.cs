@@ -134,9 +134,10 @@ namespace GarminFitnessPlugin.Controller
             return m_UInt32Value;
         }
 
-        public void SetString(String value)
+        public void SetString(String value, Byte stringLength)
         {
             m_Type = DataType.String;
+            m_StringLength = stringLength;
             m_ByteArrayValue = Encoding.UTF8.GetBytes(value);
         }
 
@@ -295,15 +296,13 @@ namespace GarminFitnessPlugin.Controller
                     }
                 case DataType.String:
                     {
-                        String text = Encoding.UTF8.GetString(m_ByteArrayValue);
-                        Byte[] valueByte = Encoding.UTF8.GetBytes(text);
-                        Byte[] valueStored = new Byte[m_ByteArrayValue.Length];
+                        Byte[] valueStored = new Byte[m_StringLength];
 
                         for(int i = 0; i < valueStored.Length; ++i)
                         {
-                            if(i < valueByte.Length)
+                            if (i < m_ByteArrayValue.Length)
                             {
-                                valueStored[i] = valueByte[i];
+                                valueStored[i] = m_ByteArrayValue[i];
                             }
                             else
                             {
@@ -615,5 +614,6 @@ namespace GarminFitnessPlugin.Controller
         private Single m_SingleValue = 0;
         private Double m_DoubleValue = 0;
         private Byte[] m_ByteArrayValue = null;
+        private Byte m_StringLength = 0;
     }
 }

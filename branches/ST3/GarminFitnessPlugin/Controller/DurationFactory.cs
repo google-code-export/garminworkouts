@@ -105,6 +105,16 @@ namespace GarminFitnessPlugin.Controller
                         newDuration = new CaloriesDuration(stream, version, parent);
                         break;
                     }
+                case IDuration.DurationType.PowerAbove:
+                    {
+                        newDuration = new PowerAboveDuration(stream, version, parent);
+                        break;
+                    }
+                case IDuration.DurationType.PowerBelow:
+                    {
+                        newDuration = new PowerBelowDuration(stream, version, parent);
+                        break;
+                    }
                 default:
                     {
                         Debug.Assert(false);
@@ -174,7 +184,7 @@ namespace GarminFitnessPlugin.Controller
                                 HeartRateAboveDuration hrDuration = (HeartRateAboveDuration)Create(IDuration.DurationType.HeartRateAbove, parent);
                                 UInt32 hrValue = durationField.GetUInt32();
 
-                                if (hrValue > 100)
+                                if (hrValue >= 100)
                                 {
                                     hrDuration.IsPercentageMaxHeartRate = false;
                                     hrDuration.MaxHeartRate = (Byte)(hrValue - 100);
@@ -199,7 +209,7 @@ namespace GarminFitnessPlugin.Controller
                                 HeartRateBelowDuration hrDuration = (HeartRateBelowDuration)Create(IDuration.DurationType.HeartRateBelow, parent);
                                 UInt32 hrValue = durationField.GetUInt32();
 
-                                if (hrValue > 100)
+                                if (hrValue >= 100)
                                 {
                                     hrDuration.IsPercentageMaxHeartRate = false;
                                     hrDuration.MinHeartRate = (Byte)(hrValue - 100);
@@ -233,10 +243,52 @@ namespace GarminFitnessPlugin.Controller
                         }
                     case FITWorkoutStepDurationTypes.PowerGreaterThan:
                         {
+                            if (durationField != null)
+                            {
+                                PowerAboveDuration powerDuration = (PowerAboveDuration)Create(IDuration.DurationType.PowerAbove, parent);
+                                UInt32 powerValue = durationField.GetUInt32();
+
+                                if (powerValue >= 1000)
+                                {
+                                    powerDuration.IsPercentFTP = false;
+                                    powerDuration.MaxPower = (Byte)(powerValue - 1000);
+                                }
+                                else
+                                {
+                                    powerDuration.IsPercentFTP = true;
+                                    powerDuration.MaxPower = (Byte)powerValue;
+                                }
+                                result = powerDuration;
+                            }
+                            else
+                            {
+                                throw new FITParserException("Missing duration value field");
+                            }
                             break;
                         }
                     case FITWorkoutStepDurationTypes.PowerLessThan:
                         {
+                            if (durationField != null)
+                            {
+                                PowerBelowDuration powerDuration = (PowerBelowDuration)Create(IDuration.DurationType.PowerBelow, parent);
+                                UInt32 powerValue = durationField.GetUInt32();
+
+                                if (powerValue >= 1000)
+                                {
+                                    powerDuration.IsPercentFTP = false;
+                                    powerDuration.MinPower = (Byte)(powerValue - 1000);
+                                }
+                                else
+                                {
+                                    powerDuration.IsPercentFTP = true;
+                                    powerDuration.MinPower = (Byte)powerValue;
+                                }
+                                result = powerDuration;
+                            }
+                            else
+                            {
+                                throw new FITParserException("Missing duration value field");
+                            }
                             break;
                         }
                 }

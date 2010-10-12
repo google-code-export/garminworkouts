@@ -695,7 +695,7 @@ namespace GarminFitnessPlugin.Data
             get { return m_STExtensions; }
         }
 
-        private GarminFitnessString m_Name = new GarminFitnessString("", 15);
+        private GarminFitnessString m_Name = new GarminFitnessString("", Constants.MaxNameLength);
         private GarminFitnessGuid m_Id = new GarminFitnessGuid(Guid.NewGuid());
         private GarminFitnessDate m_LastExportDate = new GarminFitnessDate();
         private List<GarminFitnessDate> m_ScheduledDates = new List<GarminFitnessDate>();

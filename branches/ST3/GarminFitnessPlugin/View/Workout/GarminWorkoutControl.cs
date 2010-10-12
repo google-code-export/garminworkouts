@@ -672,8 +672,8 @@ namespace GarminFitnessPlugin.View
             }
             else
             {
-                minRange = Constants.MinPowerInPercentFTP;
-                maxRange = Constants.MaxPowerInPercentFTP;
+                minRange = Constants.MinPowerInWatts;
+                maxRange = Constants.MaxPowerWorkoutInWatts;
             }
 
             e.Cancel = !Utils.IsTextIntegerInRange(PowerDurationText.Text, minRange, maxRange);
