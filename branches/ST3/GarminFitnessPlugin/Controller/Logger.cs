@@ -11,7 +11,7 @@ namespace GarminFitnessPlugin.Controller
             m_LogFile = File.CreateText("GF_Log.txt");
             m_LogFile.AutoFlush = true;
 
-            MessageBox.Show((m_LogFile.BaseStream as FileStream).Name);
+            //MessageBox.Show((m_LogFile.BaseStream as FileStream).Name);
         }
 
         ~Logger()

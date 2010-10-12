@@ -46,9 +46,17 @@ namespace GarminFitnessPlugin.Controller
                 {
                     m_WorkoutFileTransferPath = attribute.Value;
                 }
-                else if (attribute.Name.Equals("SupportsFITFormat"))
+                else if (attribute.Name.Equals("SupportsFITWorkouts"))
                 {
-                    m_SupportsFITFormat = Boolean.Parse(attribute.Value);
+                    m_SupportsFITWorkouts = Boolean.Parse(attribute.Value);
+                }
+                else if (attribute.Name.Equals("FITWorkoutFileWriteTransferPath"))
+                {
+                    m_FITWorkoutFileWritePath = attribute.Value;
+                }
+                else if (attribute.Name.Equals("FITWorkoutFileReadTransferPath"))
+                {
+                    m_FITWorkoutFileReadPath = attribute.Value;
                 }
                 else if (attribute.Name.Equals("SupportReadProfile"))
                 {
@@ -147,12 +155,18 @@ namespace GarminFitnessPlugin.Controller
 
                         if (m_WorkoutFilesToDownload != null)
                         {
+                            String workoutFilename = String.Empty;
+
+                            while (!workoutFilename.StartsWith(m_FITWorkoutFileReadPath) &&
+                                  m_WorkoutFilesToDownload.Count > 0)
+                            {
+                                workoutFilename = m_WorkoutFilesToDownload[0];
+                                m_WorkoutFilesToDownload.RemoveAt(0);
+                            }
+
                             if (m_WorkoutFilesToDownload.Count > 0)
                             {
-                                String workoutFilename = m_WorkoutFilesToDownload[0];
-
                                 operationCompleted = false;
-                                m_WorkoutFilesToDownload.RemoveAt(0);
                                 m_Controller.CommunicatorBridge.GetBinaryFile(workoutFilename);
                             }
                             else
@@ -352,7 +366,7 @@ namespace GarminFitnessPlugin.Controller
 
             m_Controller.CommunicatorBridge.SetDeviceNumber(m_DeviceNumber);
 
-            if (!exportExtended && !exportToFIT && !m_SupportsFITFormat)
+            if (!exportExtended && !exportToFIT && !SupportsFITWorkouts)
             {
                 // Basic TCX export
                 string fileName = "Default.tcx";
@@ -384,10 +398,10 @@ namespace GarminFitnessPlugin.Controller
 
                 Directory.CreateDirectory(fileDestination);
 
-                if (exportToFIT || SupportsFITFormat)
+                if (exportToFIT || SupportsFITWorkouts)
                 {
                     // FIT export
-                    if (SupportsFITFormat)
+                    if (SupportsFITWorkouts)
                     {
                         foreach (IWorkout currentWorkout in concreteWorkouts)
                         {
@@ -399,7 +413,7 @@ namespace GarminFitnessPlugin.Controller
                             filenames.Add(fileName);
                         }
 
-                        exportPath = FITFileTransferPath;
+                        exportPath = FITWorkoutFileWritePath;
                     }
                     else
                     {
@@ -445,7 +459,7 @@ namespace GarminFitnessPlugin.Controller
 
             m_Controller.CommunicatorBridge.SetDeviceNumber(m_DeviceNumber);
 
-            if (SupportsFITFormat)
+            if (SupportsFITWorkouts)
             {
                 m_CurrentOperation = DeviceOperations.ReadFITWorkouts;
                 m_WorkoutsReadCount = 0;
@@ -454,14 +468,20 @@ namespace GarminFitnessPlugin.Controller
 
                 if (m_WorkoutFilesToDownload != null)
                 {
+                    String workoutFilename = String.Empty;
+
+                    while(!workoutFilename.StartsWith(m_FITWorkoutFileReadPath) &&
+                          m_WorkoutFilesToDownload.Count > 0)
+                    {
+                        workoutFilename = m_WorkoutFilesToDownload[0];
+                        m_WorkoutFilesToDownload.RemoveAt(0);
+                    }
+
                     if (m_WorkoutFilesToDownload.Count > 0)
                     {
-                        String workoutFilename = m_WorkoutFilesToDownload[0];
-
                         m_Controller.CommunicatorBridge.ExceptionTriggered += new EventHandler<GarminFitnessCommunicatorBridge.ExceptionEventArgs>(OnBridgeExceptionTriggered);
                         m_Controller.CommunicatorBridge.ReadFromDeviceCompleted += new EventHandler<GarminFitnessCommunicatorBridge.TranferCompletedEventArgs>(OnBridgeReadFromDeviceCompleted);
 
-                        m_WorkoutFilesToDownload.RemoveAt(0);
                         m_Controller.CommunicatorBridge.GetBinaryFile(workoutFilename);
                     }
                     else
@@ -585,19 +605,19 @@ namespace GarminFitnessPlugin.Controller
                          m_WorkoutFileTransferPath != String.Empty; }
         }
 
-        public bool SupportsFITFormat
+        public bool SupportsFITWorkouts
         {
-            get { return m_SupportsFITFormat; }
+            get { return m_SupportsFITWorkouts; }
+        }
+
+        public String FITWorkoutFileWritePath
+        {
+            get { return m_FITWorkoutFileWritePath; }
         }
 
         public String WorkoutFileTransferPath
         {
             get { return m_WorkoutFileTransferPath; }
-        }
-
-        public String FITFileTransferPath
-        {
-            get { return "Garmin\\NewFiles"; }
         }
 
         public bool SupportsReadProfile
@@ -639,11 +659,13 @@ namespace GarminFitnessPlugin.Controller
         private string m_Id = string.Empty;
         private string m_SoftwareVersion = string.Empty;
         private string m_WorkoutFileTransferPath = String.Empty;
+        private string m_FITWorkoutFileWritePath = String.Empty;
+        private string m_FITWorkoutFileReadPath = String.Empty;
         private int m_WorkoutsReadCount = 0;
         private bool m_SupportsReadWorkout = false;
         private bool m_SupportsWriteWorkout = false;
         private bool m_SupportsReadProfile = false;
         private bool m_SupportsWriteProfile = false;
-        private bool m_SupportsFITFormat = false;
+        private bool m_SupportsFITWorkouts = false;
     }
 }
