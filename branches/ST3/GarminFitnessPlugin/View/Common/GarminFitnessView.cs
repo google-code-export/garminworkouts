@@ -226,6 +226,10 @@ namespace GarminFitnessPlugin.View
                             }
                             GarminWorkoutManager.Instance.RemoveWorkouts(workoutsToSplit);
                         }
+                        else
+                        {
+                            Options.Instance.AllowSplitWorkouts = true;
+                        }
                     }
                 }
             }

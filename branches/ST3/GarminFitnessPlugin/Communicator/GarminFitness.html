@@ -100,7 +100,9 @@
                   window.external.OnProgressReadFromDevice(json.progress.getPercentage());
               },
               onFinishReadFromDevice: function (json) {
+                  window.external.WriteLog("read completed");
                   window.external.OnFinishReadFromDevice(json.success, json.controller.gpsDataString);
+                  window.external.WriteLog("read callback");
               },
               onCancelReadFromDevice: function (json) {
                   window.external.OnFinishReadFromDevice(false, "");
@@ -311,10 +313,12 @@
             try {
                 var status = 0;
                 var exitLoop = false;
+                window.external.WriteLog("ReadFITDirectory start");
 
                 cancelReadFitDirectory = false;
                 garminPlugin.startReadFitDirectory(garminController.getDeviceNumber());
 
+                window.external.WriteLog("ReadFITDirectory loop");
                 while (!exitLoop) {
                     status = garminPlugin.finishReadFitDirectory();
 
@@ -324,14 +328,19 @@
                     else if (status == 3 ||         // 3 = finished
                              cancelReadFitDirectory) {
                         exitLoop = true;
+                        window.external.WriteLog("ReadFITDirectory exit");
                     }
                 }
 
                 if (!cancelReadFitDirectory) {
                     var directoryXml = garminPlugin.getDirectoryXml();
 
+                    window.external.WriteLog("ReadFITDirectory result = " + directoryXml);
+
                     return escapeXmlChars(directoryXml);
                 }
+
+                window.external.WriteLog("ReadFITDirectory failed");
 
                 return "";
             }
@@ -406,6 +415,7 @@
         }
         function GetBinaryFile(filePath) {
             try {
+                window.external.WriteLog("getBinary file = " + filePath);
                 garminController.getBinaryFile(garminController.getDeviceNumber(), filePath);
             }
             catch (e) {

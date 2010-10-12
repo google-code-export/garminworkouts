@@ -245,6 +245,11 @@ namespace GarminFitnessPlugin.Controller
             }
         }
 
+        public void WriteLog(string log)
+        {
+            Logger.Instance.LogText(log);
+        }
+
 #endregion
 
         public void Initialize()

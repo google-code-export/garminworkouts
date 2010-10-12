@@ -503,6 +503,9 @@ namespace GarminFitnessPlugin.Controller
                             return 8;
                         }
                     case DataType.String:
+                        {
+                            return m_StringLength;
+                        }
                     case DataType.Byte:
                         {
                             return (Byte)m_ByteArrayValue.Length;
