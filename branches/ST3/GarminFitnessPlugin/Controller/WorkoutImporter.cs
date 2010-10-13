@@ -127,6 +127,8 @@ namespace GarminFitnessPlugin.Controller
         {
             try
             {
+                Logger.Instance.LogText("Init parser");
+
                 if (FITParser.Instance.Init(importStream))
                 {
                     FITMessage parsedMessage;
@@ -134,6 +136,8 @@ namespace GarminFitnessPlugin.Controller
                     do
                     {
                         parsedMessage = FITParser.Instance.ReadNextMessage();
+
+                        Logger.Instance.LogText(String.Format("FIT parsed message type=%i", parsedMessage.GlobalMessageType));
 
                         if (parsedMessage != null)
                         {
@@ -147,6 +151,8 @@ namespace GarminFitnessPlugin.Controller
                                         if (fileTypeField != null &&
                                             (FITFileTypes)fileTypeField.GetEnum() != FITFileTypes.Workout)
                                         {
+                                            Logger.Instance.LogText("Not a workout FIT file");
+
                                             return false;
                                         }
 
@@ -214,6 +220,8 @@ namespace GarminFitnessPlugin.Controller
                 }
                 else
                 {
+                    Logger.Instance.LogText("FIT parser init failed");
+
                     return false;
                 }
             }

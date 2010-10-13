@@ -151,7 +151,11 @@ namespace GarminFitnessPlugin.Controller
                             OperationProgressed(this, m_CurrentOperation, ++m_WorkoutsReadCount);
                         }
 
-                        ImportFITWorkoutFileResult(e.DataString);
+                        Logger.Instance.LogText(String.Format("FIT data = %s", e.DataString));
+
+                        bool result = ImportFITWorkoutFileResult(e.DataString);
+
+                        Logger.Instance.LogText(String.Format("Import FIT result = %s", result.ToString()));
 
                         if (m_WorkoutFilesToDownload != null)
                         {
@@ -291,6 +295,8 @@ namespace GarminFitnessPlugin.Controller
                 // UU encoduded base 64, decode first
                 if (workoutData.StartsWith("begin-base64"))
                 {
+                    Logger.Instance.LogText("UUEncoded FIT");
+
                     Byte[] decodedBytes;
 
                     workoutData = workoutData.Substring(workoutData.IndexOf('\n') + 1);
