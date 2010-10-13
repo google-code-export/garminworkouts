@@ -151,11 +151,11 @@ namespace GarminFitnessPlugin.Controller
                             OperationProgressed(this, m_CurrentOperation, ++m_WorkoutsReadCount);
                         }
 
-                        Logger.Instance.LogText(String.Format("FIT data = %s", e.DataString));
+                        Logger.Instance.LogText(String.Format("FIT data = {0}", e.DataString));
 
                         bool result = ImportFITWorkoutFileResult(e.DataString);
 
-                        Logger.Instance.LogText(String.Format("Import FIT result = %s", result.ToString()));
+                        Logger.Instance.LogText(String.Format("Import FIT result = {0}", result.ToString()));
 
                         if (m_WorkoutFilesToDownload != null)
                         {
@@ -304,6 +304,8 @@ namespace GarminFitnessPlugin.Controller
 
                     decodedBytes = System.Convert.FromBase64String(workoutData);
                     workoutData = Encoding.UTF8.GetString(decodedBytes);
+
+                    Logger.Instance.LogText(String.Format("UU decoded result = {0}", workoutData));
                 }
 
                 MemoryStream stream = new MemoryStream(Encoding.UTF8.GetBytes(workoutData));

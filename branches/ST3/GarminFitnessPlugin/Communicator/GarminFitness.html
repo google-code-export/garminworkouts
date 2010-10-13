@@ -110,7 +110,7 @@
               onFinishReadFromDevice: function (json) {
                   window.external.WriteLog("read completed");
                   if (json.controller.gpsDataType == Garmin.DeviceControl.FILE_TYPES.fit) {
-                      window.external.OnFinishReadFromDevice(json.success, json.controller.gpsDataStringCompressed);
+                      window.external.OnFinishReadFromDevice(json.success, json.controller.gpsDataString);
                   }
                   else {
                       window.external.OnFinishReadFromDevice(json.success, json.controller.gpsDataString);
