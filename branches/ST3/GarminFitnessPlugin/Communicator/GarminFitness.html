@@ -109,7 +109,12 @@
               },
               onFinishReadFromDevice: function (json) {
                   window.external.WriteLog("read completed");
-                  window.external.OnFinishReadFromDevice(json.success, json.controller.gpsDataString);
+                  if (json.controller.gpsDataType == Garmin.DeviceControl.FILE_TYPES.fit) {
+                      window.external.OnFinishReadFromDevice(json.success, json.controller.gpsDataStringCompressed);
+                  }
+                  else {
+                      window.external.OnFinishReadFromDevice(json.success, json.controller.gpsDataString);
+                  }
                   window.external.WriteLog("read callback");
               },
               onCancelReadFromDevice: function (json) {
@@ -421,6 +426,7 @@
                 window.external.OnExceptionTriggered("CancelReadFitDirectory failed: " + e.message);
             }
         }
+
         function GetBinaryFile(filePath) {
             try {
                 window.external.WriteLog("getBinary file = " + filePath);
