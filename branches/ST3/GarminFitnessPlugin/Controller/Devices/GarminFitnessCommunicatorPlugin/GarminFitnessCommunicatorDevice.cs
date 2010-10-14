@@ -290,6 +290,7 @@ namespace GarminFitnessPlugin.Controller
         {
             try
             {
+                Byte[] decodedBytes = null;
                 bool result = false;
 
                 // UU encoduded base 64, decode first
@@ -297,18 +298,19 @@ namespace GarminFitnessPlugin.Controller
                 {
                     Logger.Instance.LogText("UUEncoded FIT");
 
-                    Byte[] decodedBytes;
-
                     workoutData = workoutData.Substring(workoutData.IndexOf('\n') + 1);
                     workoutData = workoutData.Substring(0, workoutData.LastIndexOf("===="));
 
                     decodedBytes = System.Convert.FromBase64String(workoutData);
-                    workoutData = Encoding.UTF8.GetString(decodedBytes);
 
-                    Logger.Instance.LogText(String.Format("UU decoded result = {0}", workoutData));
+                    Logger.Instance.LogText(String.Format("UU decoded result = {0}", Encoding.UTF8.GetString(decodedBytes)));
+                }
+                else
+                {
+                    decodedBytes = Encoding.UTF8.GetBytes(workoutData);
                 }
 
-                MemoryStream stream = new MemoryStream(Encoding.UTF8.GetBytes(workoutData));
+                MemoryStream stream = new MemoryStream(decodedBytes);
 
                 result = WorkoutImporter.ImportWorkoutFromFIT(stream);
                 stream.Close();

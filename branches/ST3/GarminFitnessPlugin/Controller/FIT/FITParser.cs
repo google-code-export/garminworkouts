@@ -17,6 +17,7 @@ namespace GarminFitnessPlugin.Controller
             // Make sure we at least have a header
             if (stream.Length < 12)
             {
+                Logger.Instance.LogText("Bad stream length");
                 return false;
             }
 
@@ -36,12 +37,14 @@ namespace GarminFitnessPlugin.Controller
 
             if (!ValidateCRC(crc))
             {
+                Logger.Instance.LogText("Bad CRC");
                 return false;
             }
 
-            // Validte header
+            // Validate header
             if (!ValidateHeader())
             {
+                Logger.Instance.LogText("Bad header");
                 return false;
             }
 
@@ -193,7 +196,9 @@ namespace GarminFitnessPlugin.Controller
 
             UInt16 crc = FITUtils.ComputeStreamCRC(m_DataStream);
 
-            return fileCRC == crc;      
+            Logger.Instance.LogText(String.Format("CRC expected = {0}, computed = {1}", fileCRC, crc));
+
+            return fileCRC == crc;
         }
 
         private bool ValidateHeader()
@@ -203,6 +208,7 @@ namespace GarminFitnessPlugin.Controller
             // Check header size
             if (m_DataStream.ReadByte() != 12)
             {
+                Logger.Instance.LogText("Bad Header size");
                 return false;
             }
 
@@ -210,6 +216,7 @@ namespace GarminFitnessPlugin.Controller
             Byte versionByte = (Byte)m_DataStream.ReadByte();
             if ((versionByte >> 4 & 0xF) > FITConstants.FITProfileMajorVersion)
             {
+                Logger.Instance.LogText("Bad version");
                 return false;
             }
 
@@ -222,6 +229,7 @@ namespace GarminFitnessPlugin.Controller
             UInt32 dataSize = BitConverter.ToUInt32(intBuffer, 0);
             if (dataSize + 12 != m_DataStream.Length) // Add 14 for 12 header + 2 CRC bytes
             {
+                Logger.Instance.LogText("Bad data size");
                 return false;
             }
 
@@ -229,6 +237,7 @@ namespace GarminFitnessPlugin.Controller
             m_DataStream.Read(FITDescription, 0, 4);
             if (!Encoding.UTF8.GetString(FITDescription).Equals(FITConstants.FITFileDescriptor))
             {
+                Logger.Instance.LogText("Bad FIT descriptor");
                 return false;
             }
 

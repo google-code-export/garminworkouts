@@ -137,10 +137,10 @@ namespace GarminFitnessPlugin.Controller
                     {
                         parsedMessage = FITParser.Instance.ReadNextMessage();
 
-                        Logger.Instance.LogText(String.Format("FIT parsed message type=%i", parsedMessage.GlobalMessageType));
-
                         if (parsedMessage != null)
                         {
+                            Logger.Instance.LogText(String.Format("FIT parsed message type=%i", parsedMessage.GlobalMessageType));
+
                             switch (parsedMessage.GlobalMessageType)
                             {
                                 case FITGlobalMessageIds.FileId:

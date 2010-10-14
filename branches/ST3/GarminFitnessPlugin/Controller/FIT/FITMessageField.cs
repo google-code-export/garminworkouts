@@ -44,6 +44,11 @@ namespace GarminFitnessPlugin.Controller
                     m_Type == DataType.Byte)
                 {
                     m_ByteArrayValue = new Byte[size];
+
+                    if (m_Type == DataType.String)
+                    {
+                        m_StringLength = size;
+                    }
                 }
 
                 Debug.Assert(size == FieldSize);
