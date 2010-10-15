@@ -139,7 +139,7 @@ namespace GarminFitnessPlugin.Controller
 
                         if (parsedMessage != null)
                         {
-                            Logger.Instance.LogText(String.Format("FIT parsed message type=%i", parsedMessage.GlobalMessageType));
+                            Logger.Instance.LogText(String.Format("FIT parsed message type={0:0}", (int)parsedMessage.GlobalMessageType));
 
                             switch (parsedMessage.GlobalMessageType)
                             {
@@ -162,46 +162,54 @@ namespace GarminFitnessPlugin.Controller
                                     {
                                         // Peek name
                                         FITMessageField nameField = parsedMessage.GetField((Byte)FITWorkoutFieldIds.WorkoutName);
-                                        String workoutName = nameField.GetString();
-                                        bool isUsedByPart = false;
-                                        IActivityCategory category = null;
 
-                                        if (!GarminWorkoutManager.Instance.IsWorkoutNameAvailable(workoutName, out isUsedByPart))
+                                        if (nameField != null)
                                         {
-                                            if (!isUsedByPart)
+                                            String workoutName = nameField.GetString();
+                                            bool isUsedByPart = false;
+                                            IActivityCategory category = null;
+
+                                            if (!GarminWorkoutManager.Instance.IsWorkoutNameAvailable(workoutName, out isUsedByPart))
                                             {
-                                                ReplaceRenameDialog dlg = new ReplaceRenameDialog(GarminWorkoutManager.Instance.GetUniqueName(workoutName));
-
-                                                if (dlg.ShowDialog() == DialogResult.Yes)
+                                                if (!isUsedByPart)
                                                 {
-                                                    // Yes = replace, delete the current workout from the list
-                                                    Workout oldWorkout = GarminWorkoutManager.Instance.GetWorkout(workoutName);
+                                                    ReplaceRenameDialog dlg = new ReplaceRenameDialog(GarminWorkoutManager.Instance.GetUniqueName(workoutName));
 
-                                                    category = oldWorkout.Category;
-                                                    GarminWorkoutManager.Instance.RemoveWorkout(oldWorkout);
+                                                    if (dlg.ShowDialog() == DialogResult.Yes)
+                                                    {
+                                                        // Yes = replace, delete the current workout from the list
+                                                        Workout oldWorkout = GarminWorkoutManager.Instance.GetWorkout(workoutName);
+
+                                                        category = oldWorkout.Category;
+                                                        GarminWorkoutManager.Instance.RemoveWorkout(oldWorkout);
+                                                    }
+                                                    else
+                                                    {
+                                                        // No = rename
+                                                        workoutName = dlg.NewName;
+                                                    }
                                                 }
                                                 else
                                                 {
-                                                    // No = rename
-                                                    workoutName = dlg.NewName;
+                                                    // Auto rename
+                                                    workoutName = GarminWorkoutManager.Instance.GetUniqueName(workoutName);
                                                 }
                                             }
-                                            else
+
+                                            if (category == null)
                                             {
-                                                // Auto rename
-                                                workoutName = GarminWorkoutManager.Instance.GetUniqueName(workoutName);
+                                                SelectCategoryDialog categoryDlg = new SelectCategoryDialog(workoutName);
+
+                                                categoryDlg.ShowDialog();
+                                                category = categoryDlg.SelectedCategory;
                                             }
-                                        }
 
-                                        if (category == null)
+                                            Workout newWorkout = GarminWorkoutManager.Instance.CreateWorkout(workoutName, parsedMessage, category);
+                                        }
+                                        else
                                         {
-                                            SelectCategoryDialog categoryDlg = new SelectCategoryDialog(workoutName);
-
-                                            categoryDlg.ShowDialog();
-                                            category = categoryDlg.SelectedCategory;
+                                            throw new FITParserException("No name for workout");
                                         }
-
-                                        Workout newWorkout = GarminWorkoutManager.Instance.CreateWorkout(workoutName, parsedMessage, category);
                                         break;
                                     }
                                 default:

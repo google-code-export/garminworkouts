@@ -35,7 +35,8 @@ namespace GarminFitnessPlugin.Controller
         public void LogText(String textToLog)
         {
             if (m_LogFile != null &&
-                m_LogFile.BaseStream != null)
+                m_LogFile.BaseStream != null &&
+                Options.Instance.EnableDebugLog)
             {
                 m_LogFile.WriteLine(String.Format("{0} : {1}", DateTime.Now.ToShortTimeString(), textToLog));
             }

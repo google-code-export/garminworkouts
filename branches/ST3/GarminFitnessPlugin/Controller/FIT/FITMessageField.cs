@@ -51,7 +51,8 @@ namespace GarminFitnessPlugin.Controller
                     }
                 }
 
-                Debug.Assert(size == FieldSize);
+                Debug.Assert(size == FieldSize,
+                             String.Format("Size inconsistent for type {0}.  Size = {1}; Expected = {2}", m_Type.ToString(), FieldSize, size));
             }
             catch (Exception e)
             {

@@ -735,11 +735,15 @@ namespace GarminFitnessPlugin.Controller
             }
         }
 
-        // This should be put in option.  for the moment, it's just a way to deactivate
-        //  mass storage until it works fine (Pending Garmin threads)
         public bool EnableMassStorageMode
         {
             get { return true; }
+        }
+
+        // Use to activate or deactivate logging
+        public bool EnableDebugLog
+        {
+            get { return false; }
         }
 
         private Dictionary<IActivityCategory, GarminCategories>  STToGarminCategoryMap
