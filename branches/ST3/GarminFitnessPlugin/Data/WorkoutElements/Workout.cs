@@ -294,20 +294,22 @@ namespace GarminFitnessPlugin.Data
 
                                         switch (durationType)
                                         {
-                                            case FITWorkoutStepDurationTypes.RepeatCount:
-                                                {
-                                                    newStep = new RepeatStep(this);
-                                                    newStep.DeserializeFromFIT(stepMessage);
-                                                    break;
-                                                }
                                             case FITWorkoutStepDurationTypes.Calories:
                                             case FITWorkoutStepDurationTypes.Distance:
                                             case FITWorkoutStepDurationTypes.HeartRateGreaterThan:
                                             case FITWorkoutStepDurationTypes.HeartRateLessThan:
                                             case FITWorkoutStepDurationTypes.Open:
                                             case FITWorkoutStepDurationTypes.Time:
+                                            case FITWorkoutStepDurationTypes.PowerGreaterThan:
+                                            case FITWorkoutStepDurationTypes.PowerLessThan:
                                                 {
                                                     newStep = new RegularStep(this);
+                                                    newStep.DeserializeFromFIT(stepMessage);
+                                                    break;
+                                                }
+                                            case FITWorkoutStepDurationTypes.RepeatCount:
+                                                {
+                                                    newStep = new RepeatStep(this);
                                                     newStep.DeserializeFromFIT(stepMessage);
                                                     break;
                                                 }
@@ -321,14 +323,6 @@ namespace GarminFitnessPlugin.Data
                                                 {
                                                     // Unsupported yet, don't deserialize
                                                     newStep = new RepeatStep(this);
-                                                    break;
-                                                }
-                                            case FITWorkoutStepDurationTypes.PowerGreaterThan:
-                                            case FITWorkoutStepDurationTypes.PowerLessThan:
-                                            default:
-                                                {
-                                                    // Unsupported yet, don't deserialize
-                                                    newStep = new RegularStep(this);
                                                     break;
                                                 }
                                         }
