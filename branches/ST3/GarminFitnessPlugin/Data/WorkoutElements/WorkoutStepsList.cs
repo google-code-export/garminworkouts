@@ -623,6 +623,11 @@ namespace GarminFitnessPlugin.Data
 
         public void RemoveSteps(List<IStep> stepsToRemove)
         {
+            RemoveSteps(stepsToRemove, true);
+        }
+
+        public void RemoveSteps(List<IStep> stepsToRemove, bool cleanUp)
+        {
             UInt16 preRemoveSplitCount = m_ParentWorkout.ConcreteWorkout.GetSplitPartsCount();
 
             if (stepsToRemove.Count > 0)
@@ -644,7 +649,11 @@ namespace GarminFitnessPlugin.Data
 
                 if (stepWasRemoved)
                 {
-                    CleanUpAfterDelete();
+                    if (cleanUp)
+                    {
+                        CleanUpAfterDelete();
+                    }
+
                     TriggerListChanged("Steps");
                 }
 

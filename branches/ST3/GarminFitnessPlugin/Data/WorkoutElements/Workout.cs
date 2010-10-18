@@ -304,15 +304,9 @@ namespace GarminFitnessPlugin.Data
                                             case FITWorkoutStepDurationTypes.PowerLessThan:
                                                 {
                                                     newStep = new RegularStep(this);
-                                                    newStep.DeserializeFromFIT(stepMessage);
                                                     break;
                                                 }
                                             case FITWorkoutStepDurationTypes.RepeatCount:
-                                                {
-                                                    newStep = new RepeatStep(this);
-                                                    newStep.DeserializeFromFIT(stepMessage);
-                                                    break;
-                                                }
                                             case FITWorkoutStepDurationTypes.RepeatUntilCalories:
                                             case FITWorkoutStepDurationTypes.RepeatUntilDistance:
                                             case FITWorkoutStepDurationTypes.RepeatUntilHeartRateGreaterThan:
@@ -321,12 +315,12 @@ namespace GarminFitnessPlugin.Data
                                             case FITWorkoutStepDurationTypes.RepeatUntilPowerLessThan:
                                             case FITWorkoutStepDurationTypes.RepeatUntilTime:
                                                 {
-                                                    // Unsupported yet, don't deserialize
                                                     newStep = new RepeatStep(this);
                                                     break;
                                                 }
                                         }
 
+                                        newStep.DeserializeFromFIT(stepMessage);
                                         m_Steps.AddStepToRoot(newStep);
                                     }
                                     else

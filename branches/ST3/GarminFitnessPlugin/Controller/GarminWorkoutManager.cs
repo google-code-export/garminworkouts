@@ -93,6 +93,19 @@ namespace GarminFitnessPlugin.Controller
             }
         }
 
+        void OnStepRepeatDurationChanged(IWorkout modifiedWorkout, RepeatStep modifiedStep, IRepeatDuration modifiedDuration, PropertyChangedEventArgs changedProperty)
+        {
+            if (!m_IsDeserializing)
+            {
+                Utils.SaveWorkoutsToLogbook();
+            }
+
+            if (m_EventTriggerActive && WorkoutStepRepeatDurationChanged != null)
+            {
+                WorkoutStepRepeatDurationChanged(modifiedWorkout, modifiedStep, modifiedDuration, changedProperty);
+            }
+        }
+
         void OnStepTargetChanged(IWorkout modifiedWorkout, RegularStep modifiedStep, ITarget modifiedTarget, PropertyChangedEventArgs changedProperty)
         {
             if (!m_IsDeserializing)
@@ -425,6 +438,7 @@ namespace GarminFitnessPlugin.Controller
             workoutToRegister.WorkoutChanged += new Workout.WorkoutChangedEventHandler(OnWorkoutChanged);
             workoutToRegister.StepChanged += new Workout.StepChangedEventHandler(OnWorkoutStepChanged);
             workoutToRegister.StepDurationChanged += new Workout.StepDurationChangedEventHandler(OnStepDurationChanged);
+            workoutToRegister.StepRepeatDurationChanged += new Workout.StepRepeatDurationChangedEventHandler(OnStepRepeatDurationChanged);
             workoutToRegister.StepTargetChanged += new Workout.StepTargetChangedEventHandler(OnStepTargetChanged);
 
             UpdateReservedNamesForWorkout(workoutToRegister);
@@ -446,6 +460,9 @@ namespace GarminFitnessPlugin.Controller
             // Unregister on workout events
             workoutToUnregister.WorkoutChanged -= new Workout.WorkoutChangedEventHandler(OnWorkoutChanged);
             workoutToUnregister.StepChanged -= new Workout.StepChangedEventHandler(OnWorkoutStepChanged);
+            workoutToUnregister.StepDurationChanged -= new Workout.StepDurationChangedEventHandler(OnStepDurationChanged);
+            workoutToUnregister.StepRepeatDurationChanged -= new Workout.StepRepeatDurationChangedEventHandler(OnStepRepeatDurationChanged);
+            workoutToUnregister.StepTargetChanged -= new Workout.StepTargetChangedEventHandler(OnStepTargetChanged);
 
             m_WorkoutReservedNames.Remove(workoutToUnregister);
 
@@ -713,6 +730,9 @@ namespace GarminFitnessPlugin.Controller
 
         public delegate void WorkoutStepDurationChangedEventHandler(IWorkout modifiedWorkout, RegularStep modifiedStep, IDuration modifiedDuration, PropertyChangedEventArgs changedProperty);
         public event WorkoutStepDurationChangedEventHandler WorkoutStepDurationChanged;
+
+        public delegate void WorkoutStepRepeatDurationChangedEventHandler(IWorkout modifiedWorkout, RepeatStep modifiedStep, IRepeatDuration modifiedDuration, PropertyChangedEventArgs changedProperty);
+        public event WorkoutStepRepeatDurationChangedEventHandler WorkoutStepRepeatDurationChanged;
 
         public delegate void WorkoutStepTargetChangedEventHandler(IWorkout modifiedWorkout, RegularStep modifiedStep, ITarget modifiedDuration, PropertyChangedEventArgs changedProperty);
         public event WorkoutStepTargetChangedEventHandler WorkoutStepTargetChanged;

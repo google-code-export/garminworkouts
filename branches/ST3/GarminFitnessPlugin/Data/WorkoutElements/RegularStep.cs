@@ -385,6 +385,26 @@ namespace GarminFitnessPlugin.Data
             return new RegularStep(stream, Constants.CurrentVersion, ParentConcreteWorkout);
         }
 
+        protected void TriggerDurationChangedEvent(IDuration duration, PropertyChangedEventArgs args)
+        {
+            Debug.Assert(Type == StepType.Regular);
+
+            if (DurationChanged != null)
+            {
+                DurationChanged((RegularStep)this, duration, args);
+            }
+        }
+
+        protected void TriggerTargetChangedEvent(ITarget target, PropertyChangedEventArgs args)
+        {
+            Debug.Assert(Type == StepType.Regular);
+
+            if (TargetChanged != null)
+            {
+                TargetChanged((RegularStep)this, target, args);
+            }
+        }
+
         public void HandleTargetOverride(XmlNode extensionNode)
         {
             Target.HandleTargetOverride(extensionNode);
@@ -504,7 +524,7 @@ namespace GarminFitnessPlugin.Data
 
                     m_Duration.DurationChanged += new IDuration.DurationChangedEventHandler(OnDurationChanged);
 
-                    TriggerStepChanged( new PropertyChangedEventArgs("Duration"));
+                    TriggerStepChanged(new PropertyChangedEventArgs("Duration"));
                 }
             }
         }
@@ -581,8 +601,14 @@ namespace GarminFitnessPlugin.Data
             }
         }
 
-        private IDuration m_Duration;
-        private ITarget m_Target;
+        public delegate void StepDurationChangedEventHandler(RegularStep modifiedStep, IDuration modifiedDuration, PropertyChangedEventArgs changedProperty);
+        public event StepDurationChangedEventHandler DurationChanged;
+
+        public delegate void StepTargetChangedEventHandler(RegularStep modifiedStep, ITarget modifiedTarget, PropertyChangedEventArgs changedProperty);
+        public event StepTargetChangedEventHandler TargetChanged;
+
+        private IDuration m_Duration = null;
+        private ITarget m_Target = null;
         private GarminFitnessString m_Name = new GarminFitnessString(String.Empty, Constants.MaxNameLength);
         private StepIntensity m_Intensity = StepIntensity.Active;
     }

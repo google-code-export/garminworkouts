@@ -119,26 +119,6 @@ namespace GarminFitnessPlugin.Data
             }
         }
 
-        protected void TriggerDurationChangedEvent(IDuration duration, PropertyChangedEventArgs args)
-        {
-            Debug.Assert(Type == StepType.Regular);
-
-            if (DurationChanged != null)
-            {
-                DurationChanged((RegularStep)this, duration, args);
-            }
-        }
-
-        protected void TriggerTargetChangedEvent(ITarget target, PropertyChangedEventArgs args)
-        {
-            Debug.Assert(Type == StepType.Regular);
-
-            if (TargetChanged != null)
-            {
-                TargetChanged((RegularStep)this, target, args);
-            }
-        }
-
         public StepType Type
         {
             get { return m_StepType; }
@@ -235,12 +215,6 @@ namespace GarminFitnessPlugin.Data
 
         public delegate void StepChangedEventHandler(IStep modifiedStep, PropertyChangedEventArgs changedProperty);
         public event StepChangedEventHandler StepChanged;
-
-        public delegate void StepDurationChangedEventHandler(RegularStep modifiedStep, IDuration modifiedDuration, PropertyChangedEventArgs changedProperty);
-        public event StepDurationChangedEventHandler DurationChanged;
-
-        public delegate void StepTargetChangedEventHandler(RegularStep modifiedStep, ITarget modifiedTarget, PropertyChangedEventArgs changedProperty);
-        public event StepTargetChangedEventHandler TargetChanged;
 
         private StepType m_StepType;
         private Workout m_ParentWorkout;

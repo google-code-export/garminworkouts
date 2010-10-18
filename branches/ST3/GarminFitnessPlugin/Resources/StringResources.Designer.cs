@@ -1465,11 +1465,83 @@ namespace GarminFitnessPlugin.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to After it was repeated a certain number of times.
+        /// </summary>
+        internal static string RepeatCountComboBoxText {
+            get {
+                return ResourceManager.GetString("RepeatCountComboBoxText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Repeat the steps below {0} times:.
         /// </summary>
         internal static string RepeatStepDescriptionText {
             get {
                 return ResourceManager.GetString("RepeatStepDescriptionText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Repeat until I burn {0} calories..
+        /// </summary>
+        internal static string RepeatUntilCaloriesDurationDescriptionText {
+            get {
+                return ResourceManager.GetString("RepeatUntilCaloriesDurationDescriptionText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Repeat for {0:0.00} {1}..
+        /// </summary>
+        internal static string RepeatUntilDistanceDurationDescriptionText {
+            get {
+                return ResourceManager.GetString("RepeatUntilDistanceDurationDescriptionText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Repeat until my heart rate gets above {0} {1}..
+        /// </summary>
+        internal static string RepeatUntilHeartRateAboveDurationDescriptionText {
+            get {
+                return ResourceManager.GetString("RepeatUntilHeartRateAboveDurationDescriptionText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Repeat until my heart rate gets below {0} {1}..
+        /// </summary>
+        internal static string RepeatUntilHeartRateBelowDurationDescriptionText {
+            get {
+                return ResourceManager.GetString("RepeatUntilHeartRateBelowDurationDescriptionText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Repeat until my power gets above {0} {1}..
+        /// </summary>
+        internal static string RepeatUntilPowerAboveDurationDescriptionText {
+            get {
+                return ResourceManager.GetString("RepeatUntilPowerAboveDurationDescriptionText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Repeat until my power gets below {0} {1}..
+        /// </summary>
+        internal static string RepeatUntilPowerBelowDurationDescriptionText {
+            get {
+                return ResourceManager.GetString("RepeatUntilPowerBelowDurationDescriptionText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Repeat for {0:00}:{1:00}:{2:00}..
+        /// </summary>
+        internal static string RepeatUntilTimeDurationDescriptionText {
+            get {
+                return ResourceManager.GetString("RepeatUntilTimeDurationDescriptionText", resourceCulture);
             }
         }
         

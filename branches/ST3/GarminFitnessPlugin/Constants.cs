@@ -189,10 +189,7 @@ namespace GarminFitnessPlugin
         public static readonly string WorkoutsClipboardID = "GFP_WorkoutsList";
         public static readonly string StepsClipboardID = "GFP_StepsList";
 
-        public static readonly string Forerunner405UnitDescription = "FR405";
-        public static readonly string Forerunner310XTUnitDescription = "310XT";
-
-        public static readonly DataVersion CurrentVersion = new DataVersion(19);
+        public static readonly DataVersion CurrentVersion = new DataVersion(20);
         public static readonly String DataHeaderIdString = "Garmin Workouts Plugin made by S->G";
    }
 }

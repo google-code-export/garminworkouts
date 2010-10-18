@@ -33,6 +33,14 @@ namespace GarminFitnessPlugin.Data
             m_CaloriesToSpend.Serialize(stream);
         }
 
+        public new void Deserialize_V0(Stream stream, DataVersion version)
+        {
+            // Call base deserialization
+            Deserialize(typeof(IDuration), stream, version);
+
+            m_CaloriesToSpend.Deserialize(stream, version);
+        }
+
         public override void FillFITStepMessage(FITMessage message)
         {
             FITMessageField durationType = new FITMessageField((Byte)FITWorkoutStepFieldIds.DurationType);
@@ -43,14 +51,6 @@ namespace GarminFitnessPlugin.Data
 
             durationValue.SetUInt32((UInt32)CaloriesToSpend);
             message.AddField(durationValue);
-        }
-
-        public new void Deserialize_V0(Stream stream, DataVersion version)
-        {
-            // Call base deserialization
-            Deserialize(typeof(IDuration), stream, version);
-
-            m_CaloriesToSpend.Deserialize(stream, version);
         }
 
         public override void Serialize(XmlNode parentNode, String nodeName, XmlDocument document)

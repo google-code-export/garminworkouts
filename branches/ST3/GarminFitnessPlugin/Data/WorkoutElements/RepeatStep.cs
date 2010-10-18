@@ -20,7 +20,10 @@ namespace GarminFitnessPlugin.Data
             : base(StepType.Repeat, parent)
         {
             Debug.Assert(numRepeats <= Constants.MaxRepeats);
-            RepetitionCount = numRepeats;
+
+            RepeatCountDuration repeatCountDuration = new RepeatCountDuration(this);
+            repeatCountDuration.RepetitionCount = numRepeats;
+            Duration = repeatCountDuration;
 
             m_StepsToRepeat.Add(new RegularStep(parent));
         }
@@ -31,109 +34,42 @@ namespace GarminFitnessPlugin.Data
             Deserialize(stream, version);
         }
 
+        private void OnDurationChanged(IRepeatDuration modifiedDuration, PropertyChangedEventArgs changedProperty)
+        {
+            TriggerDurationChangedEvent(modifiedDuration, changedProperty);
+        }
+
         public override void Serialize(Stream stream)
         {
             base.Serialize(stream);
-
-            m_RepetitionCount.Serialize(stream);
 
             stream.Write(BitConverter.GetBytes(StepsToRepeat.Count), 0, sizeof(Int32));
             foreach (IStep currentStep in StepsToRepeat)
             {
                 currentStep.Serialize(stream);
             }
+
+            Duration.Serialize(stream);
         }
 
-        public override void SerializetoFIT(Stream stream)
-        {
-            // Serialize children first, followed by the repeat
-            foreach (IStep child in StepsToRepeat)
-            {
-                child.SerializetoFIT(stream);
-            }
-
-            base.SerializetoFIT(stream);
-        }
-
-        public override void DeserializeFromFIT(FITMessage stepMessage)
-        {
-            FITMessageField stepsToRepeatField = stepMessage.GetField((Byte)FITWorkoutStepFieldIds.DurationValue);
-            FITMessageField repeatCountField = stepMessage.GetField((Byte)FITWorkoutStepFieldIds.TargetValue);
-
-            if (stepsToRepeatField != null &&
-                repeatCountField != null)
-            {
-                Int32 precedingStepsToRepeat = (Int32)(ParentWorkout.StepCount - stepsToRepeatField.GetUInt32());
-                List<IStep> stepsToRepeat = new List<IStep>();
-
-                while (precedingStepsToRepeat > 0)
-                {
-                    Int32 precedingStepIndex = ParentWorkout.Steps.Count - 1;
-                    Int32 precedingStepCounter = ParentWorkout.Steps[precedingStepIndex].StepCount;
-
-                    while (precedingStepCounter < precedingStepsToRepeat)
-                    {
-                        precedingStepCounter += ParentWorkout.Steps[precedingStepIndex].StepCount;
-                        precedingStepIndex--;
-                    }
-
-                    IStep precedingStep = ParentWorkout.Steps[precedingStepIndex];
-
-                    stepsToRepeat.Add(precedingStep);
-
-                    precedingStepsToRepeat -= precedingStep.StepCount;
-                }
-
-                // Officialize result in workout
-                ParentConcreteWorkout.Steps.RemoveSteps(stepsToRepeat);
-                // In case the repeat wasn't yet registered on the workout
-                StepsToRepeat.Clear();
-                foreach (IStep currentStep in stepsToRepeat)
-                {
-                    StepsToRepeat.Add(currentStep);
-                }
-
-                RepetitionCount = (Byte)repeatCountField.GetUInt32();
-            }
-            else
-            {
-                throw new FITParserException("Missing step to repeat or repetition count field");
-            }
-        }
-
-        public override void FillFITStepMessage(FITMessage message)
-        {
-            FITMessageField durationType = new FITMessageField((Byte)FITWorkoutStepFieldIds.DurationType);
-            FITMessageField repeatFromStep = new FITMessageField((Byte)FITWorkoutStepFieldIds.DurationValue);
-            FITMessageField targetType = new FITMessageField((Byte)FITWorkoutStepFieldIds.TargetType);
-            FITMessageField repeatCount = new FITMessageField((Byte)FITWorkoutStepFieldIds.TargetValue);
-
-            durationType.SetEnum((Byte)FITWorkoutStepDurationTypes.RepeatCount);
-            message.AddField(durationType);
-            repeatFromStep.SetUInt32((UInt32)(ParentWorkout.GetStepExportId(StepsToRepeat[0]) - 1));
-            message.AddField(repeatFromStep);
-            targetType.SetEnum((Byte)FITWorkoutStepTargetTypes.NoTarget);
-            message.AddField(targetType);
-            repeatCount.SetUInt32((UInt32)RepetitionCount);
-            message.AddField(repeatCount);
-        }
 
         public new void Deserialize_V0(Stream stream, DataVersion version)
         {
             // Call base deserialization
             Deserialize(typeof(IStep), stream, version);
 
-            byte[] byteBuffer = new byte[sizeof(Byte)];
             byte[] intBuffer = new byte[sizeof(Int32)];
             Int32 stepCount;
 
-            m_RepetitionCount.Deserialize(stream, version);
+            RepeatCountDuration repeatCountDuration = new RepeatCountDuration(this);
+            repeatCountDuration.Deserialize(stream, version);
+            Duration = repeatCountDuration;
 
             stream.Read(intBuffer, 0, sizeof(Int32));
             stepCount = BitConverter.ToInt32(intBuffer, 0);
 
             // In case the repeat was already registered on the workout
-            ParentConcreteWorkout.Steps.RemoveSteps(StepsToRepeat);
+            ParentConcreteWorkout.Steps.RemoveSteps(StepsToRepeat, false);
             m_StepsToRepeat.Clear();
             for (int i = 0; i < stepCount; ++i)
             {
@@ -168,11 +104,131 @@ namespace GarminFitnessPlugin.Data
             }
         }
 
+        public void Deserialize_V20(Stream stream, DataVersion version)
+        {
+            // Call base deserialization
+            Deserialize(typeof(IStep), stream, version);
+
+            byte[] intBuffer = new byte[sizeof(Int32)];
+            Int32 stepCount;
+
+            stream.Read(intBuffer, 0, sizeof(Int32));
+            stepCount = BitConverter.ToInt32(intBuffer, 0);
+
+            // In case the repeat was already registered on the workout
+            ParentConcreteWorkout.Steps.RemoveSteps(StepsToRepeat, false);
+            m_StepsToRepeat.Clear();
+            for (int i = 0; i < stepCount; ++i)
+            {
+                IStep.StepType type;
+
+                stream.Read(intBuffer, 0, sizeof(Int32));
+                type = (IStep.StepType)BitConverter.ToInt32(intBuffer, 0);
+                if (type == IStep.StepType.Regular)
+                {
+                    m_StepsToRepeat.Add(new RegularStep(stream, version, ParentConcreteWorkout));
+                }
+                else if (type == IStep.StepType.Link)
+                {
+                    WorkoutLinkStep tempLink = new WorkoutLinkStep(stream, version, ParentConcreteWorkout);
+
+                    if (tempLink.LinkedWorkout != null)
+                    {
+                        m_StepsToRepeat.Add(tempLink);
+                    }
+                    else
+                    {
+                        WorkoutStepsList linkSteps = new WorkoutStepsList(ParentConcreteWorkout);
+
+                        linkSteps.Deserialize(stream, Constants.CurrentVersion);
+                        m_StepsToRepeat.AddRange(linkSteps);
+                    }
+                }
+                else
+                {
+                    m_StepsToRepeat.Add(new RepeatStep(stream, version, ParentConcreteWorkout));
+                }
+            }
+
+            stream.Read(intBuffer, 0, sizeof(Int32));
+            IRepeatDuration.RepeatDurationType durationType = (IRepeatDuration.RepeatDurationType)(BitConverter.ToInt32(intBuffer, 0));
+            Duration = DurationFactory.Create(durationType, stream, version, this);
+        }
+
+        public override void SerializetoFIT(Stream stream)
+        {
+            // Serialize children first, followed by the repeat
+            foreach (IStep child in StepsToRepeat)
+            {
+                child.SerializetoFIT(stream);
+            }
+
+            base.SerializetoFIT(stream);
+        }
+
+        public override void DeserializeFromFIT(FITMessage stepMessage)
+        {
+            FITMessageField stepsToRepeatField = stepMessage.GetField((Byte)FITWorkoutStepFieldIds.DurationValue);
+
+            if (stepsToRepeatField != null)
+            {
+                Int32 precedingStepsToRepeat = (Int32)(ParentWorkout.StepCount - stepsToRepeatField.GetUInt32());
+                List<IStep> stepsToRepeat = new List<IStep>();
+
+                while (precedingStepsToRepeat > 0)
+                {
+                    Int32 precedingStepIndex = ParentWorkout.Steps.Count - 1;
+                    Int32 precedingStepCounter = ParentWorkout.Steps[precedingStepIndex].StepCount;
+
+                    while (precedingStepCounter < precedingStepsToRepeat)
+                    {
+                        precedingStepCounter += ParentWorkout.Steps[precedingStepIndex].StepCount;
+                        precedingStepIndex--;
+                    }
+
+                    IStep precedingStep = ParentWorkout.Steps[precedingStepIndex];
+
+                    stepsToRepeat.Add(precedingStep);
+
+                    precedingStepsToRepeat -= precedingStep.StepCount;
+                }
+
+                // Officialize result in workout
+                ParentConcreteWorkout.Steps.RemoveSteps(stepsToRepeat, false);
+                // In case the repeat wasn't yet registered on the workout
+                StepsToRepeat.Clear();
+                foreach (IStep currentStep in stepsToRepeat)
+                {
+                    StepsToRepeat.Add(currentStep);
+                }
+
+                DurationFactory.Create(stepMessage, this);
+            }
+            else
+            {
+                throw new FITParserException("Missing steps to repeat");
+            }
+        }
+
+        public override void FillFITStepMessage(FITMessage message)
+        {
+            FITMessageField repeatFromStep = new FITMessageField((Byte)FITWorkoutStepFieldIds.DurationValue);
+            FITMessageField targetType = new FITMessageField((Byte)FITWorkoutStepFieldIds.TargetType);
+
+            repeatFromStep.SetUInt32((UInt32)(ParentWorkout.GetStepExportId(StepsToRepeat[0]) - 1));
+            message.AddField(repeatFromStep);
+            targetType.SetEnum((Byte)FITWorkoutStepTargetTypes.NoTarget);
+            message.AddField(targetType);
+
+            Duration.FillFITStepMessage(message);
+        }
+
         public override void Serialize(XmlNode parentNode, String nodeName, XmlDocument document)
         {
             base.Serialize(parentNode, nodeName, document);
 
-            m_RepetitionCount.Serialize(parentNode.LastChild, "Repetitions", document);
+            Debug.Assert(Duration is RepeatCountDuration);
+            Duration.Serialize(parentNode.LastChild, "", document);
 
             // Export all children
             foreach(IStep currentStep in StepsToRepeat)
@@ -194,7 +250,10 @@ namespace GarminFitnessPlugin.Data
 
                 if (child.Name == "Repetitions")
                 {
-                    m_RepetitionCount.Deserialize(child);
+                    RepeatCountDuration repeatCountDuration = new RepeatCountDuration(this);
+
+                    repeatCountDuration.Deserialize(child);
+                    Duration = repeatCountDuration;
                     repeatsRead = true;
                 }
                 else if (child.Name == "Child")
@@ -225,7 +284,7 @@ namespace GarminFitnessPlugin.Data
                 throw new GarminFitnessXmlDeserializationException("Information missing in the XML node", parentNode);
             }
 
-            ParentConcreteWorkout.Steps.RemoveSteps(m_StepsToRepeat);
+            ParentConcreteWorkout.Steps.RemoveSteps(m_StepsToRepeat, false);
             // In case the repeat wasn't yet registered on the workout
             m_StepsToRepeat.Clear();
             for (int i = 0; i < stepsToRepeat.Count; ++i)
@@ -249,7 +308,11 @@ namespace GarminFitnessPlugin.Data
 
             repeatStep.SetDurationType(GarXFaceNet._Workout._Step.DurationTypes.Repeat);
             repeatStep.SetDurationValue(firstStepIndex + 1);
-            repeatStep.SetTargetValue(RepetitionCount);
+
+            Debug.Assert(Duration is RepeatCountDuration);
+
+            RepeatCountDuration duration = Duration as RepeatCountDuration;
+            repeatStep.SetTargetValue(duration.RepetitionCount);
 
             return stepIndex + 1;
         }
@@ -279,7 +342,7 @@ namespace GarminFitnessPlugin.Data
             }
 
             // Officialize result in workout
-            ParentConcreteWorkout.Steps.RemoveSteps(stepsToRepeat);
+            ParentConcreteWorkout.Steps.RemoveSteps(stepsToRepeat, false);
             // In case the repeat wasn't yet registered on the workout
             StepsToRepeat.Clear();
             foreach (IStep currentStep in stepsToRepeat)
@@ -314,21 +377,6 @@ namespace GarminFitnessPlugin.Data
             }
 
             return valueChanged;
-        }
-
-        public override UInt16 StepCount
-        {
-            get
-            {
-                UInt16 stepCount = base.StepCount;
-
-                foreach (IStep currentStep in m_StepsToRepeat)
-                {
-                    stepCount += currentStep.StepCount;
-                }
-
-                return stepCount;
-            }
         }
 
         public bool IsChildStep(IStep step)
@@ -423,6 +471,14 @@ namespace GarminFitnessPlugin.Data
             }
         }
 
+        protected void TriggerDurationChangedEvent(IRepeatDuration duration, PropertyChangedEventArgs args)
+        {
+            if (DurationChanged != null)
+            {
+                DurationChanged(this, duration, args);
+            }
+        }
+
         public override Workout ParentConcreteWorkout
         {
             get { return base.ParentConcreteWorkout; }
@@ -437,16 +493,39 @@ namespace GarminFitnessPlugin.Data
             }
         }
 
-        public Byte RepetitionCount
+        public override UInt16 StepCount
         {
-            get { return m_RepetitionCount; }
+            get
+            {
+                UInt16 stepCount = base.StepCount;
+
+                foreach (IStep currentStep in m_StepsToRepeat)
+                {
+                    stepCount += currentStep.StepCount;
+                }
+
+                return stepCount;
+            }
+        }
+
+        public IRepeatDuration Duration
+        {
+            get { return m_Duration; }
             set
             {
-                if (m_RepetitionCount != value)
+                if (m_Duration != value)
                 {
-                    m_RepetitionCount.Value = value;
+                    if (m_Duration != null)
+                    {
+                        m_Duration.DurationChanged -= new IRepeatDuration.DurationChangedEventHandler(OnDurationChanged);
+                    }
 
-                    TriggerStepChanged(new PropertyChangedEventArgs("RepetitionCount"));
+                    m_Duration = value;
+                    Debug.Assert(m_Duration != null);
+
+                    m_Duration.DurationChanged += new IRepeatDuration.DurationChangedEventHandler(OnDurationChanged);
+
+                    TriggerStepChanged(new PropertyChangedEventArgs("Duration"));
                 }
             }
         }
@@ -480,10 +559,13 @@ namespace GarminFitnessPlugin.Data
 
         public override bool ContainsFITOnlyFeatures
         {
-            get { return false; }
+            get { return Duration.ContainsFITOnlyFeatures; }
         }
 
-        private GarminFitnessByteRange m_RepetitionCount = new GarminFitnessByteRange(Constants.MinRepeats, Constants.MinRepeats, Constants.MaxRepeats);
+        public delegate void StepDurationChangedEventHandler(RepeatStep modifiedStep, IRepeatDuration modifiedDuration, PropertyChangedEventArgs changedProperty);
+        public event StepDurationChangedEventHandler DurationChanged;
+
+        private IRepeatDuration m_Duration = null;
         private List<IStep> m_StepsToRepeat = new List<IStep>();
     }
 }

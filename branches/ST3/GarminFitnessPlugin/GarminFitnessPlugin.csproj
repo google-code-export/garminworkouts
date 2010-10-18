@@ -142,6 +142,15 @@
     <Compile Include="Data\WorkoutElements\Durations\PowerAboveDuration.cs" />
     <Compile Include="Data\WorkoutElements\Durations\PowerBelowDuration.cs" />
     <Compile Include="Data\WorkoutElements\IWorkout.cs" />
+    <Compile Include="Data\WorkoutElements\RepeatDurations\RepeatUntilCaloriesDuration.cs" />
+    <Compile Include="Data\WorkoutElements\RepeatDurations\RepeatUntilDistanceDuration.cs" />
+    <Compile Include="Data\WorkoutElements\RepeatDurations\RepeatUntilHeartRateAboveDuration.cs" />
+    <Compile Include="Data\WorkoutElements\RepeatDurations\RepeatUntilHeartRateBelowDuration.cs" />
+    <Compile Include="Data\WorkoutElements\RepeatDurations\IRepeatDuration.cs" />
+    <Compile Include="Data\WorkoutElements\RepeatDurations\RepeatCountDuration.cs" />
+    <Compile Include="Data\WorkoutElements\RepeatDurations\RepeatUntilPowerAboveDuration.cs" />
+    <Compile Include="Data\WorkoutElements\RepeatDurations\RepeatUntilPowerBelowDuration.cs" />
+    <Compile Include="Data\WorkoutElements\RepeatDurations\RepeatUntilTimeDuration.cs" />
     <Compile Include="Data\WorkoutElements\Targets\Cadence\BaseCadenceTarget.cs" />
     <Compile Include="Data\WorkoutElements\Targets\Cadence\CadenceZoneSTTarget.cs" />
     <Compile Include="Data\WorkoutElements\Targets\Heart rate\HeartRateZoneSTTarget.cs" />

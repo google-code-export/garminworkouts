@@ -262,13 +262,19 @@ namespace GarminFitnessPlugin.Data
             }
         }
 
-        void OnDurationChanged(IStep modifiedStep, IDuration durationChanged, PropertyChangedEventArgs changedProperty)
+        void OnDurationChanged(RegularStep modifiedStep, IDuration durationChanged, PropertyChangedEventArgs changedProperty)
         {
-            Debug.Assert(modifiedStep.Type == IStep.StepType.Regular);
-
             if (ConcreteWorkout.StepDurationChanged != null)
             {
-                ConcreteWorkout.StepDurationChanged(this, (RegularStep)modifiedStep, durationChanged, changedProperty);
+                ConcreteWorkout.StepDurationChanged(this, modifiedStep, durationChanged, changedProperty);
+            }
+        }
+
+        void OnRepeatDurationChanged(RepeatStep modifiedStep, IRepeatDuration durationChanged, PropertyChangedEventArgs changedProperty)
+        {
+            if (ConcreteWorkout.StepRepeatDurationChanged != null)
+            {
+                ConcreteWorkout.StepRepeatDurationChanged(this, modifiedStep, durationChanged, changedProperty);
             }
         }
 
@@ -568,8 +574,20 @@ namespace GarminFitnessPlugin.Data
         protected void RegisterStep(IStep stepToRegister)
         {
             stepToRegister.StepChanged += new IStep.StepChangedEventHandler(OnStepChanged);
-            stepToRegister.DurationChanged += new IStep.StepDurationChangedEventHandler(OnDurationChanged);
-            stepToRegister.TargetChanged += new IStep.StepTargetChangedEventHandler(OnTargetChanged);
+
+            if (stepToRegister is RegularStep)
+            {
+                RegularStep regularStep = stepToRegister as RegularStep;
+
+                regularStep.DurationChanged += new RegularStep.StepDurationChangedEventHandler(OnDurationChanged);
+                regularStep.TargetChanged += new RegularStep.StepTargetChangedEventHandler(OnTargetChanged);
+            }
+            else if (stepToRegister is RepeatStep)
+            {
+                RepeatStep repeatStep = stepToRegister as RepeatStep;
+
+                repeatStep.DurationChanged += new RepeatStep.StepDurationChangedEventHandler(OnRepeatDurationChanged);
+            }
 
             stepToRegister.ParentConcreteWorkout = ConcreteWorkout;
 
@@ -590,8 +608,20 @@ namespace GarminFitnessPlugin.Data
         protected void UnregisterStep(IStep stepToUnregister)
         {
             stepToUnregister.StepChanged -= new IStep.StepChangedEventHandler(OnStepChanged);
-            stepToUnregister.DurationChanged -= new IStep.StepDurationChangedEventHandler(OnDurationChanged);
-            stepToUnregister.TargetChanged -= new IStep.StepTargetChangedEventHandler(OnTargetChanged);
+
+            if (stepToUnregister is RegularStep)
+            {
+                RegularStep regularStep = stepToUnregister as RegularStep;
+
+                regularStep.DurationChanged -= new RegularStep.StepDurationChangedEventHandler(OnDurationChanged);
+                regularStep.TargetChanged -= new RegularStep.StepTargetChangedEventHandler(OnTargetChanged);
+            }
+            else if (stepToUnregister is RepeatStep)
+            {
+                RepeatStep repeatStep = stepToUnregister as RepeatStep;
+
+                repeatStep.DurationChanged -= new RepeatStep.StepDurationChangedEventHandler(OnRepeatDurationChanged);
+            }
         }
 
         public int GetStepExportId(IStep step)
@@ -789,6 +819,9 @@ namespace GarminFitnessPlugin.Data
 
         public delegate void StepDurationChangedEventHandler(IWorkout modifiedWorkout, RegularStep modifiedStep, IDuration modifiedDuration, PropertyChangedEventArgs changedProperty);
         public event StepDurationChangedEventHandler StepDurationChanged;
+
+        public delegate void StepRepeatDurationChangedEventHandler(IWorkout modifiedWorkout, RepeatStep modifiedStep, IRepeatDuration modifiedDuration, PropertyChangedEventArgs changedProperty);
+        public event StepRepeatDurationChangedEventHandler StepRepeatDurationChanged;
 
         public delegate void StepTargetChangedEventHandler(IWorkout modifiedWorkout, RegularStep modifiedStep, ITarget modifiedTarget, PropertyChangedEventArgs changedProperty);
         public event StepTargetChangedEventHandler StepTargetChanged;
