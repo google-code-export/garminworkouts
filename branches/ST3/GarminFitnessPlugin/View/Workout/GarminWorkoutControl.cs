@@ -155,139 +155,192 @@ namespace GarminFitnessPlugin.View
             }
         }
 
+        private delegate void WorkoutListChangedDelegate();
         private void OnGarminWorkoutManagerWorkoutListChanged()
         {
-            // This callback handles creation & deletion of workouts
-            BuildWorkoutsList();
-            RefreshWorkoutSelection();
+            if (InvokeRequired)
+            {
+                Invoke(new WorkoutListChangedDelegate(OnGarminWorkoutManagerWorkoutListChanged), null); 
+            }
+            else
+            {
+                // This callback handles creation & deletion of workouts
+                BuildWorkoutsList();
+                RefreshWorkoutSelection();
 
-            AddLinkStepButton.Enabled = GarminWorkoutManager.Instance.Workouts.Count > 1;
+                AddLinkStepButton.Enabled = GarminWorkoutManager.Instance.Workouts.Count > 1;
+            }
         }
 
+        private delegate void WorkoutChangedDelegate(IWorkout modifiedWorkout, PropertyChangedEventArgs changedProperty);
         private void OnWorkoutChanged(IWorkout modifiedWorkout, PropertyChangedEventArgs changedProperty)
         {
-            // When a property changes in a workout, this is triggered
-            if (changedProperty.PropertyName == "Name" ||
-                changedProperty.PropertyName == "Category" ||
-                changedProperty.PropertyName == "PartsCount")
+            if (InvokeRequired)
             {
-                int modifiedWorkoutChildrenCount = -1;
-                WorkoutWrapper modifiedWrapper = GetWorkoutWrapper(modifiedWorkout.ConcreteWorkout);
-
-                if (changedProperty.PropertyName == "PartsCount")
-                {
-                    CleanUpWorkoutPartsSelection();
-                    modifiedWorkoutChildrenCount = modifiedWrapper.Children.Count;
-                }
-
-                BuildWorkoutsList();
-
-                if (changedProperty.PropertyName == "PartsCount" && modifiedWorkoutChildrenCount == 0)
-                {
-                    WorkoutsList.SetExpanded(modifiedWrapper, true);
-                }
+                Invoke(new WorkoutChangedDelegate(OnWorkoutChanged),
+                       new object[] { modifiedWorkout, changedProperty }); 
             }
-
-            if (changedProperty.PropertyName == "Schedule")
+            else
             {
-                RefreshWorkoutCalendar();
-                RefreshCalendarView();
-            }
-
-            if (SelectedWorkout == modifiedWorkout)
-            {
-                if (changedProperty.PropertyName == "Steps")
+                // When a property changes in a workout, this is triggered
+                if (changedProperty.PropertyName == "Name" ||
+                    changedProperty.PropertyName == "Category" ||
+                    changedProperty.PropertyName == "PartsCount")
                 {
-                    BuildStepsList();
+                    int modifiedWorkoutChildrenCount = -1;
+                    WorkoutWrapper modifiedWrapper = GetWorkoutWrapper(modifiedWorkout.ConcreteWorkout);
 
-                    // Update the new step buttons
-                    RefreshWorkoutSelectionControls();
+                    if (changedProperty.PropertyName == "PartsCount")
+                    {
+                        CleanUpWorkoutPartsSelection();
+                        modifiedWorkoutChildrenCount = modifiedWrapper.Children.Count;
+                    }
+
+                    BuildWorkoutsList();
+
+                    if (changedProperty.PropertyName == "PartsCount" && modifiedWorkoutChildrenCount == 0)
+                    {
+                        WorkoutsList.SetExpanded(modifiedWrapper, true);
+                    }
                 }
-                else
+
+                if (changedProperty.PropertyName == "Schedule")
                 {
-                    RefreshUIFromWorkouts();
+                    RefreshWorkoutCalendar();
+                    RefreshCalendarView();
+                }
+
+                if (SelectedWorkout == modifiedWorkout)
+                {
+                    if (changedProperty.PropertyName == "Steps")
+                    {
+                        BuildStepsList();
+
+                        // Update the new step buttons
+                        RefreshWorkoutSelectionControls();
+                    }
+                    else
+                    {
+                        RefreshUIFromWorkouts();
+                    }
                 }
             }
         }
 
+        private delegate void WorkoutStepChangedDelegate(IWorkout modifiedWorkout, RegularStep modifiedStep, PropertyChangedEventArgs changedProperty);
         private void OnWorkoutStepChanged(IWorkout modifiedWorkout, IStep stepChanged, PropertyChangedEventArgs changedProperty)
         {
-            if (SelectedWorkout != null && SelectedWorkout.ConcreteWorkout == modifiedWorkout.ConcreteWorkout)
+            if (InvokeRequired)
             {
-                // Refresh the steps list so it updates the name/description
-                WorkoutsList.Invalidate();
-                StepsList.Invalidate();
-
-                // When a property changes in a workout's step, this callback executes
-                if (SelectedStep == stepChanged)
+                Invoke(new WorkoutStepChangedDelegate(OnWorkoutStepChanged),
+                       new object[] { modifiedWorkout, stepChanged, changedProperty }); 
+            }
+            else
+            {
+                if (SelectedWorkout != null && SelectedWorkout.ConcreteWorkout == modifiedWorkout.ConcreteWorkout)
                 {
-                    if ((changedProperty.PropertyName == "ForceSplitOnStep" && SelectedWorkout is WorkoutPart))
+                    // Refresh the steps list so it updates the name/description
+                    WorkoutsList.Invalidate();
+                    StepsList.Invalidate();
+
+                    // When a property changes in a workout's step, this callback executes
+                    if (SelectedStep == stepChanged)
+                    {
+                        if ((changedProperty.PropertyName == "ForceSplitOnStep" && SelectedWorkout is WorkoutPart))
+                        {
+                            BuildStepsList();
+                        }
+
+                        UpdateUIFromStep();
+                    }
+
+                    if (changedProperty.PropertyName == "LinkSteps")
                     {
                         BuildStepsList();
                     }
-
-                    UpdateUIFromStep();
                 }
-
-                if (changedProperty.PropertyName == "LinkSteps")
+                else if (SelectedStep is WorkoutLinkStep)
                 {
-                    BuildStepsList();
-                }
-            }
-            else if(SelectedStep is WorkoutLinkStep)
-            {
-                WorkoutLinkStep concreteStep = SelectedStep as WorkoutLinkStep;
+                    WorkoutLinkStep concreteStep = SelectedStep as WorkoutLinkStep;
 
-                if (modifiedWorkout.ConcreteWorkout == concreteStep.LinkedWorkout)
-                {
-                    UpdateUIFromStep();
+                    if (modifiedWorkout.ConcreteWorkout == concreteStep.LinkedWorkout)
+                    {
+                        UpdateUIFromStep();
+                    }
                 }
             }
         }
 
+        private delegate void WorkoutStepDurationChangedDelegate(IWorkout modifiedWorkout, RegularStep modifiedStep, IDuration modifiedDuration, PropertyChangedEventArgs changedProperty);
         void OnWorkoutStepDurationChanged(IWorkout modifiedWorkout, RegularStep modifiedStep, IDuration modifiedDuration, PropertyChangedEventArgs changedProperty)
         {
-            if (SelectedWorkout == modifiedWorkout)
+            if (InvokeRequired)
             {
-                // Refresh the steps list so it updates the name/description
-                StepsList.Invalidate();
-
-                if (modifiedStep == SelectedStep)
+                Invoke(new WorkoutStepDurationChangedDelegate(OnWorkoutStepDurationChanged),
+                       new object[] { modifiedWorkout, modifiedStep, modifiedDuration, changedProperty }); 
+            }
+            else
+            {
+                if (SelectedWorkout == modifiedWorkout)
                 {
-                    UpdateUIFromDuration();
+                    // Refresh the steps list so it updates the name/description
+                    StepsList.Invalidate();
+
+                    if (modifiedStep == SelectedStep)
+                    {
+                        UpdateUIFromDuration();
+                    }
                 }
             }
         }
 
+        private delegate void WorkoutStepRepeatDurationChangedDelegate(IWorkout modifiedWorkout, RepeatStep modifiedStep, IRepeatDuration modifiedDuration, PropertyChangedEventArgs changedProperty); 
         void OnWorkoutStepRepeatDurationChanged(IWorkout modifiedWorkout, RepeatStep modifiedStep, IRepeatDuration modifiedDuration, PropertyChangedEventArgs changedProperty)
         {
-            if (SelectedWorkout == modifiedWorkout)
+            if (InvokeRequired)
             {
-                // Refresh the steps list so it updates the name/description
-                StepsList.Invalidate();
-
-                if (modifiedStep == SelectedStep)
+                Invoke(new WorkoutStepRepeatDurationChangedDelegate(OnWorkoutStepRepeatDurationChanged),
+                       new object[] { modifiedWorkout, modifiedStep, modifiedDuration, changedProperty }); 
+            }
+            else
+            {
+                if (SelectedWorkout == modifiedWorkout)
                 {
-                    UpdateUIFromDuration();
+                    // Refresh the steps list so it updates the name/description
+                    StepsList.Invalidate();
+
+                    if (modifiedStep == SelectedStep)
+                    {
+                        UpdateUIFromDuration();
+                    }
                 }
             }
         }
 
+        private delegate void WorkoutStepTargetChangedDelegate(IWorkout modifiedWorkout, RegularStep modifiedStep, ITarget modifiedTarget, PropertyChangedEventArgs changedProperty); 
         void OnWorkoutStepTargetChanged(IWorkout modifiedWorkout, RegularStep modifiedStep, ITarget modifiedTarget, PropertyChangedEventArgs changedProperty)
         {
-            if (SelectedWorkout == modifiedWorkout)
+            if (InvokeRequired)
             {
-                // Refresh the steps list so it updates the name/description
-                StepsList.Invalidate();
-
-                if (changedProperty.PropertyName == "ConcreteTarget")
+                Invoke(new WorkoutStepTargetChangedDelegate(OnWorkoutStepTargetChanged),
+                       new object[] {modifiedWorkout, modifiedStep, modifiedTarget, changedProperty}); 
+            }
+            else
+            {
+                if (SelectedWorkout == modifiedWorkout)
                 {
-                    UpdateTargetPanelVisibility();
-                }
+                    // Refresh the steps list so it updates the name/description
+                    StepsList.Invalidate();
 
-                if (modifiedStep == SelectedStep)
-                {
-                    UpdateUIFromTarget();
+                    if (changedProperty.PropertyName == "ConcreteTarget")
+                    {
+                        UpdateTargetPanelVisibility();
+                    }
+
+                    if (modifiedStep == SelectedStep)
+                    {
+                        UpdateUIFromTarget();
+                    }
                 }
             }
         }
@@ -4257,6 +4310,60 @@ namespace GarminFitnessPlugin.View
             else
             {
                 return 1;
+            }
+        }
+
+        private delegate void GetNewWorkoutNameAndCategoryDelegate(ref string name, ref IActivityCategory category);
+        public void GetNewWorkoutNameAndCategory(ref string name, ref  IActivityCategory category)
+        {
+            if (InvokeRequired)
+            {
+                object[] parameters = new object[] { name, category };
+
+                Invoke(new GetNewWorkoutNameAndCategoryDelegate(GetNewWorkoutNameAndCategory),
+                       parameters);
+
+                name = parameters[0] as string;
+                category = parameters[1]as IActivityCategory;
+            }
+            else
+            {
+                bool isUsedByPart = false;
+
+                if (!GarminWorkoutManager.Instance.IsWorkoutNameAvailable(name, out isUsedByPart))
+                {
+                    if (!isUsedByPart)
+                    {
+                        ReplaceRenameDialog dlg = new ReplaceRenameDialog(GarminWorkoutManager.Instance.GetUniqueName(name));
+
+                        if (dlg.ShowDialog() == DialogResult.Yes)
+                        {
+                            // Yes = replace, delete the current workout from the list
+                            Workout oldWorkout = GarminWorkoutManager.Instance.GetWorkout(name);
+
+                            category = oldWorkout.Category;
+                            GarminWorkoutManager.Instance.RemoveWorkout(oldWorkout);
+                        }
+                        else
+                        {
+                            // No = rename
+                            name = dlg.NewName;
+                        }
+                    }
+                    else
+                    {
+                        // Auto rename
+                        name = GarminWorkoutManager.Instance.GetUniqueName(name);
+                    }
+                }
+
+                if (category == null)
+                {
+                    SelectCategoryDialog categoryDlg = new SelectCategoryDialog(name);
+
+                    categoryDlg.ShowDialog();
+                    category = categoryDlg.SelectedCategory;
+                }
             }
         }
 
