@@ -746,6 +746,18 @@ namespace GarminFitnessPlugin.Controller
             get { return false; }
         }
 
+        public IActivityCategory LastImportCategory
+        {
+            get { return m_LastImportCategory; }
+            set { m_LastImportCategory = value; }
+        }
+
+        public bool UseLastCategoryForAllImportedWorkout
+        {
+            get { return m_UseLastCategoryForAllImportedWorkout; }
+            set { m_UseLastCategoryForAllImportedWorkout = value; }
+        }
+
         private Dictionary<IActivityCategory, GarminCategories>  STToGarminCategoryMap
         {
             get { return m_STToGarminCategoryMap; }
@@ -795,5 +807,8 @@ namespace GarminFitnessPlugin.Controller
 
         private bool m_IsPowerZoneDirty = false;
         private bool m_IsCadenceZoneDirty = false;
+
+        private IActivityCategory m_LastImportCategory = null;
+        private bool m_UseLastCategoryForAllImportedWorkout = false;
     }
 }

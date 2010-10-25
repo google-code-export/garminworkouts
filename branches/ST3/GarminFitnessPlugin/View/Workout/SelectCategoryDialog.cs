@@ -6,6 +6,7 @@ using System.Resources;
 using System.Windows.Forms;
 using ZoneFiveSoftware.Common.Data.Fitness;
 using ZoneFiveSoftware.Common.Visuals;
+using GarminFitnessPlugin.Controller;
 
 namespace GarminFitnessPlugin.View
 {
@@ -17,6 +18,7 @@ namespace GarminFitnessPlugin.View
 
             this.Text = GarminFitnessView.GetLocalizedString("SelectCategoryDialogText") + workoutName;
             SelectCategoryLabel.Text = this.Text;
+            UseCategoryForAllCheckBox.Text = GarminFitnessView.GetLocalizedString("UseCategoryForAllCheckBoxText");
             OkButton.Text = CommonResources.Text.ActionOk;
 
             // Fill list
@@ -26,15 +28,25 @@ namespace GarminFitnessPlugin.View
             for (int i = 0; i < PluginMain.GetApplication().Logbook.ActivityCategories.Count; ++i)
             {
                 IActivityCategory currentCategory = PluginMain.GetApplication().Logbook.ActivityCategories[i];
+                ActivityCategoryWrapper childSelection = null;
                 ActivityCategoryWrapper newNode = new ActivityCategoryWrapper(null, currentCategory);
 
                 categories.Add(newNode);
-                AddCategoryNode(newNode, null);
+                childSelection = AddCategoryNode(newNode, null);
 
-                if (i == 0)
+                if (Options.Instance.LastImportCategory == currentCategory)
                 {
                     selection.Add(newNode);
                 }
+                else if (childSelection != null)
+                {
+                    selection.Add(childSelection);
+                }
+            }
+
+            if (selection.Count == 0)
+            {
+                selection.Add(categories[0]);
             }
 
             ActivityCategoryList.RowData = categories;
@@ -54,27 +66,46 @@ namespace GarminFitnessPlugin.View
             Close();
         }
 
-        private void AddCategoryNode(ActivityCategoryWrapper categoryNode, ActivityCategoryWrapper parent)
+        private ActivityCategoryWrapper AddCategoryNode(ActivityCategoryWrapper categoryNode, ActivityCategoryWrapper parent)
         {
             IActivityCategory category = (IActivityCategory)categoryNode.Element;
+            ActivityCategoryWrapper selection = null;
 
             if (parent != null)
             {
                 parent.Children.Add(categoryNode);
+
+                if (Options.Instance.LastImportCategory == category)
+                {
+                    selection = categoryNode;
+                }
             }
 
             for (int i = 0; i < category.SubCategories.Count; ++i)
             {
                 IActivityCategory currentCategory = category.SubCategories[i];
+                ActivityCategoryWrapper childSelection = null;
                 ActivityCategoryWrapper newNode = new ActivityCategoryWrapper(categoryNode, currentCategory);
 
-                AddCategoryNode(newNode, categoryNode);
+                childSelection = AddCategoryNode(newNode, categoryNode);
+
+                if (childSelection != null)
+                {
+                    selection = childSelection;
+                }
             }
+
+            return selection;
         }
 
         public IActivityCategory SelectedCategory
         {
             get { return (IActivityCategory)((ActivityCategoryWrapper)ActivityCategoryList.SelectedItems[0]).Element; }
+        }
+
+        private void UseCategoryForAllCheckBox_CheckedChanged(object sender, System.EventArgs e)
+        {
+            Options.Instance.UseLastCategoryForAllImportedWorkout = UseCategoryForAllCheckBox.Checked;
         }
     }
 

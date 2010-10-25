@@ -4359,10 +4359,20 @@ namespace GarminFitnessPlugin.View
 
                 if (category == null)
                 {
-                    SelectCategoryDialog categoryDlg = new SelectCategoryDialog(name);
+                    if (Options.Instance.UseLastCategoryForAllImportedWorkout &&
+                        Options.Instance.LastImportCategory != null)
+                    {
+                        category = Options.Instance.LastImportCategory;
+                    }
+                    else
+                    {
+                        SelectCategoryDialog categoryDlg = new SelectCategoryDialog(name);
 
-                    categoryDlg.ShowDialog();
-                    category = categoryDlg.SelectedCategory;
+                        categoryDlg.ShowDialog();
+                        category = categoryDlg.SelectedCategory;
+
+                        Options.Instance.LastImportCategory = category;
+                    }
                 }
             }
         }

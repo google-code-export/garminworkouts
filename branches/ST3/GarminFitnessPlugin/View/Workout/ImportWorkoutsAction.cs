@@ -95,6 +95,8 @@ namespace GarminFitnessPlugin.View
                 GarminDeviceManager.Instance.TaskCompleted += new GarminDeviceManager.TaskCompletedEventHandler(OnDeviceManagerTaskCompleted);
 
                 Utils.HijackMainWindow();
+                Options.Instance.LastImportCategory = null;
+                Options.Instance.UseLastCategoryForAllImportedWorkout = false;
 
                 // Import using Communicator Plugin
                 GarminDeviceManager.Instance.SetOperatingDevice();
@@ -129,6 +131,9 @@ namespace GarminFitnessPlugin.View
                 workoutStream.Read(buffer, 0, 4);
                 String FITMarker = Encoding.UTF8.GetString(buffer, 0, 4);
                 workoutStream.Seek(0, SeekOrigin.Begin);
+
+                Options.Instance.LastImportCategory = null;
+                Options.Instance.UseLastCategoryForAllImportedWorkout = false;
 
                 if (FITMarker.Equals(FITConstants.FITFileDescriptor))
                 {

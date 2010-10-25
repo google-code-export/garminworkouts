@@ -780,4 +780,7 @@
   <data name="RepeatUntilTimeDurationDescriptionText" xml:space="preserve">
     <value>Repeat for {0:00}:{1:00}:{2:00}.</value>
   </data>
+  <data name="UseCategoryForAllCheckBoxText" xml:space="preserve">
+    <value>Use category for all workouts</value>
+  </data>
 </root>
