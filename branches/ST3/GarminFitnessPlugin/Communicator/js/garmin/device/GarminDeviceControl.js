@@ -746,14 +746,18 @@ Garmin.DeviceControl.prototype = {
         }
         var success;
         try {
+            alert("Plugin reading binary");
             this.gpsDataString = this.garminPlugin.getBinaryFile(deviceNumber, relativeFilePath, false);
+            alert("Plugin reading binary compressed");
             this.gpsDataStringCompressed = this.garminPlugin.getBinaryFile(deviceNumber, relativeFilePath, true);
-            //		    this.gpsData = this.garminPlugin.getBinaryFile(deviceNumber, relativeFilePath, compressed);
+//		    this.gpsData = this.garminPlugin.getBinaryFile(deviceNumber, relativeFilePath, compressed);
             success = true;
         } catch (e) {
             success = false;
             this._reportException(e);
         }
+
+        alert("Get binary complete");
 
         this._broadcaster.dispatch("onFinishReadFromDevice", { success: success, controller: this });
         return this.gpsData;

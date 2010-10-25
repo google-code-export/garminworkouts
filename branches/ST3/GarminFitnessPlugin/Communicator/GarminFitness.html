@@ -328,10 +328,13 @@
                 cancelReadFitDirectory = false;
                 garminPlugin.startReadFitDirectory(garminController.getDeviceNumber());
 
+                alert("Read FIT directory");
+
                 while (!exitLoop) {
                     status = garminPlugin.finishReadFitDirectory();
 
                     if (status == 2) {              // 2 = waiting
+                        alert("Read FIT directory waiting");
                         garminPlugin.respondToMessageBox(1);    // close msg box
                     }
                     else if (status == 3 ||         // 3 = finished
@@ -339,6 +342,8 @@
                         exitLoop = true;
                     }
                 }
+
+                alert("Read FIT directory exit");
 
                 if (!cancelReadFitDirectory) {
                     var directoryXml = garminPlugin.getDirectoryXml();
@@ -420,6 +425,7 @@
 
         function GetBinaryFile(filePath) {
             try {
+                alert("Read binary file");
                 garminController.getBinaryFile(garminController.getDeviceNumber(), filePath);
             }
             catch (e) {
