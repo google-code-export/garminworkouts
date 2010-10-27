@@ -12,7 +12,7 @@ http://garminworkouts.googlecode.com/files/Settings%20access.gif
 
 Once clicked, this link will lead you to the settings page which has a special section for plugins.  In this section, you will find the "Garmin Fitness Settings".  An alternate way of accessing the settings page is to click on the settings button http://garminworkouts.googlecode.com/files/Settings%20Button.gif in the upper right corner of the Garmin Fitness view.  Both methods lead you to the following screen :
 
-http://garminworkouts.googlecode.com/files/Settings%20passive-e.gif
+http://garminworkouts.googlecode.com/files/Settings%20passive-f.gif
 
 = Zone categories =
 == Workouts and zone categories ==
@@ -30,7 +30,7 @@ Now that you have discovered how to change between Garmin and [http://www.zonefi
 == Specifying the zone categories ==
 In the settings page you will also have noticed that you can select the zone categories to use for cadence and power.  This allows you to select which zone category will be used for the cadence and power target respectively.  Opening the listbox will list all of the zones you have defined for either cadence or power.
 
-http://garminworkouts.googlecode.com/files/Settings%20expanded%20combo-e.gif
+http://garminworkouts.googlecode.com/files/Settings%20expanded%20combo-f.gif
 
 http://garminworkouts.googlecode.com/files/Categories%20view.gif
 
@@ -48,6 +48,10 @@ You can also notice the reason why the user is given the selection of what caden
 For the heart rate, there is an extra option only available when you select to use [http://www.zonefivesoftware.com/SportTracks SportTracks] zones.  This allows you to select whether these targets will be exported as BPM or as a percent of maximum heart rate.  This option is only available in version 1.1.278 or later.
 
 http://garminworkouts.googlecode.com/files/Settings%20HR%20comboboxes.gif
+
+A similar option is also available for power so the user can select to export either as %FTP or as watts.
+
+http://garminworkouts.googlecode.com/files/Settings%20power%20comboboxes.gif
 
 
 = Allow workouts with more than 20 steps =
