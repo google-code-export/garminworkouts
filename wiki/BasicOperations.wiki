@@ -96,7 +96,7 @@ With the introduction of the FIT file format, Garmin also introduced the concept
   # Repeat until your power gets above a certain level
   # Repeat until your power rate get below a certain level
 
-If you own a FIT compatible device (Edge 500 & 800) you can take advantage of these new "advanced" repeat steps.  You will notice that the steps list reflect that this feature is for FIT compatible devices only by adding an icon http://garminworkouts.googlecode.com/files/FIT%20only%20icon.gif before the FIT only step.
+If you own a FIT compatible device (Edge 500 & 800) you can take advantage of these new "advanced" repeat steps.  You will notice that the steps list reflect that this feature is for FIT compatible devices only by adding an icon http://garminworkouts.googlecode.com/files/FIT%20only%20icon.gif before the FIT only step.  The workout is also marked as being FIT only with a special icon http://garminworkouts.googlecode.com/files/FIT%20only%20workout%20icon.gif.
 
 The condition for the "repeat until" steps are edited in exactly the same way as a regular step's duration (refer to the table above).
 
