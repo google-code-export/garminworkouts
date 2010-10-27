@@ -49,7 +49,7 @@ For the heart rate, there is an extra option only available when you select to u
 
 http://garminworkouts.googlecode.com/files/Settings%20HR%20comboboxes.gif
 
-A similar option is also available for power so the user can select to export either as %FTP or as watts.
+A similar option is also available for power so the user can select to export either as %FTP or as watts starting with version 1.1.322.
 
 http://garminworkouts.googlecode.com/files/Settings%20power%20comboboxes.gif
 
