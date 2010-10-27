@@ -69,8 +69,8 @@ A step's duration is a condition that must be met for the step to end.  You have
   # When your heart rate gets above a certain level
   # When your heart rate get below a certain level
   # When you have burned a certain number of calories
-  # When your power gets above a certain level (FIT only)
-  # When your power rate get below a certain level (FIT only)
+  # When your power gets above a certain level (FIT devices only)
+  # When your power rate get below a certain level (FIT devices only)
 
 To choose the duration you desire, simply click on the drop down list in the "Step Duration" section.
 
@@ -96,7 +96,7 @@ Just like the durations, you have multiple target types :
   # You want to keep your speed in a certain zone
   # You want to keep your cadence in a certain zone
   # You want to keep your heart rate in a certain zone
-  # You want to keep your power in a certain zone
+  # You want to keep your power in a certain zone (Edge 705 & FIT devices only)
 
 All of the target types use the same model, respectively you can select a predefined zone of define a custom one.  For instance if you choose to keep your cadence in a certain zone you will be offered the following :
 
