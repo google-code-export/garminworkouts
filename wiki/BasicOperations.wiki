@@ -85,6 +85,21 @@ Once you have made your selection, the interface will update to allow you to set
 || For the calories burned duration, a simple textbox allows you to set the number of calories desired. || http://garminworkouts.googlecode.com/files/Calories%20duration-b.gif ||
 || For the power above and below, you can select whether you want to use watts or as a percentage of funtional threshold power (%FTP) by using a drop down list.  Take note that this option is only available on FIT compatible devices (Edge 500 & 800), which is indicated by the FIT icon http://garminworkouts.googlecode.com/files/FIT%20only%20icon.gif in the steps list || http://garminworkouts.googlecode.com/files/Power%20duration.gif ||
 
+=== Repeat steps ===
+With the introduction of the FIT file format, Garmin also introduced the concept of "Repeat until" steps.  These steps are roughly the same as regular repeat step except that they repeat until you have met a certain condition.  Not surprisingly, the conditions are the same as for regular step duration, which are the following :
+
+  # Repeat until you go for a certain distance
+  # Repeat until you go for a certain amount of time
+  # Repeat until your heart rate gets above a certain level
+  # Repeat until your heart rate get below a certain level
+  # Repeat until you have burned a certain number of calories
+  # Repeat until your power gets above a certain level
+  # Repeat until your power rate get below a certain level
+
+If you own a FIT compatible device (Edge 500 & 800) you can take advantage of these new "advanced" repeat steps.  You will notice that the steps list reflect that this feature is for FIT compatible devices only by adding an icon http://garminworkouts.googlecode.com/files/FIT%20only%20icon.gif before the FIT only step.
+
+The condition for the "repeat until" steps are edited in exactly the same way as a regular step's duration.
+
 == Selecting the step's target ==
 After selecting the right duration for your step, you must also set it's target.  This is done right below the duration portion, where you encounter the following :
 
