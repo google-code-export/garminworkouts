@@ -69,18 +69,21 @@ A step's duration is a condition that must be met for the step to end.  You have
   # When your heart rate gets above a certain level
   # When your heart rate get below a certain level
   # When you have burned a certain number of calories
+  # When your power gets above a certain level (FIT only)
+  # When your power rate get below a certain level (FIT only)
 
 To choose the duration you desire, simply click on the drop down list in the "Step Duration" section.
 
-http://garminworkouts.googlecode.com/files/Duration%20details.gif
+http://garminworkouts.googlecode.com/files/Duration%20details-b.gif
 
 Once you have made your selection, the interface will update to allow you to set the parameters you desire.  Depending on the type of duration, you will see one of the following :
 
 || For the 'Lap' button duration, you don't have to specify anything, you just press the 'Lap' button on your device when you wish the step to end. || http://garminworkouts.googlecode.com/files/Lap%20duration.gif ||
 || For a distance duration, you have to specify the desired distance.  Note that even though the unit is in kilometers in the following screenshot, the unit used will be the one specified for the category in which you put the workout. || http://garminworkouts.googlecode.com/files/Distance%20duration.gif ||
 || The time duration pops up a time control, that allows you to set the time you want for your step || http://garminworkouts.googlecode.com/files/Time%20duration.gif ||
-|| For the heart rate above and below, you will see the same controls.  With this duration though you have two choices.  You can either specify the heart rate to acheive in beats per minute (bpm) or in percentage of you maximum heart rate (% Max HR).  The drop down list is used to specify which option you want to use. || http://garminworkouts.googlecode.com/files/HR%20duration.gif ||
-|| Finally, for the calories burned duration, a simple textbox allows you to set the number of calories desired. || http://garminworkouts.googlecode.com/files/Calories%20duration.gif ||
+|| For the heart rate above and below you have two choices.  You can either specify the heart rate to acheive in beats per minute (bpm) or in percentage of you maximum heart rate (% Max HR).  The drop down list is used to specify which option you want to use. || http://garminworkouts.googlecode.com/files/HR%20duration.gif ||
+|| For the calories burned duration, a simple textbox allows you to set the number of calories desired. || http://garminworkouts.googlecode.com/files/Calories%20duration.gif ||
+|| For the power above and below, you can select whether you want to use watts or as a percentage of funtional threshold power (%FTP) by using a drop down list || http://garminworkouts.googlecode.com/files/Power%20duration.gif ||
 
 == Selecting the step's target ==
 After selecting the right duration for your step, you must also set it's target.  This is done right below the duration portion, where you encounter the following :
