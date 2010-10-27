@@ -98,7 +98,7 @@ With the introduction of the FIT file format, Garmin also introduced the concept
 
 If you own a FIT compatible device (Edge 500 & 800) you can take advantage of these new "advanced" repeat steps.  You will notice that the steps list reflect that this feature is for FIT compatible devices only by adding an icon http://garminworkouts.googlecode.com/files/FIT%20only%20icon.gif before the FIT only step.
 
-The condition for the "repeat until" steps are edited in exactly the same way as a regular step's duration.
+The condition for the "repeat until" steps are edited in exactly the same way as a regular step's duration (refer to the table above).
 
 == Selecting the step's target ==
 After selecting the right duration for your step, you must also set it's target.  This is done right below the duration portion, where you encounter the following :
