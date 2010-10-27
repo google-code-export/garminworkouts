@@ -3,7 +3,7 @@
 -------
 
 = Introduction =
-Now that you're all set-up properly as described in the [Settings] page you are ready to create and manage your workouts.  Of course the basic operations are the same as in Garmin Training Center which is creating and deleting workouts, adding and removing steps, changing the order of those steps and of course filling them with the right information.  Keep on reading for instructions on accomplishing those tasks.
+Now that you're all set-up properly as described in the [Settings] page you are ready to create and manage your workouts.  Of course the basic operations are roughly the same as in Garmin Training Center which is creating and deleting workouts, adding and removing steps, changing the order of those steps and of course filling them with the right information.  Keep on reading for instructions on accomplishing those tasks.
 
 = Accessing the Garmin Fitness view =
 To access the view available with the Garmin Fitness Plugin you will need to click on the link in the "Select View" menu.
