@@ -233,6 +233,48 @@ namespace GarminFitnessPlugin.Controller
             }
         }
 
+        void OnBridgeReadDirectoryCompleted(object sender, GarminFitnessCommunicatorBridge.TranferCompletedEventArgs e)
+        {
+            m_Controller.CommunicatorBridge.ReadDirectoryCompleted -= new EventHandler<GarminFitnessCommunicatorBridge.TranferCompletedEventArgs>(OnBridgeReadDirectoryCompleted);
+
+            if (m_CurrentOperation == DeviceOperations.ReadMassStorageWorkouts)
+            {
+                m_WorkoutFilesToDownload = GetFilePaths(e.DataString);
+            }
+            else if (m_CurrentOperation == DeviceOperations.ReadFITWorkouts)
+            {
+                List<String> fitFilesOnDevice = GetFilePaths(e.DataString);
+
+                m_WorkoutFilesToDownload = new List<String>();
+
+                foreach (string fitFile in fitFilesOnDevice)
+                {
+                    if (fitFile.StartsWith(m_FITWorkoutFileReadPath))
+                    {
+                        m_WorkoutFilesToDownload.Add(fitFile);
+                    }
+                }
+            }
+
+            if (m_WorkoutFilesToDownload.Count > 0)
+            {
+                m_Controller.CommunicatorBridge.ExceptionTriggered += new EventHandler<GarminFitnessCommunicatorBridge.ExceptionEventArgs>(OnBridgeExceptionTriggered);
+                m_Controller.CommunicatorBridge.ReadFromDeviceCompleted += new EventHandler<GarminFitnessCommunicatorBridge.TranferCompletedEventArgs>(OnBridgeReadFromDeviceCompleted);
+
+                m_Controller.CommunicatorBridge.GetBinaryFile(m_WorkoutFilesToDownload[0]);
+            }
+            else
+            {
+                DeviceOperations lastOperation = m_CurrentOperation;
+                m_CurrentOperation = DeviceOperations.Idle;
+
+                if (ReadFromDeviceCompleted != null)
+                {
+                    ReadFromDeviceCompleted(this, lastOperation, true);
+                }
+            }
+        }
+
 #region IDevice Members
 
         private bool ImportWorkoutFileResult(String workoutsXml)
@@ -436,47 +478,21 @@ namespace GarminFitnessPlugin.Controller
                 SupportsWorkoutMassStorageTransfer)
             {
                 m_WorkoutsReadCount = 0;
-                List<String> fitFilesOnDevice;
-
                 ClearTempDirectory();
 
                 if (SupportsFITWorkouts)
                 {
+                    m_Controller.CommunicatorBridge.ExceptionTriggered += new EventHandler<GarminFitnessCommunicatorBridge.ExceptionEventArgs>(OnBridgeExceptionTriggered);
+                    m_Controller.CommunicatorBridge.ReadDirectoryCompleted += new EventHandler<GarminFitnessCommunicatorBridge.TranferCompletedEventArgs>(OnBridgeReadDirectoryCompleted);
                     m_CurrentOperation = DeviceOperations.ReadFITWorkouts;
-
-                    m_WorkoutFilesToDownload = new List<String>();
-                    fitFilesOnDevice = m_Controller.CommunicatorBridge.GetFITWorkoutFiles();
-
-                    foreach (string fitFile in fitFilesOnDevice)
-                    {
-                        if (fitFile.StartsWith(m_FITWorkoutFileReadPath))
-                        {
-                            m_WorkoutFilesToDownload.Add(fitFile);
-                        }
-                    }
+                    m_Controller.CommunicatorBridge.GetFITWorkoutFiles();
                 }
                 else
-                {
-                    m_CurrentOperation = DeviceOperations.ReadMassStorageWorkouts;
-                    m_WorkoutFilesToDownload = m_Controller.CommunicatorBridge.GetWorkoutFiles();
-                }
-
-                if (m_WorkoutFilesToDownload.Count > 0)
                 {
                     m_Controller.CommunicatorBridge.ExceptionTriggered += new EventHandler<GarminFitnessCommunicatorBridge.ExceptionEventArgs>(OnBridgeExceptionTriggered);
-                    m_Controller.CommunicatorBridge.ReadFromDeviceCompleted += new EventHandler<GarminFitnessCommunicatorBridge.TranferCompletedEventArgs>(OnBridgeReadFromDeviceCompleted);
-
-                    m_Controller.CommunicatorBridge.GetBinaryFile(m_WorkoutFilesToDownload[0]);
-                }
-                else
-                {
-                    DeviceOperations lastOperation = m_CurrentOperation;
-                    m_CurrentOperation = DeviceOperations.Idle;
-
-                    if (ReadFromDeviceCompleted != null)
-                    {
-                        ReadFromDeviceCompleted(this, lastOperation, true);
-                    }
+                    m_Controller.CommunicatorBridge.ReadDirectoryCompleted += new EventHandler<GarminFitnessCommunicatorBridge.TranferCompletedEventArgs>(OnBridgeReadDirectoryCompleted);
+                    m_CurrentOperation = DeviceOperations.ReadMassStorageWorkouts;
+                    m_Controller.CommunicatorBridge.GetWorkoutFiles();
                 }
             }
             else
@@ -543,6 +559,52 @@ namespace GarminFitnessPlugin.Controller
             Logger.Instance.LogText(String.Format("UU decoded result = {0}", Encoding.UTF8.GetString(decodedBytes)));
 
             return decodedBytes;
+        }
+
+        private List<string> GetFilePaths(String directoryXml)
+        {
+            List<string> result = new List<string>();
+            XmlDocument directoryDocument = new XmlDocument();
+
+            try
+            {
+                // Akward bug fix : Remove last character if it's a non-printing character
+                for (int i = 0; i < 32; ++i)
+                {
+                    char currentCharacter = (char)i;
+
+                    if (directoryXml.EndsWith(currentCharacter.ToString()))
+                    {
+                        directoryXml = directoryXml.Substring(0, directoryXml.Length - 1);
+                        break;
+                    }
+                }
+
+                directoryDocument.LoadXml(directoryXml);
+
+                // Extract all file names and path
+                if (directoryDocument.ChildNodes.Count >= 2 &&
+                    directoryDocument.ChildNodes.Item(1).Name == "DirectoryListing")
+                {
+                    foreach (XmlElement fileNode in directoryDocument.ChildNodes.Item(1).ChildNodes)
+                    {
+                        if (fileNode.Name == "File" && !String.IsNullOrEmpty(fileNode.GetAttribute("Path")))
+                        {
+                            result.Add(fileNode.GetAttribute("Path"));
+                        }
+                    }
+
+                    return result;
+                }
+
+                return null;
+            }
+            catch (Exception e)
+            {
+                return null;
+
+                throw e;
+            }
         }
 
         public IGarminDeviceController Controller

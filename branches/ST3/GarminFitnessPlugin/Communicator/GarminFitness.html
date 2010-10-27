@@ -1,5 +1,6 @@
 <html>
 <head>
+    <title>Garmin Communicator bridge web page</title>
     <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" />
 </head>
 <body>
@@ -108,12 +109,17 @@
                   window.external.OnProgressReadFromDevice(json.progress.getPercentage());
               },
               onFinishReadFromDevice: function (json) {
-                  if (json.controller.gpsDataType == Garmin.DeviceControl.FILE_TYPES.fit) {
-                      window.external.OnFinishReadFromDevice(json.success, json.controller.gpsDataString);
+                  window.external.OnFinishReadFromDevice(json.success, json.controller.gpsDataString);
+              },
+              onFinishReadDirectory: function (json) {
+                  var directoryXml = null;
+
+                  if (json.success) {
+                      directoryXml = garminPlugin.getDirectoryXml();
+                      directoryXml = escapeXmlChars(directoryXml);
                   }
-                  else {
-                      window.external.OnFinishReadFromDevice(json.success, json.controller.gpsDataString);
-                  }
+
+                  window.external.OnFinishReadDirectory(json.success, directoryXml);
               },
               onCancelReadFromDevice: function (json) {
                   window.external.OnFinishReadFromDevice(false, "");
@@ -146,6 +152,8 @@
               },
               onFinishReadFromDevice: function (json) {
                   alert("Read from devices finish");
+              },
+              onFinishReadDirectory: function (json) {
               },
               onCancelReadFromDevice: function (json) {
               },
@@ -322,44 +330,19 @@
 
         function ReadFITDirectory() {
             try {
-                var status = 0;
-                var exitLoop = false;
-
                 cancelReadFitDirectory = false;
                 garminPlugin.startReadFitDirectory(garminController.getDeviceNumber());
 
-                alert("Read FIT directory");
-
-                while (!exitLoop) {
-                    status = garminPlugin.finishReadFitDirectory();
-
-                    if (status == 2) {              // 2 = waiting
-                        alert("Read FIT directory waiting");
-                        garminPlugin.respondToMessageBox(1);    // close msg box
-                    }
-                    else if (status == 3 ||         // 3 = finished
-                             cancelReadFitDirectory) {
-                        exitLoop = true;
-                    }
-                }
-
-                alert("Read FIT directory exit");
-
-                if (!cancelReadFitDirectory) {
-                    var directoryXml = garminPlugin.getDirectoryXml();
-
-                    return escapeXmlChars(directoryXml);
-                }
-
-                return "";
+                setTimeout(function () { this._progressReadFitDirectory() } .bind(this), 200);
             }
             catch (e) {
-                window.external.OnExceptionTriggered("GetWorkoutFiles failed: " + e.message);
+                window.external.OnExceptionTriggered("ReadFITDirectory failed: " + e.message);
             }
         }
 
         function GetWorkoutFiles() {
             try {
+                cancelReadableFileListing = false;
                 var dataTypes = garminController.getDevices()[garminController.getDeviceNumber()].getDeviceDataTypes().values();
                 var dataType = null;
 
@@ -371,35 +354,47 @@
                 }
 
                 if (dataType != null) {
-                    var status = 0;
-                    var exitLoop = false;
-
                     cancelReadableFileListing = false;
                     garminPlugin.startReadableFileListing(garminController.getDeviceNumber(), dataType.getTypeName(), dataType.getIdentifier(), true);
 
-                    while (!exitLoop) {
-                        status = garminPlugin.finishReadableFileListing();
-
-                        if (status == 2) {              // 2 = waiting
-                            garminPlugin.respondToMessageBox(1);    // close msg box
-                        }
-                        else if (status == 3 ||         // 3 = finished
-                                 cancelReadableFileListing) {
-                            exitLoop = true;
-                        }
-                    }
-
-                    if (!cancelReadableFileListing) {
-                        var directoryXml = garminPlugin.getDirectoryXml();
-
-                        return escapeXmlChars(directoryXml);
-                    }
+                    setTimeout(function () { this._progressReadDirectory() } .bind(this), 200);
                 }
-
-                return "";
+                else {
+                    this._broadcaster.dispatch("onFinishReadDirectory", { success: false });
+                }
             }
             catch (e) {
                 window.external.OnExceptionTriggered("GetWorkoutFiles failed: " + e.message);
+            }
+        }
+
+        function _progressReadFitDirectory() {
+            var status = garminPlugin.finishReadFitDirectory();
+
+            if (status == Garmin.DeviceControl.FINISH_STATES.messageWaiting) {
+                garminPlugin.respondToMessageBox(1);    // close msg box
+            }
+            else if (status == Garmin.DeviceControl.FINISH_STATES.finished ||
+                    cancelReadFitDirectory) {
+                garminController._broadcaster.dispatch("onFinishReadDirectory", { success: !cancelReadFitDirectory });
+            }
+            else {
+                setTimeout(function () { this._progressReadFitDirectory() } .bind(this), 200); //200		 
+            }
+        }
+
+        function _progressReadDirectory() {
+            var status = garminPlugin.finishReadableFileListing();
+
+            if (status == Garmin.DeviceControl.FINISH_STATES.messageWaiting) {
+                garminPlugin.respondToMessageBox(1);    // close msg box
+            }
+            else if (status == Garmin.DeviceControl.FINISH_STATES.finished ||
+                    cancelReadableFileListing) {
+                garminController._broadcaster.dispatch("onFinishReadDirectory", { success: !cancelReadableFileListing });
+            }
+            else {
+                setTimeout(function () { this._progressReadDirectory() } .bind(this), 200); //200		 
             }
         }
 
@@ -425,7 +420,6 @@
 
         function GetBinaryFile(filePath) {
             try {
-                alert("Read binary file");
                 garminController.getBinaryFile(garminController.getDeviceNumber(), filePath);
             }
             catch (e) {
@@ -436,8 +430,8 @@
     </script>
     Garmin Fitness Communicator page
     <form method="GET" action="">
-    <input type="button" onclick="InitializeHTML();" value="Initialize" /><br>
-    <input type="button" onclick="FindDevices();" value="Find devices" /><br>
+    <input type="button" onclick="InitializeHTML();" value="Initialize" /><br />
+    <input type="button" onclick="FindDevices();" value="Find devices" /><br />
     </form>
 </body>
 </html>

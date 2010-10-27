@@ -233,6 +233,14 @@ namespace GarminFitnessPlugin.Controller
             }
         }
 
+        public void OnFinishReadDirectory(bool success, string directoryString)
+        {
+            if (ReadDirectoryCompleted != null)
+            {
+                ReadDirectoryCompleted(this, new TranferCompletedEventArgs(success, directoryString));
+            }
+        }
+
         public void OnProgressWriteToDevice(string percentage)
         {
         }
@@ -321,102 +329,14 @@ namespace GarminFitnessPlugin.Controller
             }
         }
 
-        public List<string> GetWorkoutFiles()
+        public void GetWorkoutFiles()
         {
-            List<string> result = new List<string>();
-            String directoryXml = String.Empty;
-            XmlDocument directoryDocument = new XmlDocument();
-
-            try
-            {
-                directoryXml = m_HiddenWebBrowser.Document.InvokeScript("GetWorkoutFiles") as String;
-
-                // Akward bug fix : Remove last character if it's a non-printing character
-                for (int i = 0; i < 32; ++i)
-                {
-                    char currentCharacter = (char)i;
-
-                    if (directoryXml.EndsWith(currentCharacter.ToString()))
-                    {
-                        directoryXml = directoryXml.Substring(0, directoryXml.Length - 1);
-                        break;
-                    }
-                }
-
-                directoryDocument.LoadXml(directoryXml);
-                
-                // Extract all file names and path
-                if (directoryDocument.ChildNodes.Count >= 2 &&
-                    directoryDocument.ChildNodes.Item(1).Name == "DirectoryListing")
-                {
-                    foreach (XmlElement fileNode in directoryDocument.ChildNodes.Item(1).ChildNodes)
-                    {
-                        if (fileNode.Name == "File" && !String.IsNullOrEmpty(fileNode.GetAttribute("Path")))
-                        {
-                            result.Add(fileNode.GetAttribute("Path"));
-                        }
-                    }
-
-                    return result;
-                }
-
-                return null;
-            }
-            catch (Exception e)
-            {
-                return null;
-
-                throw e;
-            }
+            m_HiddenWebBrowser.Document.InvokeScript("GetWorkoutFiles");
         }
 
-        public List<string> GetFITWorkoutFiles()
+        public void GetFITWorkoutFiles()
         {
-            List<string> result = new List<string>();
-            String directoryXml = String.Empty;
-            XmlDocument directoryDocument = new XmlDocument();
-
-            try
-            {
-                directoryXml = m_HiddenWebBrowser.Document.InvokeScript("ReadFITDirectory") as String;
-
-                // Akward bug fix : Remove last character if it's a non-printing character
-                for (int i = 0; i < 32; ++i)
-                {
-                    char currentCharacter = (char)i;
-
-                    if (directoryXml.EndsWith(currentCharacter.ToString()))
-                    {
-                        directoryXml = directoryXml.Substring(0, directoryXml.Length - 1);
-                        break;
-                    }
-                }
-
-                directoryDocument.LoadXml(directoryXml);
-
-                // Extract all file names and path
-                if (directoryDocument.ChildNodes.Count >= 2 &&
-                    directoryDocument.ChildNodes.Item(1).Name == "DirectoryListing")
-                {
-                    foreach (XmlElement fileNode in directoryDocument.ChildNodes.Item(1).ChildNodes)
-                    {
-                        if (fileNode.Name == "File" && !String.IsNullOrEmpty(fileNode.GetAttribute("Path")))
-                        {
-                            result.Add(fileNode.GetAttribute("Path"));
-                        }
-                    }
-
-                    return result;
-                }
-
-                return null;
-            }
-            catch (Exception e)
-            {
-                return null;
-
-                throw e;
-            }
+            m_HiddenWebBrowser.Document.InvokeScript("ReadFITDirectory");
         }
 
         public void GetBinaryFile(string filePath)
@@ -458,6 +378,7 @@ namespace GarminFitnessPlugin.Controller
         public event EventHandler<FinishFindDevicesEventArgs> FinishFindDevices;
         public event EventHandler<TranferCompletedEventArgs> WriteToDeviceCompleted;
         public event EventHandler<TranferCompletedEventArgs> ReadFromDeviceCompleted;
+        public event EventHandler<TranferCompletedEventArgs> ReadDirectoryCompleted;
 
         private WebBrowser m_HiddenWebBrowser = new WebBrowser();
         private static String m_LocalWebPageLocation;
