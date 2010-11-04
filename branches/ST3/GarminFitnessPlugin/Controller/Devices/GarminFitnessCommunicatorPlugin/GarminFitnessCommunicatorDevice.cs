@@ -354,7 +354,6 @@ namespace GarminFitnessPlugin.Controller
             Debug.Assert(m_CurrentOperation == DeviceOperations.Idle);
 
             List<IWorkout> concreteWorkouts = new List<IWorkout>();
-            bool exportExtended = false;
             bool exportToFIT = false;
 
             // Split workouts for the right export method
@@ -363,10 +362,6 @@ namespace GarminFitnessPlugin.Controller
                 if (currentWorkout.ContainsFITOnlyFeatures)
                 {
                     exportToFIT = true;
-                }
-                else if (currentWorkout.ContainsTCXExtensionFeatures)
-                {
-                    exportExtended = true;
                 }
 
                 if (currentWorkout.GetSplitPartsCount() == 1)
@@ -386,7 +381,7 @@ namespace GarminFitnessPlugin.Controller
 
             m_Controller.CommunicatorBridge.SetDeviceNumber(m_DeviceNumber);
 
-            if (!exportExtended && !exportToFIT && !SupportsFITWorkouts)
+            if (!exportToFIT && !SupportsFITWorkouts)
             {
                 // Basic TCX export
                 string fileName = "Default.tcx";

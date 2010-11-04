@@ -210,7 +210,7 @@ namespace GarminFitnessPlugin.View
                     RefreshCalendarView();
                 }
 
-                if (SelectedWorkout == modifiedWorkout)
+                if (SelectedWorkout.ConcreteWorkout == modifiedWorkout)
                 {
                     if (changedProperty.PropertyName == "Steps")
                     {
@@ -2132,11 +2132,11 @@ namespace GarminFitnessPlugin.View
             {
                 if (isInUpperHalf)
                 {
-                    SelectedWorkout.Steps.MoveStepsBeforeStep(stepsToMove, destinationStep);
+                    SelectedWorkout.ConcreteWorkout.Steps.MoveStepsBeforeStep(stepsToMove, destinationStep);
                 }
                 else
                 {
-                    SelectedWorkout.Steps.MoveStepsAfterStep(stepsToMove, destinationStep);
+                    SelectedWorkout.ConcreteWorkout.Steps.MoveStepsAfterStep(stepsToMove, destinationStep);
                 }
             }
             else
@@ -2152,11 +2152,11 @@ namespace GarminFitnessPlugin.View
                 // Add new items
                 if (isInUpperHalf)
                 {
-                    SelectedWorkout.Steps.InsertStepsBeforeStep(newSteps, destinationStep);
+                    SelectedWorkout.ConcreteWorkout.Steps.InsertStepsBeforeStep(newSteps, destinationStep);
                 }
                 else
                 {
-                    SelectedWorkout.Steps.InsertStepsAfterStep(newSteps, destinationStep);
+                    SelectedWorkout.ConcreteWorkout.Steps.InsertStepsAfterStep(newSteps, destinationStep);
                 }
 
                 SelectedSteps = newSteps;
@@ -3595,12 +3595,12 @@ namespace GarminFitnessPlugin.View
             if (SelectedStep != null)
             {
                 // Insert after selected
-                succeeded = SelectedWorkout.Steps.InsertStepAfterStep(newStep, SelectedStep);
+                succeeded = SelectedWorkout.ConcreteWorkout.Steps.InsertStepAfterStep(newStep, SelectedStep);
             }
             else
             {
                 // Insert as 1st element
-                succeeded = SelectedWorkout.Steps.InsertStepInRoot(0, newStep);
+                succeeded = SelectedWorkout.ConcreteWorkout.Steps.InsertStepInRoot(0, newStep);
             }
 
             if (succeeded)
@@ -4078,7 +4078,7 @@ namespace GarminFitnessPlugin.View
         {
             object nextSelection = StepsList.FindNextSelectedAfterDelete(GetStepWrapper(SelectedWorkout.ConcreteWorkout, SelectedSteps[0]));
 
-            SelectedWorkout.Steps.RemoveSteps(SelectedSteps, false);
+            SelectedWorkout.ConcreteWorkout.Steps.RemoveSteps(SelectedSteps, false);
 
             if (nextSelection != null)
             {
