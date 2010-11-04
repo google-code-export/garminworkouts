@@ -183,7 +183,18 @@ namespace GarminFitnessPlugin.View
 
             foreach (IStep currentStep in steps)
             {
-                if (stepIndex >= startStep)
+                if (currentStep is WorkoutLinkStep)
+                {
+                    WorkoutLinkStep linkStep = currentStep as WorkoutLinkStep;
+                    float nextAreaTop = 0;
+
+                    stepIndex += PrintSteps(linkStep.LinkedWorkoutSteps,
+                                            startStep - stepIndex, graphics,
+                                            outputArea, out nextAreaTop);
+
+                    stepArea.Offset(0, nextAreaTop - outputArea.Top);
+                }
+                else if (stepIndex >= startStep)
                 {
                     SizeF titleSize = new SizeF(0, 0);
                     SizeF detailsSize = new SizeF(0, 0);
@@ -253,7 +264,7 @@ namespace GarminFitnessPlugin.View
 
                         stepArea.Offset(0, titleSize.Height + detailsSize.Height + 10);
                     }
-                    else
+                    else if (currentStep is RepeatStep)
                     {
                         RepeatStep repeatStep = currentStep as RepeatStep;
 
@@ -280,15 +291,18 @@ namespace GarminFitnessPlugin.View
                         }
                     }
                 }
-                else if(currentStep is RepeatStep)
+                else
                 {
-                    RepeatStep repeatStep = currentStep as RepeatStep;
-                    float nextAreaTop = 0;
+                    if (currentStep is RepeatStep)
+                    {
+                        RepeatStep repeatStep = currentStep as RepeatStep;
+                        float nextAreaTop = 0;
 
-                    stepIndex += PrintSteps(repeatStep.StepsToRepeat, startStep - stepIndex, graphics,
-                                            outputArea, out nextAreaTop);
+                        stepIndex += PrintSteps(repeatStep.StepsToRepeat, startStep - stepIndex, graphics,
+                                                outputArea, out nextAreaTop);
 
-                    stepArea.Offset(0, nextAreaTop - outputArea.Top);
+                        stepArea.Offset(0, nextAreaTop - outputArea.Top);
+                    }
                 }
 
                 ++stepIndex;
