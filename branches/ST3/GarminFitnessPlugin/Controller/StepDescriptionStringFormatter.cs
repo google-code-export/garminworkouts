@@ -21,7 +21,7 @@ namespace GarminFitnessPlugin.Controller
                 case IStep.StepType.Regular:
                     {
                         RegularStep regularStep = (RegularStep)step;
-                        if (regularStep.Name == null || regularStep.Name == String.Empty)
+                        if (String.IsNullOrEmpty(regularStep.Name))
                         {
                             result = FormatDurationDescription(regularStep.Duration) +
                                      "  " +
@@ -62,7 +62,7 @@ namespace GarminFitnessPlugin.Controller
             return result;
         }
 
-        static private string FormatDurationDescription(IDuration duration)
+        static public string FormatDurationDescription(IDuration duration)
         {
             string result;
             string baseString;
@@ -176,7 +176,7 @@ namespace GarminFitnessPlugin.Controller
             return result;
         }
 
-        static private string FormatRepeatDurationDescription(IRepeatDuration duration)
+        static public string FormatRepeatDurationDescription(IRepeatDuration duration)
         {
             string result;
             string baseString;
@@ -291,7 +291,7 @@ namespace GarminFitnessPlugin.Controller
             return result;
         }
 
-        static private string FormatTargetDescription(ITarget target)
+        static public string FormatTargetDescription(ITarget target)
         {
             string result;
             string baseString = string.Empty;
@@ -547,9 +547,9 @@ namespace GarminFitnessPlugin.Controller
             return result;
         }
 
-        static private String GetStepIntensityText(RegularStep.StepIntensity intensity)
+        static public String GetStepIntensityText(RegularStep.StepIntensity intensity)
         {
-            switch(intensity)
+            switch (intensity)
             {
                 case RegularStep.StepIntensity.Active:
                     {

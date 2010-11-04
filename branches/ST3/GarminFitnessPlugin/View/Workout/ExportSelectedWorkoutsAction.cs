@@ -40,10 +40,7 @@ namespace GarminFitnessPlugin.View
 
         public System.Drawing.Image Image
         {
-            get
-            {
-                return global::GarminFitnessPlugin.Resources.Resources.Export;
-            }
+            get { return global::GarminFitnessPlugin.Resources.Resources.Export; }
         }
 
         public bool Visible

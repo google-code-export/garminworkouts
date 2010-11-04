@@ -27,7 +27,7 @@ namespace GarminFitnessPlugin.View
 
         public bool Enabled
         {
-            get { return true; }
+            get { return GarminWorkoutManager.Instance.Workouts.Count > 0; }
         }
 
         public bool HasMenuArrow
@@ -37,10 +37,7 @@ namespace GarminFitnessPlugin.View
 
         public System.Drawing.Image Image
         {
-            get
-            {
-                return global::GarminFitnessPlugin.Resources.Resources.Export;
-            }
+            get { return global::GarminFitnessPlugin.Resources.Resources.Export; }
         }
 
         public bool Visible
@@ -55,6 +52,10 @@ namespace GarminFitnessPlugin.View
 
         public void Refresh()
         {
+            if (PropertyChanged != null)
+            {
+                PropertyChanged(this, new PropertyChangedEventArgs("Enabled"));
+            }
         }
 
         public void Run(System.Drawing.Rectangle rectButton)

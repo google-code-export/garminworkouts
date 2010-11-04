@@ -347,7 +347,8 @@ namespace GarminFitnessPlugin.View
             {
                 new ExportAllWorkoutsAction(),
                 new ExportSelectedWorkoutsAction(),
-                new ImportWorkoutsAction()
+                new ImportWorkoutsAction(),
+                new PrintWorkoutsAction()
             };
 
         private IAction[] m_ProfileViewActions = new IAction[]

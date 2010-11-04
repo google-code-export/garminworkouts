@@ -1429,6 +1429,33 @@ namespace GarminFitnessPlugin.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Print all.
+        /// </summary>
+        internal static string PrintAllText {
+            get {
+                return ResourceManager.GetString("PrintAllText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Print selected.
+        /// </summary>
+        internal static string PrintSelectedText {
+            get {
+                return ResourceManager.GetString("PrintSelectedText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Print.
+        /// </summary>
+        internal static string PrintText {
+            get {
+                return ResourceManager.GetString("PrintText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Profile.
         /// </summary>
         internal static string ProfileText {

@@ -179,6 +179,13 @@ namespace GarminFitnessPlugin.Resources {
             }
         }
         
+        internal static System.Drawing.Bitmap Print {
+            get {
+                object obj = ResourceManager.GetObject("Print", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
         internal static System.Drawing.Bitmap RemoveAllButton {
             get {
                 object obj = ResourceManager.GetObject("RemoveAllButton", resourceCulture);

@@ -795,4 +795,13 @@
   <data name="UseCategoryForAllCheckBoxText" xml:space="preserve">
     <value>Use category for all workouts</value>
   </data>
+  <data name="PrintAllText" xml:space="preserve">
+    <value>Print all</value>
+  </data>
+  <data name="PrintSelectedText" xml:space="preserve">
+    <value>Print selected</value>
+  </data>
+  <data name="PrintText" xml:space="preserve">
+    <value>Print</value>
+  </data>
 </root>

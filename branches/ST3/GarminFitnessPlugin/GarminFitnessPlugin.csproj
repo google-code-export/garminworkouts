@@ -216,6 +216,7 @@
     <Compile Include="View\Common\ExtendedTextBox.Designer.cs">
       <DependentUpon>ExtendedTextBox.cs</DependentUpon>
     </Compile>
+    <Compile Include="View\Common\FilledRoundedRectangle.cs" />
     <Compile Include="View\DonationReminder\GarminFitnessDonationReminderControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -320,6 +321,7 @@
     <Compile Include="View\SetupWizard\SetupWizardWelcomeControl.Designer.cs">
       <DependentUpon>SetupWizardWelcomeControl.cs</DependentUpon>
     </Compile>
+    <Compile Include="View\Workout\PrintWorkoutsAction.cs" />
     <Compile Include="View\Workout\ExportWorkoutsDialog.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -387,6 +389,9 @@
     </Compile>
     <Compile Include="View\Common\TimeDurationUpDown.Designer.cs">
       <DependentUpon>TimeDurationUpDown.cs</DependentUpon>
+    </Compile>
+    <Compile Include="View\Workout\WorkoutPrintDocument.cs">
+      <SubType>Component</SubType>
     </Compile>
     <Compile Include="View\Workout\WorkoutRowDataRenderer.cs" />
     <Compile Include="View\Workout\WorkoutWrapper.cs" />
@@ -622,6 +627,7 @@ IF $(ConfigurationName)==Debug GOTO end
     <None Include="Resources\WorkoutDirtyIcon.png" />
     <Content Include="Resources\NewLinkStepButton.png" />
     <Content Include="Resources\PlanWorkout.png" />
+    <None Include="Resources\Print.png" />
     <Content Include="Resources\RemoveAllButton.png" />
     <Content Include="Resources\WorkoutIcon.png" />
     <Content Include="Resources\WorkoutPartIcon.png" />
