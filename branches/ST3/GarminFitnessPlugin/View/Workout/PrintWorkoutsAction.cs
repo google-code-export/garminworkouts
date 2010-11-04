@@ -121,15 +121,9 @@ namespace GarminFitnessPlugin.View
 
         private void PrintWorkouts(List<Workout> workoutsToPrint)
         {
-            WorkoutPrintDocument printDocument = new WorkoutPrintDocument(workoutsToPrint);
-            PrintPreviewDialog previewDialog = new PrintPreviewDialog();
+            PrintOptionsDialog printDialog = new PrintOptionsDialog(workoutsToPrint);
 
-            previewDialog.Document = printDocument;
-
-            if (previewDialog.ShowDialog() == DialogResult.OK)
-            {
-                printDocument.Print();
-            }
+            printDialog.ShowDialog();
         }
 
         public event PropertyChangedEventHandler PropertyChanged;

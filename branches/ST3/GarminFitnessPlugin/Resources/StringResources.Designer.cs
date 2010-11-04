@@ -1033,6 +1033,15 @@ namespace GarminFitnessPlugin.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Ink friendly mode.
+        /// </summary>
+        internal static string InkFriendlyModeText {
+            get {
+                return ResourceManager.GetString("InkFriendlyModeText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Value must be an integer between {0} and {1}.
         /// </summary>
         internal static string IntegerRangeValidationText {
@@ -1434,6 +1443,24 @@ namespace GarminFitnessPlugin.Resources {
         internal static string PrintAllText {
             get {
                 return ResourceManager.GetString("PrintAllText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Print options.
+        /// </summary>
+        internal static string PrintOptionsText {
+            get {
+                return ResourceManager.GetString("PrintOptionsText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Print preview.
+        /// </summary>
+        internal static string PrintPreviewText {
+            get {
+                return ResourceManager.GetString("PrintPreviewText", resourceCulture);
             }
         }
         

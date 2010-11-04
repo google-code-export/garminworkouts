@@ -804,4 +804,13 @@
   <data name="PrintText" xml:space="preserve">
     <value>Print</value>
   </data>
+  <data name="InkFriendlyModeText" xml:space="preserve">
+    <value>Ink friendly mode</value>
+  </data>
+  <data name="PrintOptionsText" xml:space="preserve">
+    <value>Print options</value>
+  </data>
+  <data name="PrintPreviewText" xml:space="preserve">
+    <value>Print preview</value>
+  </data>
 </root>

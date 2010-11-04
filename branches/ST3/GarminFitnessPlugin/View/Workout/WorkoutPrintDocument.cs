@@ -10,27 +10,43 @@ namespace GarminFitnessPlugin.View
 {
     class WorkoutPrintDocument : PrintDocument
     {
-        public WorkoutPrintDocument(List<Workout> workoutsToPrint)
+        public WorkoutPrintDocument(List<Workout> workoutsToPrint, bool inkFriendlyMode)
         {
             m_WorkoutsToPrint = new List<Workout>();
             m_WorkoutsToPrint.AddRange(workoutsToPrint);
+
+            m_InkFriendlyMode = inkFriendlyMode;
         }
 
         protected override void OnBeginPrint(PrintEventArgs e)
         {
             base.OnBeginPrint(e);
 
+            if (m_InkFriendlyMode)
+            {
+                m_HeaderTextBrush = new SolidBrush(Color.Black);
+                m_HeaderBackgroundBrush = new SolidBrush(Color.White);
+
+                m_BorderPen = new Pen(Color.DarkGray, 3);
+                m_BackgroundBrush = new SolidBrush(Color.White);
+
+                m_WorkoutDetailsBrush = new SolidBrush(Color.Black);
+            }
+            else
+            {
+                m_HeaderTextBrush = new SolidBrush(Color.White);
+                m_HeaderBackgroundBrush = new SolidBrush(Color.Black);
+
+                m_BorderPen = new Pen(Color.Black, 3);
+                m_BackgroundBrush = new SolidBrush(Color.LightGray);
+
+                m_WorkoutDetailsBrush = new SolidBrush(Color.Black);
+            }
+
             m_HeaderFont = new Font(FontFamily.GenericSansSerif, 18);
             m_HeaderNotesFont = new Font(FontFamily.GenericSansSerif, 10);
-            m_HeaderTextBrush = new SolidBrush(Color.White);
-            m_HeaderBackgroundBrush = new SolidBrush(Color.Black);
-
-            m_BorderPen = new Pen(Color.Black, 3);
-            m_BackgroundBrush = new SolidBrush(Color.LightGray);
-
             m_WorkoutDetailsFont = new Font(FontFamily.GenericSansSerif, 10);
             m_StepHeaderFont = new Font(FontFamily.GenericSansSerif, 12, FontStyle.Bold);
-            m_WorkoutDetailsBrush = new SolidBrush(Color.Black);
         }
 
         protected override void  OnEndPrint(PrintEventArgs e)
@@ -141,7 +157,7 @@ namespace GarminFitnessPlugin.View
             float dummy;
 
             contentsArea = new RectangleF(outputArea.Left, outputArea.Top + 15,
-                                          outputArea.Width - 15, outputArea.Height - 15);
+                                          outputArea.Width, outputArea.Height - 15);
             FilledRoundedRectangle.Draw(graphics, m_BorderPen, m_BackgroundBrush,
                                         contentsArea, m_CornerRadius);
 
@@ -284,8 +300,9 @@ namespace GarminFitnessPlugin.View
         }
 
         private List<Workout> m_WorkoutsToPrint = null;
-        Workout m_CurrentWorkout = null;
-        int m_CurrentStep = 0;
+        private Workout m_CurrentWorkout = null;
+        private int m_CurrentStep = 0;
+        private bool m_InkFriendlyMode = true;
         private Font m_HeaderFont = null;
         private Font m_HeaderNotesFont = null;
         private SolidBrush m_HeaderTextBrush = null;
