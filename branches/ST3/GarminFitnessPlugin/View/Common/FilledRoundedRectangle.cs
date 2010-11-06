@@ -27,6 +27,11 @@ namespace GarminFitnessPlugin.View
         {
             Debug.Assert(rectangle.Height >= (2 * cornerRadius));
             GraphicsPath rectanglePath = new GraphicsPath();
+            float halfBorder = border.Width * 0.5f;
+
+            rectangle.Offset(halfBorder, halfBorder);
+            rectangle.Height -= border.Width;
+            rectangle.Width -= border.Width;
 
             if (rectangle.Height > (2 * cornerRadius))
             {

@@ -43,7 +43,7 @@ namespace GarminFitnessPlugin.View
                 m_WorkoutDetailsBrush = new SolidBrush(Color.Black);
             }
 
-            m_HeaderFont = new Font(FontFamily.GenericSansSerif, 18);
+            m_HeaderFont = new Font(FontFamily.GenericSansSerif, 16, FontStyle.Bold);
             m_HeaderNotesFont = new Font(FontFamily.GenericSansSerif, 10);
             m_WorkoutDetailsFont = new Font(FontFamily.GenericSansSerif, 10);
             m_StepHeaderFont = new Font(FontFamily.GenericSansSerif, 12, FontStyle.Bold);
@@ -65,39 +65,50 @@ namespace GarminFitnessPlugin.View
 
         protected override void OnPrintPage(PrintPageEventArgs e)
         {
-            base.OnPrintPage(e);
-
-            if (m_CurrentWorkout != null || m_WorkoutsToPrint.Count > 0)
+            try
             {
-                RectangleF outputArea = new RectangleF(e.PageSettings.PrintableArea.Left + e.PageSettings.Margins.Left,
-                                                       e.PageSettings.PrintableArea.Top + e.PageSettings.Margins.Top,
-                                                       e.PageSettings.PrintableArea.Width - e.PageSettings.Margins.Left - e.PageSettings.Margins.Right,
-                                                       e.PageSettings.PrintableArea.Height - e.PageSettings.Margins.Top - e.PageSettings.Margins.Bottom);
-                float headerHeight = 0;
+                base.OnPrintPage(e);
 
-                if(m_CurrentWorkout == null)
+                if (m_CurrentWorkout != null || m_WorkoutsToPrint.Count > 0)
                 {
-                    m_CurrentWorkout = m_WorkoutsToPrint[0];
-                    m_CurrentStep = 0;
-                    m_WorkoutsToPrint.RemoveAt(0);
+                    RectangleF outputArea = new RectangleF(e.PageSettings.Bounds.Left + e.PageSettings.Margins.Left,
+                                                           e.PageSettings.Bounds.Top + e.PageSettings.Margins.Top,
+                                                           e.PageSettings.Bounds.Width - e.PageSettings.Margins.Left - e.PageSettings.Margins.Right,
+                                                           e.PageSettings.Bounds.Height - e.PageSettings.Margins.Top - e.PageSettings.Margins.Bottom);
+                    float headerHeight = 0;
 
-                    headerHeight = PrintWorkoutHeader(m_CurrentWorkout, e.Graphics, outputArea);
+                    if (m_CurrentWorkout == null)
+                    {
+                        m_CurrentWorkout = m_WorkoutsToPrint[0];
+                        m_CurrentStep = 0;
+                        m_WorkoutsToPrint.RemoveAt(0);
+
+                        headerHeight = PrintWorkoutHeader(m_CurrentWorkout,
+                                                          e.Graphics,
+                                                          new RectangleF(outputArea.Left, outputArea.Top,
+                                                                         outputArea.Width - (1.5f * m_CornerRadius), outputArea.Height));
+                    }
+
+                    int nextStepToDraw = PrintWorkoutSteps(m_CurrentWorkout, m_CurrentStep,
+                                                           e.Graphics,
+                                                           new RectangleF(outputArea.Left, outputArea.Top + headerHeight,
+                                                                          outputArea.Width - (1.5f * m_CornerRadius), outputArea.Height - headerHeight));
+
+                    if (nextStepToDraw < m_CurrentWorkout.Steps.StepCount)
+                    {
+                        m_CurrentStep = nextStepToDraw;
+                    }
+                    else
+                    {
+                        m_CurrentWorkout = null;
+                    }
+
+                    e.HasMorePages = m_CurrentWorkout != null || m_WorkoutsToPrint.Count > 0;
                 }
-
-                outputArea.Offset(0, headerHeight);
-                outputArea.Height -= headerHeight;
-                int nextStepToDraw = PrintWorkoutSteps(m_CurrentWorkout, m_CurrentStep, e.Graphics, outputArea);
-
-                if (nextStepToDraw < m_CurrentWorkout.Steps.StepCount)
-                {
-                    m_CurrentStep = nextStepToDraw;
-                }
-                else
-                {
-                    m_CurrentWorkout = null;
-                }
-
-                e.HasMorePages = m_CurrentWorkout != null || m_WorkoutsToPrint.Count > 0;
+            }
+            catch(Exception exception)
+            {
+                throw exception;
             }
         }
 
@@ -114,12 +125,12 @@ namespace GarminFitnessPlugin.View
                                             outputArea.Width, m_CornerRadius);
             headerNotesArea = new RectangleF(headerNameArea.Left + m_CornerRadius, headerNameArea.Bottom + 15,
                                              headerNameArea.Width - (m_CornerRadius * 2), headerNameArea.Height);
-            measuredSize = graphics.MeasureString(workout.Notes, m_HeaderNotesFont, (int)headerNotesArea.Width);
+            measuredSize = graphics.MeasureString(workout.Notes.Trim(), m_HeaderNotesFont, (int)headerNotesArea.Width);
             headerNotesArea.Height = Math.Min(measuredSize.Height, maxNotesHeight);
             headerArea = new RectangleF(outputArea.Left, outputArea.Top,
                                         outputArea.Width, headerNotesArea.Bottom - headerNameArea.Top);
 
-            if (!String.IsNullOrEmpty(workout.Notes))
+            if (!String.IsNullOrEmpty(workout.Notes.Trim()))
             {
                 headerArea.Height += 15;
             }
@@ -133,9 +144,9 @@ namespace GarminFitnessPlugin.View
                                         headerArea, headerCornerRadius);
             graphics.DrawString(workout.Name, m_HeaderFont, m_HeaderTextBrush, headerNameArea);
 
-            if (!String.IsNullOrEmpty(workout.Notes))
+            if (!String.IsNullOrEmpty(workout.Notes.Trim()))
             {
-                graphics.DrawString(workout.Notes, m_HeaderNotesFont, m_HeaderTextBrush, headerNotesArea);
+                graphics.DrawString(workout.Notes.Trim(), m_HeaderNotesFont, m_HeaderTextBrush, headerNotesArea);
 
                 if (measuredSize.Height > maxNotesHeight)
                 {
@@ -173,6 +184,7 @@ namespace GarminFitnessPlugin.View
             const float stepDetailsIndentation = 20;
             float oneRowStepHeaderHeight = graphics.MeasureString("Dummy row height", m_StepHeaderFont).Height;
             float maxStepDetailsHeight = graphics.MeasureString("Five\nDummy\nRows\nIs\nPlenty", m_WorkoutDetailsFont).Height;
+            SizeF extraNotesSize = graphics.MeasureString("...", m_WorkoutDetailsFont);
             RectangleF stepArea;
             int stepIndex = 0;
 
@@ -198,11 +210,12 @@ namespace GarminFitnessPlugin.View
                 {
                     SizeF titleSize = new SizeF(0, 0);
                     SizeF detailsSize = new SizeF(0, 0);
+                    RectangleF detailsArea;
                     String titleText = String.Empty;
                     String detailsText = String.Empty;
 
                     stepArea = new RectangleF(outputArea.Left + m_CornerRadius, stepArea.Top,
-                                              outputArea.Width - m_CornerRadius, stepArea.Height);
+                                              outputArea.Width - m_CornerRadius, outputArea.Height - stepArea.Top + outputArea.Top);
 
                     if (currentStep is RegularStep)
                     {
@@ -217,7 +230,7 @@ namespace GarminFitnessPlugin.View
                                        ". " +
                                        StepDescriptionStringFormatter.FormatTargetDescription(regularStep.Target) +
                                        "\n" +
-                                       regularStep.Notes;
+                                       regularStep.Notes.Trim();
                         }
                         else
                         {
@@ -233,28 +246,31 @@ namespace GarminFitnessPlugin.View
                                 titleSize = graphics.MeasureString(titleText, m_StepHeaderFont, (int)stepArea.Width);
                             }
 
-                            detailsText = regularStep.Notes;
+                            detailsText = regularStep.Notes.Trim();
                         }
 
-                        detailsSize = graphics.MeasureString(detailsText, m_HeaderNotesFont, (int)stepArea.Width);
+                        detailsSize = graphics.MeasureString(detailsText, m_HeaderNotesFont, (int)(stepArea.Width - stepDetailsIndentation));
+                        detailsArea = new RectangleF(stepArea.Left + stepDetailsIndentation, stepArea.Top + titleSize.Height,
+                                                     detailsSize.Width, Math.Min(maxStepDetailsHeight, detailsSize.Height));
+
+                        if (detailsArea.Height == maxStepDetailsHeight)
+                        {
+                            detailsSize.Height = detailsArea.Height + extraNotesSize.Height;
+                        }
 
                         if ((stepArea.Top + titleSize.Height + detailsSize.Height) < outputArea.Bottom)
                         {
-                            RectangleF detailsArea;
-
                             graphics.DrawString(titleText, m_StepHeaderFont, m_WorkoutDetailsBrush, stepArea.Location);
-                            detailsArea = new RectangleF(stepArea.Left + stepDetailsIndentation, stepArea.Top + titleSize.Height,
-                                                        detailsSize.Width, Math.Min(maxStepDetailsHeight, detailsSize.Height));
                             graphics.DrawString(detailsText, m_WorkoutDetailsFont, m_WorkoutDetailsBrush, detailsArea);
 
-                            if (detailsSize.Height > maxStepDetailsHeight)
+                            if (detailsArea.Height == maxStepDetailsHeight)
                             {
-                                SizeF extraNotesSize = graphics.MeasureString("...", m_WorkoutDetailsFont);
                                 RectangleF moreNotesArea = new RectangleF(detailsArea.Left, detailsArea.Bottom,
                                                                           detailsArea.Width, extraNotesSize.Height);
 
-                                detailsSize.Height = maxStepDetailsHeight + extraNotesSize.Height;
                                 graphics.DrawString("...", m_WorkoutDetailsFont, m_WorkoutDetailsBrush, moreNotesArea);
+
+                                detailsArea.Height += extraNotesSize.Height;
                             }
                         }
                         else
@@ -262,7 +278,7 @@ namespace GarminFitnessPlugin.View
                             break;
                         }
 
-                        stepArea.Offset(0, titleSize.Height + detailsSize.Height + 10);
+                        stepArea.Offset(0, titleSize.Height + detailsArea.Height + 10);
                     }
                     else if (currentStep is RepeatStep)
                     {
@@ -270,20 +286,46 @@ namespace GarminFitnessPlugin.View
 
                         titleText = StepDescriptionStringFormatter.FormatRepeatDurationDescription(repeatStep.Duration);
                         titleSize = graphics.MeasureString(titleText, m_StepHeaderFont, (int)stepArea.Width);
+                        detailsText = repeatStep.Notes.Trim();
+                        detailsSize = graphics.MeasureString(detailsText, m_StepHeaderFont, (int)(stepArea.Width - stepDetailsIndentation));
+                        detailsArea = new RectangleF(stepArea.Left + stepDetailsIndentation, stepArea.Top + titleSize.Height,
+                                                     detailsSize.Width, Math.Min(maxStepDetailsHeight, detailsSize.Height));
+
+                        if (detailsArea.Height == maxStepDetailsHeight)
+                        {
+                            detailsSize.Height = detailsArea.Height + extraNotesSize.Height;
+                        }
 
                         // Make sure we can fit at least 1 step underneath
-                        if ((stepArea.Top + titleSize.Height + (oneRowStepHeaderHeight * 2) + maxStepDetailsHeight) < outputArea.Bottom)
+                        if ((stepArea.Top + titleSize.Height + detailsSize.Height + (oneRowStepHeaderHeight * 2) + maxStepDetailsHeight) < outputArea.Bottom)
                         {
                             float nextAreaTop = 0;
 
-                            graphics.DrawString(titleText, m_StepHeaderFont, m_WorkoutDetailsBrush, stepArea.Location);
+                            graphics.DrawString(titleText, m_StepHeaderFont, m_WorkoutDetailsBrush, stepArea);
+                            graphics.DrawString(detailsText, m_WorkoutDetailsFont, m_WorkoutDetailsBrush, detailsArea);
 
-                            stepIndex += PrintSteps(repeatStep.StepsToRepeat, 0, graphics,
-                                                    new RectangleF(stepArea.Left, stepArea.Top + titleSize.Height,
-                                                                   stepArea.Width, outputArea.Bottom - stepArea.Top + titleSize.Height),
-                                                                   out nextAreaTop);
+                            if (detailsArea.Height == maxStepDetailsHeight)
+                            {
+                                RectangleF moreNotesArea = new RectangleF(detailsArea.Left, detailsArea.Bottom,
+                                                                          detailsArea.Width, extraNotesSize.Height);
+
+                                graphics.DrawString("...", m_WorkoutDetailsFont, m_WorkoutDetailsBrush, moreNotesArea);
+
+                                detailsArea.Height += extraNotesSize.Height;
+                            }
+
+                            int stepsRendered = PrintSteps(repeatStep.StepsToRepeat, 0, graphics,
+                                                           new RectangleF(stepArea.Left, stepArea.Top + titleSize.Height + detailsArea.Height,
+                                                                          stepArea.Width, outputArea.Bottom - stepArea.Top - titleSize.Height - detailsArea.Height),
+                                                                          out nextAreaTop);
 
                             stepArea.Offset(0, nextAreaTop - stepArea.Top);
+
+                            stepIndex += stepsRendered;
+                            if (stepsRendered < (repeatStep.StepCount - 1))
+                            {
+                                break;
+                            }
                         }
                         else
                         {
@@ -317,6 +359,8 @@ namespace GarminFitnessPlugin.View
         private Workout m_CurrentWorkout = null;
         private int m_CurrentStep = 0;
         private bool m_InkFriendlyMode = true;
+
+        // Rendering objects
         private Font m_HeaderFont = null;
         private Font m_HeaderNotesFont = null;
         private SolidBrush m_HeaderTextBrush = null;

@@ -1,8 +1,10 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Drawing;
 using System.Globalization;
 using System.IO;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
 using System.Windows.Forms;
@@ -16,6 +18,48 @@ namespace GarminFitnessPlugin.Controller
 {
     class Utils
     {
+        [DllImport("gdi32.dll")]
+        private static extern int BitBlt(IntPtr hdcDest, int nXDest, int nYDest, int nWidth, int nHeight,
+                                         IntPtr hdcSrc, int nXSrc, int nYSrc, Int32 dwRop);
+
+        [DllImport("gdi32.dll")]
+        private static extern IntPtr CreateCompatibleDC(IntPtr hDC);
+
+        [DllImport("gdi32.dll")]
+        private static extern bool DeleteDC(IntPtr hdc);
+
+        [DllImport("gdi32.dll")]
+        private static extern bool DeleteObject(IntPtr hObject);
+
+        [DllImport("gdi32.dll")]
+        private static extern IntPtr SelectObject(IntPtr hDC, IntPtr hObject);
+
+        static public void RenderBitmapToGraphics(Bitmap source, Graphics destination, Rectangle destinationRect)
+        {
+            try
+            {
+                IntPtr destHdc = destination.GetHdc();
+                IntPtr bitmapHdc = CreateCompatibleDC(destHdc);
+                IntPtr hBitmap = source.GetHbitmap();
+                IntPtr oldHdc = SelectObject(bitmapHdc, hBitmap);
+
+                BitBlt(destHdc,
+                       destinationRect.Left, destinationRect.Top,
+                       destinationRect.Width, destinationRect.Height,
+                       bitmapHdc, 0, 0, 0x00CC0020);
+
+                destination.ReleaseHdc(destHdc);
+                SelectObject(bitmapHdc, oldHdc);
+                DeleteDC(bitmapHdc);
+                DeleteObject(hBitmap);
+            }
+            catch//(System.DllNotFoundException e)
+            {
+                // Mono/Linux - Just go on right now
+                //throw e;
+            }
+        }
+
         public static void HijackMainWindow()
         {
             Control viewControl = PluginMain.GetApplication().ActiveView.CreatePageControl();

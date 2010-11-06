@@ -801,4 +801,7 @@
   <data name="PrintPreviewText" xml:space="preserve">
     <value>Print preview</value>
   </data>
+  <data name="PageSetupText" xml:space="preserve">
+    <value>Page setup</value>
+  </data>
 </root>

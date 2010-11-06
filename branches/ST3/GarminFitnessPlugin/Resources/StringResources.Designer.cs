@@ -1303,6 +1303,15 @@ namespace GarminFitnessPlugin.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Page setup.
+        /// </summary>
+        internal static string PageSetupText {
+            get {
+                return ResourceManager.GetString("PageSetupText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to part {0}/{1}.
         /// </summary>
         internal static string PartNumberingNotesText {
