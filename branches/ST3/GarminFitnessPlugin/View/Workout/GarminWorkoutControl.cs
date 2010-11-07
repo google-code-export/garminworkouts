@@ -210,7 +210,8 @@ namespace GarminFitnessPlugin.View
                     RefreshCalendarView();
                 }
 
-                if (SelectedWorkout.ConcreteWorkout == modifiedWorkout)
+                if (SelectedWorkout != null &&
+                    SelectedWorkout.ConcreteWorkout == modifiedWorkout)
                 {
                     if (changedProperty.PropertyName == "Steps")
                     {
