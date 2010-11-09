@@ -14,7 +14,7 @@ namespace GarminFitnessPlugin.Data
         protected IStep(StepType type, Workout parent)
         {
             m_StepType = type;
-            m_ParentWorkout = parent;
+            ParentConcreteWorkout = parent;
         }
 
         public enum StepType
@@ -72,13 +72,14 @@ namespace GarminFitnessPlugin.Data
         {
             XmlAttribute attribute = document.CreateAttribute(Constants.XsiTypeTCXString, Constants.xsins);
             XmlNode childNode = document.CreateElement(nodeName);
+            int stepExportId = ParentWorkout.GetStepExportId(this);
 
             parentNode.AppendChild(childNode);
             attribute.Value = Constants.StepTypeTCXString[(int)Type];
             childNode.Attributes.Append(attribute);
 
             XmlNode idNode = document.CreateElement("StepId");
-            idNode.AppendChild(document.CreateTextNode(ParentWorkout.GetStepExportId(this).ToString()));
+            idNode.AppendChild(document.CreateTextNode(stepExportId.ToString()));
             childNode.AppendChild(idNode);
 
             XmlNode valueNode;
@@ -86,7 +87,7 @@ namespace GarminFitnessPlugin.Data
 
             extensionNode = document.CreateElement("StepNotes");
             valueNode = document.CreateElement("StepId");
-            valueNode.AppendChild(document.CreateTextNode(ParentWorkout.GetStepExportId(this).ToString()));
+            valueNode.AppendChild(document.CreateTextNode(stepExportId.ToString()));
             extensionNode.AppendChild(valueNode);
             m_Notes.Serialize(extensionNode, "Notes", document);
 

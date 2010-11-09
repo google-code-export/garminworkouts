@@ -243,8 +243,26 @@ namespace GarminFitnessPlugin.Data
             get { return m_WorkoutStepsCopy; }
         }
 
+        public override Workout ParentConcreteWorkout
+        {
+            get { return m_ParentWorkout; }
+            set
+            {
+                m_ParentWorkout = value;
+
+                if (m_WorkoutStepsCopy != null)
+                {
+                    foreach (IStep step in m_WorkoutStepsCopy)
+                    {
+                        step.ParentConcreteWorkout = value;
+                    }
+                }
+            }
+        }
+
         private bool m_Dirty = false;
         private Workout m_LinkedWorkout = null;
+        private Workout m_ParentWorkout;
         private WorkoutStepsList m_WorkoutStepsCopy = null;
         private RepeatStep m_CurrentTopMostRepeat = null;
     }

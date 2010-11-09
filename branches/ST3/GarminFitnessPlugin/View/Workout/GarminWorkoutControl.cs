@@ -460,7 +460,7 @@ namespace GarminFitnessPlugin.View
 
             SelectedWorkout = GarminWorkoutManager.Instance.CreateWorkout(SelectedCategory);
             SelectedCategory = null;
-            WorkoutsList.Focus();
+            WorkoutNameText.Focus();
         }
 
         private void RemoveWorkoutButton_Click(object sender, EventArgs e)
@@ -581,7 +581,7 @@ namespace GarminFitnessPlugin.View
         {
             if (e.KeyCode == Keys.Enter)
             {
-                SendKeys.Send("{TAB}");
+                bool success = SelectNextControl(sender as Control, true, true, true, true);
             }
         }
 
@@ -1950,6 +1950,7 @@ namespace GarminFitnessPlugin.View
                     {
                         SelectedWorkout = GarminWorkoutManager.Instance.CreateWorkout(SelectedCategory);
                         SelectedCategory = null;
+                        WorkoutNameText.Focus();
                     }
                 }
             }
@@ -2836,6 +2837,10 @@ namespace GarminFitnessPlugin.View
         {
             if (SelectedStep != null)
             {
+                StepWrapper wrapper = GetStepWrapper(SelectedWorkout.ConcreteWorkout, SelectedStep);
+
+                StepSplit.Panel2.Enabled = !wrapper.IsWorkoutLinkChild;
+
                 StepNotesText.Text = SelectedStep.Notes;
                 ForceSplitCheckBox.Visible = Options.Instance.AllowSplitWorkouts || SelectedWorkout.GetSplitPartsCount() > 1;
                 ForceSplitCheckBox.Enabled = SelectedWorkout.Steps.GetTopMostRepeatForStep(SelectedStep) == null;
@@ -2852,10 +2857,6 @@ namespace GarminFitnessPlugin.View
                         StepNameLabel.Visible = true;
                         StepNameText.Visible = true;
                         IntensityComboBox.Visible = true;
-
-                        StepWrapper wrapper = GetStepWrapper(SelectedWorkout.ConcreteWorkout, SelectedStep);
-
-                        StepSplit.Panel2.Enabled = !wrapper.IsWorkoutLinkChild;
 
                         RegularStep concreteStep = (RegularStep)SelectedStep;
 
@@ -2893,10 +2894,6 @@ namespace GarminFitnessPlugin.View
                         StepNameText.Visible = false;
                         IntensityComboBox.Visible = false;
 
-                        StepWrapper wrapper = GetStepWrapper(SelectedWorkout.ConcreteWorkout, SelectedStep);
-
-                        StepSplit.Panel2.Enabled = !wrapper.IsWorkoutLinkChild;
-
                         RepeatStep concreteStep = SelectedStep as RepeatStep;
 
                         UpdateDurationComboBox();
@@ -2918,7 +2915,6 @@ namespace GarminFitnessPlugin.View
                         StepNameText.Visible = false;
                         IntensityComboBox.Visible = false;
 
-                        StepSplit.Panel2.Enabled = true;
                         break;
                     }
                 default:
