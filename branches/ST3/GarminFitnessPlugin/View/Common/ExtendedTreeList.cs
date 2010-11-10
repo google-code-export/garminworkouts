@@ -80,7 +80,14 @@ namespace GarminFitnessPlugin.View
                 TreeList.RowHitState type;
                 object futureSelection = RowHitTest(e.Location, out type);
 
-                if (futureSelection != null)
+                if (type == TreeList.RowHitState.PlusMinus)
+                {
+                    if(ExpandedChanged != null)
+                    {
+                        ExpandedChanged(futureSelection, !IsExpanded(futureSelection));
+                    }
+                }
+                else if (futureSelection != null)
                 {
                     m_IsMouseDownInList = true;
                     m_MouseMovedPixels = 0;
@@ -222,8 +229,11 @@ namespace GarminFitnessPlugin.View
             set { m_DragAutoScrollSize = value; }
         }
 
+        public delegate void ExpandedChangedEventHandler(object sender, bool expanded);
+
         public new event EventHandler SelectedItemsChanged;
         public event EventHandler DragStart;
+        public event ExpandedChangedEventHandler ExpandedChanged;
 
         private Byte m_DragAutoScrollSize = 20;
 

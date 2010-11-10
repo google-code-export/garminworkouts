@@ -804,4 +804,7 @@
   <data name="PageSetupText" xml:space="preserve">
     <value>Page setup</value>
   </data>
+  <data name="HideInWorkoutListText" xml:space="preserve">
+    <value>Hide in workout list</value>
+  </data>
 </root>

@@ -178,6 +178,13 @@ namespace GarminFitnessPlugin.View
             }
         }
 
+        private void HideInWorkoutListCheckBox_CheckedChanged(object sender, EventArgs e)
+        {
+            IActivityCategory selectedCategory = (IActivityCategory)((STToGarminActivityCategoryWrapper)ActivityCategoryList.Selected[0]).Element;
+
+            Options.Instance.SetVisibleInWorkoutList(selectedCategory, !HideInWorkoutListCheckBox.Checked);
+        }
+
         private void BrowseButton_Click(object sender, System.EventArgs e)
         {
             FolderBrowserDialog dlg = new FolderBrowserDialog();
@@ -206,29 +213,33 @@ namespace GarminFitnessPlugin.View
                 if (Options.Instance.IsCustomGarminCategory(selectedCategory))
                 {
                     CustomCategoryRadioButton.Checked = true;
-
-                    switch (Options.Instance.GetGarminCategory(selectedCategory))
-                    {
-                        case GarminCategories.Running:
-                            RunningRadioButton.Checked = true;
-                            break;
-                        case GarminCategories.Biking:
-                            CyclingRadioButton.Checked = true;
-                            break;
-                        case GarminCategories.Other:
-                            OtherRadioButton.Checked = true;
-                            break;
-                    }
                 }
                 else
                 {
                     CustomCategoryRadioButton.Checked = false;
                 }
 
+                switch (Options.Instance.GetGarminCategory(selectedCategory))
+                {
+                    case GarminCategories.Running:
+                        RunningRadioButton.Checked = true;
+                        break;
+                    case GarminCategories.Biking:
+                        CyclingRadioButton.Checked = true;
+                        break;
+                    case GarminCategories.Other:
+                        OtherRadioButton.Checked = true;
+                        break;
+                    default:
+                        break;
+                }
+
                 ParentCategoryRadioButton.Checked = !CustomCategoryRadioButton.Checked;
                 GarminCategoriesPanel.Enabled = CustomCategoryRadioButton.Checked;
 
                 ParentCategoryRadioButton.Enabled = selectedCategory.Parent != null;
+
+                HideInWorkoutListCheckBox.Checked = !Options.Instance.GetVisibleInWorkoutList(selectedCategory);
             }
             else
             {
@@ -312,6 +323,7 @@ namespace GarminFitnessPlugin.View
             RunningRadioButton.Text = GarminFitnessView.GetLocalizedString("RunningText");
             CyclingRadioButton.Text = GarminFitnessView.GetLocalizedString("BikingText");
             OtherRadioButton.Text = GarminFitnessView.GetLocalizedString("OtherText");
+            HideInWorkoutListCheckBox.Text = GarminFitnessView.GetLocalizedString("HideInWorkoutListText");
 
             // Fill category list
             IApplication app = PluginMain.GetApplication();

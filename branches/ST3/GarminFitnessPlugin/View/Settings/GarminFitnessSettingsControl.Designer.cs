@@ -71,6 +71,7 @@ namespace GarminFitnessPlugin.View
             this.AutoSplitCheckBox = new System.Windows.Forms.CheckBox();
             this.DeviceCommGroupBox = new System.Windows.Forms.GroupBox();
             this.DefaultExportDirectoryLabel = new System.Windows.Forms.Label();
+            this.HideInWorkoutListCheckBox = new System.Windows.Forms.CheckBox();
             this.HRSettingsGroupBox.SuspendLayout();
             this.panel1.SuspendLayout();
             this.SpeedSettingsGroupBox.SuspendLayout();
@@ -405,7 +406,7 @@ namespace GarminFitnessPlugin.View
             this.CategoriesGroupBox.Controls.Add(this.splitContainer1);
             this.CategoriesGroupBox.Location = new System.Drawing.Point(6, 283);
             this.CategoriesGroupBox.Name = "CategoriesGroupBox";
-            this.CategoriesGroupBox.Size = new System.Drawing.Size(491, 152);
+            this.CategoriesGroupBox.Size = new System.Drawing.Size(491, 166);
             this.CategoriesGroupBox.TabIndex = 7;
             this.CategoriesGroupBox.TabStop = false;
             this.CategoriesGroupBox.Text = "Categories";
@@ -424,7 +425,7 @@ namespace GarminFitnessPlugin.View
             // splitContainer1.Panel2
             // 
             this.splitContainer1.Panel2.Controls.Add(this.CategorySelectionPanel);
-            this.splitContainer1.Size = new System.Drawing.Size(485, 133);
+            this.splitContainer1.Size = new System.Drawing.Size(485, 147);
             this.splitContainer1.SplitterDistance = 284;
             this.splitContainer1.TabIndex = 6;
             // 
@@ -453,13 +454,14 @@ namespace GarminFitnessPlugin.View
             this.ActivityCategoryList.RowSeparatorLines = true;
             this.ActivityCategoryList.ShowLines = false;
             this.ActivityCategoryList.ShowPlusMinus = false;
-            this.ActivityCategoryList.Size = new System.Drawing.Size(284, 133);
+            this.ActivityCategoryList.Size = new System.Drawing.Size(284, 147);
             this.ActivityCategoryList.TabIndex = 5;
             this.ActivityCategoryList.TabStop = false;
             this.ActivityCategoryList.SelectedItemsChanged += new System.EventHandler(this.ActivityCategoryList_SelectedItemsChanged);
             // 
             // CategorySelectionPanel
             // 
+            this.CategorySelectionPanel.Controls.Add(this.HideInWorkoutListCheckBox);
             this.CategorySelectionPanel.Controls.Add(this.GarminCategoriesPanel);
             this.CategorySelectionPanel.Controls.Add(this.CustomCategoryRadioButton);
             this.CategorySelectionPanel.Controls.Add(this.ParentCategoryRadioButton);
@@ -467,7 +469,7 @@ namespace GarminFitnessPlugin.View
             this.CategorySelectionPanel.Enabled = false;
             this.CategorySelectionPanel.Location = new System.Drawing.Point(0, 0);
             this.CategorySelectionPanel.Name = "CategorySelectionPanel";
-            this.CategorySelectionPanel.Size = new System.Drawing.Size(197, 133);
+            this.CategorySelectionPanel.Size = new System.Drawing.Size(197, 147);
             this.CategorySelectionPanel.TabIndex = 0;
             // 
             // GarminCategoriesPanel
@@ -480,7 +482,7 @@ namespace GarminFitnessPlugin.View
             this.GarminCategoriesPanel.Controls.Add(this.RunningRadioButton);
             this.GarminCategoriesPanel.Location = new System.Drawing.Point(12, 52);
             this.GarminCategoriesPanel.Name = "GarminCategoriesPanel";
-            this.GarminCategoriesPanel.Size = new System.Drawing.Size(182, 78);
+            this.GarminCategoriesPanel.Size = new System.Drawing.Size(182, 68);
             this.GarminCategoriesPanel.TabIndex = 2;
             // 
             // OtherRadioButton
@@ -546,7 +548,7 @@ namespace GarminFitnessPlugin.View
             // 
             this.RunWizardLinkLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.RunWizardLinkLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F);
-            this.RunWizardLinkLabel.Location = new System.Drawing.Point(-1, 528);
+            this.RunWizardLinkLabel.Location = new System.Drawing.Point(-1, 541);
             this.RunWizardLinkLabel.Name = "RunWizardLinkLabel";
             this.RunWizardLinkLabel.Size = new System.Drawing.Size(500, 23);
             this.RunWizardLinkLabel.TabIndex = 8;
@@ -559,7 +561,7 @@ namespace GarminFitnessPlugin.View
             this.DonateLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.DonateLabel.AutoSize = true;
             this.DonateLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F);
-            this.DonateLabel.Location = new System.Drawing.Point(6, 552);
+            this.DonateLabel.Location = new System.Drawing.Point(6, 565);
             this.DonateLabel.Name = "DonateLabel";
             this.DonateLabel.Size = new System.Drawing.Size(292, 20);
             this.DonateLabel.TabIndex = 9;
@@ -570,7 +572,7 @@ namespace GarminFitnessPlugin.View
             this.DonateImageLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.DonateImageLabel.Cursor = System.Windows.Forms.Cursors.Hand;
             this.DonateImageLabel.Image = global::GarminFitnessPlugin.Resources.Resources.DonateImage;
-            this.DonateImageLabel.Location = new System.Drawing.Point(304, 550);
+            this.DonateImageLabel.Location = new System.Drawing.Point(304, 563);
             this.DonateImageLabel.Name = "DonateImageLabel";
             this.DonateImageLabel.Size = new System.Drawing.Size(100, 23);
             this.DonateImageLabel.TabIndex = 10;
@@ -592,7 +594,7 @@ namespace GarminFitnessPlugin.View
             this.DeviceCommGroupBox.Controls.Add(this.DefaultExportDirectoryLabel);
             this.DeviceCommGroupBox.Controls.Add(this.BrowseButton);
             this.DeviceCommGroupBox.Controls.Add(this.ExportDirectoryTextBox);
-            this.DeviceCommGroupBox.Location = new System.Drawing.Point(6, 441);
+            this.DeviceCommGroupBox.Location = new System.Drawing.Point(6, 455);
             this.DeviceCommGroupBox.Name = "DeviceCommGroupBox";
             this.DeviceCommGroupBox.Size = new System.Drawing.Size(484, 65);
             this.DeviceCommGroupBox.TabIndex = 12;
@@ -607,6 +609,17 @@ namespace GarminFitnessPlugin.View
             this.DefaultExportDirectoryLabel.Size = new System.Drawing.Size(122, 13);
             this.DefaultExportDirectoryLabel.TabIndex = 2;
             this.DefaultExportDirectoryLabel.Text = "Default export directory :";
+            // 
+            // HideInWorkoutListCheckBox
+            // 
+            this.HideInWorkoutListCheckBox.AutoSize = true;
+            this.HideInWorkoutListCheckBox.Location = new System.Drawing.Point(4, 125);
+            this.HideInWorkoutListCheckBox.Name = "HideInWorkoutListCheckBox";
+            this.HideInWorkoutListCheckBox.Size = new System.Drawing.Size(115, 17);
+            this.HideInWorkoutListCheckBox.TabIndex = 3;
+            this.HideInWorkoutListCheckBox.Text = "Hide in workout list";
+            this.HideInWorkoutListCheckBox.UseVisualStyleBackColor = true;
+            this.HideInWorkoutListCheckBox.CheckedChanged += new System.EventHandler(this.HideInWorkoutListCheckBox_CheckedChanged);
             // 
             // GarminFitnessSettingsControl
             // 
@@ -624,7 +637,7 @@ namespace GarminFitnessPlugin.View
             this.Controls.Add(this.PowerSettingsGroupBox);
             this.MaximumSize = new System.Drawing.Size(500, 610);
             this.Name = "GarminFitnessSettingsControl";
-            this.Size = new System.Drawing.Size(500, 578);
+            this.Size = new System.Drawing.Size(500, 591);
             this.HRSettingsGroupBox.ResumeLayout(false);
             this.HRSettingsGroupBox.PerformLayout();
             this.panel1.ResumeLayout(false);
@@ -697,5 +710,6 @@ namespace GarminFitnessPlugin.View
         private System.Windows.Forms.RadioButton PercentFTPRadioButton;
         private System.Windows.Forms.RadioButton WattsRadioButton;
         private System.Windows.Forms.Label ExportSTPowerZonesAsLabel;
+        private System.Windows.Forms.CheckBox HideInWorkoutListCheckBox;
     }
 }

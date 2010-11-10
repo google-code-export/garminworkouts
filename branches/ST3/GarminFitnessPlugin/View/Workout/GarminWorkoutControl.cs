@@ -30,6 +30,7 @@ namespace GarminFitnessPlugin.View
 
             WorkoutsList.RowDataRenderer = new WorkoutRowDataRenderer(WorkoutsList);
             WorkoutsList.LabelProvider = new WorkoutIconLabelProvider();
+            WorkoutsList.ExpandedChanged += new ExtendedTreeList.ExpandedChangedEventHandler(WorkoutsList_ExpandedChanged);
 
             StepsList.RowDataRenderer = new StepRowDataRenderer(StepsList);
             StepsList.LabelProvider = new StepIconLabelProvider();
@@ -152,6 +153,10 @@ namespace GarminFitnessPlugin.View
             if (changedProperty.PropertyName == "EnableAutoSplitWorkouts")
             {
                 RefreshWorkoutSelectionControls();
+            }
+            else if (changedProperty.PropertyName == "STCategoryVisibleInWorkoutList")
+            {
+                BuildWorkoutsList();
             }
         }
 
@@ -575,6 +580,16 @@ namespace GarminFitnessPlugin.View
             RefreshActions();
             UpdateUIFromWorkouts();
             RefreshClipboardControls();
+        }
+
+        void WorkoutsList_ExpandedChanged(object sender, bool expanded)
+        {
+            if (sender is ActivityCategoryWrapper)
+            {
+                ActivityCategoryWrapper wrapper = sender as ActivityCategoryWrapper;
+
+                Options.Instance.SetExpandedInWorkoutList((IActivityCategory)wrapper.Element, expanded);
+            }
         }
 
         private void ChildControl_KeyDown(object sender, KeyEventArgs e)
@@ -3724,14 +3739,16 @@ namespace GarminFitnessPlugin.View
         {
             IApplication app = PluginMain.GetApplication();
             List<TreeList.TreeListNode> categories = new List<TreeList.TreeListNode>();
-            bool expandList = WorkoutsList.RowData == null;
 
-            for (int i = 0; i < app.Logbook.ActivityCategories.Count; ++i)
+            foreach (IActivityCategory category in app.Logbook.ActivityCategories)
             {
-                ActivityCategoryWrapper newNode;
+                if (Options.Instance.GetVisibleInWorkoutList(category))
+                {
+                    ActivityCategoryWrapper newNode;
 
-                newNode = CreateCategoryNode(app.Logbook.ActivityCategories[i]);
-                categories.Add(newNode);
+                    newNode = CreateCategoryNode(category);
+                    categories.Add(newNode);
+                }
             }
 
             Dictionary<WorkoutWrapper, bool> expandedMap = new Dictionary<WorkoutWrapper, bool>(); 
@@ -3755,20 +3772,32 @@ namespace GarminFitnessPlugin.View
 
             WorkoutsList.RowData = categories;
 
-            if (expandList)
+            List<IActivityCategory> expanded = Options.Instance.GetAllExpandedSTCategories();
+
+            if (expanded != null)
             {
-                WorkoutsList.SetExpanded(WorkoutsList.RowData, true, true);
+                WorkoutsList.SetExpanded(WorkoutsList.RowData, false, false);
+
+                foreach (IActivityCategory category in expanded)
+                {
+                    ActivityCategoryWrapper wrapper = GetActivityCategoryWrapper(category, null);
+
+                    WorkoutsList.SetExpanded(wrapper, true, false);
+                }
             }
             else
             {
-                // This fixes the Workouts losing the expanded state when not the
-                //  first wrapper in the category
-                Dictionary<WorkoutWrapper, bool>.Enumerator iter = expandedMap.GetEnumerator();
-                while(iter.MoveNext())
-                {
-                    WorkoutsList.SetExpanded(iter.Current.Key, iter.Current.Value);
-                }
+                WorkoutsList.SetExpanded(WorkoutsList.RowData, true, true);
             }
+
+            // This fixes the Workouts losing the expanded state when not the
+            //  first wrapper in the category
+            Dictionary<WorkoutWrapper, bool>.Enumerator iter = expandedMap.GetEnumerator();
+            while (iter.MoveNext())
+            {
+                WorkoutsList.SetExpanded(iter.Current.Key, iter.Current.Value);
+            }
+
             RefreshWorkoutSelection();
         }
 
@@ -3861,12 +3890,15 @@ namespace GarminFitnessPlugin.View
             }
             categoryNode.Parent = parent;
 
-            for (int i = 0; i < category.SubCategories.Count; ++i)
+            foreach (IActivityCategory subCategory in category.SubCategories)
             {
-                ActivityCategoryWrapper wrapper = GetActivityCategoryWrapper(category.SubCategories[i], categoryNode);
-                wrapper.Children.Clear();
+                if(Options.Instance.GetVisibleInWorkoutList(subCategory))
+                {
+                    ActivityCategoryWrapper wrapper = GetActivityCategoryWrapper(subCategory, categoryNode);
+                    wrapper.Children.Clear();
 
-                CreateCategoryNode(wrapper, categoryNode);
+                    CreateCategoryNode(wrapper, categoryNode);
+                }
             }
         }
 

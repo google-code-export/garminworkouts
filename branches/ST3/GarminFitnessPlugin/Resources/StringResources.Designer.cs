@@ -907,6 +907,15 @@ namespace GarminFitnessPlugin.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Hide in workout list.
+        /// </summary>
+        internal static string HideInWorkoutListText {
+            get {
+                return ResourceManager.GetString("HideInWorkoutListText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to High :.
         /// </summary>
         internal static string HighLabelText {
