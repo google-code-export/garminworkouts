@@ -53,7 +53,7 @@ namespace GarminFitnessPlugin.View
 
         public override bool CanFinish
         {
-            get { return true; }
+            get { return false; }
         }
 
         public override bool CanNext
@@ -127,7 +127,7 @@ namespace GarminFitnessPlugin.View
                                     GarminFitnessView.GetLocalizedString("ErrorText"),
                                     MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
-                else
+                else if (!String.IsNullOrEmpty(String.Empty))
                 {
                     MessageBox.Show(errorText,
                                     GarminFitnessView.GetLocalizedString("ErrorText"),
@@ -136,7 +136,24 @@ namespace GarminFitnessPlugin.View
             }
             else
             {
-                if (task.Type == GarminDeviceManager.BasicTask.TaskTypes.ImportProfile)
+                if (task.Type == GarminDeviceManager.BasicTask.TaskTypes.SetOperatingDevice)
+                {
+                    if (GarminDeviceManager.Instance.OperatingDevice == null ||
+                        !GarminDeviceManager.Instance.OperatingDevice.SupportsReadProfile)
+                    {
+                        IExtendedWizardPage nextPage = Wizard.GetPageByType(typeof(SetupWizardEditProfile));
+
+                        MessageBox.Show(String.Format(GarminFitnessView.GetLocalizedString("NoDeviceSupportText"),
+                                                      GarminDeviceManager.Instance.OperatingDevice.DisplayName, GarminFitnessView.GetLocalizedString("ImportProfileText")) +
+                                        "\n" +
+                                        GarminFitnessView.GetLocalizedString("ManualProfileConfigurationText"),
+                                        GarminFitnessView.GetLocalizedString("ErrorText"),
+                                        MessageBoxButtons.OK, MessageBoxIcon.Warning);
+
+                        Wizard.ShowPage(nextPage);
+                    }
+                }
+                else if (task.Type == GarminDeviceManager.BasicTask.TaskTypes.ImportProfile)
                 {
                     Wizard.GoNext();
                 }

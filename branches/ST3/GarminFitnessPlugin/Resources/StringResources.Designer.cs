@@ -1123,6 +1123,15 @@ namespace GarminFitnessPlugin.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to You will be taken through the manual setup process instead..
+        /// </summary>
+        internal static string ManualProfileConfigurationText {
+            get {
+                return ResourceManager.GetString("ManualProfileConfigurationText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to You have chosen to configure your zone usage manually.  Please select the mode to use for each type of zone available in the plugin..
         /// </summary>
         internal static string ManualSTGarminZonesExplanationText {

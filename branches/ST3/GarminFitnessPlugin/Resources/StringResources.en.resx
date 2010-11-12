@@ -807,4 +807,7 @@
   <data name="HideInWorkoutListText" xml:space="preserve">
     <value>Hide in workout list</value>
   </data>
+  <data name="ManualProfileConfigurationText" xml:space="preserve">
+    <value>You will be taken through the manual setup process instead.</value>
+  </data>
 </root>

@@ -46,8 +46,8 @@ namespace GarminFitnessPlugin.Data
         public override void Serialize(Stream stream)
         {
             m_MaxHeartRate.Serialize(stream);
-            
-            m_GearWeight.Serialize(stream);
+
+            m_GearWeightInPounds.Serialize(stream);
 
             m_HRIsInPercentMax.Serialize(stream);
 
@@ -76,7 +76,10 @@ namespace GarminFitnessPlugin.Data
         {
             m_MaxHeartRate.Deserialize(stream, version);
 
-            m_GearWeight.Deserialize(stream, version);
+            GarminFitnessDoubleRange gearWeightinKg = new GarminFitnessDoubleRange(Weight.Convert(m_GearWeightInPounds, Weight.Units.Pound, Weight.Units.Kilogram));
+
+            gearWeightinKg.Deserialize(stream, version);
+            SetGearWeightInUnits(gearWeightinKg, Weight.Units.Kilogram);
 
             m_HRIsInPercentMax.Deserialize(stream, version);
 
@@ -101,14 +104,43 @@ namespace GarminFitnessPlugin.Data
 
                 m_SpeedZones[i].InternalName.Deserialize(stream, version);
             }
-
         }
 
         public void Deserialize_V10(Stream stream, DataVersion version)
         {
             m_MaxHeartRate.Deserialize(stream, version);
 
-            m_GearWeight.Deserialize(stream, version);
+            GarminFitnessDoubleRange gearWeightinKg = new GarminFitnessDoubleRange(Weight.Convert(m_GearWeightInPounds, Weight.Units.Pound, Weight.Units.Kilogram));
+
+            gearWeightinKg.Deserialize(stream, version);
+            SetGearWeightInUnits(gearWeightinKg, Weight.Units.Kilogram);
+
+            m_HRIsInPercentMax.Deserialize(stream, version);
+
+            for (int i = 0; i < m_HeartRateZones.Count; ++i)
+            {
+                m_HeartRateZones[i].Lower.Deserialize(stream, version);
+
+                m_HeartRateZones[i].Upper.Deserialize(stream, version);
+            }
+
+            m_SpeedIsInPace.Deserialize(stream, version);
+
+            for (int i = 0; i < m_SpeedZones.Count; ++i)
+            {
+                m_SpeedZones[i].InternalLow.Deserialize(stream, version);
+
+                m_SpeedZones[i].InternalHigh.Deserialize(stream, version);
+
+                m_SpeedZones[i].InternalName.Deserialize(stream, version);
+            }
+        }
+
+        public void Deserialize_V22(Stream stream, DataVersion version)
+        {
+            m_MaxHeartRate.Deserialize(stream, version);
+
+            m_GearWeightInPounds.Deserialize(stream, version);
 
             m_HRIsInPercentMax.Deserialize(stream, version);
 
@@ -157,7 +189,9 @@ namespace GarminFitnessPlugin.Data
             activityNode.AppendChild(currentChild);
             GarminProfileManager.Instance.UserProfile.InternalRestingHeartRate.Serialize(currentChild, Constants.ValueTCXString, document);
 
-            m_GearWeight.Serialize(activityNode, Constants.GearWeightTCXString, document);
+            GarminFitnessDoubleRange gearWeightinKg = new GarminFitnessDoubleRange(Weight.Convert(m_GearWeightInPounds, Weight.Units.Pound, Weight.Units.Kilogram));
+
+            gearWeightinKg.Serialize(activityNode, Constants.GearWeightTCXString, document);
 
             // HR zones
             for (int i = 0; i < Constants.GarminHRZoneCount; ++i)
@@ -234,8 +268,10 @@ namespace GarminFitnessPlugin.Data
                 }
                 else if (currentChild.Name == Constants.GearWeightTCXString)
                 {
-                    m_GearWeight.Deserialize(currentChild);
-                    SetGearWeightInUnits(m_GearWeight, Weight.Units.Kilogram);
+                    GarminFitnessDoubleRange gearWeightinKg = new GarminFitnessDoubleRange(0);
+
+                    gearWeightinKg.Deserialize(currentChild);
+                    SetGearWeightInUnits(gearWeightinKg, Weight.Units.Kilogram);
                     weightRead = true;
                 }
                 else if (currentChild.Name == Constants.HeartRateZonesTCXString)
@@ -274,7 +310,7 @@ namespace GarminFitnessPlugin.Data
             bool inPercentMax = HRIsInPercentMax;
 
             HRIsInPercentMax = false;
-            activityProfile.SetGearWeight((float)GearWeight);
+            activityProfile.SetGearWeight((float)Weight.Convert(GearWeightInPounds, Weight.Units.Pound, Weight.Units.Kilogram));
             activityProfile.SetMaxHeartRate(MaximumHeartRate);
 
             for (UInt32 i = 0; i < 5; ++i)
@@ -299,7 +335,7 @@ namespace GarminFitnessPlugin.Data
 
         public void Deserialize(GarXFaceNet._FitnessUserProfile._Activity activityProfile)
         {
-            GearWeight = activityProfile.GetGearWeight();
+            SetGearWeightInUnits(activityProfile.GetGearWeight(), Weight.Units.Kilogram);
             MaximumHeartRate = (Byte)activityProfile.GetMaxHeartRate();
 
             for (UInt32 i = 0; i < 5; ++i)
@@ -651,7 +687,7 @@ namespace GarminFitnessPlugin.Data
         public void SetGearWeightInUnits(double weight, Weight.Units unit)
         {
             // Convert to pounds
-            GearWeight = Weight.Convert(weight, unit, Weight.Units.Kilogram);
+            m_GearWeightInPounds.Value = Weight.Convert(weight, unit, Weight.Units.Pound);
         }
 
         public GarminCategories Category
@@ -686,14 +722,14 @@ namespace GarminFitnessPlugin.Data
             }
         }
 
-        public double GearWeight
+        public double GearWeightInPounds
         {
-            get { return m_GearWeight; }
+            get { return m_GearWeightInPounds; }
             private set
             {
-                if (m_GearWeight != value)
+                if (m_GearWeightInPounds != value)
                 {
-                    m_GearWeight.Value = value;
+                    m_GearWeightInPounds.Value = value;
 
                     TriggerChangedEvent(new PropertyChangedEventArgs("GearWeight"));
                 }
@@ -748,7 +784,7 @@ namespace GarminFitnessPlugin.Data
 
         private GarminCategories m_Category;
         private GarminFitnessByteRange m_MaxHeartRate = new GarminFitnessByteRange(185, Constants.MinHRInBPM, Constants.MaxHRInBPM);
-        private GarminFitnessDoubleRange m_GearWeight = new GarminFitnessDoubleRange(0, Constants.MinWeight, Constants.MaxWeight);
+        private GarminFitnessDoubleRange m_GearWeightInPounds = new GarminFitnessDoubleRange(0, Constants.MinWeight, Constants.MaxWeight);
         private GarminFitnessBool m_HRIsInPercentMax = new GarminFitnessBool(false, Constants.PercentMaxTCXString, Constants.BPMTCXString);
         private GarminFitnessBool m_SpeedIsInPace = new GarminFitnessBool(false, Constants.SpeedOrPaceTCXString[0], Constants.SpeedOrPaceTCXString[1]);
         private List<GarminFitnessValueRange<GarminFitnessDoubleRange>> m_HeartRateZones = new List<GarminFitnessValueRange<GarminFitnessDoubleRange>>();

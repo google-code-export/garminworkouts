@@ -224,7 +224,7 @@ namespace GarminFitnessPlugin.View
 
                     m_FailedExportList.AddRange(concreteTask.Workouts);
                 }
-                else
+                else if (!String.IsNullOrEmpty(String.Empty))
                 {
                     MessageBox.Show(errorText,
                                     GarminFitnessView.GetLocalizedString("ErrorText"),

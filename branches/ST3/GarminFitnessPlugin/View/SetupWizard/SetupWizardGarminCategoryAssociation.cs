@@ -28,7 +28,7 @@ namespace GarminFitnessPlugin.View
 
         public override bool CanFinish
         {
-            get { return true; }
+            get { return false; }
         }
 
         public override bool CanNext

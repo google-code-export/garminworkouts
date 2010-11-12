@@ -21,6 +21,9 @@ namespace GarminFitnessPlugin.View
             HRZonesTreeList.ThemeChanged(PluginMain.GetApplication().VisualTheme);
             SpeedZonesTreeList.ThemeChanged(PluginMain.GetApplication().VisualTheme);
 
+            GarminProfileManager.Instance.ProfileChanged += new GarminProfileManager.ProfileChangedEventHandler(OnProfileChanged);
+            GarminProfileManager.Instance.ActivityProfileChanged += new GarminProfileManager.ActivityProfileChangedEventHandler(OnActivityProfileChanged);
+
             m_CurrentCategory = GarminCategories.Running;
             m_CurrentProfile = GarminProfileManager.Instance.GetProfileForActivity(m_CurrentCategory);
 
@@ -189,7 +192,7 @@ namespace GarminFitnessPlugin.View
                 System.Media.SystemSounds.Asterisk.Play();
 
                 // Reset old valid value
-                GearWeightTextBox.Text = m_CurrentProfile.GearWeight.ToString("0.0");
+                GearWeightTextBox.Text = Weight.Convert(m_CurrentProfile.GearWeightInPounds, Weight.Units.Pound, PluginMain.GetApplication().SystemPreferences.WeightUnits).ToString("0.0");
             }
         }
 
@@ -606,14 +609,13 @@ namespace GarminFitnessPlugin.View
             RefreshTreeLists();
 
             MaxHRTextBox.Text = m_CurrentProfile.MaximumHeartRate.ToString();
-            GearWeightTextBox.Text = Weight.Convert(m_CurrentProfile.GearWeight, Weight.Units.Pound, PluginMain.GetApplication().SystemPreferences.WeightUnits).ToString("0.0");
+            GearWeightTextBox.Text = Weight.Convert(m_CurrentProfile.GearWeightInPounds, Weight.Units.Pound, PluginMain.GetApplication().SystemPreferences.WeightUnits).ToString("0.0");
 
             // HR Zones
             PercentMaxRadioButton.Checked = m_CurrentProfile.HRIsInPercentMax;
             BPMRadioButton.Checked = !m_CurrentProfile.HRIsInPercentMax;
             HRZonesTreeList.Invalidate();
-            LowHRTextBox.Enabled = m_SelectedHRZone != null;
-            HighHRTextBox.Enabled = m_SelectedHRZone != null;
+            HRZonePanel.Enabled = m_SelectedHRZone != null;
             if (m_SelectedHRZone != null)
             {
                 LowHRTextBox.Text = m_SelectedHRZone.Low;
@@ -624,9 +626,7 @@ namespace GarminFitnessPlugin.View
             PaceRadioButton.Checked = m_CurrentProfile.SpeedIsInPace;
             SpeedRadioButton.Checked = !m_CurrentProfile.SpeedIsInPace;
             SpeedZonesTreeList.Invalidate();
-            LowSpeedTextBox.Enabled = m_SelectedSpeedZone != null;
-            HighSpeedTextBox.Enabled = m_SelectedSpeedZone != null;
-            SpeedNameTextBox.Enabled = m_SelectedSpeedZone != null;
+            SpeedZonePanel.Enabled = m_SelectedSpeedZone != null;
             if (m_SelectedSpeedZone != null)
             {
                 LowSpeedTextBox.Text = m_SelectedSpeedZone.Low;

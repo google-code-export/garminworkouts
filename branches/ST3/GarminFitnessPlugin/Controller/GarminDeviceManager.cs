@@ -665,10 +665,10 @@ namespace GarminFitnessPlugin.Controller
             }
         }
 
-        private IGarminDevice OperatingDevice
+        public IGarminDevice OperatingDevice
         {
             get { return m_OperatingDevice; }
-            set
+            private set
             {
                 if(OperatingDevice != value)
                 {

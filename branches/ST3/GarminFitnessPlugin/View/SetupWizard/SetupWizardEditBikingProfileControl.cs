@@ -20,7 +20,7 @@ namespace GarminFitnessPlugin.View
         {
             InitializeComponent();
 
-            GarminProfileManager.Instance.UserProfile.ActivityProfileChanged += new GarminProfile.ActivityProfileChangedEventHandler(OnActivityProfileChanged);
+            GarminProfileManager.Instance.ActivityProfileChanged += new GarminProfileManager.ActivityProfileChangedEventHandler(OnActivityProfileChanged);
 
             BikeProfileActionBanner.ThemeChanged(PluginMain.GetApplication().VisualTheme);
             PowerZonesTreeList.ThemeChanged(PluginMain.GetApplication().VisualTheme);
@@ -323,8 +323,7 @@ namespace GarminFitnessPlugin.View
         {
             // Power Zones
             PowerZonesTreeList.Invalidate();
-            LowPowerTextBox.Enabled = m_SelectedPowerZone != null;
-            HighPowerTextBox.Enabled = m_SelectedPowerZone != null;
+            PowerZonePanel.Enabled = m_SelectedPowerZone != null;
             if (m_CurrentProfile.GetType() == typeof(GarminBikingActivityProfile))
             {
                 GarminBikingActivityProfile concreteProfile = (GarminBikingActivityProfile)m_CurrentProfile;
@@ -351,7 +350,7 @@ namespace GarminFitnessPlugin.View
                 BikeWeightTextBox.Text = Weight.Convert(m_CurrentBikeProfile.WeightInPounds, Weight.Units.Pound, PluginMain.GetApplication().SystemPreferences.WeightUnits).ToString("0.0");
                 WheelSizeGroupBox.Enabled = m_CurrentBikeProfile.HasCadenceSensor;
                 AutoWheelSizeCheckBox.Checked = m_CurrentBikeProfile.AutoWheelSize;
-                WheelSizeTextBox.Enabled = !m_CurrentBikeProfile.AutoWheelSize;
+                WheelSizePanel.Enabled = !m_CurrentBikeProfile.AutoWheelSize;
                 WheelSizeTextBox.Text = m_CurrentBikeProfile.WheelSize.ToString();
             }
         }

@@ -129,6 +129,23 @@ namespace GarminFitnessPlugin.View
                     GetCurrentView().RefreshUIFromLogbook();
                 }
 
+                if (PluginMain.GetApplication().Logbook != null)
+                {
+                    byte[] extensionData = PluginMain.GetApplication().Logbook.GetExtensionData(GUIDs.PluginMain);
+
+                    if (extensionData == null || extensionData.Length == 0)
+                    {
+                        GarminWorkoutManager.Instance.RemoveAllWorkouts();
+                        GarminProfileManager.Instance.UserProfile.Cleanup();
+                        Options.Instance.ResetLogbookSettings();
+
+                        // Show the wizard on first run
+                        GarminFitnessSetupWizard wizard = new GarminFitnessSetupWizard();
+
+                        wizard.ShowDialog();
+                    }
+                }
+
                 return m_MainControl;
             }
         }

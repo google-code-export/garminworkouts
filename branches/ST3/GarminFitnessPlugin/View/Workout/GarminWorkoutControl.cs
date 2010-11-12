@@ -2533,11 +2533,6 @@ namespace GarminFitnessPlugin.View
                 BuildWorkoutsList();
             }
 
-            if (WorkoutsList.RowData != null)
-            {
-                WorkoutsList.SetExpanded(WorkoutsList.RowData, true, true);
-            }
-
             RefreshClipboardControls();
         }
 
@@ -3782,7 +3777,10 @@ namespace GarminFitnessPlugin.View
                 {
                     ActivityCategoryWrapper wrapper = GetActivityCategoryWrapper(category, null);
 
-                    WorkoutsList.SetExpanded(wrapper, true, false);
+                    if (!WorkoutsList.IsExpanded(wrapper))
+                    {
+                        WorkoutsList.SetExpanded(wrapper, true, false);
+                    }
                 }
             }
             else

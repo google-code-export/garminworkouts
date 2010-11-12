@@ -73,6 +73,7 @@ namespace GarminFitnessPlugin.View
             this.FinishLabel.Size = new System.Drawing.Size(346, 20);
             this.FinishLabel.TabIndex = 2;
             this.FinishLabel.Text = "To set up the plugin later, click on \"Finish\"";
+            this.FinishLabel.Visible = false;
             // 
             // SetupWizardWelcomeControl
             // 

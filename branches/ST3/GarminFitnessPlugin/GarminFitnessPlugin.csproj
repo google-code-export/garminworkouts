@@ -73,10 +73,12 @@
   </Target>
   -->
   <ItemGroup>
-    <Reference Include="Common.Data">
+    <Reference Include="Common.Data, Version=3.0.3924.17107, Culture=neutral, processorArchitecture=x86">
+      <SpecificVersion>False</SpecificVersion>
       <HintPath>D:\Zone Five Software\SportTracks 3\Common.Data.dll</HintPath>
     </Reference>
-    <Reference Include="Common.Visuals">
+    <Reference Include="Common.Visuals, Version=3.0.3924.17113, Culture=neutral, processorArchitecture=x86">
+      <SpecificVersion>False</SpecificVersion>
       <HintPath>D:\Zone Five Software\SportTracks 3\Common.Visuals.dll</HintPath>
     </Reference>
     <Reference Include="GarXFaceNet, Version=1.0.3805.31245, Culture=neutral, processorArchitecture=x86">
@@ -508,6 +510,9 @@
     <EmbeddedResource Include="View\Settings\GarminFitnessSettingsControl.resx">
       <SubType>Designer</SubType>
       <DependentUpon>GarminFitnessSettingsControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="View\SetupWizard\ExtendedWizard.resx">
+      <DependentUpon>ExtendedWizard.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="View\SetupWizard\SetupWizardEditBikingProfileControl.resx">
       <DependentUpon>SetupWizardEditBikingProfileControl.cs</DependentUpon>

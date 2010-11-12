@@ -75,12 +75,12 @@ namespace GarminFitnessPlugin
         {
             // Load data from logbook
             byte[] extensionData = logbook.GetExtensionData(GUIDs.PluginMain);
-            MemoryStream stream = new MemoryStream(extensionData);
 
             if (extensionData != null && extensionData.Length > 0)
             {
                 try
                 {
+                    MemoryStream stream = new MemoryStream(extensionData);
                     byte[] headerBuffer = new byte[Constants.DataHeaderIdString.Length];
                     String headerIdString;
                     DataVersion version = new DataVersion(0);
@@ -120,25 +120,14 @@ namespace GarminFitnessPlugin
                         Options.Instance.Deserialize(m_PluginOptions);
                         m_PluginOptions = null;
                     }
+
+                    stream.Close();
                 }
                 catch (Exception e)
                 {
                      throw e;
                 }
             }
-            else
-            {
-                GarminWorkoutManager.Instance.RemoveAllWorkouts();
-                GarminProfileManager.Instance.UserProfile.Cleanup();
-                Options.Instance.ResetLogbookSettings();
-
-                // Show the wizard on first run
-                GarminFitnessSetupWizard wizard = new GarminFitnessSetupWizard();
-
-                wizard.ShowDialog();
-            }
-
-            stream.Close();
         }
 
         private GarminFitnessDonationReminderControl m_ReminderControl = null;

@@ -197,5 +197,18 @@ namespace GarminFitnessPlugin.View
         IList<IExtendedWizardPage> m_Pages;
         int m_BaseWizardHeight;
         int m_ExcessWizardHeight;
+
+        private void InitializeComponent()
+        {
+            this.SuspendLayout();
+            // 
+            // ExtendedWizard
+            // 
+            this.ClientSize = new System.Drawing.Size(553, 410);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
+            this.Name = "ExtendedWizard";
+            this.ResumeLayout(false);
+
+        }
     }
 }
