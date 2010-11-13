@@ -155,4 +155,7 @@ http://garminworkouts.googlecode.com/files/ReplaceRename.gif
 
 
 
-*Notes on export/import to device* : Note that there is some problems with the export/import to device since it uses the Garmin Communicator Plugin.  Thus plugin is a little buggy and even Garmin admits that it's not tested for workouts.  To have a lsit of Communicator related bugs, head to the [http://code.google.com/p/garminworkouts/issues/list issues] page.
+*Notes on export/import to device* : Note that to get the full set of features when exporting and importing, you msut use the latest version of the Garmin Communicator plugin that can be found [http://www8.garmin.com/products/communicator/ here]
+
+= Printing =
+With vesion 1.1.322, the ability to print workout was added.  To do so, simply click on the "Print" label in the actions.  You will be presented a page where you can configure your page and preview/print result.  The "Ink saving mode" uses less ink than the "Normal mode" but it's also not as nice on the eye.  Using the preview, you can compare both to make your selection.
