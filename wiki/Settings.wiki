@@ -66,7 +66,7 @@ http://garminworkouts.googlecode.com/files/Categories%20settings-b.gif
 
 By default, all categories are assigned to Garmin's "Other" activity category.  To change this, simply click on the zone you wish to modify.  For instance, if I click on "Running" I get the following :
 
-http://garminworkouts.googlecode.com/files/Running%20category%20details-b.gif
+http://garminworkouts.googlecode.com/files/Running%20category%20details-c.gif
 
 You notice that it is currently set to inherit it's parent setting which is the following :
 
