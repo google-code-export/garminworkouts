@@ -70,7 +70,7 @@ http://garminworkouts.googlecode.com/files/Running%20category%20details-c.gif
 
 You notice that it is currently set to inherit it's parent setting which is the following :
 
-http://garminworkouts.googlecode.com/files/My%20Activities%20category%20details-c.gif
+http://garminworkouts.googlecode.com/files/My%20Activities%20category%20details-b.gif
 
 To change the "Running" activity category setting, you must use the radio buttons to the right.  Since you don't want to inherit the parent's category anymore, start by clicking on the "Use custom category" radio button.  This enables the following three radio buttons for you to select the right one.  Of course it makes sense to choose the "Running" Garmin category.  This gives the following result :
 
