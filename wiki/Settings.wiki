@@ -12,7 +12,7 @@ http://garminworkouts.googlecode.com/files/Settings%20access.gif
 
 Once clicked, this link will lead you to the settings page which has a special section for plugins.  In this section, you will find the "Garmin Fitness Settings".  An alternate way of accessing the settings page is to click on the settings button http://garminworkouts.googlecode.com/files/Settings%20Button.gif in the upper right corner of the Garmin Fitness view.  Both methods lead you to the following screen :
 
-http://garminworkouts.googlecode.com/files/Settings%20passive-f.gif
+http://garminworkouts.googlecode.com/files/Settings%20passive-g.gif
 
 = Zone categories =
 == Workouts and zone categories ==
@@ -30,7 +30,7 @@ Now that you have discovered how to change between Garmin and [http://www.zonefi
 == Specifying the zone categories ==
 In the settings page you will also have noticed that you can select the zone categories to use for cadence and power.  This allows you to select which zone category will be used for the cadence and power target respectively.  Opening the listbox will list all of the zones you have defined for either cadence or power.
 
-http://garminworkouts.googlecode.com/files/Settings%20expanded%20combo-f.gif
+http://garminworkouts.googlecode.com/files/Settings%20expanded%20combo-g.gif
 
 http://garminworkouts.googlecode.com/files/Categories%20view.gif
 
@@ -62,21 +62,24 @@ For more information on how to use this feature, head to the [http://code.google
 = Garmin activity categories =
 To integrate the Garmin Workouts Plugin seamlessly into [http://www.zonefivesoftware.com/SportTracks SportTracks], it was chosen to associate every activity category to a Garmin activity category.  Garmin only provides 3 categories : running, biking and other.  Each of these categories has their own speed and heart rate zones.  The "Biking" category also has power zones.  Since these zones might not match with the zones defined in [http://www.zonefivesoftware.com/SportTracks SportTracks], you must decide to which sport each [http://www.zonefivesoftware.com/SportTracks SportTracks] corresponds.  This is what the section is for and it looks like the following :
 
-http://garminworkouts.googlecode.com/files/Categories%20settings.gif
+http://garminworkouts.googlecode.com/files/Categories%20settings-b.gif
 
 By default, all categories are assigned to Garmin's "Other" activity category.  To change this, simply click on the zone you wish to modify.  For instance, if I click on "Running" I get the following :
 
-http://garminworkouts.googlecode.com/files/Running%20category%20details.gif
+http://garminworkouts.googlecode.com/files/Running%20category%20details-b.gif
 
 You notice that it is currently set to inherit it's parent setting which is the following :
 
-http://garminworkouts.googlecode.com/files/My%20Activities%20category%20details.gif
+http://garminworkouts.googlecode.com/files/My%20Activities%20category%20details-c.gif
 
 To change the "Running" activity category setting, you must use the radio buttons to the right.  Since you don't want to inherit the parent's category anymore, start by clicking on the "Use custom category" radio button.  This enables the following three radio buttons for you to select the right one.  Of course it makes sense to choose the "Running" Garmin category.  This gives the following result :
 
-http://garminworkouts.googlecode.com/files/Running%20category%20modified%20details.gif
+http://garminworkouts.googlecode.com/files/Running%20category%20modified%20details-c.gif
 
 You can notice that all the children have been updated to "Running".  That is because they all have the "Use parent category" setting.  If any one of those categories was overriden, it would have kept it's setting.
+
+== Hide in workout list ==
+This option allows you to hide certain categories in the workouts list.  for isntance, you might have a category for your workouts on the home trainer.  Since you never have any workouts in the "Racing" category, you mgiht wish to hide it in order to clean up the display.  By checking the "Hide in workout list" checkbox, you will hide the category from the workout list in the main workout page on the plugin.
 
 = Device Communication =
 == Default export directory ==
