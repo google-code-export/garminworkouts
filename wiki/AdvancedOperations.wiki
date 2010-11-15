@@ -67,7 +67,7 @@ If you want to plan your workout on the 30th of September, start by selecting th
 
 http://garminworkouts.googlecode.com/files/Workout%20scheduling%20operation-c.gif
 
-Then you click on the "schedule workout" button.  You get the following result.  Notice that the 31st now has a small red triangle in the upper left, which means your workout has been planned.
+Then you click on the "schedule workout" button.  You get the following result.  Notice that the 30th now has a small red triangle in the upper left, which means your workout has been planned.
 
 http://garminworkouts.googlecode.com/files/Workout%20scheduling%20result-c.gif
 
