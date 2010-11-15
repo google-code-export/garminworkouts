@@ -6,7 +6,7 @@
 So you've mastered the basic operations?  It wasn't so hard, was it?  You are now ready for the advanced operations.  These different operations will help you become faster when you create or manage your workouts.  Let's see in what it consists.
 
 = Advanced workout operations =
-There are three advanced operations that are related to the workouts.  They are drag & dropping, copy & pasting ans scheduling.  The first two do the same thing, they allow you to move or make a copy of a workout.  The third one allows you to schedule your workouts in time.
+There are three advanced operations that are related to the workouts.  They are drag & dropping, copy & pasting and scheduling.  The first two do the same thing, they allow you to move or make a copy of a workout.  The third one allows you to schedule your workouts in time.
 
 == Multiple selection ==
 The advanced workout operations can be done on multiple items at once.  To select multiple items you must hold a key on the keyboard when clicking in the workouts list. Hold either the CTRL key to add/remove the clicked item to the selection or hold SHIFT to select all items between your last selection and the item you just clicked.
@@ -74,9 +74,9 @@ http://garminworkouts.googlecode.com/files/Workout%20scheduling%20result-c.gif
 Note that when selecting a date, it must be today or in the future.  Planning a workout in the past is useless so it is not allowed.
 
 === Removing a planned workout ===
-It seems some people make mistakes, so what are you going to do when you've planned your workout on the wrong date?  Remove it of course.  The button right next to the "schedule workout" button http://garminworkouts.googlecode.com/files/Delete%20Workout%20Button.gif is there for this exact purpose.  When you select a date with a workout planned it will be enabled.  Click it and the sheduling will be removed.
+It seems some people make mistakes, so what are you going to do when you've planned your workout on the wrong date?  Remove it of course.  The button right next to the "schedule workout" button http://garminworkouts.googlecode.com/files/Delete%20Workout%20Button.gif is there for this exact purpose.  When you select a date with a workout planned it will be enabled.  Click it and the scheduling will be removed.
 
-For instance, with the above example, if we made a mistake and wanted to plan, not on the 30th but on the 1st of November.  After all we ate a lot of candy the previous evening and we have to lose that extra weight.  Start by selecting the 30th, then hit the "remove shedule" button.  The little red triangle disappears, all is good.
+For instance, with the above example, if we made a mistake and wanted to plan, not on the 30th but on the 1st of November.  After all we ate a lot of candy the previous evening and we have to lose that extra weight.  Start by selecting the 30th, then hit the "remove schedule" button.  The little red triangle disappears, all is good.
 
 There is also a button to remove all the planned dates for the selected workouts http://garminworkouts.googlecode.com/files/Remove%20all%20scheduled.gif
 
