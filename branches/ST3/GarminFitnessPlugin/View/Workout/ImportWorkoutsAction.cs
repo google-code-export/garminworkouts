@@ -118,42 +118,46 @@ namespace GarminFitnessPlugin.View
 
             dlg.Title = GarminFitnessView.GetLocalizedString("OpenFileText");
             dlg.Filter = GarminFitnessView.GetLocalizedString("FileDescriptionText") + " (*.tcx;*.wkt;*.fit)|*.tcx;*.wkt;*.fit";
+            dlg.Multiselect = true;
             dlg.CheckFileExists = true;
             result = dlg.ShowDialog();
 
             if (result == DialogResult.OK)
             {
-                Stream workoutStream = dlg.OpenFile();
-
-                // Check if this is a FIT file or not
-                workoutStream.Seek(8, SeekOrigin.Begin);
-                Byte[] buffer = new Byte[4];
-                workoutStream.Read(buffer, 0, 4);
-                String FITMarker = Encoding.UTF8.GetString(buffer, 0, 4);
-                workoutStream.Seek(0, SeekOrigin.Begin);
-
                 Options.Instance.LastImportCategory = null;
                 Options.Instance.UseLastCategoryForAllImportedWorkout = false;
 
-                if (FITMarker.Equals(FITConstants.FITFileDescriptor))
+                foreach (String filename in dlg.FileNames)
                 {
-                    if (!WorkoutImporter.ImportWorkoutFromFIT(workoutStream))
+                    Stream workoutStream = File.OpenRead(filename);
+
+                    // Check if this is a FIT file or not
+                    workoutStream.Seek(8, SeekOrigin.Begin);
+                    Byte[] buffer = new Byte[4];
+                    workoutStream.Read(buffer, 0, 4);
+                    String FITMarker = Encoding.UTF8.GetString(buffer, 0, 4);
+                    workoutStream.Seek(0, SeekOrigin.Begin);
+
+                    if (FITMarker.Equals(FITConstants.FITFileDescriptor))
                     {
-                        MessageBox.Show(GarminFitnessView.GetLocalizedString("ImportWorkoutsErrorText"),
-                                        GarminFitnessView.GetLocalizedString("ErrorText"),
-                                        MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        if (!WorkoutImporter.ImportWorkoutFromFIT(workoutStream))
+                        {
+                            MessageBox.Show(GarminFitnessView.GetLocalizedString("ImportWorkoutsErrorText"),
+                                            GarminFitnessView.GetLocalizedString("ErrorText"),
+                                            MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        }
                     }
-                }
-                else
-                {
-                    if (!WorkoutImporter.ImportWorkout(workoutStream))
+                    else
                     {
-                        MessageBox.Show(GarminFitnessView.GetLocalizedString("ImportWorkoutsErrorText"),
-                                        GarminFitnessView.GetLocalizedString("ErrorText"),
-                                        MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        if (!WorkoutImporter.ImportWorkout(workoutStream))
+                        {
+                            MessageBox.Show(GarminFitnessView.GetLocalizedString("ImportWorkoutsErrorText"),
+                                            GarminFitnessView.GetLocalizedString("ErrorText"),
+                                            MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        }
                     }
+                    workoutStream.Close();
                 }
-                workoutStream.Close();
             }
         }
 

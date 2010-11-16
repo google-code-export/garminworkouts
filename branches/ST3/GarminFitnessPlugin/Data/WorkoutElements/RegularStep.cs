@@ -308,7 +308,9 @@ namespace GarminFitnessPlugin.Data
                 }
                 else if (child.Name == "Intensity")
                 {
-                    GarminFitnessBool isRestingStep = new GarminFitnessBool(false);
+                    GarminFitnessBool isRestingStep = new GarminFitnessBool(false,
+                                                                            Constants.StepIntensityZoneTCXString[0],
+                                                                            Constants.StepIntensityZoneTCXString[1]);
                     isRestingStep.Deserialize(child);
 
                     if (isRestingStep)

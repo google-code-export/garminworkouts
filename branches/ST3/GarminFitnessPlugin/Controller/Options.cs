@@ -580,10 +580,12 @@ namespace GarminFitnessPlugin.Controller
             {
                 return m_STToGarminCategoryMap[STCategory].GarminCategory;
             }
-            else
+            else if(STCategory.Parent != null)
             {
                 return GetGarminCategory(STCategory.Parent);
             }
+
+            return GarminCategories.Other;
         }
 
         public FITSports GetFITSport(IActivityCategory STCategory)
@@ -604,8 +606,14 @@ namespace GarminFitnessPlugin.Controller
 
         public bool IsCustomGarminCategory(IActivityCategory STCategory)
         {
-            return STToGarminCategoryMap.ContainsKey(STCategory) &&
-                   STToGarminCategoryMap[STCategory].GarminCategory != GarminCategories.GarminCategoriesCount;
+            if (STToGarminCategoryMap.ContainsKey(STCategory))
+            {
+                return STToGarminCategoryMap[STCategory].GarminCategory != GarminCategories.GarminCategoriesCount;
+            }
+            else
+            {
+                return STCategory.Parent == null;
+            }
         }
 
         private void ClearAllSTCategoriesInfo()
@@ -986,7 +994,7 @@ namespace GarminFitnessPlugin.Controller
 
         public bool EnableMassStorageMode
         {
-            get { return true; }
+            get { return false; }
         }
 
         // Use to activate or deactivate logging

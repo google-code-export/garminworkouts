@@ -125,8 +125,12 @@ namespace GarminFitnessPlugin
                 }
                 catch (Exception e)
                 {
-                     throw e;
+                    throw e;
                 }
+            }
+            else
+            {
+                Options.Instance.ResetLogbookSettings();
             }
         }
 

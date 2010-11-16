@@ -38,7 +38,7 @@ namespace GarminFitnessPlugin.View
             this.PowerGarminRadioButton = new System.Windows.Forms.RadioButton();
             this.PowerSportTracksRadioButton = new System.Windows.Forms.RadioButton();
             this.HRSettingsGroupBox = new System.Windows.Forms.GroupBox();
-            this.panel1 = new System.Windows.Forms.Panel();
+            this.ExportHRAsPanel = new System.Windows.Forms.Panel();
             this.PercentMaxRadioButton = new System.Windows.Forms.RadioButton();
             this.BPMRadioButton = new System.Windows.Forms.RadioButton();
             this.ExportSTHRZonesAsLabel = new System.Windows.Forms.Label();
@@ -47,7 +47,7 @@ namespace GarminFitnessPlugin.View
             this.CadenceZoneComboBox = new System.Windows.Forms.ComboBox();
             this.CadenceZoneSelectionLabel = new System.Windows.Forms.Label();
             this.PowerSettingsGroupBox = new System.Windows.Forms.GroupBox();
-            this.panel2 = new System.Windows.Forms.Panel();
+            this.ExportPowerAsPanel = new System.Windows.Forms.Panel();
             this.PercentFTPRadioButton = new System.Windows.Forms.RadioButton();
             this.WattsRadioButton = new System.Windows.Forms.RadioButton();
             this.ExportSTPowerZonesAsLabel = new System.Windows.Forms.Label();
@@ -59,6 +59,7 @@ namespace GarminFitnessPlugin.View
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.ActivityCategoryList = new GarminFitnessPlugin.View.AutoExpandTreeList();
             this.CategorySelectionPanel = new System.Windows.Forms.Panel();
+            this.HideInWorkoutListCheckBox = new System.Windows.Forms.CheckBox();
             this.GarminCategoriesPanel = new System.Windows.Forms.Panel();
             this.OtherRadioButton = new System.Windows.Forms.RadioButton();
             this.CyclingRadioButton = new System.Windows.Forms.RadioButton();
@@ -71,13 +72,12 @@ namespace GarminFitnessPlugin.View
             this.AutoSplitCheckBox = new System.Windows.Forms.CheckBox();
             this.DeviceCommGroupBox = new System.Windows.Forms.GroupBox();
             this.DefaultExportDirectoryLabel = new System.Windows.Forms.Label();
-            this.HideInWorkoutListCheckBox = new System.Windows.Forms.CheckBox();
             this.HRSettingsGroupBox.SuspendLayout();
-            this.panel1.SuspendLayout();
+            this.ExportHRAsPanel.SuspendLayout();
             this.SpeedSettingsGroupBox.SuspendLayout();
             this.CadenceSettingsGroupBox.SuspendLayout();
             this.PowerSettingsGroupBox.SuspendLayout();
-            this.panel2.SuspendLayout();
+            this.ExportPowerAsPanel.SuspendLayout();
             this.CategoriesGroupBox.SuspendLayout();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
@@ -188,7 +188,7 @@ namespace GarminFitnessPlugin.View
             // 
             // HRSettingsGroupBox
             // 
-            this.HRSettingsGroupBox.Controls.Add(this.panel1);
+            this.HRSettingsGroupBox.Controls.Add(this.ExportHRAsPanel);
             this.HRSettingsGroupBox.Controls.Add(this.ExportSTHRZonesAsLabel);
             this.HRSettingsGroupBox.Controls.Add(this.DefaultHeartRateZonesLabel);
             this.HRSettingsGroupBox.Controls.Add(this.HRGarminRadioButton);
@@ -200,20 +200,19 @@ namespace GarminFitnessPlugin.View
             this.HRSettingsGroupBox.TabStop = false;
             this.HRSettingsGroupBox.Text = "Heart Rate Settings";
             // 
-            // panel1
+            // ExportHRAsPanel
             // 
-            this.panel1.Controls.Add(this.PercentMaxRadioButton);
-            this.panel1.Controls.Add(this.BPMRadioButton);
-            this.panel1.Location = new System.Drawing.Point(239, 33);
-            this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(245, 23);
-            this.panel1.TabIndex = 2;
+            this.ExportHRAsPanel.Controls.Add(this.PercentMaxRadioButton);
+            this.ExportHRAsPanel.Controls.Add(this.BPMRadioButton);
+            this.ExportHRAsPanel.Location = new System.Drawing.Point(239, 33);
+            this.ExportHRAsPanel.Name = "ExportHRAsPanel";
+            this.ExportHRAsPanel.Size = new System.Drawing.Size(245, 23);
+            this.ExportHRAsPanel.TabIndex = 2;
             // 
             // PercentMaxRadioButton
             // 
             this.PercentMaxRadioButton.AutoSize = true;
             this.PercentMaxRadioButton.Checked = true;
-            this.PercentMaxRadioButton.Enabled = false;
             this.PercentMaxRadioButton.Location = new System.Drawing.Point(12, 3);
             this.PercentMaxRadioButton.Name = "PercentMaxRadioButton";
             this.PercentMaxRadioButton.Size = new System.Drawing.Size(75, 17);
@@ -226,7 +225,6 @@ namespace GarminFitnessPlugin.View
             // BPMRadioButton
             // 
             this.BPMRadioButton.AutoSize = true;
-            this.BPMRadioButton.Enabled = false;
             this.BPMRadioButton.Location = new System.Drawing.Point(130, 3);
             this.BPMRadioButton.Name = "BPMRadioButton";
             this.BPMRadioButton.Size = new System.Drawing.Size(48, 17);
@@ -238,7 +236,6 @@ namespace GarminFitnessPlugin.View
             // ExportSTHRZonesAsLabel
             // 
             this.ExportSTHRZonesAsLabel.AutoSize = true;
-            this.ExportSTHRZonesAsLabel.Enabled = false;
             this.ExportSTHRZonesAsLabel.Location = new System.Drawing.Point(6, 39);
             this.ExportSTHRZonesAsLabel.Name = "ExportSTHRZonesAsLabel";
             this.ExportSTHRZonesAsLabel.Size = new System.Drawing.Size(136, 13);
@@ -290,7 +287,7 @@ namespace GarminFitnessPlugin.View
             // 
             // PowerSettingsGroupBox
             // 
-            this.PowerSettingsGroupBox.Controls.Add(this.panel2);
+            this.PowerSettingsGroupBox.Controls.Add(this.ExportPowerAsPanel);
             this.PowerSettingsGroupBox.Controls.Add(this.ExportSTPowerZonesAsLabel);
             this.PowerSettingsGroupBox.Controls.Add(this.PowerZoneComboBox);
             this.PowerSettingsGroupBox.Controls.Add(this.DefaultPowerZonesLabel);
@@ -304,20 +301,19 @@ namespace GarminFitnessPlugin.View
             this.PowerSettingsGroupBox.TabStop = false;
             this.PowerSettingsGroupBox.Text = "Power Settings";
             // 
-            // panel2
+            // ExportPowerAsPanel
             // 
-            this.panel2.Controls.Add(this.PercentFTPRadioButton);
-            this.panel2.Controls.Add(this.WattsRadioButton);
-            this.panel2.Location = new System.Drawing.Point(239, 59);
-            this.panel2.Name = "panel2";
-            this.panel2.Size = new System.Drawing.Size(245, 23);
-            this.panel2.TabIndex = 4;
+            this.ExportPowerAsPanel.Controls.Add(this.PercentFTPRadioButton);
+            this.ExportPowerAsPanel.Controls.Add(this.WattsRadioButton);
+            this.ExportPowerAsPanel.Location = new System.Drawing.Point(239, 59);
+            this.ExportPowerAsPanel.Name = "ExportPowerAsPanel";
+            this.ExportPowerAsPanel.Size = new System.Drawing.Size(245, 23);
+            this.ExportPowerAsPanel.TabIndex = 4;
             // 
             // PercentFTPRadioButton
             // 
             this.PercentFTPRadioButton.AutoSize = true;
             this.PercentFTPRadioButton.Checked = true;
-            this.PercentFTPRadioButton.Enabled = false;
             this.PercentFTPRadioButton.Location = new System.Drawing.Point(12, 3);
             this.PercentFTPRadioButton.Name = "PercentFTPRadioButton";
             this.PercentFTPRadioButton.Size = new System.Drawing.Size(56, 17);
@@ -330,7 +326,6 @@ namespace GarminFitnessPlugin.View
             // WattsRadioButton
             // 
             this.WattsRadioButton.AutoSize = true;
-            this.WattsRadioButton.Enabled = false;
             this.WattsRadioButton.Location = new System.Drawing.Point(130, 3);
             this.WattsRadioButton.Name = "WattsRadioButton";
             this.WattsRadioButton.Size = new System.Drawing.Size(53, 17);
@@ -342,7 +337,6 @@ namespace GarminFitnessPlugin.View
             // ExportSTPowerZonesAsLabel
             // 
             this.ExportSTPowerZonesAsLabel.AutoSize = true;
-            this.ExportSTPowerZonesAsLabel.Enabled = false;
             this.ExportSTPowerZonesAsLabel.Location = new System.Drawing.Point(6, 65);
             this.ExportSTPowerZonesAsLabel.Name = "ExportSTPowerZonesAsLabel";
             this.ExportSTPowerZonesAsLabel.Size = new System.Drawing.Size(120, 13);
@@ -471,6 +465,17 @@ namespace GarminFitnessPlugin.View
             this.CategorySelectionPanel.Name = "CategorySelectionPanel";
             this.CategorySelectionPanel.Size = new System.Drawing.Size(197, 147);
             this.CategorySelectionPanel.TabIndex = 0;
+            // 
+            // HideInWorkoutListCheckBox
+            // 
+            this.HideInWorkoutListCheckBox.AutoSize = true;
+            this.HideInWorkoutListCheckBox.Location = new System.Drawing.Point(4, 125);
+            this.HideInWorkoutListCheckBox.Name = "HideInWorkoutListCheckBox";
+            this.HideInWorkoutListCheckBox.Size = new System.Drawing.Size(115, 17);
+            this.HideInWorkoutListCheckBox.TabIndex = 3;
+            this.HideInWorkoutListCheckBox.Text = "Hide in workout list";
+            this.HideInWorkoutListCheckBox.UseVisualStyleBackColor = true;
+            this.HideInWorkoutListCheckBox.CheckedChanged += new System.EventHandler(this.HideInWorkoutListCheckBox_CheckedChanged);
             // 
             // GarminCategoriesPanel
             // 
@@ -610,17 +615,6 @@ namespace GarminFitnessPlugin.View
             this.DefaultExportDirectoryLabel.TabIndex = 2;
             this.DefaultExportDirectoryLabel.Text = "Default export directory :";
             // 
-            // HideInWorkoutListCheckBox
-            // 
-            this.HideInWorkoutListCheckBox.AutoSize = true;
-            this.HideInWorkoutListCheckBox.Location = new System.Drawing.Point(4, 125);
-            this.HideInWorkoutListCheckBox.Name = "HideInWorkoutListCheckBox";
-            this.HideInWorkoutListCheckBox.Size = new System.Drawing.Size(115, 17);
-            this.HideInWorkoutListCheckBox.TabIndex = 3;
-            this.HideInWorkoutListCheckBox.Text = "Hide in workout list";
-            this.HideInWorkoutListCheckBox.UseVisualStyleBackColor = true;
-            this.HideInWorkoutListCheckBox.CheckedChanged += new System.EventHandler(this.HideInWorkoutListCheckBox_CheckedChanged);
-            // 
             // GarminFitnessSettingsControl
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -640,16 +634,16 @@ namespace GarminFitnessPlugin.View
             this.Size = new System.Drawing.Size(500, 591);
             this.HRSettingsGroupBox.ResumeLayout(false);
             this.HRSettingsGroupBox.PerformLayout();
-            this.panel1.ResumeLayout(false);
-            this.panel1.PerformLayout();
+            this.ExportHRAsPanel.ResumeLayout(false);
+            this.ExportHRAsPanel.PerformLayout();
             this.SpeedSettingsGroupBox.ResumeLayout(false);
             this.SpeedSettingsGroupBox.PerformLayout();
             this.CadenceSettingsGroupBox.ResumeLayout(false);
             this.CadenceSettingsGroupBox.PerformLayout();
             this.PowerSettingsGroupBox.ResumeLayout(false);
             this.PowerSettingsGroupBox.PerformLayout();
-            this.panel2.ResumeLayout(false);
-            this.panel2.PerformLayout();
+            this.ExportPowerAsPanel.ResumeLayout(false);
+            this.ExportPowerAsPanel.PerformLayout();
             this.CategoriesGroupBox.ResumeLayout(false);
             this.splitContainer1.Panel1.ResumeLayout(false);
             this.splitContainer1.Panel2.ResumeLayout(false);
@@ -703,10 +697,10 @@ namespace GarminFitnessPlugin.View
         private System.Windows.Forms.Label ExportSTHRZonesAsLabel;
         private System.Windows.Forms.RadioButton PercentMaxRadioButton;
         private System.Windows.Forms.RadioButton BPMRadioButton;
-        private System.Windows.Forms.Panel panel1;
+        private System.Windows.Forms.Panel ExportHRAsPanel;
         private System.Windows.Forms.GroupBox DeviceCommGroupBox;
         private System.Windows.Forms.Label DefaultExportDirectoryLabel;
-        private System.Windows.Forms.Panel panel2;
+        private System.Windows.Forms.Panel ExportPowerAsPanel;
         private System.Windows.Forms.RadioButton PercentFTPRadioButton;
         private System.Windows.Forms.RadioButton WattsRadioButton;
         private System.Windows.Forms.Label ExportSTPowerZonesAsLabel;

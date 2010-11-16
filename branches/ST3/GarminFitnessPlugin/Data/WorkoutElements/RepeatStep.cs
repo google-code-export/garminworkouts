@@ -559,7 +559,41 @@ namespace GarminFitnessPlugin.Data
 
         public override bool ContainsFITOnlyFeatures
         {
-            get { return Duration.ContainsFITOnlyFeatures; }
+            get
+            {
+                if (Duration.ContainsFITOnlyFeatures)
+                {
+                    return true;
+                }
+                else
+                {
+                    foreach (IStep step in m_StepsToRepeat)
+                    {
+                        if (step.ContainsFITOnlyFeatures)
+                        {
+                            return true;
+                        }
+                    }
+                }
+
+                return false; 
+            }
+        }
+
+        public override bool ContainsTCXExtensionFeatures
+        {
+            get
+            {
+                foreach(IStep step in m_StepsToRepeat)
+                {
+                    if (step.ContainsTCXExtensionFeatures)
+                    {
+                        return true;
+                    }
+                }
+
+                return false;
+            }
         }
 
         public delegate void StepDurationChangedEventHandler(RepeatStep modifiedStep, IRepeatDuration modifiedDuration, PropertyChangedEventArgs changedProperty);
