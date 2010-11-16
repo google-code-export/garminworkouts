@@ -10,12 +10,13 @@ namespace GarminFitnessPlugin.View
 {
     class WorkoutPrintDocument : PrintDocument
     {
-        public WorkoutPrintDocument(List<Workout> workoutsToPrint, bool inkFriendlyMode)
+        public WorkoutPrintDocument(List<Workout> workoutsToPrint, bool inkFriendlyMode, bool unrollRepeats)
         {
             m_WorkoutsToPrint = new List<Workout>();
             m_WorkoutsToPrint.AddRange(workoutsToPrint);
 
             m_InkFriendlyMode = inkFriendlyMode;
+            m_UnrollRepeats = unrollRepeats;
         }
 
         protected override void OnBeginPrint(PrintEventArgs e)
@@ -79,7 +80,8 @@ namespace GarminFitnessPlugin.View
 
                     if (m_CurrentWorkout == null)
                     {
-                        m_CurrentWorkout = m_WorkoutsToPrint[0];
+                        m_CurrentWorkout = m_WorkoutsToPrint[0].CloneUnregistered();
+                        m_CurrentWorkoutSteps = UnrollRepeats(m_CurrentWorkout.Steps, m_CurrentWorkout);
                         m_CurrentStep = 0;
                         m_WorkoutsToPrint.RemoveAt(0);
 
@@ -94,13 +96,14 @@ namespace GarminFitnessPlugin.View
                                                            new RectangleF(outputArea.Left, outputArea.Top + headerHeight,
                                                                           outputArea.Width - (1.5f * m_CornerRadius), outputArea.Height - headerHeight));
 
-                    if (nextStepToDraw < m_CurrentWorkout.Steps.StepCount)
+                    if (nextStepToDraw < m_CurrentWorkoutSteps.StepCount)
                     {
                         m_CurrentStep = nextStepToDraw;
                     }
                     else
                     {
                         m_CurrentWorkout = null;
+                        m_CurrentWorkoutSteps = null;
                     }
 
                     e.HasMorePages = m_CurrentWorkout != null || m_WorkoutsToPrint.Count > 0;
@@ -172,7 +175,7 @@ namespace GarminFitnessPlugin.View
             FilledRoundedRectangle.Draw(graphics, m_BorderPen, m_BackgroundBrush,
                                         contentsArea, m_CornerRadius);
 
-            return PrintSteps(workout.Steps, startStep, graphics,
+            return PrintSteps(m_CurrentWorkoutSteps, startStep, graphics,
                               new RectangleF(contentsArea.Left, contentsArea.Top + 10,
                                              contentsArea.Width, contentsArea.Height - 10),
                               out dummy);
@@ -227,7 +230,6 @@ namespace GarminFitnessPlugin.View
                             titleSize = graphics.MeasureString(titleText, m_StepHeaderFont, (int)stepArea.Width);
 
                             detailsText = StepDescriptionStringFormatter.FormatDurationDescription(regularStep.Duration) +
-                                       ". " +
                                        StepDescriptionStringFormatter.FormatTargetDescription(regularStep.Target) +
                                        "\n" +
                                        regularStep.Notes.Trim();
@@ -240,7 +242,7 @@ namespace GarminFitnessPlugin.View
                             if (titleSize.Height > oneRowStepHeaderHeight * 1.25f)
                             {
                                 titleText = StepDescriptionStringFormatter.FormatDurationDescription(regularStep.Duration) +
-                                           ".\n" +
+                                           "\n" +
                                            StepDescriptionStringFormatter.FormatTargetDescription(regularStep.Target) + " (" +
                                            StepDescriptionStringFormatter.GetStepIntensityText(regularStep.Intensity) + ")";
                                 titleSize = graphics.MeasureString(titleText, m_StepHeaderFont, (int)stepArea.Width);
@@ -355,8 +357,64 @@ namespace GarminFitnessPlugin.View
             return stepIndex;
         }
 
+        private WorkoutStepsList UnrollRepeats(List<IStep> originalSteps, Workout parent)
+        {
+            WorkoutStepsList result = new WorkoutStepsList(parent);
+
+            foreach(IStep currentStep in originalSteps)
+            {
+                bool copyOriginal = true;
+
+                if (m_UnrollRepeats)
+                {
+                    if (currentStep is RepeatStep)
+                    {
+                        RepeatStep currentRepeat = currentStep as RepeatStep;
+                        WorkoutStepsList unrolledRepeat;
+
+                        if (currentRepeat.Duration is RepeatCountDuration)
+                        {
+                            RepeatCountDuration duration = currentRepeat.Duration as RepeatCountDuration;
+
+                            copyOriginal = false;
+                            unrolledRepeat = UnrollRepeats(currentRepeat.StepsToRepeat, parent);
+
+                            for (int i = 0; i < duration.RepetitionCount; ++i)
+                            {
+                                foreach (IStep currentUnrolledStep in unrolledRepeat)
+                                {
+                                    result.Add(currentUnrolledStep.Clone());
+                                }
+                            }
+                        }
+                    }
+                    else if (currentStep is WorkoutLinkStep)
+                    {
+                        WorkoutLinkStep currentLink = currentStep as WorkoutLinkStep;
+                        WorkoutStepsList unrolledRepeat;
+
+                        copyOriginal = false;
+                        unrolledRepeat = UnrollRepeats(currentLink.LinkedWorkoutSteps, parent);
+
+                        foreach (IStep currentUnrolledStep in unrolledRepeat)
+                        {
+                            result.Add(currentUnrolledStep);
+                        }
+                    }
+                }
+
+                if (copyOriginal)
+                {
+                    result.Add(currentStep.Clone());
+                }
+            }
+
+            return result;
+        }
+
         private List<Workout> m_WorkoutsToPrint = null;
         private Workout m_CurrentWorkout = null;
+        private WorkoutStepsList m_CurrentWorkoutSteps = null;
         private int m_CurrentStep = 0;
         private bool m_InkFriendlyMode = true;
 
@@ -371,6 +429,6 @@ namespace GarminFitnessPlugin.View
         private Font m_StepHeaderFont = null;
         private SolidBrush m_WorkoutDetailsBrush = null;
         private const float m_CornerRadius = 30;
-
+        private bool m_UnrollRepeats = false;
     }
 }

@@ -816,4 +816,7 @@
   <data name="ExportWarmupAsText" xml:space="preserve">
     <value>Export warmup as</value>
   </data>
+  <data name="UnrollRepeatsText" xml:space="preserve">
+    <value>Unroll repeat steps</value>
+  </data>
 </root>

@@ -2050,6 +2050,15 @@ namespace GarminFitnessPlugin.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Unroll repeat steps.
+        /// </summary>
+        internal static string UnrollRepeatsText {
+            get {
+                return ResourceManager.GetString("UnrollRepeatsText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Use category for all workouts.
         /// </summary>
         internal static string UseCategoryForAllCheckBoxText {

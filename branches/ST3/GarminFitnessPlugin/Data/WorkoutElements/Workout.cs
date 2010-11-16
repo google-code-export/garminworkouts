@@ -375,6 +375,21 @@ namespace GarminFitnessPlugin.Data
             return result;
         }
 
+        public Workout CloneUnregistered()
+        {
+            Workout result;
+            MemoryStream stream = new MemoryStream();
+
+            Serialize(stream);
+
+            // Put back at start but skip the first 4 bytes which are the step type
+            stream.Seek(0, SeekOrigin.Begin);
+            result = new Workout(stream, Constants.CurrentVersion);
+            result.m_Id.Value = Guid.NewGuid();
+
+            return result;
+        }
+
         public Workout Clone(IActivityCategory newCategory)
         {
             Workout result;
@@ -392,6 +407,7 @@ namespace GarminFitnessPlugin.Data
 
             return result;
         }
+
 
         private void HandleSTExtension(XmlNode extensionsNode)
         {

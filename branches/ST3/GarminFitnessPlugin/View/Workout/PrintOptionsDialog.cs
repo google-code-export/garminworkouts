@@ -19,6 +19,7 @@ namespace GarminFitnessPlugin.View
 
             this.Text = GarminFitnessView.GetLocalizedString("PrintOptionsText");
             InkFriendlyCheckBox.Text = GarminFitnessView.GetLocalizedString("InkFriendlyModeText");
+            UnrollRepeatsCheckBox.Text = GarminFitnessView.GetLocalizedString("UnrollRepeatsText");
             PageSetupButton.Text = GarminFitnessView.GetLocalizedString("PageSetupText") + "...";
             PrintButton.Text = GarminFitnessView.GetLocalizedString("PrintText") + "...";
             PrintPreviewButton.Text = GarminFitnessView.GetLocalizedString("PrintPreviewText") + "...";
@@ -42,7 +43,8 @@ namespace GarminFitnessPlugin.View
         private void PrintButton_Click(object sender, EventArgs e)
         {
             WorkoutPrintDocument printDocument = new WorkoutPrintDocument(m_WorkoutsToPrint,
-                                                                          InkFriendlyCheckBox.Checked);
+                                                                          InkFriendlyCheckBox.Checked,
+                                                                          UnrollRepeatsCheckBox.Checked);
             PrintDialog printDialog = new PrintDialog();
 
             printDocument.DefaultPageSettings = m_DocumentPageSettings;
@@ -64,7 +66,8 @@ namespace GarminFitnessPlugin.View
         private void PrintPreviewButton_Click(object sender, EventArgs e)
         {
             m_WorkoutDocument = new WorkoutPrintDocument(m_WorkoutsToPrint,
-                                                         InkFriendlyCheckBox.Checked);
+                                                         InkFriendlyCheckBox.Checked,
+                                                         UnrollRepeatsCheckBox.Checked);
             m_PrintPreviewDialog = new PrintPreviewDialog();
             ToolStrip previewStrip = m_PrintPreviewDialog.Controls["ToolStrip1"] as ToolStrip;
 
