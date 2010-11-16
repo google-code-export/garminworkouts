@@ -1,0 +1,684 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="AddDailyViewCheckBoxText" xml:space="preserve">
+    <value>Voeg toe aan logboek</value>
+  </data>
+  <data name="AndText" xml:space="preserve">
+    <value>en</value>
+  </data>
+  <data name="AutoSplitCheckBoxText" xml:space="preserve">
+    <value>Trainingen mogen meer dan 20 stappen bevatten</value>
+  </data>
+  <data name="AutoText" xml:space="preserve">
+    <value>Auto</value>
+  </data>
+  <data name="BetweenText" xml:space="preserve">
+    <value>Tussen</value>
+  </data>
+  <data name="BikeProfileExplanationText" xml:space="preserve">
+    <value>Sommige van deze instellingen zijn specifiek voor fietsen. Deze instellingen bevatten zowel de verschillende kracht zones als ook de profielen t.b.v. fietsen. Als u een unit heeft die niet compatibel is met fietsen dan kunt u dit gedeelte overslaan.</value>
+  </data>
+  <data name="BikeProfileMenuItemText" xml:space="preserve">
+    <value>Fiets {0} {1}</value>
+  </data>
+  <data name="BikingText" xml:space="preserve">
+    <value>Fietsen</value>
+  </data>
+  <data name="BirthDateLabelText" xml:space="preserve">
+    <value>Geboortedatum</value>
+  </data>
+  <data name="BrowseButtonText" xml:space="preserve">
+    <value>Open…</value>
+  </data>
+  <data name="CadenceRangeTargetDescriptionText" xml:space="preserve">
+    <value>Probeer mijn cadans tussen {0} en {1} {2} te houden.</value>
+  </data>
+  <data name="CadenceSettingsGroupBoxText" xml:space="preserve">
+    <value>Cadans instellingen</value>
+  </data>
+  <data name="CadenceTargetComboBoxText" xml:space="preserve">
+    <value>Probeer mijn cadans in een bepaalde zone te houden</value>
+  </data>
+  <data name="CadenceZoneSelectionLabelText" xml:space="preserve">
+    <value>Gebruik deze cadans voor mijn trainingen :</value>
+  </data>
+  <data name="CadenceZoneTargetDescriptionText" xml:space="preserve">
+    <value>Probeer om mijn cadans in zone {0} te houden.</value>
+  </data>
+  <data name="CaloriesDurationComboBoxText" xml:space="preserve">
+    <value>Als ik een bepaald aantal calorieën heb verbruikt</value>
+  </data>
+  <data name="CaloriesDurationDescriptionText" xml:space="preserve">
+    <value>Ga verder tot ik (0} calorieën verbruikt heb.</value>
+  </data>
+  <data name="CaloriesDurationLabelText" xml:space="preserve">
+    <value>Hoe veel calorieën?</value>
+  </data>
+  <data name="CategoriesText" xml:space="preserve">
+    <value>Categorieën</value>
+  </data>
+  <data name="CategoryAssociationExplanationText" xml:space="preserve">
+    <value>Om uw trainingen in de juiste categorieën te krijgen van uw unit moet u elke SportTracks categorie associëren met de vergelijkbare Garmin categorie. Als u dat doet dan worden dezelfde hartslagzones en snelheidszones gebruikt als de zones die in uw profiel staan.</value>
+  </data>
+  <data name="CategoryAssociationText" xml:space="preserve">
+    <value>Garmin categorie associëren</value>
+  </data>
+  <data name="CategoryText" xml:space="preserve">
+    <value>Categorie</value>
+  </data>
+  <data name="CompletedExplanationText" xml:space="preserve">
+    <value>U heeft de Setup Wizard succesvol afgesloten. De plugin is nu beschikbaar via het "Selecteer scherm" menu. Alle instellingen zijn te wijzigen op de pagina "Instellingen" in de rubriek Garmin Fitness Plugin en in het "Profiel" scherm.</value>
+  </data>
+  <data name="CompletedLabelText" xml:space="preserve">
+    <value>Om de wizard te sluiten klik op "Einde"</value>
+  </data>
+  <data name="CompletedText" xml:space="preserve">
+    <value>Gereed</value>
+  </data>
+  <data name="ContinueLabelText" xml:space="preserve">
+    <value>Om de plugin in te stellen, klik op "Volgende"</value>
+  </data>
+  <data name="CustomText" xml:space="preserve">
+    <value>Aangepast</value>
+  </data>
+  <data name="DataTooRecentErrorText" xml:space="preserve">
+    <value>De data kan niet worden geopend met deze versie van de Garmin Fitness Plugin, update a.u.b. naar de laatste versie.</value>
+  </data>
+  <data name="DefaultExportDirectoryGroupBoxText" xml:space="preserve">
+    <value>Standaard export directory</value>
+  </data>
+  <data name="DefaultHeartRateZoneLabelText" xml:space="preserve">
+    <value>Gebruik de hartslag zones van :</value>
+  </data>
+  <data name="DefaultPowerZoneLabelText" xml:space="preserve">
+    <value>Gebruik de kracht zones van :</value>
+  </data>
+  <data name="DefaultSpeedZoneLabelText" xml:space="preserve">
+    <value>Gebruik de tempo / snelheids zones van :</value>
+  </data>
+  <data name="DetailsText" xml:space="preserve">
+    <value>Details</value>
+  </data>
+  <data name="DeviceCommunicationErrorText" xml:space="preserve">
+    <value>Het is niet mogelijk om de Garmin Communicator Plugin te starten. Kijk of u minimaal SportTracks versie 2.0.3170 gebruikt en of Garmin Communicator Plugin is geinstalleerd en geactiveerd in Internet Explorer.</value>
+  </data>
+  <data name="DistanceDurationComboBoxText" xml:space="preserve">
+    <value>Nadat ik een bepaalde afstand heb afgelegd</value>
+  </data>
+  <data name="DistanceDurationDescriptionText" xml:space="preserve">
+    <value>Ga {0:0.00} {1}.</value>
+  </data>
+  <data name="DistanceDurationLabelText" xml:space="preserve">
+    <value>Hoe ver?</value>
+  </data>
+  <data name="DoubleRangeValidationText" xml:space="preserve">
+    <value>Waarde moet een decimaal getal zijn tussen {0:0.00} en {1:0.00}</value>
+  </data>
+  <data name="EditBikingProfileText" xml:space="preserve">
+    <value>Fiets profiel</value>
+  </data>
+  <data name="EditProfileExplanationText" xml:space="preserve">
+    <value>Op deze pagina kunt u uw persoonlijke informatie zetten die opgeslagen wordt in uw profiel. Houd er rekening mee dat de weergave van uw trainingen beinvloed wordt door de manier waarop uw zones (Slagen per minuut versus % Maximale hartslag en Snelheid versus Tempo) en dat deze zones verschillen per type sport.</value>
+  </data>
+  <data name="EditProfileText" xml:space="preserve">
+    <value>Wijzig profiel</value>
+  </data>
+  <data name="EditRadioButtonText" xml:space="preserve">
+    <value>Wijzig mijn profiel handmatig</value>
+  </data>
+  <data name="ErrorText" xml:space="preserve">
+    <value>Fout</value>
+  </data>
+  <data name="ExportAllText" xml:space="preserve">
+    <value>Exporteer Alles</value>
+  </data>
+  <data name="ExportProfileFailedText" xml:space="preserve">
+    <value>Er ging iets fout bij het exporteren.</value>
+  </data>
+  <data name="ExportProfileSuccessText" xml:space="preserve">
+    <value>Het profiel is succesvol geëxporteerd naar de unit.</value>
+  </data>
+  <data name="ExportSelectedText" xml:space="preserve">
+    <value>Exporteer Selectie</value>
+  </data>
+  <data name="ExportText" xml:space="preserve">
+    <value>Exporteer</value>
+  </data>
+  <data name="ExportWorkoutsFailedText" xml:space="preserve">
+    <value>Er is een fout opgetreden tijdens het exporteren van de trainingen.</value>
+  </data>
+  <data name="ExportWorkoutsSuccessText" xml:space="preserve">
+    <value>Trainingen zijn succesvol geëxporteerd.</value>
+  </data>
+  <data name="FemaleText" xml:space="preserve">
+    <value>Vrouwelijk</value>
+  </data>
+  <data name="FileDescriptionText" xml:space="preserve">
+    <value>Trainings Bestanden</value>
+  </data>
+  <data name="FinishLabelText" xml:space="preserve">
+    <value>Op de plugin op een later tijdstip in te stellen, klik op "Einde"</value>
+  </data>
+  <data name="ForceSplitCheckBoxText" xml:space="preserve">
+    <value>Forceer splitsen</value>
+  </data>
+  <data name="FromDeviceText" xml:space="preserve">
+    <value>Van Unit</value>
+  </data>
+  <data name="FromFileText" xml:space="preserve">
+    <value>Van Bestand</value>
+  </data>
+  <data name="FTPLabelText" xml:space="preserve">
+    <value>Functionele drempel van kracht</value>
+  </data>
+  <data name="GarminFitnessText" xml:space="preserve">
+    <value>Garmin Fitness</value>
+  </data>
+  <data name="GarminModeRadioButtonText" xml:space="preserve">
+    <value>Ik wil de Garmin modus gebruiken</value>
+  </data>
+  <data name="GarminOrSTText" xml:space="preserve">
+    <value>Garmin of SportTracks modus</value>
+  </data>
+  <data name="GarminText" xml:space="preserve">
+    <value>Garmin</value>
+  </data>
+  <data name="GearWeightLabelText" xml:space="preserve">
+    <value>Uitrusting Gewicht :</value>
+  </data>
+  <data name="GenderLabelText" xml:space="preserve">
+    <value>Geslacht :</value>
+  </data>
+  <data name="GTCSpeedZone10Text" xml:space="preserve">
+    <value>Max Snelheid</value>
+  </data>
+  <data name="GTCSpeedZone1Text" xml:space="preserve">
+    <value>Klimmen 4</value>
+  </data>
+  <data name="GTCSpeedZone2Text" xml:space="preserve">
+    <value>Klimmen 3</value>
+  </data>
+  <data name="GTCSpeedZone3Text" xml:space="preserve">
+    <value>Klimmen 2</value>
+  </data>
+  <data name="GTCSpeedZone4Text" xml:space="preserve">
+    <value>Klimmen 1</value>
+  </data>
+  <data name="GTCSpeedZone5Text" xml:space="preserve">
+    <value>Vlak 3</value>
+  </data>
+  <data name="GTCSpeedZone6Text" xml:space="preserve">
+    <value>Vlak 2</value>
+  </data>
+  <data name="GTCSpeedZone7Text" xml:space="preserve">
+    <value>Vlak 1</value>
+  </data>
+  <data name="GTCSpeedZone8Text" xml:space="preserve">
+    <value>Afdaling</value>
+  </data>
+  <data name="GTCSpeedZone9Text" xml:space="preserve">
+    <value>Sprinten</value>
+  </data>
+  <data name="HasCadenceText" xml:space="preserve">
+    <value>Heeft cadans sensor</value>
+  </data>
+  <data name="HasPowerText" xml:space="preserve">
+    <value>Heeft kracht sensor</value>
+  </data>
+  <data name="HeartRateAboveDurationComboBoxText" xml:space="preserve">
+    <value>Als mijn hartslag boven een bepaalde waarde komt</value>
+  </data>
+  <data name="HeartRateAboveDurationDescriptionText" xml:space="preserve">
+    <value>Ga verder tot mijn hartslag hoger wordt dan {0} {1}.</value>
+  </data>
+  <data name="HeartRateBelowDurationComboBoxText" xml:space="preserve">
+    <value>Als mijn hartslag onder een bepaalde waarde komt</value>
+  </data>
+  <data name="HeartRateBelowDurationDescriptionText" xml:space="preserve">
+    <value>Ga verder tot mijn hartslag hoger lager dan {0} {1}.</value>
+  </data>
+  <data name="HeartRateDurationLabelText" xml:space="preserve">
+    <value>Welke hartslagwaarde?</value>
+  </data>
+  <data name="HeartRateRangeTargetDescriptionText" xml:space="preserve">
+    <value>Probeer mijn hartslagwaarde tussen {0} en {1} {2} te houden.</value>
+  </data>
+  <data name="HeartRateTargetComboBoxText" xml:space="preserve">
+    <value>Probeer mijn hartslag in een bepaalde zone te houden</value>
+  </data>
+  <data name="HeartRateZoneTargetDescriptionText" xml:space="preserve">
+    <value>Probeer mijn hartslagwaarde in zone {0} te houden.</value>
+  </data>
+  <data name="HighLabelText" xml:space="preserve">
+    <value>Hoog :</value>
+  </data>
+  <data name="HighText" xml:space="preserve">
+    <value>Hoog</value>
+  </data>
+  <data name="HRSettingsGroupBoxText" xml:space="preserve">
+    <value>Hartslag Instellingen</value>
+  </data>
+  <data name="HRZonesGroupBoxText" xml:space="preserve">
+    <value>Hartslag Zones</value>
+  </data>
+  <data name="ImportEditExplanationText" xml:space="preserve">
+    <value>Om uw trainingen de juiste zones te laten gebruiken, moet u eerst deze zones instellen. Ook als u de plugin hebt ingesteld om de SportTracks modus te gebruiken dan wordt uw profiel gebruikt om weer te geven (Snelheid versus Tempo, Hartslagen per minuut versus % Maximale hartslag), dus daarom is het belangrijk om uw profiel in te stellen. U kunt zowel het profiel importeren vanuit uw unit of u kunt het handmatig instellen.</value>
+  </data>
+  <data name="ImportOrEditProfileText" xml:space="preserve">
+    <value>Importeer of wijzig profiel</value>
+  </data>
+  <data name="ImportProfileErrorText" xml:space="preserve">
+    <value>Er is iets fout gegaan tijdens het importeren van het profiel.</value>
+  </data>
+  <data name="ImportRadioButtonText" xml:space="preserve">
+    <value>Importeer mijn profiel van mijn unit</value>
+  </data>
+  <data name="ImportWorkoutsErrorText" xml:space="preserve">
+    <value>Er is iets fout gegaan tijdens het importeren van de trainingen.</value>
+  </data>
+  <data name="IndependentModeRadioButtonText" xml:space="preserve">
+    <value>Ik wil de zones onafhankelijk van elkaar instellen</value>
+  </data>
+  <data name="IntegerRangeValidationText" xml:space="preserve">
+    <value>Waarde moet een geheel getal zijn tussen {0} en {1}</value>
+  </data>
+  <data name="InvalidWorkoutNameText" xml:space="preserve">
+    <value>De ingevoerde naam voor de training is onbruikbaar. De naam moet uniek zijn en mag ook niet leeg zijn.</value>
+  </data>
+  <data name="LapButtonDurationComboBoxText" xml:space="preserve">
+    <value>Als ik de "Ronde" knop indruk op mijn unit.</value>
+  </data>
+  <data name="LapButtonDurationDescriptionText" xml:space="preserve">
+    <value>Ga verder tot ik op de "Ronde" knop druk van mijn unit.</value>
+  </data>
+  <data name="LastExportDateText" xml:space="preserve">
+    <value>Laatste export datum :</value>
+  </data>
+  <data name="LowLabelText" xml:space="preserve">
+    <value>Laag :</value>
+  </data>
+  <data name="LowText" xml:space="preserve">
+    <value>Laag</value>
+  </data>
+  <data name="MaleText" xml:space="preserve">
+    <value>Mannelijk</value>
+  </data>
+  <data name="ManualSTGarminZonesExplanationText" xml:space="preserve">
+    <value>U hebt er voor gekozen om de zones handmatig in te stellen. Selecteer a.u.b. de modus welk voor ieder type zone die beschikbaar is in de plugin gebruikt moet gaan worden.</value>
+  </data>
+  <data name="MaxHRLabelText" xml:space="preserve">
+    <value>Maximale Hartslag :</value>
+  </data>
+  <data name="MillimeterText" xml:space="preserve">
+    <value>mm</value>
+  </data>
+  <data name="MinuteAbbrText" xml:space="preserve">
+    <value>min</value>
+  </data>
+  <data name="ModeExplanationText" xml:space="preserve">
+    <value>Eén van de dingen die de Garmin Fitness Plugin kenmerkt is een goede integratie met SportTracks. Dit betekend dat het mogelijk is om door SportTracks ingestelde hartslag, snelheid en kracht zones te gebruiken in plaats van de zones die Garmin gebruikt. De keuze kan tevens aangepast worden per type zone.</value>
+  </data>
+  <data name="NameLabelText" xml:space="preserve">
+    <value>Naam :</value>
+  </data>
+  <data name="NameText" xml:space="preserve">
+    <value>Naam</value>
+  </data>
+  <data name="NeedActivityTemplateText" xml:space="preserve">
+    <value>Om een activiteit te maken van deze training, moet er ten minste 1 activiteit reeds in het logboek staan. Het lijkt alsof uw</value>
+  </data>
+  <data name="NeverExportedText" xml:space="preserve">
+    <value>Nooit geëxporteerd</value>
+  </data>
+  <data name="NewNameLabelText" xml:space="preserve">
+    <value>Nieuwe naam :</value>
+  </data>
+  <data name="NotesLabelText" xml:space="preserve">
+    <value>Notities :</value>
+  </data>
+  <data name="NullTargetComboBoxText" xml:space="preserve">
+    <value>Ik heb geen specifiek doel voor deze stap</value>
+  </data>
+  <data name="NullTargetDescriptionText" xml:space="preserve">
+    <value />
+  </data>
+  <data name="NumberText" xml:space="preserve">
+    <value>Nummer</value>
+  </data>
+  <data name="OdometerLabelText" xml:space="preserve">
+    <value>Odometer :</value>
+  </data>
+  <data name="OpenFileText" xml:space="preserve">
+    <value>Importeer Training</value>
+  </data>
+  <data name="OtherText" xml:space="preserve">
+    <value>Anders</value>
+  </data>
+  <data name="PaceRangeTargetDescriptionText" xml:space="preserve">
+    <value>Probeer mijn tempo tussen {0:00}:{1:00} and {2:00}:{3:00} min/{4} te houden.</value>
+  </data>
+  <data name="PartNumberingNotesText" xml:space="preserve">
+    <value>onderdeel {0}/{1}</value>
+  </data>
+  <data name="PasteStepErrorText" xml:space="preserve">
+    <value>Onmogelijk om de stappen in te voegen, uw training kan niet zoveel stappen bevatten. Het maximale aantal stappen in een training is 20.</value>
+  </data>
+  <data name="PerHourText" xml:space="preserve">
+    <value>/h</value>
+  </data>
+  <data name="PowerRangeTargetDescriptionText" xml:space="preserve">
+    <value>Probeer mijn kracht tussen {0} en {1} watt te houden.</value>
+  </data>
+  <data name="PowerSettingsGroupBoxText" xml:space="preserve">
+    <value>Kracht Instellingen</value>
+  </data>
+  <data name="PowerTargetComboBoxText" xml:space="preserve">
+    <value>Probeer mijn kracht in een bepaalde zone te houden</value>
+  </data>
+  <data name="PowerZoneSelectionLabelText" xml:space="preserve">
+    <value>Gebruik deze kracht zone voor mijn trainingen :</value>
+  </data>
+  <data name="PowerZonesGroupBoxText" xml:space="preserve">
+    <value>Kracht Zones</value>
+  </data>
+  <data name="PowerZoneTargetDescriptionText" xml:space="preserve">
+    <value>Probeer mijn kracht in zone {0} te houden.</value>
+  </data>
+  <data name="ProfileText" xml:space="preserve">
+    <value>Profiel</value>
+  </data>
+  <data name="RefreshButtonText" xml:space="preserve">
+    <value>Update units</value>
+  </data>
+  <data name="RenameExplanationLabelText" xml:space="preserve">
+    <value>Als u deze optie selecteerd dan wordt de volgende naam gebruikt voor de training.</value>
+  </data>
+  <data name="RenameLabelText" xml:space="preserve">
+    <value>Hernoemen</value>
+  </data>
+  <data name="RepeatStepDescriptionText" xml:space="preserve">
+    <value>Herhaal de onderstaande stappen {0} keer:</value>
+  </data>
+  <data name="RepetitionCountLabelText" xml:space="preserve">
+    <value>Hoeveel herhalingen wilt u doen?</value>
+  </data>
+  <data name="RepetitionPropertiesGroupText" xml:space="preserve">
+    <value>Herhaling Instellingen</value>
+  </data>
+  <data name="ReplaceExplanationLabelText" xml:space="preserve">
+    <value>Als u deze optie selecteerd dan wordt de huidige training die dezelfde naam heeft overschreven.</value>
+  </data>
+  <data name="ReplaceLabelText" xml:space="preserve">
+    <value>Vervangen</value>
+  </data>
+  <data name="ReplaceRenameDialogText" xml:space="preserve">
+    <value>Vervangen of naam wijzigen?</value>
+  </data>
+  <data name="ReplaceRenameIntroLabelText" xml:space="preserve">
+    <value>Er is reeds een training met dezelfde naam. U kunt de huidige training vervangen of de nieuwe training een andere naam geven.</value>
+  </data>
+  <data name="RestingCheckBoxText" xml:space="preserve">
+    <value>Rust stap</value>
+  </data>
+  <data name="RestingHeartRateLabelText" xml:space="preserve">
+    <value>Hartslag in rust :</value>
+  </data>
+  <data name="RestText" xml:space="preserve">
+    <value>Rust</value>
+  </data>
+  <data name="RunningText" xml:space="preserve">
+    <value>Hardlopen</value>
+  </data>
+  <data name="RunWizardText" xml:space="preserve">
+    <value>Start de setup wizard…</value>
+  </data>
+  <data name="ScheduleBannerText" xml:space="preserve">
+    <value>Planning</value>
+  </data>
+  <data name="SelectCategoryDialogText" xml:space="preserve">
+    <value>Selecteer categorie voor training</value>
+  </data>
+  <data name="SelectDateText" xml:space="preserve">
+    <value>Selecteer een datum</value>
+  </data>
+  <data name="SelectDeviceIntroText" xml:space="preserve">
+    <value>Selecteer uw unit hieronder. Als uw apparaat niet te zien is, controleer dan of het verbonden is met uw PC and druk op de Update knop.</value>
+  </data>
+  <data name="SelectDeviceText" xml:space="preserve">
+    <value>Selecteer apparaat</value>
+  </data>
+  <data name="SettingsPageNameText" xml:space="preserve">
+    <value>Garmin Fitness Instellingen</value>
+  </data>
+  <data name="SetupGarminOrSTZonesText" xml:space="preserve">
+    <value>Stel de zones handmatig in</value>
+  </data>
+  <data name="SpeedRangeTargetDescriptionText" xml:space="preserve">
+    <value>Probeer mijn snelheid tussen {0:0.00} {2}/uur en {1:0.00} {2}/uur te houden.</value>
+  </data>
+  <data name="SpeedSettingsGroupBoxText" xml:space="preserve">
+    <value>Snelheid Instellingen</value>
+  </data>
+  <data name="SpeedTargetComboBoxText" xml:space="preserve">
+    <value>Probeer mijn snelheid in een bepaalde zone te houden</value>
+  </data>
+  <data name="SpeedZonesGroupBoxText" xml:space="preserve">
+    <value>Snelheid Zones</value>
+  </data>
+  <data name="SpeedZoneTargetDescriptionText" xml:space="preserve">
+    <value>Probeer mijn snelheid in zone {0} te houden</value>
+  </data>
+  <data name="SportTracksText" xml:space="preserve">
+    <value>SportTracks</value>
+  </data>
+  <data name="StepDetailsText" xml:space="preserve">
+    <value>Stap</value>
+  </data>
+  <data name="StepDurationGroupText" xml:space="preserve">
+    <value>Stap Duur</value>
+  </data>
+  <data name="StepDurationLabelText" xml:space="preserve">
+    <value>Wanneer gaat deze stap eindigen?</value>
+  </data>
+  <data name="StepNameLabelText" xml:space="preserve">
+    <value>Aangepaste naam van stap :</value>
+  </data>
+  <data name="StepTargetGroupText" xml:space="preserve">
+    <value>Stap Doel</value>
+  </data>
+  <data name="StepTargetLabelText" xml:space="preserve">
+    <value>Wat is uw doel voor deze stap?</value>
+  </data>
+  <data name="STModeRadioButtonText" xml:space="preserve">
+    <value>Ik wil de SportTracks modus gebruiken</value>
+  </data>
+  <data name="String" xml:space="preserve">
+    <value>logboek leeg is, maak daarom a.u.b. eerst een tijdelijke lege activiteit aan en herplan uw training. Vervolgens kunt u de tijdelijke activiteit verwijderen.</value>
+  </data>
+  <data name="STZonesExplanationText" xml:space="preserve">
+    <value>Als u de SportTracks zones gebruikt dan gebruikt deze plugin de hartslag en snelheids zones die ingesteld zijn in de categorie waaronder deze training is geclassificeerd. De SportTracks activiteit categorieén heebn geen cadans of kracht zones, dit is de reden waarom ze onafhankelijk gedefinieerd moeten worden. </value>
+  </data>
+  <data name="SuccessText" xml:space="preserve">
+    <value>Succes</value>
+  </data>
+  <data name="TimeDurationComboBoxText" xml:space="preserve">
+    <value>Nadat een bepaalde tijd is verstreken</value>
+  </data>
+  <data name="TimeDurationDescriptionText" xml:space="preserve">
+    <value>Ga gedurende {0:00}:{1:00}:{2:00}</value>
+  </data>
+  <data name="TimeDurationLabelText" xml:space="preserve">
+    <value>Hoeveel tijd?</value>
+  </data>
+  <data name="TimeRangeValidationText" xml:space="preserve">
+    <value>Waarde moet een tijd zijn tussen {0:00}:{1:00} en {2:00}:{3:00}</value>
+  </data>
+  <data name="ToDeviceText" xml:space="preserve">
+    <value>Naar Apparaat</value>
+  </data>
+  <data name="ToFileText" xml:space="preserve">
+    <value>Naar Bestand</value>
+  </data>
+  <data name="ToLabelText" xml:space="preserve">
+    <value>tot</value>
+  </data>
+  <data name="TooRecentDataText" xml:space="preserve">
+    <value>Gegevens zijn te recent voor de versie van de plugin die nu geinstalleerd is. Installeer a.u.b. de laatste versie van de plugin.</value>
+  </data>
+  <data name="UseCustomCategoryText" xml:space="preserve">
+    <value>Gebruik aangepaste categorie</value>
+  </data>
+  <data name="UseParentCategoryText" xml:space="preserve">
+    <value>Gebruik hogere categorie</value>
+  </data>
+  <data name="ValueValidationTitleText" xml:space="preserve">
+    <value>Onjuiste waarde</value>
+  </data>
+  <data name="WarningText" xml:space="preserve">
+    <value>Waarschuwing</value>
+  </data>
+  <data name="WeightLabelText" xml:space="preserve">
+    <value>Gewicht :</value>
+  </data>
+  <data name="WelcomeLabelText" xml:space="preserve">
+    <value>Welkom bij de Garmin Fitness Plugin wizard. Deze wizard zal u helpen om de plugin in te stellen voor uw logboek. Op elk moment kunt u de wizard afsluiten door op de "Einde" knop te klikken. Deze wizard is indien gewenst beschikbaar vanaf de "Instellingen" pagina, dus u kunt ook later nog de plugin instellen.</value>
+  </data>
+  <data name="WelcomeText" xml:space="preserve">
+    <value>Welkom</value>
+  </data>
+  <data name="WheelSizeGroupBoxText" xml:space="preserve">
+    <value>Wiel grootte</value>
+  </data>
+  <data name="WheelSizeLabelText" xml:space="preserve">
+    <value>Wiel grootte :</value>
+  </data>
+  <data name="WhichZoneText" xml:space="preserve">
+    <value>Welke zone?</value>
+  </data>
+  <data name="WizardSTZonesText" xml:space="preserve">
+    <value>SportTracks zones</value>
+  </data>
+  <data name="WorkoutsText" xml:space="preserve">
+    <value>Trainingen</value>
+  </data>
+  <data name="WorkoutsWereSplitText" xml:space="preserve">
+    <value>Sommige van uw trainingen hebben meer dan 20 stappen. Deze moeten gesplitst worden om de wijziging in uw opties weer te kunnen geven. Wilt u dit nu doen? U moet het zelf handmatig doen als nu kiest voor "Nee".</value>
+  </data>
+</root>
