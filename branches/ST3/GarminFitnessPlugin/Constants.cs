@@ -128,12 +128,17 @@ namespace GarminFitnessPlugin
         public static readonly string[] HeartRateRangeZoneTCXString =
             {
                 "PredefinedHeartRateZone_t",
-                "HeartRateAsPercentOfMax_t"
+                "CustomHeartRateZone_t"
             };
         public static readonly string[] SpeedRangeZoneTCXString =
             {
-                "CustomSpeedZone_t",
-                "PredefinedSpeedZone_t"
+                "PredefinedSpeedZone_t",
+                "CustomSpeedZone_t"
+            };
+        public static readonly string[] PowerRangeZoneTCXString =
+            {
+                "PredefinedPowerZone_t",
+                "CustomPowerZone_t"
             };
         public static readonly string[] PowerReferenceTCXString =
             {
@@ -189,7 +194,7 @@ namespace GarminFitnessPlugin
         public static readonly string WorkoutsClipboardID = "GFP_WorkoutsList";
         public static readonly string StepsClipboardID = "GFP_StepsList";
 
-        public static readonly DataVersion CurrentVersion = new DataVersion(22);
+        public static readonly DataVersion CurrentVersion = new DataVersion(23);
         public static readonly String DataHeaderIdString = "Garmin Workouts Plugin made by S->G";
    }
 }

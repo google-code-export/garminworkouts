@@ -805,7 +805,7 @@
     <value>Print</value>
   </data>
   <data name="InkFriendlyModeText" xml:space="preserve">
-    <value>Ink friendly mode</value>
+    <value>Ink saving mode</value>
   </data>
   <data name="PrintOptionsText" xml:space="preserve">
     <value>Print options</value>

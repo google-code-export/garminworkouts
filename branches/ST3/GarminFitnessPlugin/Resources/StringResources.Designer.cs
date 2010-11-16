@@ -1060,7 +1060,7 @@ namespace GarminFitnessPlugin.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Ink friendly mode.
+        ///   Looks up a localized string similar to Ink saving mode.
         /// </summary>
         internal static string InkFriendlyModeText {
             get {

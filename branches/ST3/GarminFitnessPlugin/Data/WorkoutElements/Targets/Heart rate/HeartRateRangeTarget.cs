@@ -98,7 +98,7 @@ namespace GarminFitnessPlugin.Data
 
             // Type
             attribute = document.CreateAttribute(Constants.XsiTypeTCXString, Constants.xsins);
-            attribute.Value = "CustomHeartRateZone_t";
+            attribute.Value = Constants.HeartRateRangeZoneTCXString[1];
             parentNode.Attributes.Append(attribute);
 
             // Low

@@ -130,6 +130,8 @@ namespace GarminFitnessPlugin
             }
             else
             {
+                GarminWorkoutManager.Instance.RemoveAllWorkouts();
+                GarminProfileManager.Instance.UserProfile.Cleanup();
                 Options.Instance.ResetLogbookSettings();
             }
         }

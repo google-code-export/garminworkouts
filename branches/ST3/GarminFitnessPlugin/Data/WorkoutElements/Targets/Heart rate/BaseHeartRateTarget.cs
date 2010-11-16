@@ -183,14 +183,14 @@ namespace GarminFitnessPlugin.Data
                 XmlNode child = parentNode.FirstChild;
 
                 if (child.Attributes.Count == 1 && child.Attributes[0].Name == Constants.XsiTypeTCXString &&
-                    child.Attributes[0].Value == "PredefinedHeartRateZone_t")
+                    child.Attributes[0].Value.Equals(Constants.HeartRateRangeZoneTCXString[0]))
                 {
                     // We have a GTC HR zone
                     ConcreteTarget = new HeartRateZoneGTCTarget(this);
                     ConcreteTarget.Deserialize(child);
                 }
                 else if(child.Attributes.Count == 1 && child.Attributes[0].Name == Constants.XsiTypeTCXString &&
-                    child.Attributes[0].Value == "CustomHeartRateZone_t")
+                    child.Attributes[0].Value.Equals(Constants.HeartRateRangeZoneTCXString[1]))
                 {
                     // We have either a range or a ST HR zone but we can't tell before the
                     //  extension section so create a range and if it ends up being a ST

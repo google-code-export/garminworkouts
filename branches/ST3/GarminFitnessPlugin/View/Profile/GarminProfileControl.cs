@@ -67,6 +67,11 @@ namespace GarminFitnessPlugin.View
         void OnProfileChanged(object sender, System.ComponentModel.PropertyChangedEventArgs changedProperty)
         {
             RefreshProfileInfo();
+
+            if (changedProperty.PropertyName == "RestingHeartRate")
+            {
+                RefreshUIFromProfile();
+            }
         }
 
         void OnActivityProfileChanged(GarminActivityProfile profileModified, System.ComponentModel.PropertyChangedEventArgs changedProperty)
@@ -123,10 +128,25 @@ namespace GarminFitnessPlugin.View
 
         private void RestHRTextBox_Validating(object sender, System.ComponentModel.CancelEventArgs e)
         {
-            e.Cancel = !Utils.IsTextIntegerInRange(RestHRTextBox.Text, Constants.MinHRInBPM, Constants.MaxHRInBPM);
+            Byte maxHR = Constants.MaxHRInBPM;
+            e.Cancel = !Utils.IsTextIntegerInRange(RestHRTextBox.Text, Constants.MinHRInBPM, maxHR);
+
+            if (!e.Cancel)
+            {
+                Byte restingHR = Byte.Parse(RestHRTextBox.Text);
+
+                for (Byte i = 0; i < (Byte)GarminCategories.GarminCategoriesCount; ++i)
+                {
+                    Byte maxCategoryHR = GarminProfileManager.Instance.GetProfileForActivity((GarminCategories)i).MaximumHeartRate;
+
+                    e.Cancel = e.Cancel || restingHR >= maxCategoryHR;
+                    maxHR = Math.Min(maxHR, maxCategoryHR);
+                }
+            }
+
             if (e.Cancel)
             {
-                MessageBox.Show(String.Format(GarminFitnessView.GetLocalizedString("IntegerRangeValidationText"), Constants.MinHRInBPM, Constants.MaxHRInBPM),
+                MessageBox.Show(String.Format(GarminFitnessView.GetLocalizedString("IntegerRangeValidationText"), Constants.MinHRInBPM, maxHR),
                                 GarminFitnessView.GetLocalizedString("ValueValidationTitleText"), MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 System.Media.SystemSounds.Asterisk.Play();
 
@@ -160,10 +180,20 @@ namespace GarminFitnessPlugin.View
 
         private void MaxHRTextBox_Validating(object sender, System.ComponentModel.CancelEventArgs e)
         {
-            e.Cancel = !Utils.IsTextIntegerInRange(MaxHRTextBox.Text, Constants.MinHRInBPM, Constants.MaxHRInBPM);
+            Byte minHR = Constants.MinHRInBPM;
+            e.Cancel = !Utils.IsTextIntegerInRange(MaxHRTextBox.Text, minHR, Constants.MaxHRInBPM);
+
+            if (!e.Cancel)
+            {
+                Byte maxCategoryHR = Byte.Parse(MaxHRTextBox.Text);
+
+                e.Cancel = GarminProfileManager.Instance.UserProfile.RestingHeartRate >= maxCategoryHR;
+                minHR = Math.Max(minHR, GarminProfileManager.Instance.UserProfile.RestingHeartRate);
+            }
+
             if (e.Cancel)
             {
-                MessageBox.Show(String.Format(GarminFitnessView.GetLocalizedString("IntegerRangeValidationText"), Constants.MinHRInBPM, Constants.MaxHRInBPM),
+                MessageBox.Show(String.Format(GarminFitnessView.GetLocalizedString("IntegerRangeValidationText"), minHR, Constants.MaxHRInBPM),
                                 GarminFitnessView.GetLocalizedString("ValueValidationTitleText"), MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 System.Media.SystemSounds.Asterisk.Play();
 
@@ -228,7 +258,7 @@ namespace GarminFitnessPlugin.View
         {
             if (BPMRadioButton.Checked)
             {
-                m_CurrentProfile.HRIsInPercentMax = false;
+                m_CurrentProfile.HRZonesReferential = GarminActivityProfile.HRReferential.HRReferential_BPM;
             }
         }
 
@@ -236,7 +266,15 @@ namespace GarminFitnessPlugin.View
         {
             if (PercentMaxRadioButton.Checked)
             {
-                m_CurrentProfile.HRIsInPercentMax = true;
+                m_CurrentProfile.HRZonesReferential = GarminActivityProfile.HRReferential.HRReferential_PercentMax;
+            }
+        }
+
+        private void PercentHRRRadioButton_CheckedChanged(object sender, EventArgs e)
+        {
+            if (PercentHRRRadioButton.Checked)
+            {
+                m_CurrentProfile.HRZonesReferential = GarminActivityProfile.HRReferential.HRReferential_PercentHRR;
             }
         }
 
@@ -244,7 +282,7 @@ namespace GarminFitnessPlugin.View
         {
             GarminActivityProfile profile = GarminProfileManager.Instance.GetProfileForActivity(m_CurrentCategory);
 
-            if (profile.HRIsInPercentMax)
+            if (profile.HRZonesReferential != GarminActivityProfile.HRReferential.HRReferential_BPM)
             {
                 e.Cancel = !Utils.IsTextIntegerInRange(LowHRTextBox.Text, Constants.MinHRInPercentMax, Constants.MaxHRInPercentMax);
                 if (e.Cancel)
@@ -281,7 +319,7 @@ namespace GarminFitnessPlugin.View
         {
             GarminActivityProfile profile = GarminProfileManager.Instance.GetProfileForActivity(m_CurrentCategory);
 
-            if (profile.HRIsInPercentMax)
+            if (profile.HRZonesReferential != GarminActivityProfile.HRReferential.HRReferential_BPM)
             {
                 e.Cancel = !Utils.IsTextIntegerInRange(HighHRTextBox.Text, Constants.MinHRInPercentMax, Constants.MaxHRInPercentMax);
                 if (e.Cancel)
@@ -846,8 +884,9 @@ namespace GarminFitnessPlugin.View
             GearWeightTextBox.Text = Weight.Convert(m_CurrentProfile.GearWeightInPounds, Weight.Units.Pound, PluginMain.GetApplication().SystemPreferences.WeightUnits).ToString("0.0");
 
             // HR Zones
-            PercentMaxRadioButton.Checked = m_CurrentProfile.HRIsInPercentMax;
-            BPMRadioButton.Checked = !m_CurrentProfile.HRIsInPercentMax;
+            PercentMaxRadioButton.Checked = m_CurrentProfile.HRZonesReferential == GarminActivityProfile.HRReferential.HRReferential_PercentMax;
+            PercentHRRRadioButton.Checked = m_CurrentProfile.HRZonesReferential == GarminActivityProfile.HRReferential.HRReferential_PercentHRR;
+            BPMRadioButton.Checked = m_CurrentProfile.HRZonesReferential == GarminActivityProfile.HRReferential.HRReferential_BPM;
             HRZonesTreeList.Invalidate();
             HRZonePanel.Enabled = m_SelectedHRZone != null;
             if (m_SelectedHRZone != null)
@@ -964,6 +1003,7 @@ namespace GarminFitnessPlugin.View
             HRZonesGroupBox.Text = GarminFitnessView.GetLocalizedString("HRZonesGroupBoxText");
             BPMRadioButton.Text = CommonResources.Text.LabelBPM;
             PercentMaxRadioButton.Text = CommonResources.Text.LabelPercentOfMax;
+            PercentHRRRadioButton.Text = CommonResources.Text.LabelPercentOfReserve;
             LowHRLabel.Text = GarminFitnessView.GetLocalizedString("LowLabelText");
             HighHRLabel.Text = GarminFitnessView.GetLocalizedString("HighLabelText");
 

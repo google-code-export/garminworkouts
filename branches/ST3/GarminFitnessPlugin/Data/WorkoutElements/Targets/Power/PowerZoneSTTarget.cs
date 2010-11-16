@@ -179,7 +179,7 @@ namespace GarminFitnessPlugin.Data
 
             // Type
             attribute = document.CreateAttribute(Constants.XsiTypeTCXString, Constants.xsins);
-            attribute.Value = "CustomPowerZone_t";
+            attribute.Value = Constants.PowerRangeZoneTCXString[1];
             parentNode.Attributes.Append(attribute);
 
             if (exportAsPercentMax)

@@ -145,7 +145,7 @@ namespace GarminFitnessPlugin.Data
 
             // Type
             attribute = document.CreateAttribute(Constants.XsiTypeTCXString, Constants.xsins);
-            attribute.Value = "CustomSpeedZone_t";
+            attribute.Value = Constants.SpeedRangeZoneTCXString[1];
             parentNode.Attributes.Append(attribute);
 
             // View as

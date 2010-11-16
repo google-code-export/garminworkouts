@@ -60,7 +60,7 @@ namespace GarminFitnessPlugin.Data
 
             // Type
             attribute = document.CreateAttribute(Constants.XsiTypeTCXString, Constants.xsins);
-            attribute.Value = "PredefinedPowerZone_t";
+            attribute.Value = Constants.PowerRangeZoneTCXString[0];
             parentNode.Attributes.Append(attribute);
 
             m_Zone.Serialize(parentNode, "Number", document);

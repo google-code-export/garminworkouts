@@ -180,14 +180,14 @@ namespace GarminFitnessPlugin.Data
                 XmlNode child = parentNode.FirstChild;
 
                 if (child.Attributes.Count == 1 && child.Attributes[0].Name == Constants.XsiTypeTCXString &&
-                    child.Attributes[0].Value == "PredefinedPowerZone_t")
+                    child.Attributes[0].Value.Equals(Constants.PowerRangeZoneTCXString[0]))
                 {
                     // We have a GTC HR zone
                     ConcreteTarget = new PowerZoneGTCTarget(this);
                     ConcreteTarget.Deserialize(child);
                 }
                 else if(child.Attributes.Count == 1 && child.Attributes[0].Name == Constants.XsiTypeTCXString &&
-                    child.Attributes[0].Value == "CustomPowerZone_t")
+                    child.Attributes[0].Value.Equals(Constants.PowerRangeZoneTCXString[1]))
                 {
                     // We have either a range or a ST power zone but we can't tell before the
                     //  extension section so create a range and if it ends up being a ST
