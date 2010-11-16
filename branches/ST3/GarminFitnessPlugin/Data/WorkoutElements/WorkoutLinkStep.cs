@@ -169,17 +169,49 @@ namespace GarminFitnessPlugin.Data
             return new WorkoutLinkStep(ParentConcreteWorkout, m_LinkedWorkout);
         }
 
+        public override bool ValidateAfterZoneCategoryChanged(ZoneFiveSoftware.Common.Data.Fitness.IZoneCategory changedCategory)
+        {
+            return false;
+        }
+
+        public override bool ContainsFITOnlyFeatures
+        {
+            get
+            {
+                foreach (IStep step in m_WorkoutStepsCopy)
+                {
+                    if (step.ContainsFITOnlyFeatures)
+                    {
+                        return true;
+                    }
+                }
+
+                return false;
+            }
+        }
+
+        public override bool ContainsTCXExtensionFeatures
+        {
+            get
+            {
+                foreach (IStep step in m_WorkoutStepsCopy)
+                {
+                    if (step.ContainsTCXExtensionFeatures)
+                    {
+                        return true;
+                    }
+                }
+
+                return false;
+            }
+        }
+
         public override UInt16 StepCount
         {
             get
             {
                 return LinkedWorkoutSteps.StepCount;
             }
-        }
-
-        public override bool ValidateAfterZoneCategoryChanged(ZoneFiveSoftware.Common.Data.Fitness.IZoneCategory changedCategory)
-        {
-            return false;
         }
 
         public override bool IsDirty

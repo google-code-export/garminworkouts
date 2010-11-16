@@ -220,6 +220,7 @@ namespace GarminFitnessPlugin.View
                 {
                     if (changedProperty.PropertyName == "Steps")
                     {
+                        BuildWorkoutsList();
                         BuildStepsList();
 
                         // Update the new step buttons
