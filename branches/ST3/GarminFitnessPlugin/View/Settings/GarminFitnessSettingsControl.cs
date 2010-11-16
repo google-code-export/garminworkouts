@@ -23,6 +23,9 @@ namespace GarminFitnessPlugin.View
             Options.Instance.OptionsChanged += new Options.OptionsChangedEventHandler(OnOptionsChanged);
             PluginMain.LogbookChanged += new PluginMain.LogbookChangedEventHandler(OnLogbookChanged);
 
+            ExportWarmupAsComboBox.Format += new ListControlConvertEventHandler(ExportIntensityAsComboBox_Format);
+            ExportCooldownAsComboBox.Format += new ListControlConvertEventHandler(ExportIntensityAsComboBox_Format);
+
             UpdateUIStrings();
             UpdateOptionsUI();
         }
@@ -30,6 +33,7 @@ namespace GarminFitnessPlugin.View
         public void UICultureChanged(CultureInfo culture)
         {
             UpdateUIStrings();
+            UpdateOptionsUI();
         }
 
         void OnOptionsChanged(System.ComponentModel.PropertyChangedEventArgs changedProperty)
@@ -246,6 +250,43 @@ namespace GarminFitnessPlugin.View
             }
         }
 
+        void ExportIntensityAsComboBox_Format(object sender, ListControlConvertEventArgs e)
+        {
+            switch ((RegularStep.StepIntensity)e.ListItem)
+            {
+                case RegularStep.StepIntensity.Active:
+                    {
+                        e.Value = GarminFitnessView.GetLocalizedString("ActiveText");
+                        break;
+                    }
+                case RegularStep.StepIntensity.Rest:
+                    {
+                        e.Value = GarminFitnessView.GetLocalizedString("RestText");
+                        break;
+                    }
+                case RegularStep.StepIntensity.Warmup:
+                    {
+                        e.Value = GarminFitnessView.GetLocalizedString("WarmupText");
+                        break;
+                    }
+                case RegularStep.StepIntensity.Cooldown:
+                    {
+                        e.Value = GarminFitnessView.GetLocalizedString("CooldownText");
+                        break;
+                    }
+            }
+        }
+
+        private void ExportWarmupAsComboBox_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            Options.Instance.TCXExportWarmupAs = (RegularStep.StepIntensity)ExportWarmupAsComboBox.SelectedItem;
+        }
+
+        private void ExportCooldownAsComboBox_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            Options.Instance.TCXExportCooldownAs = (RegularStep.StepIntensity)ExportCooldownAsComboBox.SelectedItem;
+        }
+
         private void RunWizardLinkLabel_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
             GarminFitnessSetupWizard wizard = new GarminFitnessSetupWizard();
@@ -298,6 +339,17 @@ namespace GarminFitnessPlugin.View
             DeviceCommGroupBox.Text = GarminFitnessView.GetLocalizedString("DeviceCommGroupBoxText");
             DefaultExportDirectoryLabel.Text = GarminFitnessView.GetLocalizedString("DefaultExportDirectoryGroupBoxText");
             BrowseButton.Text = GarminFitnessView.GetLocalizedString("BrowseButtonText");
+
+            TCXExportWarmupAsLabel.Text = GarminFitnessView.GetLocalizedString("ExportWarmupAsText") +
+                                          " (" + GarminFitnessView.GetLocalizedString("TCXFileText") + ") :";
+            ExportWarmupAsComboBox.Items.Clear();
+            ExportWarmupAsComboBox.Items.Add(RegularStep.StepIntensity.Active);
+            ExportWarmupAsComboBox.Items.Add(RegularStep.StepIntensity.Rest);
+            TCXExportCooldownAsLabel.Text = GarminFitnessView.GetLocalizedString("ExportCooldownAsText") +
+                                          " (" + GarminFitnessView.GetLocalizedString("TCXFileText") + ") :";
+            ExportCooldownAsComboBox.Items.Clear();
+            ExportCooldownAsComboBox.Items.Add(RegularStep.StepIntensity.Active);
+            ExportCooldownAsComboBox.Items.Add(RegularStep.StepIntensity.Rest);
 
             RunWizardLinkLabel.Text = GarminFitnessView.GetLocalizedString("RunWizardText");
 
@@ -386,6 +438,10 @@ namespace GarminFitnessPlugin.View
 
             // Default directory
             ExportDirectoryTextBox.Text = Options.Instance.DefaultExportDirectory;
+
+            // Export intensities
+            ExportWarmupAsComboBox.SelectedItem = Options.Instance.TCXExportWarmupAs;
+            ExportCooldownAsComboBox.SelectedItem = Options.Instance.TCXExportCooldownAs;
         }
 
         private void AddCategoryNode(STToGarminActivityCategoryWrapper categoryNode, STToGarminActivityCategoryWrapper parent)

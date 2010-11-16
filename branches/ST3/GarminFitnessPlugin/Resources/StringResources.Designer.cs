@@ -493,6 +493,15 @@ namespace GarminFitnessPlugin.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Export cooldown as.
+        /// </summary>
+        internal static string ExportCooldownAsText {
+            get {
+                return ResourceManager.GetString("ExportCooldownAsText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to There was an error while exporting the profile..
         /// </summary>
         internal static string ExportProfileFailedText {
@@ -552,6 +561,15 @@ namespace GarminFitnessPlugin.Resources {
         internal static string ExportText {
             get {
                 return ResourceManager.GetString("ExportText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Export warmup as.
+        /// </summary>
+        internal static string ExportWarmupAsText {
+            get {
+                return ResourceManager.GetString("ExportWarmupAsText", resourceCulture);
             }
         }
         

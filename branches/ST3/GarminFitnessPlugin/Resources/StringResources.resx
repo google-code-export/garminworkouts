@@ -822,4 +822,10 @@
   <data name="ManualProfileConfigurationText" xml:space="preserve">
     <value>You will be taken through the manual setup process instead.</value>
   </data>
+  <data name="ExportCooldownAsText" xml:space="preserve">
+    <value>Export cooldown as</value>
+  </data>
+  <data name="ExportWarmupAsText" xml:space="preserve">
+    <value>Export warmup as</value>
+  </data>
 </root>

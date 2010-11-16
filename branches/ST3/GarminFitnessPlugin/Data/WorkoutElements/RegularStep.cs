@@ -239,7 +239,8 @@ namespace GarminFitnessPlugin.Data
 
             // Intensity
             GarminFitnessBool isRestingStep = new GarminFitnessBool(Intensity == StepIntensity.Active ||
-                                                                    Intensity == StepIntensity.Warmup,
+                                                                    (Intensity == StepIntensity.Warmup && Options.Instance.TCXExportWarmupAs == StepIntensity.Active) ||
+                                                                    (Intensity == StepIntensity.Cooldown && Options.Instance.TCXExportCooldownAs == StepIntensity.Active),
                                                                     Constants.StepIntensityZoneTCXString[0],
                                                                     Constants.StepIntensityZoneTCXString[1]);
             isRestingStep.Serialize(parentNode.LastChild, "Intensity", document);
@@ -308,18 +309,18 @@ namespace GarminFitnessPlugin.Data
                 }
                 else if (child.Name == "Intensity")
                 {
-                    GarminFitnessBool isRestingStep = new GarminFitnessBool(false,
+                    GarminFitnessBool isActiveStep = new GarminFitnessBool(false,
                                                                             Constants.StepIntensityZoneTCXString[0],
                                                                             Constants.StepIntensityZoneTCXString[1]);
-                    isRestingStep.Deserialize(child);
+                    isActiveStep.Deserialize(child);
 
-                    if (isRestingStep)
+                    if (isActiveStep)
                     {
-                        Intensity = StepIntensity.Rest;
+                        Intensity = StepIntensity.Active;
                     }
                     else
                     {
-                        Intensity = StepIntensity.Active;
+                        Intensity = StepIntensity.Rest;
                     }
 
                     intensityLoaded = true;

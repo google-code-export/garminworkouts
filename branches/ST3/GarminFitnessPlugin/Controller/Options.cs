@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.IO;
 using System.Reflection;
 using System.Text;
@@ -1015,6 +1016,40 @@ namespace GarminFitnessPlugin.Controller
             set { m_UseLastCategoryForAllImportedWorkout = value; }
         }
 
+        public RegularStep.StepIntensity TCXExportWarmupAs
+        {
+            get { return m_TCXExportWarmupAs; }
+            set
+            {
+                Debug.Assert(value == RegularStep.StepIntensity.Active ||
+                             value == RegularStep.StepIntensity.Rest);
+
+                if (m_TCXExportWarmupAs != value)
+                {
+                    m_TCXExportWarmupAs = value;
+
+                    TriggerOptionsChangedEvent("TCXExportWarmupAs");
+                }
+            }
+        }
+
+        public RegularStep.StepIntensity TCXExportCooldownAs
+        {
+            get { return m_TCXExportCooldownAs; }
+            set
+            {
+                Debug.Assert(value == RegularStep.StepIntensity.Active ||
+                             value == RegularStep.StepIntensity.Rest);
+
+                if (m_TCXExportCooldownAs != value)
+                {
+                    m_TCXExportCooldownAs = value;
+
+                    TriggerOptionsChangedEvent("TCXExportWarmupAs");
+                }
+            }
+        }
+
         private Dictionary<IActivityCategory, STCategoriesInfo> STToGarminCategoryMap
         {
             get { return m_STToGarminCategoryMap; }
@@ -1067,5 +1102,8 @@ namespace GarminFitnessPlugin.Controller
 
         private IActivityCategory m_LastImportCategory = null;
         private bool m_UseLastCategoryForAllImportedWorkout = false;
+
+        private RegularStep.StepIntensity m_TCXExportWarmupAs = RegularStep.StepIntensity.Active;
+        private RegularStep.StepIntensity m_TCXExportCooldownAs = RegularStep.StepIntensity.Rest;
     }
 }
