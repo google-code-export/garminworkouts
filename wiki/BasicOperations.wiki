@@ -159,3 +159,6 @@ http://garminworkouts.googlecode.com/files/ReplaceRename.gif
 
 = Printing =
 With vesion 1.1.322, the ability to print workout was added.  To do so, simply click on the "Print" label in the actions.  You will be presented a page where you can configure your page and preview/print result.  The "Ink saving mode" uses less ink than the "Normal mode" but it's also not as nice on the eye.  Using the preview, you can compare both to make your selection.
+
+== Unroll repeat steps ==
+The option "Unroll repeat steps" serves to explode the repeat steps.  What this means is that, if that option is selected, the children steps of a repeat will be duplicated the number of times they should be executed and the repeat step will not be displayed.  This way you can follow the workout step by step with less chances of skipping or duplicating a repetition.
