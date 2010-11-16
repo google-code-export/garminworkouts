@@ -5,7 +5,6 @@ using System.Xml;
 using GarminFitnessPlugin.Controller;
 using GarminFitnessPlugin.View;
 using ZoneFiveSoftware.Common.Data.Fitness;
-using GarminGPS.Xml;
 
 namespace GarminFitnessPlugin.Data
 {
@@ -24,7 +23,7 @@ namespace GarminFitnessPlugin.Data
 
         public bool IsValid()
         {
-            Workout parent = GarminWorkoutManager.Instance.GetWorkoutWithName(ConcreteWorkout.Name);
+            Workout parent = GarminWorkoutManager.Instance.GetWorkout(ConcreteWorkout.Name);
 
             return parent != null && m_PartNumber < parent.GetSplitPartsCount();
         }
@@ -38,7 +37,7 @@ namespace GarminFitnessPlugin.Data
         public override bool CanAcceptNewStep(int newStepCount, IStep destinationStep)
         {
             // Hard 20 step limit in the parts
-            return GetStepCount() + newStepCount <= Constants.MaxStepsPerWorkout;
+            return StepCount + newStepCount <= Constants.MaxStepsPerWorkout;
         }
 
         public override Workout ConcreteWorkout
@@ -59,6 +58,14 @@ namespace GarminFitnessPlugin.Data
                 List<String> names = GarminWorkoutManager.Instance.GetReservedNamesForWorkout(ConcreteWorkout);
 
                 return new GarminFitnessString(names[m_PartNumber]);
+            }
+        }
+
+        public override GarminFitnessGuid IdInternal
+        {
+            get
+            {
+                return ConcreteWorkout.IdInternal;
             }
         }
 
@@ -89,7 +96,7 @@ namespace GarminFitnessPlugin.Data
             get { return ConcreteWorkout.ScheduledDates; }
         }
 
-        public override System.Collections.Generic.List<IStep> Steps
+        public override WorkoutStepsList Steps
         {
             get { return m_FullWorkout.GetStepsForPart(m_PartNumber); }
         }
@@ -99,6 +106,7 @@ namespace GarminFitnessPlugin.Data
             get { return m_FullWorkout.AddToDailyViewOnSchedule; }
             set { throw new Exception("Cannot assign AddToDailyViewOnSchedule on a WorkoutPart");  }
         }
+
 #endregion
 
 #region IXMLSerializable Members
@@ -114,6 +122,11 @@ namespace GarminFitnessPlugin.Data
         }
 
         public override void DeserializeOccurances(GarXFaceNet._WorkoutOccuranceList occuranceList)
+        {
+            throw new Exception("Cannot deserialize a WorkoutPart");
+        }
+
+        public override void DeserializeFromFIT(FITMessage workoutMessage)
         {
             throw new Exception("Cannot deserialize a WorkoutPart");
         }

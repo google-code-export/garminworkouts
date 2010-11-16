@@ -1,8 +1,10 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Drawing;
 using System.Globalization;
 using System.IO;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
 using System.Windows.Forms;
@@ -16,6 +18,48 @@ namespace GarminFitnessPlugin.Controller
 {
     class Utils
     {
+        [DllImport("gdi32.dll")]
+        private static extern int BitBlt(IntPtr hdcDest, int nXDest, int nYDest, int nWidth, int nHeight,
+                                         IntPtr hdcSrc, int nXSrc, int nYSrc, Int32 dwRop);
+
+        [DllImport("gdi32.dll")]
+        private static extern IntPtr CreateCompatibleDC(IntPtr hDC);
+
+        [DllImport("gdi32.dll")]
+        private static extern bool DeleteDC(IntPtr hdc);
+
+        [DllImport("gdi32.dll")]
+        private static extern bool DeleteObject(IntPtr hObject);
+
+        [DllImport("gdi32.dll")]
+        private static extern IntPtr SelectObject(IntPtr hDC, IntPtr hObject);
+
+        static public void RenderBitmapToGraphics(Bitmap source, Graphics destination, Rectangle destinationRect)
+        {
+            try
+            {
+                IntPtr destHdc = destination.GetHdc();
+                IntPtr bitmapHdc = CreateCompatibleDC(destHdc);
+                IntPtr hBitmap = source.GetHbitmap();
+                IntPtr oldHdc = SelectObject(bitmapHdc, hBitmap);
+
+                BitBlt(destHdc,
+                       destinationRect.Left, destinationRect.Top,
+                       destinationRect.Width, destinationRect.Height,
+                       bitmapHdc, 0, 0, 0x00CC0020);
+
+                destination.ReleaseHdc(destHdc);
+                SelectObject(bitmapHdc, oldHdc);
+                DeleteDC(bitmapHdc);
+                DeleteObject(hBitmap);
+            }
+            catch//(System.DllNotFoundException e)
+            {
+                // Mono/Linux - Just go on right now
+                //throw e;
+            }
+        }
+
         public static void HijackMainWindow()
         {
             Control viewControl = PluginMain.GetApplication().ActiveView.CreatePageControl();
@@ -58,17 +102,17 @@ namespace GarminFitnessPlugin.Controller
             return GetDefaultCategory();
         }
 
-        private static IActivityCategory FindCategoryByIDInList(string categoryID, IList<IActivityCategory> list)
+        private static IActivityCategory FindCategoryByIDInList(string categoryID, IEnumerable<IActivityCategory> list)
         {
-            for (int i = 0; i < list.Count; ++i)
+            foreach (IActivityCategory category in list)
             {
-                if (list[i].ReferenceId == categoryID)
+                if (category.ReferenceId == categoryID)
                 {
-                    return list[i];
+                    return category;
                 }
-                else if (list[i].SubCategories.Count > 0)
+                else if (category.SubCategories.Count > 0)
                 {
-                    IActivityCategory child = FindCategoryByIDInList(categoryID, list[i].SubCategories);
+                    IActivityCategory child = FindCategoryByIDInList(categoryID, category.SubCategories);
                     if (child != null)
                     {
                         return child;
@@ -79,7 +123,7 @@ namespace GarminFitnessPlugin.Controller
             return null;
         }
 
-        public static IZoneCategory FindZoneCategoryByID(IList<IZoneCategory> list, string categoryID)
+        public static IZoneCategory FindZoneCategoryByID(IZoneCategoryList list, string categoryID)
         {
             for (int i = 0; i < list.Count; ++i)
             {
@@ -92,7 +136,7 @@ namespace GarminFitnessPlugin.Controller
             return list[0];
         }
 
-        public static bool NamedZoneStillExists(IList<IZoneCategory> list, INamedLowHighZone zone)
+        public static bool NamedZoneStillExists(IZoneCategoryList list, INamedLowHighZone zone)
         {
             for (int i = 0; i < list.Count; ++i)
             {
@@ -110,7 +154,7 @@ namespace GarminFitnessPlugin.Controller
             return false;
         }
 
-        public static bool ZoneCategoryStillExists(IList<IZoneCategory> list, IZoneCategory zone)
+        public static bool ZoneCategoryStillExists(IZoneCategoryList list, IZoneCategory zone)
         {
             for (int i = 0; i < list.Count; ++i)
             {
@@ -151,6 +195,21 @@ namespace GarminFitnessPlugin.Controller
             Int32 value;
 
             if (Int32.TryParse(text, out value))
+            {
+                if (value >= minRange && value <= maxRange)
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        public static bool IsTextIntegerInRange(string text, UInt32 minRange, UInt32 maxRange)
+        {
+            UInt32 value;
+
+            if (UInt32.TryParse(text, out value))
             {
                 if (value >= minRange && value <= maxRange)
                 {
@@ -292,7 +351,7 @@ namespace GarminFitnessPlugin.Controller
             return -1;
         }
 
-        public static int FindIndexForZoneCategory(IList<IZoneCategory> list, IZoneCategory zone)
+        public static int FindIndexForZoneCategory(IZoneCategoryList list, IZoneCategory zone)
         {
             Debug.Assert(list.Count > 0);
 
@@ -365,11 +424,11 @@ namespace GarminFitnessPlugin.Controller
                 GarminFitnessInt32Range zoneIndex = new GarminFitnessInt32Range(index);
                 zoneIndex.Serialize(categoryNode, "Index", document);
 
-                step.ParentConcreteWorkout.AddSportTracksExtension(extensionNode);
+                step.ParentWorkout.AddSportTracksExtension(extensionNode);
             }
         }
 
-        public static string GetWorkoutFilename(IWorkout workout)
+        public static string GetWorkoutFilename(IWorkout workout, GarminWorkoutManager.FileFormats format)
         {
             string fileName = workout.Name;
 
@@ -383,7 +442,19 @@ namespace GarminFitnessPlugin.Controller
             fileName = fileName.Replace('<', '_');
             fileName = fileName.Replace('>', '_');
             fileName = fileName.Replace('|', '_');
-            fileName += ".tcx";
+
+            if (format == GarminWorkoutManager.FileFormats.TCX)
+            {
+                fileName += ".tcx";
+            }
+            else if (format == GarminWorkoutManager.FileFormats.FIT)
+            {
+                fileName += ".fit";
+            }
+            else
+            {
+                Debug.Assert(false);
+            }
 
             return fileName;
         }

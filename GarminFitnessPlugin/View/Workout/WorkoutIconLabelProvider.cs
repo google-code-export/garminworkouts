@@ -22,6 +22,10 @@ namespace GarminFitnessPlugin.View
                 {
                     return global::GarminFitnessPlugin.Resources.Resources.WorkoutDirtyIcon;
                 }
+                else if (((Workout)wrapper.Element).ContainsFITOnlyFeatures)
+                {
+                    return global::GarminFitnessPlugin.Resources.Resources.FITWorkoutIcon;
+                }
 
                 return global::GarminFitnessPlugin.Resources.Resources.WorkoutIcon;
             }

@@ -14,13 +14,14 @@ namespace GarminFitnessPlugin.Data
         protected IStep(StepType type, Workout parent)
         {
             m_StepType = type;
-            m_ParentWorkout = parent;
+            ParentConcreteWorkout = parent;
         }
 
         public enum StepType
         {
             Regular = 0,
             Repeat,
+            Link,
             StepTypeCount
         }
 
@@ -33,6 +34,23 @@ namespace GarminFitnessPlugin.Data
 
             m_ForceSplit.Serialize(stream);
         }
+
+        public virtual void SerializetoFIT(Stream stream)
+        {
+            FITMessage message = new FITMessage(FITGlobalMessageIds.WorkoutStep);
+            FITMessageField stepId = new FITMessageField((Byte)FITWorkoutStepFieldIds.MessageIndex);
+
+            stepId.SetUInt16((UInt16)(ParentWorkout.GetStepExportId(this) - 1));
+            message.AddField(stepId);
+
+            FillFITStepMessage(message);
+
+            message.Serialize(stream);
+        }
+
+        public abstract void DeserializeFromFIT(FITMessage stepMessage);
+
+        public abstract void FillFITStepMessage(FITMessage message);
 
         public void Deserialize_V0(Stream stream, DataVersion version)
         {
@@ -53,25 +71,27 @@ namespace GarminFitnessPlugin.Data
         public virtual void Serialize(XmlNode parentNode, String nodeName, XmlDocument document)
         {
             XmlAttribute attribute = document.CreateAttribute(Constants.XsiTypeTCXString, Constants.xsins);
+            XmlNode childNode = document.CreateElement(nodeName);
+            int stepExportId = ParentWorkout.GetStepExportId(this);
 
+            parentNode.AppendChild(childNode);
             attribute.Value = Constants.StepTypeTCXString[(int)Type];
-            parentNode.Attributes.Append(attribute);
+            childNode.Attributes.Append(attribute);
 
             XmlNode idNode = document.CreateElement("StepId");
-            idNode.AppendChild(document.CreateTextNode(ParentWorkout.GetStepExportId(this).ToString()));
-            parentNode.AppendChild(idNode);
+            idNode.AppendChild(document.CreateTextNode(stepExportId.ToString()));
+            childNode.AppendChild(idNode);
 
-            // Extension
             XmlNode valueNode;
             XmlNode extensionNode;
 
             extensionNode = document.CreateElement("StepNotes");
             valueNode = document.CreateElement("StepId");
-            valueNode.AppendChild(document.CreateTextNode(ParentWorkout.GetStepExportId(this).ToString()));
+            valueNode.AppendChild(document.CreateTextNode(stepExportId.ToString()));
             extensionNode.AppendChild(valueNode);
             m_Notes.Serialize(extensionNode, "Notes", document);
 
-            ParentConcreteWorkout.AddSportTracksExtension(extensionNode);
+            ParentWorkout.AddSportTracksExtension(extensionNode);
         }
 
         public virtual void Deserialize(XmlNode parentNode)
@@ -81,9 +101,12 @@ namespace GarminFitnessPlugin.Data
         public abstract UInt32 Serialize(GarXFaceNet._Workout workout, UInt32 stepIndex);
         public abstract void Deserialize(GarXFaceNet._Workout workout, UInt32 stepIndex);
 
-        public virtual byte GetStepCount()
+        public virtual UInt16 StepCount
         {
-            return 1;
+            get
+            {
+                return 1;
+            }
         }
 
         public abstract IStep Clone();
@@ -94,26 +117,6 @@ namespace GarminFitnessPlugin.Data
             if (StepChanged != null)
             {
                 StepChanged(this, args);
-            }
-        }
-
-        protected void TriggerDurationChangedEvent(IDuration duration, PropertyChangedEventArgs args)
-        {
-            Debug.Assert(Type == StepType.Regular);
-
-            if (DurationChanged != null)
-            {
-                DurationChanged((RegularStep)this, duration, args);
-            }
-        }
-
-        protected void TriggerTargetChangedEvent(ITarget target, PropertyChangedEventArgs args)
-        {
-            Debug.Assert(Type == StepType.Regular);
-
-            if (TargetChanged != null)
-            {
-                TargetChanged((RegularStep)this, target, args);
             }
         }
 
@@ -132,14 +135,14 @@ namespace GarminFitnessPlugin.Data
                 }
                 else
                 {
-                    UInt16 partIndex = ParentConcreteWorkout.GetStepSplitPart(this);
+                    UInt16 partIndex = (UInt16)(ParentConcreteWorkout.GetStepSplitPart(this) - 1);
 
                     return GarminWorkoutManager.Instance.CreateWorkoutPart(ParentConcreteWorkout, partIndex);
                 }
             }
         }
 
-        public Workout ParentConcreteWorkout
+        public virtual Workout ParentConcreteWorkout
         {
             get { return m_ParentWorkout; }
             set
@@ -169,7 +172,7 @@ namespace GarminFitnessPlugin.Data
         {
             get
             {
-                if (ParentConcreteWorkout.GetTopMostRepeatForStep(this) == null)
+                if (ParentConcreteWorkout.Steps.GetTopMostRepeatForStep(this) == null)
                 {
                     return m_ForceSplit;
                 }
@@ -201,14 +204,18 @@ namespace GarminFitnessPlugin.Data
             set;
         }
 
+        public virtual bool ContainsFITOnlyFeatures
+        {
+            get { return false; }
+        }
+
+        public virtual bool ContainsTCXExtensionFeatures
+        {
+            get { return false; }
+        }
+
         public delegate void StepChangedEventHandler(IStep modifiedStep, PropertyChangedEventArgs changedProperty);
         public event StepChangedEventHandler StepChanged;
-
-        public delegate void StepDurationChangedEventHandler(RegularStep modifiedStep, IDuration modifiedDuration, PropertyChangedEventArgs changedProperty);
-        public event StepDurationChangedEventHandler DurationChanged;
-
-        public delegate void StepTargetChangedEventHandler(RegularStep modifiedStep, ITarget modifiedTarget, PropertyChangedEventArgs changedProperty);
-        public event StepTargetChangedEventHandler TargetChanged;
 
         private StepType m_StepType;
         private Workout m_ParentWorkout;

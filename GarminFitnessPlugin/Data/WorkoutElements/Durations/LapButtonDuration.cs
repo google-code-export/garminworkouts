@@ -1,6 +1,7 @@
 using System;
 using System.IO;
 using System.Xml;
+using GarminFitnessPlugin.Controller;
 
 namespace GarminFitnessPlugin.Data
 {
@@ -20,6 +21,14 @@ namespace GarminFitnessPlugin.Data
         public override void Serialize(Stream stream)
         {
             base.Serialize(stream);
+        }
+
+        public override void FillFITStepMessage(FITMessage message)
+        {
+            FITMessageField durationType = new FITMessageField((Byte)FITWorkoutStepFieldIds.DurationType);
+
+            durationType.SetEnum((Byte)FITWorkoutStepDurationTypes.Open);
+            message.AddField(durationType);
         }
 
         public new void Deserialize_V0(Stream stream, DataVersion version)

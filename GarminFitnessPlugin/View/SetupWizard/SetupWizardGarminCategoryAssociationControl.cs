@@ -84,7 +84,7 @@ namespace GarminFitnessPlugin.View
             }
         }
 
-        private void ActivityCategoryList_SelectedChanged(object sender, EventArgs e)
+        private void ActivityCategoryList_SelectedItemsChanged(object sender, EventArgs e)
         {
             if (ActivityCategoryList.Selected.Count == 1)
             {

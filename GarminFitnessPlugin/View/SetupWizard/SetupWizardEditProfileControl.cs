@@ -21,6 +21,9 @@ namespace GarminFitnessPlugin.View
             HRZonesTreeList.ThemeChanged(PluginMain.GetApplication().VisualTheme);
             SpeedZonesTreeList.ThemeChanged(PluginMain.GetApplication().VisualTheme);
 
+            GarminProfileManager.Instance.ProfileChanged += new GarminProfileManager.ProfileChangedEventHandler(OnProfileChanged);
+            GarminProfileManager.Instance.ActivityProfileChanged += new GarminProfileManager.ActivityProfileChangedEventHandler(OnActivityProfileChanged);
+
             m_CurrentCategory = GarminCategories.Running;
             m_CurrentProfile = GarminProfileManager.Instance.GetProfileForActivity(m_CurrentCategory);
 
@@ -52,6 +55,7 @@ namespace GarminFitnessPlugin.View
             HRZonesGroupBox.Text = GarminFitnessView.GetLocalizedString("HRZonesGroupBoxText");
             BPMRadioButton.Text = CommonResources.Text.LabelBPM;
             PercentMaxRadioButton.Text = CommonResources.Text.LabelPercentOfMax;
+            PercentHRRRadioButton.Text = CommonResources.Text.LabelPercentOfReserve;
             LowHRLabel.Text = GarminFitnessView.GetLocalizedString("LowLabelText");
             HighHRLabel.Text = GarminFitnessView.GetLocalizedString("HighLabelText");
 
@@ -189,7 +193,7 @@ namespace GarminFitnessPlugin.View
                 System.Media.SystemSounds.Asterisk.Play();
 
                 // Reset old valid value
-                GearWeightTextBox.Text = m_CurrentProfile.GearWeight.ToString("0.0");
+                GearWeightTextBox.Text = Weight.Convert(m_CurrentProfile.GearWeightInPounds, Weight.Units.Pound, PluginMain.GetApplication().SystemPreferences.WeightUnits).ToString("0.0");
             }
         }
 
@@ -200,15 +204,29 @@ namespace GarminFitnessPlugin.View
 
         private void BPMRadioButton_CheckedChanged(object sender, EventArgs e)
         {
-            m_CurrentProfile.HRIsInPercentMax = !BPMRadioButton.Checked;
+            if (BPMRadioButton.Checked)
+            {
+                m_CurrentProfile.HRZonesReferential = GarminActivityProfile.HRReferential.HRReferential_BPM;
+            }
         }
 
         private void PercentMaxRadioButton_CheckedChanged(object sender, EventArgs e)
         {
-            m_CurrentProfile.HRIsInPercentMax = PercentMaxRadioButton.Checked;
+            if (PercentMaxRadioButton.Checked)
+            {
+                m_CurrentProfile.HRZonesReferential = GarminActivityProfile.HRReferential.HRReferential_PercentMax;
+            }
         }
 
-        private void HRZonesTreeList_SelectedChanged(object sender, EventArgs e)
+        private void PercentHRRRadioButton_CheckedChanged(object sender, EventArgs e)
+        {
+            if (PercentHRRRadioButton.Checked)
+            {
+                m_CurrentProfile.HRZonesReferential = GarminActivityProfile.HRReferential.HRReferential_PercentHRR;
+            }
+        }
+
+        private void HRZonesTreeList_SelectedItemsChanged(object sender, EventArgs e)
         {
             if (HRZonesTreeList.Selected.Count == 1)
             {
@@ -226,7 +244,7 @@ namespace GarminFitnessPlugin.View
         {
             GarminActivityProfile profile = GarminProfileManager.Instance.GetProfileForActivity(m_CurrentCategory);
 
-            if (profile.HRIsInPercentMax)
+            if (profile.HRZonesReferential != GarminActivityProfile.HRReferential.HRReferential_BPM)
             {
                 e.Cancel = !Utils.IsTextIntegerInRange(LowHRTextBox.Text, Constants.MinHRInPercentMax, Constants.MaxHRInPercentMax);
                 if (e.Cancel)
@@ -263,7 +281,7 @@ namespace GarminFitnessPlugin.View
         {
             GarminActivityProfile profile = GarminProfileManager.Instance.GetProfileForActivity(m_CurrentCategory);
 
-            if (profile.HRIsInPercentMax)
+            if (profile.HRZonesReferential != GarminActivityProfile.HRReferential.HRReferential_BPM)
             {
                 e.Cancel = !Utils.IsTextIntegerInRange(HighHRTextBox.Text, Constants.MinHRInPercentMax, Constants.MaxHRInPercentMax);
                 if (e.Cancel)
@@ -306,7 +324,7 @@ namespace GarminFitnessPlugin.View
             m_CurrentProfile.SpeedIsInPace = PaceRadioButton.Checked;
         }
 
-        private void SpeedZonesTreeList_SelectedChanged(object sender, EventArgs e)
+        private void SpeedZonesTreeList_SelectedItemsChanged(object sender, EventArgs e)
         {
             if (SpeedZonesTreeList.Selected.Count == 1)
             {
@@ -606,14 +624,14 @@ namespace GarminFitnessPlugin.View
             RefreshTreeLists();
 
             MaxHRTextBox.Text = m_CurrentProfile.MaximumHeartRate.ToString();
-            GearWeightTextBox.Text = Weight.Convert(m_CurrentProfile.GearWeight, Weight.Units.Pound, PluginMain.GetApplication().SystemPreferences.WeightUnits).ToString("0.0");
+            GearWeightTextBox.Text = Weight.Convert(m_CurrentProfile.GearWeightInPounds, Weight.Units.Pound, PluginMain.GetApplication().SystemPreferences.WeightUnits).ToString("0.0");
 
             // HR Zones
-            PercentMaxRadioButton.Checked = m_CurrentProfile.HRIsInPercentMax;
-            BPMRadioButton.Checked = !m_CurrentProfile.HRIsInPercentMax;
+            BPMRadioButton.Checked = m_CurrentProfile.HRZonesReferential == GarminActivityProfile.HRReferential.HRReferential_BPM;
+            PercentMaxRadioButton.Checked = m_CurrentProfile.HRZonesReferential == GarminActivityProfile.HRReferential.HRReferential_PercentMax;
+            PercentHRRRadioButton.Checked = m_CurrentProfile.HRZonesReferential == GarminActivityProfile.HRReferential.HRReferential_PercentHRR;
             HRZonesTreeList.Invalidate();
-            LowHRTextBox.Enabled = m_SelectedHRZone != null;
-            HighHRTextBox.Enabled = m_SelectedHRZone != null;
+            HRZonePanel.Enabled = m_SelectedHRZone != null;
             if (m_SelectedHRZone != null)
             {
                 LowHRTextBox.Text = m_SelectedHRZone.Low;
@@ -624,9 +642,7 @@ namespace GarminFitnessPlugin.View
             PaceRadioButton.Checked = m_CurrentProfile.SpeedIsInPace;
             SpeedRadioButton.Checked = !m_CurrentProfile.SpeedIsInPace;
             SpeedZonesTreeList.Invalidate();
-            LowSpeedTextBox.Enabled = m_SelectedSpeedZone != null;
-            HighSpeedTextBox.Enabled = m_SelectedSpeedZone != null;
-            SpeedNameTextBox.Enabled = m_SelectedSpeedZone != null;
+            SpeedZonePanel.Enabled = m_SelectedSpeedZone != null;
             if (m_SelectedSpeedZone != null)
             {
                 LowSpeedTextBox.Text = m_SelectedSpeedZone.Low;

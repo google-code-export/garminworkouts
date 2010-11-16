@@ -1,27 +1,14 @@
 using ZoneFiveSoftware.Common.Visuals;
 using ZoneFiveSoftware.Common.Visuals.Fitness;
+using SportTracksPluginFramework;
 
 namespace GarminFitnessPlugin.View
 {
-    class GarminFitnessPluginSettingsPages : IExtendSettingsPages
+    class GarminFitnessPluginSettingsPages : STFrameworkSettingsPageExtension
     {
-        #region IExtendSettingsPages Members
-
-        public System.Collections.Generic.IList<ISettingsPage> SettingsPages
+        public GarminFitnessPluginSettingsPages()
         {
-            get
-            {
-                if (m_SettingPage == null)
-                {
-                    m_SettingPage = new GarminFitnessSettings();
-                }
-
-                return new ISettingsPage[] { m_SettingPage };
-            }
+            RegisterSettingsPage(new GarminFitnessSettings());
         }
-
-        #endregion
-
-        ISettingsPage m_SettingPage = null;
     }
 }

@@ -33,6 +33,14 @@ namespace GarminFitnessPlugin.Data
             m_Zone.Serialize(stream);
         }
 
+        public override void FillFITStepMessage(FITMessage message)
+        {
+            FITMessageField powerZone = new FITMessageField((Byte)FITWorkoutStepFieldIds.TargetValue);
+
+            powerZone.SetUInt32(Zone);
+            message.AddField(powerZone);
+        }
+
         public new void Deserialize_V0(Stream stream, DataVersion version)
         {
             // Call base deserialization
@@ -52,7 +60,7 @@ namespace GarminFitnessPlugin.Data
 
             // Type
             attribute = document.CreateAttribute(Constants.XsiTypeTCXString, Constants.xsins);
-            attribute.Value = "PredefinedPowerZone_t";
+            attribute.Value = Constants.PowerRangeZoneTCXString[0];
             parentNode.Attributes.Append(attribute);
 
             m_Zone.Serialize(parentNode, "Number", document);

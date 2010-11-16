@@ -73,21 +73,20 @@
   </Target>
   -->
   <ItemGroup>
-    <Reference Include="Common.Data, Version=2.1.3478.21402, Culture=neutral, processorArchitecture=x86">
+    <Reference Include="Common.Data, Version=3.0.3924.17107, Culture=neutral, processorArchitecture=x86">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>D:\Zone Five Software\SportTracks 2.1\Common.Data.dll</HintPath>
+      <HintPath>D:\Zone Five Software\SportTracks 3\Common.Data.dll</HintPath>
     </Reference>
-    <Reference Include="Common.Visuals, Version=2.1.3478.21407, Culture=neutral, processorArchitecture=x86">
+    <Reference Include="Common.Visuals, Version=3.0.3924.17113, Culture=neutral, processorArchitecture=x86">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>D:\Zone Five Software\SportTracks 2.1\Common.Visuals.dll</HintPath>
+      <HintPath>D:\Zone Five Software\SportTracks 3\Common.Visuals.dll</HintPath>
     </Reference>
-    <Reference Include="GarminGPS, Version=2.1.3313.41820, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="GarXFaceNet, Version=1.0.3805.31245, Culture=neutral, processorArchitecture=x86">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>C:\ProgramData\ZoneFiveSoftware\SportTracks\2.0\Plugins\Installed\64c67771-aec3-4434-9ef1-ad6cabc1479e\GarminGPS\GarminGPS.dll</HintPath>
+      <HintPath>..\References\GarXFaceNet.dll</HintPath>
     </Reference>
-    <Reference Include="GarXFaceNet, Version=1.0.3770.32075, Culture=neutral, processorArchitecture=x86">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>.\GarXFaceNet.dll</HintPath>
+    <Reference Include="SportTracksPluginFramework1.0.2">
+      <HintPath>..\References\SportTracksPluginFramework\SportTracksPluginFramework1.0.2.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
@@ -97,18 +96,28 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Constants.cs" />
-    <Compile Include="Controller\Devices\Communicator plugin\CommunicatorDevice.cs" />
-    <Compile Include="Controller\Devices\Communicator plugin\CommunicatorDeviceController.cs" />
-    <Compile Include="Controller\Devices\GarXFace\GarXFaceDevice.cs" />
-    <Compile Include="Controller\Devices\GarXFace\GarXFaceDeviceController.cs" />
+    <Compile Include="Controller\Devices\GarminFitnessCommunicatorPlugin\GarminFitnessCommunicatorBridge.cs" />
+    <Compile Include="Controller\Devices\GarminFitnessCommunicatorPlugin\GarminFitnessCommunicatorDevice.cs" />
+    <Compile Include="Controller\Devices\GarminFitnessCommunicatorPlugin\GarminFitnessCommunicatorDeviceController.cs" />
     <Compile Include="Controller\Devices\IGarminDevice.cs" />
     <Compile Include="Controller\Devices\IGarminDeviceController.cs" />
+    <Compile Include="Controller\FIT\FITParser.cs" />
+    <Compile Include="Controller\FIT\FITConstants.cs" />
+    <Compile Include="Controller\FIT\FITMessage.cs" />
+    <Compile Include="Controller\FIT\FITMessageField.cs" />
+    <Compile Include="Controller\FIT\FITParserException.cs" />
+    <Compile Include="Controller\FIT\FITUtils.cs" />
     <Compile Include="Controller\Logger.cs" />
     <Compile Include="Controller\NoDeviceSupportException.cs" />
     <Compile Include="Controller\ProfileExporter.cs" />
     <Compile Include="Controller\ProfileImporter.cs" />
     <Compile Include="Controller\GarminCategoryStringProviderAttribute.cs" />
     <Compile Include="Controller\GarminProfileManager.cs" />
+    <Compile Include="Data\BasicTypes\GarminFitnessFloatRange.cs" />
+    <Compile Include="Data\BasicTypes\GarminFitnessInt16Range.cs" />
+    <Compile Include="Data\BasicTypes\GarminFitnessUInt32Range.cs" />
+    <Compile Include="Data\BasicTypes\GarminFitnessSByteRange.cs" />
+    <Compile Include="Data\BasicTypes\GarminFitnessGuid.cs" />
     <Compile Include="Data\BasicTypes\GarminFitnessInt32Range.cs" />
     <Compile Include="Data\BasicTypes\GarminFitnessDoubleRange.cs" />
     <Compile Include="Data\BasicTypes\GarminFitnessDate.cs" />
@@ -132,7 +141,18 @@
     <Compile Include="Data\ProfileElements\GarminFitnessNamedLowHighZone.cs" />
     <Compile Include="Data\ProfileElements\GarminFitnessValueRange.cs" />
     <Compile Include="Data\ProfileElements\GarminProfile.cs" />
+    <Compile Include="Data\WorkoutElements\Durations\PowerAboveDuration.cs" />
+    <Compile Include="Data\WorkoutElements\Durations\PowerBelowDuration.cs" />
     <Compile Include="Data\WorkoutElements\IWorkout.cs" />
+    <Compile Include="Data\WorkoutElements\RepeatDurations\RepeatUntilCaloriesDuration.cs" />
+    <Compile Include="Data\WorkoutElements\RepeatDurations\RepeatUntilDistanceDuration.cs" />
+    <Compile Include="Data\WorkoutElements\RepeatDurations\RepeatUntilHeartRateAboveDuration.cs" />
+    <Compile Include="Data\WorkoutElements\RepeatDurations\RepeatUntilHeartRateBelowDuration.cs" />
+    <Compile Include="Data\WorkoutElements\RepeatDurations\IRepeatDuration.cs" />
+    <Compile Include="Data\WorkoutElements\RepeatDurations\RepeatCountDuration.cs" />
+    <Compile Include="Data\WorkoutElements\RepeatDurations\RepeatUntilPowerAboveDuration.cs" />
+    <Compile Include="Data\WorkoutElements\RepeatDurations\RepeatUntilPowerBelowDuration.cs" />
+    <Compile Include="Data\WorkoutElements\RepeatDurations\RepeatUntilTimeDuration.cs" />
     <Compile Include="Data\WorkoutElements\Targets\Cadence\BaseCadenceTarget.cs" />
     <Compile Include="Data\WorkoutElements\Targets\Cadence\CadenceZoneSTTarget.cs" />
     <Compile Include="Data\WorkoutElements\Targets\Heart rate\HeartRateZoneSTTarget.cs" />
@@ -167,7 +187,9 @@
     <Compile Include="Controller\GarminWorkoutManager.cs" />
     <Compile Include="Controller\WorkoutExporter.cs" />
     <Compile Include="Controller\WorkoutImporter.cs" />
+    <Compile Include="Data\WorkoutElements\WorkoutLinkStep.cs" />
     <Compile Include="Data\WorkoutElements\WorkoutPart.cs" />
+    <Compile Include="Data\WorkoutElements\WorkoutStepsList.cs" />
     <Compile Include="GUIDs.cs" />
     <Compile Include="PluginMain.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -196,11 +218,12 @@
     <Compile Include="View\Common\ExtendedTextBox.Designer.cs">
       <DependentUpon>ExtendedTextBox.cs</DependentUpon>
     </Compile>
-    <Compile Include="View\DonationReminder\DonationReminder.cs">
-      <SubType>Form</SubType>
+    <Compile Include="View\Common\FilledRoundedRectangle.cs" />
+    <Compile Include="View\DonationReminder\GarminFitnessDonationReminderControl.cs">
+      <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="View\DonationReminder\DonationReminder.Designer.cs">
-      <DependentUpon>DonationReminder.cs</DependentUpon>
+    <Compile Include="View\DonationReminder\GarminFitnessDonationReminderControl.Designer.cs">
+      <DependentUpon>GarminFitnessDonationReminderControl.cs</DependentUpon>
     </Compile>
     <Compile Include="View\Profile\ExportProfileAction.cs" />
     <Compile Include="View\Profile\ImportProfileAction.cs" />
@@ -300,6 +323,25 @@
     <Compile Include="View\SetupWizard\SetupWizardWelcomeControl.Designer.cs">
       <DependentUpon>SetupWizardWelcomeControl.cs</DependentUpon>
     </Compile>
+    <Compile Include="View\Workout\PrintOptionsDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="View\Workout\PrintOptionsDialog.Designer.cs">
+      <DependentUpon>PrintOptionsDialog.cs</DependentUpon>
+    </Compile>
+    <Compile Include="View\Workout\PrintWorkoutsAction.cs" />
+    <Compile Include="View\Workout\ExportWorkoutsDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="View\Workout\ExportWorkoutsDialog.Designer.cs">
+      <DependentUpon>ExportWorkoutsDialog.cs</DependentUpon>
+    </Compile>
+    <Compile Include="View\Workout\WorkoutLinkSelectionDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="View\Workout\WorkoutLinkSelectionDialog.Designer.cs">
+      <DependentUpon>WorkoutLinkSelectionDialog.cs</DependentUpon>
+    </Compile>
     <Compile Include="View\Workout\WorkoutPartWrapper.cs" />
     <Compile Include="View\Workout\ReplaceRenameDialog.cs">
       <SubType>Form</SubType>
@@ -356,6 +398,9 @@
     <Compile Include="View\Common\TimeDurationUpDown.Designer.cs">
       <DependentUpon>TimeDurationUpDown.cs</DependentUpon>
     </Compile>
+    <Compile Include="View\Workout\WorkoutPrintDocument.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="View\Workout\WorkoutRowDataRenderer.cs" />
     <Compile Include="View\Workout\WorkoutWrapper.cs" />
   </ItemGroup>
@@ -380,6 +425,10 @@
       <DependentUpon>StringResources.resx</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Resources\StringResources.zh-CN.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>StringResources.resx</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\StringResources.zh-TW.resx">
       <SubType>Designer</SubType>
       <DependentUpon>StringResources.resx</DependentUpon>
     </EmbeddedResource>
@@ -451,9 +500,8 @@
       <SubType>Designer</SubType>
       <DependentUpon>GarminFitnessMainControl.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="View\DonationReminder\DonationReminder.resx">
-      <SubType>Designer</SubType>
-      <DependentUpon>DonationReminder.cs</DependentUpon>
+    <EmbeddedResource Include="View\DonationReminder\GarminFitnessDonationReminderControl.resx">
+      <DependentUpon>GarminFitnessDonationReminderControl.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="View\Profile\GarminProfileControl.resx">
       <SubType>Designer</SubType>
@@ -462,6 +510,9 @@
     <EmbeddedResource Include="View\Settings\GarminFitnessSettingsControl.resx">
       <SubType>Designer</SubType>
       <DependentUpon>GarminFitnessSettingsControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="View\SetupWizard\ExtendedWizard.resx">
+      <DependentUpon>ExtendedWizard.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="View\SetupWizard\SetupWizardEditBikingProfileControl.resx">
       <DependentUpon>SetupWizardEditBikingProfileControl.cs</DependentUpon>
@@ -503,9 +554,15 @@
       <SubType>Designer</SubType>
       <DependentUpon>SetupWizardWelcomeControl.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="View\Workout\ExportWorkoutsDialog.resx">
+      <DependentUpon>ExportWorkoutsDialog.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="View\Workout\GarminWorkoutControl.resx">
       <SubType>Designer</SubType>
       <DependentUpon>GarminWorkoutControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="View\Workout\PrintOptionsDialog.resx">
+      <DependentUpon>PrintOptionsDialog.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="View\Workout\ReplaceRenameDialog.resx">
       <SubType>Designer</SubType>
@@ -523,24 +580,32 @@
       <SubType>Designer</SubType>
       <DependentUpon>TimeDurationUpDown.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="View\Workout\WorkoutLinkSelectionDialog.resx">
+      <DependentUpon>WorkoutLinkSelectionDialog.cs</DependentUpon>
+    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
   </ItemGroup>
   <PropertyGroup>
-    <PostBuildEvent>set INSTALLPATH=C:\Documents and Settings\All Users\Application Data\ZoneFiveSoftware\SportTracks\2.0\Plugins\Installed\ba218e6e-01a1-4a63-9fda-1fa937e56fe9
+    <PostBuildEvent>set INSTALLPATH=C:\Documents and Settings\All Users\Application Data\ZoneFiveSoftware\SportTracks\3\Plugins\Update\ba218e6e-01a1-4a63-9fda-1fa937e56fe9
 set ZIPPATH=D:\7-Zip
 
 REM Copy to install folder
 IF NOT EXIST "%25INSTALLPATH%25\$(ProjectName)" mkdir "%25INSTALLPATH%25\$(ProjectName)"
 xcopy "$(TargetDir)$(ProjectName)*.dll" "%25INSTALLPATH%25\$(ProjectName)\" /S /Y
-xcopy "$(ProjectDir)GarXface*.dll" "%25INSTALLPATH%25\$(ProjectName)\" /Y
+xcopy "$(ProjectDir)..\plugin.xml" "%25INSTALLPATH%25\" /S /Y
+xcopy "$(ProjectDir)\Communicator\*" "%25INSTALLPATH%25\Communicator\*" /S /Y
+xcopy "$(TargetDir)SportTracksPluginFramework*.dll" "%25INSTALLPATH%25\$(ProjectName)\" /S /Y
 
 REM Create installer
-IF EXIST "$(SolutionDir)$(ProjectName).st2plugin" del "$(SolutionDir)*.st2plugin" /Q
+IF EXIST "$(SolutionDir)$(ProjectName).st3plugin" del "$(SolutionDir)*.st3plugin" /Q
 IF $(ConfigurationName)==Debug GOTO end
-"%25ZIPPATH%25\7z.exe" a -r -tzip "$(SolutionDir)$(ProjectName).st2plugin" "%25INSTALLPATH%25\*.*"
+"%25ZIPPATH%25\7z.exe" a -r -tzip "$(SolutionDir)$(ProjectName).st3plugin" "%25INSTALLPATH%25\*.*"
 :end</PostBuildEvent>
+  </PropertyGroup>
+  <PropertyGroup>
+    <PreBuildEvent>del "$(TargetDir)SportTracksPluginFramework*.dll" /Q /S</PreBuildEvent>
   </PropertyGroup>
   <ItemGroup>
     <None Include="Resources\NewStepButton.png" />
@@ -562,16 +627,22 @@ IF $(ConfigurationName)==Debug GOTO end
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\CategoryIcon.png" />
+    <Content Include="Communicator\GarminFitness.html" />
     <Content Include="Resources\Arrow.png" />
     <Content Include="Resources\btn_donate_LG.gif" />
     <Content Include="Resources\Cut.png" />
     <Content Include="Resources\DirtyWarning.png" />
     <Content Include="Resources\Export.png" />
+    <Content Include="Resources\FITLogo.png" />
+    <None Include="Resources\FITWorkoutIcon.png" />
     <Content Include="Resources\GarminLogo.PNG" />
     <Content Include="Resources\Help.png" />
     <Content Include="Resources\Import.png" />
     <None Include="Resources\WorkoutDirtyIcon.png" />
+    <Content Include="Resources\NewLinkStepButton.png" />
     <Content Include="Resources\PlanWorkout.png" />
+    <None Include="Resources\Print.png" />
+    <Content Include="Resources\RemoveAllButton.png" />
     <Content Include="Resources\WorkoutIcon.png" />
     <Content Include="Resources\WorkoutPartIcon.png" />
   </ItemGroup>
@@ -592,4 +663,5 @@ IF $(ConfigurationName)==Debug GOTO end
       <Install>true</Install>
     </BootstrapperPackage>
   </ItemGroup>
+  <ItemGroup />
 </Project>

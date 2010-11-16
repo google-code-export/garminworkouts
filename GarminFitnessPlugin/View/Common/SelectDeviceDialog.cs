@@ -6,7 +6,6 @@ using System.Reflection;
 using System.Resources;
 using System.Windows.Forms;
 using ZoneFiveSoftware.Common.Visuals;
-using ZoneFiveSoftware.SportTracks.Device.GarminGPS;
 using GarminFitnessPlugin.Controller;
 
 namespace GarminFitnessPlugin.View
@@ -92,7 +91,7 @@ namespace GarminFitnessPlugin.View
 
         private void OnManagerTaskCompleted(GarminDeviceManager manager, GarminDeviceManager.BasicTask task, bool succeeded, String errorText)
         {
-            if (task.Type == GarminDeviceManager.BasicTask.TaskTypes.TaskType_RefreshDevices)
+            if (task.Type == GarminDeviceManager.BasicTask.TaskTypes.RefreshDevices)
             {
                 OKButton.Enabled = true;
                 Cancel_Button.Enabled = true;

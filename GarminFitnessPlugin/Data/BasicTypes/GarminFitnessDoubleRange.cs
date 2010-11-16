@@ -68,7 +68,7 @@ namespace GarminFitnessPlugin.Data
             }
             else if (!Utils.IsTextFloatInRange(node.FirstChild.Value, m_MinimumValue, m_MaximumValue, culture))
             {
-                throw new GarminFitnessXmlDeserializationException("Invalid float for node", node);
+                throw new GarminFitnessXmlDeserializationException("Invalid double for node", node);
             }
 
             Value = double.Parse(node.FirstChild.Value, NumberStyles.Float, culture.NumberFormat);

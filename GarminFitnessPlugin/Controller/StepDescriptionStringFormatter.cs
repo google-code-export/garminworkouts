@@ -21,7 +21,7 @@ namespace GarminFitnessPlugin.Controller
                 case IStep.StepType.Regular:
                     {
                         RegularStep regularStep = (RegularStep)step;
-                        if (regularStep.Name == null || regularStep.Name == String.Empty)
+                        if (String.IsNullOrEmpty(regularStep.Name))
                         {
                             result = FormatDurationDescription(regularStep.Duration) +
                                      "  " +
@@ -32,18 +32,23 @@ namespace GarminFitnessPlugin.Controller
                             result = regularStep.Name;
                         }
 
-
-                        if (regularStep.IsRestingStep)
+                        if (regularStep.Intensity != RegularStep.StepIntensity.Active)
                         {
-                            result += " " + "(" + GarminFitnessView.GetLocalizedString("RestText") + ")";
+                            result += " " + "(" + GetStepIntensityText(regularStep.Intensity) +")";
                         }
                         break;
                     }
                 case IStep.StepType.Repeat:
                     {
                         RepeatStep concreteStep = (RepeatStep)step;
-                        string baseString = GarminFitnessView.GetLocalizedString("RepeatStepDescriptionText");
-                        result = String.Format(baseString, concreteStep.RepetitionCount);
+                        result = FormatRepeatDurationDescription(concreteStep.Duration);
+                        break;
+                    }
+                case IStep.StepType.Link:
+                    {
+                        WorkoutLinkStep concreteStep = (WorkoutLinkStep)step;
+
+                        result = String.Format(GarminFitnessView.GetLocalizedString("WorkoutLinkStepText"), concreteStep.LinkedWorkout.Name);
                         break;
                     }
                 default:
@@ -57,7 +62,7 @@ namespace GarminFitnessPlugin.Controller
             return result;
         }
 
-        static private string FormatDurationDescription(IDuration duration)
+        static public string FormatDurationDescription(IDuration duration)
         {
             string result;
             string baseString;
@@ -76,19 +81,19 @@ namespace GarminFitnessPlugin.Controller
                     }
                 case IDuration.DurationType.Distance:
                     {
-                        DistanceDuration concreteDuration = (DistanceDuration)duration;
+                        DistanceDuration concreteDuration = duration as DistanceDuration;
                         result = String.Format(baseString, concreteDuration.GetDistanceInBaseUnit(), Length.LabelAbbr(concreteDuration.BaseUnit));
                         break;
                     }
                 case IDuration.DurationType.Time:
                     {
-                        TimeDuration concreteDuration = (TimeDuration)duration;
+                        TimeDuration concreteDuration = duration as TimeDuration;
                         result = String.Format(baseString, concreteDuration.Hours, concreteDuration.Minutes, concreteDuration.Seconds);
                         break;
                     }
                 case IDuration.DurationType.HeartRateAbove:
                     {
-                        HeartRateAboveDuration concreteDuration = (HeartRateAboveDuration)duration;
+                        HeartRateAboveDuration concreteDuration = duration as HeartRateAboveDuration;
                         string unitsString;
 
                         if(concreteDuration.IsPercentageMaxHeartRate)
@@ -105,7 +110,7 @@ namespace GarminFitnessPlugin.Controller
                     }
                 case IDuration.DurationType.HeartRateBelow:
                     {
-                        HeartRateBelowDuration concreteDuration = (HeartRateBelowDuration)duration;
+                        HeartRateBelowDuration concreteDuration = duration as HeartRateBelowDuration;
                         string unitsString;
 
                         if(concreteDuration.IsPercentageMaxHeartRate)
@@ -122,8 +127,42 @@ namespace GarminFitnessPlugin.Controller
                     }
                 case IDuration.DurationType.Calories:
                     {
-                        CaloriesDuration concreteDuration = (CaloriesDuration)duration;
+                        CaloriesDuration concreteDuration = duration as CaloriesDuration;
                         result = String.Format(baseString, concreteDuration.CaloriesToSpend);
+                        break;
+                    }
+                case IDuration.DurationType.PowerAbove:
+                    {
+                        PowerAboveDuration concreteDuration = duration as PowerAboveDuration;
+                        string unitsString;
+
+                        if (concreteDuration.IsPercentFTP)
+                        {
+                            unitsString = GarminFitnessView.GetLocalizedString("PercentFTPText");
+                        }
+                        else
+                        {
+                            unitsString = CommonResources.Text.LabelWatts;
+                        }
+
+                        result = String.Format(baseString, concreteDuration.MaxPower, unitsString);
+                        break;
+                    }
+                case IDuration.DurationType.PowerBelow:
+                    {
+                        PowerBelowDuration concreteDuration = duration as PowerBelowDuration;
+                        string unitsString;
+
+                        if (concreteDuration.IsPercentFTP)
+                        {
+                            unitsString = GarminFitnessView.GetLocalizedString("PercentFTPText");
+                        }
+                        else
+                        {
+                            unitsString = CommonResources.Text.LabelWatts;
+                        }
+
+                        result = String.Format(baseString, concreteDuration.MinPower, unitsString);
                         break;
                     }
                 default:
@@ -137,7 +176,122 @@ namespace GarminFitnessPlugin.Controller
             return result;
         }
 
-        static private string FormatTargetDescription(ITarget target)
+        static public string FormatRepeatDurationDescription(IRepeatDuration duration)
+        {
+            string result;
+            string baseString;
+            IRepeatDuration.RepeatDurationType type = duration.Type;
+            FieldInfo fieldInfo = type.GetType().GetField(Enum.GetName(type.GetType(), type));
+            StepDescriptionStringProviderAttribute providerAttribute = (StepDescriptionStringProviderAttribute)Attribute.GetCustomAttribute(fieldInfo, typeof(StepDescriptionStringProviderAttribute));
+
+            baseString = GarminFitnessView.GetLocalizedString(providerAttribute.StringName);
+
+            switch (type)
+            {
+                case IRepeatDuration.RepeatDurationType.RepeatCount:
+                    {
+                        RepeatCountDuration concreteDuration = duration as RepeatCountDuration;
+                        result = String.Format(baseString, concreteDuration.RepetitionCount);
+                        break;
+                    }
+                case IRepeatDuration.RepeatDurationType.RepeatUntilDistance:
+                    {
+                        RepeatUntilDistanceDuration concreteDuration = duration as RepeatUntilDistanceDuration;
+                        result = String.Format(baseString, concreteDuration.GetDistanceInBaseUnit(), Length.LabelAbbr(concreteDuration.BaseUnit));
+                        break;
+                    }
+                case IRepeatDuration.RepeatDurationType.RepeatUntilTime:
+                    {
+                        RepeatUntilTimeDuration concreteDuration = duration as RepeatUntilTimeDuration;
+                        result = String.Format(baseString, concreteDuration.Hours, concreteDuration.Minutes, concreteDuration.Seconds);
+                        break;
+                    }
+                case IRepeatDuration.RepeatDurationType.RepeatUntilHeartRateAbove:
+                    {
+                        RepeatUntilHeartRateAboveDuration concreteDuration = duration as RepeatUntilHeartRateAboveDuration;
+                        string unitsString;
+
+                        if (concreteDuration.IsPercentageMaxHeartRate)
+                        {
+                            unitsString = CommonResources.Text.LabelPercentOfMax;
+                        }
+                        else
+                        {
+                            unitsString = CommonResources.Text.LabelBPM;
+                        }
+
+                        result = String.Format(baseString, concreteDuration.MaxHeartRate, unitsString);
+                        break;
+                    }
+                case IRepeatDuration.RepeatDurationType.RepeatUntilHeartRateBelow:
+                    {
+                        RepeatUntilHeartRateBelowDuration concreteDuration = duration as RepeatUntilHeartRateBelowDuration;
+                        string unitsString;
+
+                        if (concreteDuration.IsPercentageMaxHeartRate)
+                        {
+                            unitsString = CommonResources.Text.LabelPercentOfMax;
+                        }
+                        else
+                        {
+                            unitsString = CommonResources.Text.LabelBPM;
+                        }
+
+                        result = String.Format(baseString, concreteDuration.MinHeartRate, unitsString);
+                        break;
+                    }
+                case IRepeatDuration.RepeatDurationType.RepeatUntilCalories:
+                    {
+                        RepeatUntilCaloriesDuration concreteDuration = duration as RepeatUntilCaloriesDuration;
+                        result = String.Format(baseString, concreteDuration.CaloriesToSpend);
+                        break;
+                    }
+                case IRepeatDuration.RepeatDurationType.RepeatUntilPowerAbove:
+                    {
+                        RepeatUntilPowerAboveDuration concreteDuration = duration as RepeatUntilPowerAboveDuration;
+                        string unitsString;
+
+                        if (concreteDuration.IsPercentFTP)
+                        {
+                            unitsString = GarminFitnessView.GetLocalizedString("PercentFTPText");
+                        }
+                        else
+                        {
+                            unitsString = CommonResources.Text.LabelWatts;
+                        }
+
+                        result = String.Format(baseString, concreteDuration.MaxPower, unitsString);
+                        break;
+                    }
+                case IRepeatDuration.RepeatDurationType.RepeatUntilPowerBelow:
+                    {
+                        RepeatUntilPowerBelowDuration concreteDuration = duration as RepeatUntilPowerBelowDuration;
+                        string unitsString;
+
+                        if (concreteDuration.IsPercentFTP)
+                        {
+                            unitsString = GarminFitnessView.GetLocalizedString("PercentFTPText");
+                        }
+                        else
+                        {
+                            unitsString = CommonResources.Text.LabelWatts;
+                        }
+
+                        result = String.Format(baseString, concreteDuration.MinPower, unitsString);
+                        break;
+                    }
+                default:
+                    {
+                        Debug.Assert(false);
+                        result = String.Empty;
+                        break;
+                    }
+            }
+
+            return result;
+        }
+
+        static public string FormatTargetDescription(ITarget target)
         {
             string result;
             string baseString = string.Empty;
@@ -325,7 +479,7 @@ namespace GarminFitnessPlugin.Controller
                         SpeedZoneGTCTarget concreteTarget = (SpeedZoneGTCTarget)target;
                         GarminCategories garminCategory = Options.Instance.GetGarminCategory(target.BaseTarget.ParentStep.ParentWorkout.Category);
                         GarminActivityProfile currentProfile = GarminProfileManager.Instance.GetProfileForActivity(garminCategory);
-                        result = String.Format(baseString, currentProfile.GetSpeedZoneName(concreteTarget.Zone));
+                        result = String.Format(baseString, currentProfile.GetSpeedZoneName(concreteTarget.Zone - 1));
                         break;
                     }
                 case BaseSpeedTarget.IConcreteSpeedTarget.SpeedTargetType.ZoneST:
@@ -362,6 +516,11 @@ namespace GarminFitnessPlugin.Controller
                         PowerRangeTarget concreteTarget = (PowerRangeTarget)target;
                         string unitsString = CommonResources.Text.LabelWatts;
 
+                        if (concreteTarget.IsPercentFTP)
+                        {
+                            unitsString = GarminFitnessView.GetLocalizedString("PercentFTPText");
+                        }
+
                         result = String.Format(baseString, concreteTarget.MinPower, concreteTarget.MaxPower, unitsString);
                         break;
                     }
@@ -386,6 +545,31 @@ namespace GarminFitnessPlugin.Controller
             }
 
             return result;
+        }
+
+        static public String GetStepIntensityText(RegularStep.StepIntensity intensity)
+        {
+            switch (intensity)
+            {
+                case RegularStep.StepIntensity.Active:
+                    {
+                        return GarminFitnessView.GetLocalizedString("ActiveText");
+                    }
+                case RegularStep.StepIntensity.Cooldown:
+                    {
+                        return GarminFitnessView.GetLocalizedString("CooldownText");
+                    }
+                case RegularStep.StepIntensity.Warmup:
+                    {
+                        return GarminFitnessView.GetLocalizedString("WarmupText");
+                    }
+                case RegularStep.StepIntensity.Rest:
+                    {
+                        return GarminFitnessView.GetLocalizedString("RestText");
+                    }
+            }
+
+            return null;
         }
     }
 }

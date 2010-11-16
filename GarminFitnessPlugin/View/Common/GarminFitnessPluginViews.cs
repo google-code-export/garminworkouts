@@ -1,30 +1,15 @@
+using System.Collections.Generic;
 using ZoneFiveSoftware.Common.Visuals;
 using ZoneFiveSoftware.Common.Visuals.Fitness;
+using SportTracksPluginFramework;
 
 namespace GarminFitnessPlugin.View
 {
-    class GarminFitnessPluginViews : IExtendViews
+    class GarminFitnessPluginViews : STFrameworkViewExtension
     {
-        #region IExtendViews Members
-
-        public System.Collections.Generic.IList<IView> Views
+        public GarminFitnessPluginViews()
         {
-            get
-            {
-                if (m_View == null)
-                {
-                    m_View = new GarminFitnessView();
-                }
-
-                return new IView[]
-                {
-                    m_View
-                };
-            }
+            RegisterView(new GarminFitnessView());
         }
-
-        #endregion
-
-        static IView m_View = null;
     }
 }

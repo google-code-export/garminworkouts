@@ -35,6 +35,30 @@ namespace GarminFitnessPlugin.Data
             InternalMaxHeartRate.Serialize(stream);
         }
 
+        public override void FillFITStepMessage(FITMessage message)
+        {
+            FITMessageField HRZone = new FITMessageField((Byte)FITWorkoutStepFieldIds.TargetValue);
+            FITMessageField minHR = new FITMessageField((Byte)FITWorkoutStepFieldIds.TargetCustomValueLow);
+            FITMessageField maxHR = new FITMessageField((Byte)FITWorkoutStepFieldIds.TargetCustomValueHigh);
+
+            HRZone.SetUInt32((Byte)0);
+            message.AddField(HRZone);
+
+            if (IsPercentMaxHeartRate)
+            {
+                minHR.SetUInt32((UInt32)MinHeartRate);
+                maxHR.SetUInt32((UInt32)MaxHeartRate);
+            }
+            else
+            {
+                minHR.SetUInt32((UInt32)MinHeartRate + 100);
+                maxHR.SetUInt32((UInt32)MaxHeartRate + 100);
+            }
+
+            message.AddField(minHR);
+            message.AddField(maxHR);
+        }
+
         public void Deserialize_V1(Stream stream, DataVersion version)
         {
             // Call base deserialization
@@ -74,7 +98,7 @@ namespace GarminFitnessPlugin.Data
 
             // Type
             attribute = document.CreateAttribute(Constants.XsiTypeTCXString, Constants.xsins);
-            attribute.Value = "CustomHeartRateZone_t";
+            attribute.Value = Constants.HeartRateRangeZoneTCXString[1];
             parentNode.Attributes.Append(attribute);
 
             // Low
@@ -213,6 +237,13 @@ namespace GarminFitnessPlugin.Data
             ValidateValue(MinHeartRate, MaxHeartRate, IsPercentMaxHeartRate);
         }
 
+        public void SetIsPercentMax(bool isPercentMax)
+        {
+            IsPercentMaxHeartRate = isPercentMax;
+
+            ValidateValue(MinHeartRate, MaxHeartRate, IsPercentMaxHeartRate);
+        }
+
         public void SetMinHeartRate(Byte minHeartRate)
         {
             ValidateValue(minHeartRate, MaxHeartRate, IsPercentMaxHeartRate);
@@ -332,8 +363,8 @@ namespace GarminFitnessPlugin.Data
 
         private GarminFitnessByteRange m_MinHeartRatePercent = new GarminFitnessByteRange(80, Constants.MinHRInPercentMax, Constants.MaxHRInPercentMax);
         private GarminFitnessByteRange m_MaxHeartRatePercent = new GarminFitnessByteRange(90, Constants.MinHRInPercentMax, Constants.MaxHRInPercentMax);
-        private GarminFitnessByteRange m_MinHeartRateBPM = new GarminFitnessByteRange(80, Constants.MinHRInBPM, Constants.MaxHRInBPM);
-        private GarminFitnessByteRange m_MaxHeartRateBPM = new GarminFitnessByteRange(90, Constants.MinHRInBPM, Constants.MaxHRInBPM);
+        private GarminFitnessByteRange m_MinHeartRateBPM = new GarminFitnessByteRange(130, Constants.MinHRInBPM, Constants.MaxHRInBPM);
+        private GarminFitnessByteRange m_MaxHeartRateBPM = new GarminFitnessByteRange(160, Constants.MinHRInBPM, Constants.MaxHRInBPM);
         private GarminFitnessBool m_IsPercentMaxHeartRate = new GarminFitnessBool(true, Constants.HeartRateReferenceTCXString[1], Constants.HeartRateReferenceTCXString[0]);
     }
 }

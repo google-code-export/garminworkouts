@@ -10,14 +10,9 @@ namespace GarminFitnessPlugin.View
             :
             base(parentWizard)
         {
-            PropertyChanged += new PropertyChangedEventHandler(SetupWizardSportTracksZones_PropertyChanged);
         }
 
 #region IExtendedWizardPage implementation
-
-        void SetupWizardSportTracksZones_PropertyChanged(object sender, PropertyChangedEventArgs e)
-        {
-        }
 
         public override void FinishClicked(CancelEventArgs e)
         {
@@ -39,7 +34,7 @@ namespace GarminFitnessPlugin.View
 
         public override bool CanFinish
         {
-            get { return true; }
+            get { return false; }
         }
 
         public override bool CanNext
@@ -57,6 +52,11 @@ namespace GarminFitnessPlugin.View
             if (m_Control == null)
             {
                 m_Control = new SetupWizardSportTracksZonesControl(wizard);
+
+                if (PropertyChanged != null)
+                {
+                    PropertyChanged(this, new PropertyChangedEventArgs("Control"));
+                }
             }
 
             return m_Control;

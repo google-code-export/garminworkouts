@@ -48,6 +48,39 @@ namespace GarminFitnessPlugin.Data
             dirty.Serialize(stream);
         }
 
+        public override void FillFITStepMessage(FITMessage message)
+        {
+            FITMessageField HRZone = new FITMessageField((Byte)FITWorkoutStepFieldIds.TargetValue);
+            FITMessageField minHR = new FITMessageField((Byte)FITWorkoutStepFieldIds.TargetCustomValueLow);
+            FITMessageField maxHR = new FITMessageField((Byte)FITWorkoutStepFieldIds.TargetCustomValueHigh);
+            bool exportAsPercentMax = Options.Instance.ExportSportTracksHeartRateAsPercentMax;
+            float lastMaxHR = GarminProfileManager.Instance.UserProfile.GetProfileForActivity(Options.Instance.GetGarminCategory(BaseTarget.ParentStep.ParentWorkout.Category)).MaximumHeartRate;
+
+            HRZone.SetUInt32((Byte)0);
+            message.AddField(HRZone);
+
+            if (float.IsNaN(lastMaxHR))
+            {
+                exportAsPercentMax = false;
+            }
+
+            if (exportAsPercentMax)
+            {
+                float baseMultiplier = Constants.MaxHRInPercentMax / lastMaxHR;
+
+                minHR.SetUInt32((UInt32)Math.Max(Constants.MinHRInPercentMax, Math.Round(Zone.Low * baseMultiplier, 0, MidpointRounding.AwayFromZero)));
+                maxHR.SetUInt32((UInt32)Math.Min(Constants.MaxHRInPercentMax, Math.Round(Zone.High * baseMultiplier, 0, MidpointRounding.AwayFromZero)));
+            }
+            else
+            {
+                minHR.SetUInt32((UInt32)Utils.Clamp(Zone.Low, Constants.MinHRInBPM, Constants.MaxHRInBPM) + 100);
+                maxHR.SetUInt32((UInt32)Utils.Clamp(Zone.High, Constants.MinHRInBPM, Constants.MaxHRInBPM) + 100);
+            }
+
+            message.AddField(minHR);
+            message.AddField(maxHR);
+        }
+
         public void Deserialize_V1(Stream stream, DataVersion version)
         {
             // Call base deserialization
@@ -112,6 +145,7 @@ namespace GarminFitnessPlugin.Data
 
         public override void Serialize(XmlNode parentNode, String nodeName, XmlDocument document)
         {
+
             base.Serialize(parentNode, nodeName, document);
 
             // This node was added by our parent...
@@ -120,52 +154,43 @@ namespace GarminFitnessPlugin.Data
             float lastMaxHR = PluginMain.GetApplication().Logbook.Athlete.InfoEntries.LastEntryAsOfDate(DateTime.Now).MaximumHeartRatePerMinute;
             XmlAttribute attribute;
             XmlNode childNode;
-
-            // Type
-            attribute = document.CreateAttribute(Constants.XsiTypeTCXString, Constants.xsins);
-            attribute.Value = "CustomHeartRateZone_t";
-            parentNode.Attributes.Append(attribute);
-
-            // Low
+            GarminFitnessBool exportAsPercentMax = new GarminFitnessBool(Options.Instance.ExportSportTracksHeartRateAsPercentMax, Constants.HeartRateReferenceTCXString[1], Constants.HeartRateReferenceTCXString[0]);
             GarminFitnessByteRange lowValue = new GarminFitnessByteRange(0);
-            childNode = document.CreateElement("Low");
-            parentNode.AppendChild(childNode);
+            GarminFitnessByteRange highValue = new GarminFitnessByteRange(0);
 
-            attribute = document.CreateAttribute(Constants.XsiTypeTCXString, Constants.xsins);
-            childNode.Attributes.Append(attribute);
-            if (!float.IsNaN(lastMaxHR))
+            if (float.IsNaN(lastMaxHR))
+            {
+                exportAsPercentMax.Value = false;
+            }
+
+            if (exportAsPercentMax)
             {
                 float baseMultiplier = Constants.MaxHRInPercentMax / lastMaxHR;
 
                 lowValue.Value = (Byte)Math.Round(Zone.Low * baseMultiplier, 0, MidpointRounding.AwayFromZero);
-                attribute.Value = Constants.HeartRateReferenceTCXString[1];
+                highValue.Value = (Byte)Math.Min(Constants.MaxHRInPercentMax, Math.Round(Zone.High * baseMultiplier, 0, MidpointRounding.AwayFromZero));
             }
             else
             {
                 lowValue.Value = (Byte)Utils.Clamp(Zone.Low, Constants.MinHRInBPM, Constants.MaxHRInBPM);
-                attribute.Value = Constants.HeartRateReferenceTCXString[0];
+                highValue.Value = (Byte)Utils.Clamp(Zone.High, Constants.MinHRInBPM, Constants.MaxHRInBPM);
             }
+
+            // Type
+            attribute = document.CreateAttribute(Constants.XsiTypeTCXString, Constants.xsins);
+            attribute.Value = Constants.HeartRateRangeZoneTCXString[1];
+            parentNode.Attributes.Append(attribute);
+
+            // Low
+            childNode = document.CreateElement("Low");
+            parentNode.AppendChild(childNode);
+            exportAsPercentMax.SerializeAttribute(childNode, Constants.XsiTypeTCXString, Constants.xsins, document);
             lowValue.Serialize(childNode, Constants.ValueTCXString, document);
 
             // High
-            GarminFitnessByteRange highValue = new GarminFitnessByteRange(0);
             childNode = document.CreateElement("High");
             parentNode.AppendChild(childNode);
-
-            attribute = document.CreateAttribute(Constants.XsiTypeTCXString, Constants.xsins);
-            childNode.Attributes.Append(attribute);
-            if (!float.IsNaN(lastMaxHR))
-            {
-                float baseMultiplier = Constants.MaxHRInPercentMax / lastMaxHR;
-
-                highValue.Value = (Byte)Math.Min(Constants.MaxHRInPercentMax, Math.Round(Zone.High * baseMultiplier, 0, MidpointRounding.AwayFromZero));
-                attribute.Value = Constants.HeartRateReferenceTCXString[1];
-            }
-            else
-            {
-                highValue.Value = (Byte)Utils.Clamp(Zone.High, Constants.MinHRInBPM, Constants.MaxHRInBPM);
-                attribute.Value = Constants.HeartRateReferenceTCXString[0];
-            }
+            exportAsPercentMax.SerializeAttribute(childNode, Constants.XsiTypeTCXString, Constants.xsins, document);
             highValue.Serialize(childNode, Constants.ValueTCXString, document);
 
             // Extension

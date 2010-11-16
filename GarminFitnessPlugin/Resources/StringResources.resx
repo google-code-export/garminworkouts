@@ -337,13 +337,13 @@
     <value>When my heart rate gets above a certain level</value>
   </data>
   <data name="HeartRateAboveDurationDescriptionText" xml:space="preserve">
-    <value>Go until me heart rate gets above {0} {1}.</value>
+    <value>Go until my heart rate gets above {0} {1}.</value>
   </data>
   <data name="HeartRateBelowDurationComboBoxText" xml:space="preserve">
     <value>When my heart rate gets below a certain level</value>
   </data>
   <data name="HeartRateBelowDurationDescriptionText" xml:space="preserve">
-    <value>Go until me heart rate gets below {0} {1}.</value>
+    <value>Go until my heart rate gets below {0} {1}.</value>
   </data>
   <data name="HeartRateDurationLabelText" xml:space="preserve">
     <value>What heart rate level?</value>
@@ -469,7 +469,7 @@
     <value>/h</value>
   </data>
   <data name="PowerRangeTargetDescriptionText" xml:space="preserve">
-    <value>Try to keep my power between {0} and {1} watts.</value>
+    <value>Try to keep my power between {0} and {1} {2}.</value>
   </data>
   <data name="PowerSettingsGroupBoxText" xml:space="preserve">
     <value>Power Settings</value>
@@ -682,9 +682,153 @@
     <value>importing profiles</value>
   </data>
   <data name="NoDeviceSupportText" xml:space="preserve">
-    <value>The device {0} does not support {1}.</value>
+    <value>The device {0} does not support {1}.  This is required for proper functioning.</value>
   </data>
   <data name="ImportingWorkoutsText" xml:space="preserve">
     <value>importing workouts</value>
+  </data>
+  <data name="SelectWorkoutText" xml:space="preserve">
+    <value>Select workout</value>
+  </data>
+  <data name="WorkoutLinkStepText" xml:space="preserve">
+    <value>Workout link: {0}</value>
+  </data>
+  <data name="TransferringToDeviceText" xml:space="preserve">
+    <value>Transferring to device</value>
+  </data>
+  <data name="ExportSTHRZonesAsLabelText" xml:space="preserve">
+    <value>Export ST heart rate zones as :</value>
+  </data>
+  <data name="ExportAsLabelText" xml:space="preserve">
+    <value>Export as:</value>
+  </data>
+  <data name="FitFileText" xml:space="preserve">
+    <value>FIT Files</value>
+  </data>
+  <data name="SelectFolderText" xml:space="preserve">
+    <value>Select Folder</value>
+  </data>
+  <data name="TCXFileText" xml:space="preserve">
+    <value>TCX Files</value>
+  </data>
+  <data name="DeviceCommGroupBoxText" xml:space="preserve">
+    <value>Device communication</value>
+  </data>
+  <data name="PackWorkoutsOnExportCheckBoxText" xml:space="preserve">
+    <value>Pack workouts on export (Enable for FR405)</value>
+  </data>
+  <data name="CooldownText" xml:space="preserve">
+    <value>Cooldown</value>
+  </data>
+  <data name="WarmupText" xml:space="preserve">
+    <value>Warmup</value>
+  </data>
+  <data name="ActiveText" xml:space="preserve">
+    <value>Active</value>
+  </data>
+  <data name="PowerAboveDurationComboBoxText" xml:space="preserve">
+    <value>When my power gets above a certain level</value>
+  </data>
+  <data name="PowerAboveDurationDescriptionText" xml:space="preserve">
+    <value>Go until my power gets above {0} {1}.</value>
+  </data>
+  <data name="PowerBelowDurationComboBoxText" xml:space="preserve">
+    <value>When my power gets below a certain level</value>
+  </data>
+  <data name="PowerBelowDurationDescriptionText" xml:space="preserve">
+    <value>Go until my power gets below {0} {1}.</value>
+  </data>
+  <data name="PercentFTPText" xml:space="preserve">
+    <value>%FTP</value>
+  </data>
+  <data name="PowerDurationLabelText" xml:space="preserve">
+    <value>What power level?</value>
+  </data>
+  <data name="ExportProfileText" xml:space="preserve">
+    <value>profile export</value>
+  </data>
+  <data name="ExportWorkoutsText" xml:space="preserve">
+    <value>workouts export</value>
+  </data>
+  <data name="ImportProfileText" xml:space="preserve">
+    <value>profile import</value>
+  </data>
+  <data name="ImportWorkoutsText" xml:space="preserve">
+    <value>workouts import</value>
+  </data>
+  <data name="NoMassStorageSupportText" xml:space="preserve">
+    <value>mass storage transfer</value>
+  </data>
+  <data name="FITExportText" xml:space="preserve">
+    <value>FIT export</value>
+  </data>
+  <data name="FITImportText" xml:space="preserve">
+    <value>FIT import</value>
+  </data>
+  <data name="ExportSTPowerZonesAsLabelText" xml:space="preserve">
+    <value>Export ST power zones as :</value>
+  </data>
+  <data name="RepeatCountComboBoxText" xml:space="preserve">
+    <value>After it was repeated a certain number of times</value>
+  </data>
+  <data name="RepeatUntilCaloriesDurationDescriptionText" xml:space="preserve">
+    <value>Repeat until I burn {0} calories.</value>
+  </data>
+  <data name="RepeatUntilDistanceDurationDescriptionText" xml:space="preserve">
+    <value>Repeat for {0:0.00} {1}.</value>
+  </data>
+  <data name="RepeatUntilHeartRateAboveDurationDescriptionText" xml:space="preserve">
+    <value>Repeat until my heart rate gets above {0} {1}.</value>
+  </data>
+  <data name="RepeatUntilHeartRateBelowDurationDescriptionText" xml:space="preserve">
+    <value>Repeat until my heart rate gets below {0} {1}.</value>
+  </data>
+  <data name="RepeatUntilPowerAboveDurationDescriptionText" xml:space="preserve">
+    <value>Repeat until my power gets above {0} {1}.</value>
+  </data>
+  <data name="RepeatUntilPowerBelowDurationDescriptionText" xml:space="preserve">
+    <value>Repeat until my power gets below {0} {1}.</value>
+  </data>
+  <data name="RepeatUntilTimeDurationDescriptionText" xml:space="preserve">
+    <value>Repeat for {0:00}:{1:00}:{2:00}.</value>
+  </data>
+  <data name="UseCategoryForAllCheckBoxText" xml:space="preserve">
+    <value>Use category for all workouts</value>
+  </data>
+  <data name="PrintAllText" xml:space="preserve">
+    <value>Print all</value>
+  </data>
+  <data name="PrintSelectedText" xml:space="preserve">
+    <value>Print selected</value>
+  </data>
+  <data name="PrintText" xml:space="preserve">
+    <value>Print</value>
+  </data>
+  <data name="InkFriendlyModeText" xml:space="preserve">
+    <value>Ink saving mode</value>
+  </data>
+  <data name="PrintOptionsText" xml:space="preserve">
+    <value>Print options</value>
+  </data>
+  <data name="PrintPreviewText" xml:space="preserve">
+    <value>Print preview</value>
+  </data>
+  <data name="PageSetupText" xml:space="preserve">
+    <value>Page setup</value>
+  </data>
+  <data name="HideInWorkoutListText" xml:space="preserve">
+    <value>Hide in workout list</value>
+  </data>
+  <data name="ManualProfileConfigurationText" xml:space="preserve">
+    <value>You will be taken through the manual setup process instead.</value>
+  </data>
+  <data name="ExportCooldownAsText" xml:space="preserve">
+    <value>Export cooldown as</value>
+  </data>
+  <data name="ExportWarmupAsText" xml:space="preserve">
+    <value>Export warmup as</value>
+  </data>
+  <data name="UnrollRepeatsText" xml:space="preserve">
+    <value>Unroll repeat steps</value>
   </data>
 </root>

@@ -1,4 +1,6 @@
 using System;
+using System.ComponentModel;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
 using System.Resources;
@@ -15,10 +17,13 @@ namespace GarminFitnessPlugin.View
     {
         public ImportProfileAction()
         {
-            PropertyChanged += new System.ComponentModel.PropertyChangedEventHandler(WorkoutImportProfileAction_PropertyChanged);
+            if (PropertyChanged != null)
+            {
+                PropertyChanged(this, new PropertyChangedEventArgs("Action"));
+            }
         }
 
-        #region IAction Members
+#region IAction Members
 
         public bool Enabled
         {
@@ -36,6 +41,16 @@ namespace GarminFitnessPlugin.View
             {
                 return global::GarminFitnessPlugin.Resources.Resources.Import;
             }
+        }
+
+        public bool Visible
+        {
+            get { return true; }
+        }
+
+        public IList<string> MenuPath
+        {
+            get { return null; }
         }
 
         public void Refresh()
@@ -70,27 +85,19 @@ namespace GarminFitnessPlugin.View
             }
         }
 
-        #endregion
-
-        #region INotifyPropertyChanged Members
-
-        void WorkoutImportProfileAction_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
-        {
-        }
-
-        #endregion
+#endregion
 
         void OnDeviceManagerTaskCompleted(GarminDeviceManager manager, GarminDeviceManager.BasicTask task, bool succeeded, String errorText)
         {
             if (!succeeded)
             {
-                if (task.Type == GarminDeviceManager.BasicTask.TaskTypes.TaskType_Initialize)
+                if (task.Type == GarminDeviceManager.BasicTask.TaskTypes.Initialize)
                 {
                     MessageBox.Show(GarminFitnessView.GetLocalizedString("DeviceCommunicationErrorText"),
                                     GarminFitnessView.GetLocalizedString("ErrorText"),
                                     MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
-                else if(errorText != String.Empty)
+                else if(!String.IsNullOrEmpty(String.Empty))
                 {
                     MessageBox.Show(errorText,
                                     GarminFitnessView.GetLocalizedString("ErrorText"),

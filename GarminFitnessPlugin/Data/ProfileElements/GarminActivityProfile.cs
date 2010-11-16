@@ -15,6 +15,14 @@ namespace GarminFitnessPlugin.Data
 {
     class GarminActivityProfile : IPluginSerializable, IXMLSerializable
     {
+        public enum HRReferential
+        {
+            HRReferential_BPM = 0,
+            HRReferential_PercentMax,
+            HRReferential_PercentHRR,
+            HRReferential_Count,
+        }
+
         public GarminActivityProfile(GarminCategories category)
         {
             m_Category = category;
@@ -46,10 +54,10 @@ namespace GarminFitnessPlugin.Data
         public override void Serialize(Stream stream)
         {
             m_MaxHeartRate.Serialize(stream);
-            
-            m_GearWeight.Serialize(stream);
 
-            m_HRIsInPercentMax.Serialize(stream);
+            m_GearWeightInPounds.Serialize(stream);
+
+            m_HRReferential.Serialize(stream);
 
             // HR zones
             for (int i = 0; i < m_HeartRateZones.Count; ++i)
@@ -76,9 +84,14 @@ namespace GarminFitnessPlugin.Data
         {
             m_MaxHeartRate.Deserialize(stream, version);
 
-            m_GearWeight.Deserialize(stream, version);
+            GarminFitnessDoubleRange gearWeightinKg = new GarminFitnessDoubleRange(Weight.Convert(m_GearWeightInPounds, Weight.Units.Pound, Weight.Units.Kilogram));
 
-            m_HRIsInPercentMax.Deserialize(stream, version);
+            gearWeightinKg.Deserialize(stream, version);
+            SetGearWeightInUnits(gearWeightinKg, Weight.Units.Kilogram);
+
+            GarminFitnessBool HRIsInPercentMax = new GarminFitnessBool(true);
+            HRIsInPercentMax.Deserialize(stream, version);
+            HRZonesReferential = HRIsInPercentMax ? HRReferential.HRReferential_PercentMax : HRReferential.HRReferential_BPM;
 
             for (int i = 0; i < m_HeartRateZones.Count; ++i)
             {
@@ -101,16 +114,78 @@ namespace GarminFitnessPlugin.Data
 
                 m_SpeedZones[i].InternalName.Deserialize(stream, version);
             }
-
         }
 
         public void Deserialize_V10(Stream stream, DataVersion version)
         {
             m_MaxHeartRate.Deserialize(stream, version);
 
-            m_GearWeight.Deserialize(stream, version);
+            GarminFitnessDoubleRange gearWeightinKg = new GarminFitnessDoubleRange(Weight.Convert(m_GearWeightInPounds, Weight.Units.Pound, Weight.Units.Kilogram));
 
-            m_HRIsInPercentMax.Deserialize(stream, version);
+            gearWeightinKg.Deserialize(stream, version);
+            SetGearWeightInUnits(gearWeightinKg, Weight.Units.Kilogram);
+
+            GarminFitnessBool HRIsInPercentMax = new GarminFitnessBool(true);
+            HRIsInPercentMax.Deserialize(stream, version);
+            HRZonesReferential = HRIsInPercentMax ? HRReferential.HRReferential_PercentMax : HRReferential.HRReferential_BPM;
+
+            for (int i = 0; i < m_HeartRateZones.Count; ++i)
+            {
+                m_HeartRateZones[i].Lower.Deserialize(stream, version);
+
+                m_HeartRateZones[i].Upper.Deserialize(stream, version);
+            }
+
+            m_SpeedIsInPace.Deserialize(stream, version);
+
+            for (int i = 0; i < m_SpeedZones.Count; ++i)
+            {
+                m_SpeedZones[i].InternalLow.Deserialize(stream, version);
+
+                m_SpeedZones[i].InternalHigh.Deserialize(stream, version);
+
+                m_SpeedZones[i].InternalName.Deserialize(stream, version);
+            }
+        }
+
+        public void Deserialize_V22(Stream stream, DataVersion version)
+        {
+            m_MaxHeartRate.Deserialize(stream, version);
+
+            m_GearWeightInPounds.Deserialize(stream, version);
+
+            GarminFitnessBool HRIsInPercentMax = new GarminFitnessBool(true);
+            HRIsInPercentMax.Deserialize(stream, version);
+            HRZonesReferential = HRIsInPercentMax ? HRReferential.HRReferential_PercentMax : HRReferential.HRReferential_BPM;
+
+            for (int i = 0; i < m_HeartRateZones.Count; ++i)
+            {
+                m_HeartRateZones[i].Lower.Deserialize(stream, version);
+
+                m_HeartRateZones[i].Upper.Deserialize(stream, version);
+            }
+
+            m_SpeedIsInPace.Deserialize(stream, version);
+
+            for (int i = 0; i < m_SpeedZones.Count; ++i)
+            {
+                m_SpeedZones[i].InternalLow.Deserialize(stream, version);
+
+                m_SpeedZones[i].InternalHigh.Deserialize(stream, version);
+
+                m_SpeedZones[i].InternalName.Deserialize(stream, version);
+            }
+        }
+
+        public void Deserialize_V23(Stream stream, DataVersion version)
+        {
+            m_MaxHeartRate.Deserialize(stream, version);
+
+            m_GearWeightInPounds.Deserialize(stream, version);
+
+            GarminFitnessByteRange HRZoneReference = new GarminFitnessByteRange(0);
+            HRZoneReference.Deserialize(stream, version);
+            HRZonesReferential = (HRReferential)(Byte)HRZoneReference;
 
             for (int i = 0; i < m_HeartRateZones.Count; ++i)
             {
@@ -157,7 +232,9 @@ namespace GarminFitnessPlugin.Data
             activityNode.AppendChild(currentChild);
             GarminProfileManager.Instance.UserProfile.InternalRestingHeartRate.Serialize(currentChild, Constants.ValueTCXString, document);
 
-            m_GearWeight.Serialize(activityNode, Constants.GearWeightTCXString, document);
+            GarminFitnessDoubleRange gearWeightinKg = new GarminFitnessDoubleRange(Weight.Convert(m_GearWeightInPounds, Weight.Units.Pound, Weight.Units.Kilogram));
+
+            gearWeightinKg.Serialize(activityNode, Constants.GearWeightTCXString, document);
 
             // HR zones
             for (int i = 0; i < Constants.GarminHRZoneCount; ++i)
@@ -171,7 +248,10 @@ namespace GarminFitnessPlugin.Data
                 currentChild.AppendChild(numberNode);
 
                 // View as BPM or % max
-                m_HRIsInPercentMax.Serialize(currentChild, Constants.ViewAsTCXString, document);
+                GarminFitnessBool HRIsInPercentMax = new GarminFitnessBool(HRZonesReferential != HRReferential.HRReferential_BPM,
+                                                                           Constants.PercentMaxTCXString,
+                                                                           Constants.BPMTCXString);
+                HRIsInPercentMax.Serialize(currentChild, Constants.ViewAsTCXString, document);
 
                 // Low
                 GarminFitnessByteRange lowLimit = new GarminFitnessByteRange((Byte)(m_HeartRateZones[i].Lower * MaximumHeartRate));
@@ -234,8 +314,10 @@ namespace GarminFitnessPlugin.Data
                 }
                 else if (currentChild.Name == Constants.GearWeightTCXString)
                 {
-                    m_GearWeight.Deserialize(currentChild);
-                    SetGearWeightInUnits(m_GearWeight, Weight.Units.Kilogram);
+                    GarminFitnessDoubleRange gearWeightinKg = new GarminFitnessDoubleRange(0);
+
+                    gearWeightinKg.Deserialize(currentChild);
+                    SetGearWeightInUnits(gearWeightinKg, Weight.Units.Kilogram);
                     weightRead = true;
                 }
                 else if (currentChild.Name == Constants.HeartRateZonesTCXString)
@@ -271,10 +353,10 @@ namespace GarminFitnessPlugin.Data
 
         public void Serialize(GarXFaceNet._FitnessUserProfile._Activity activityProfile)
         {
-            bool inPercentMax = HRIsInPercentMax;
+            HRReferential HRReference = HRZonesReferential;
 
-            HRIsInPercentMax = false;
-            activityProfile.SetGearWeight((float)GearWeight);
+            HRZonesReferential = HRReferential.HRReferential_BPM;
+            activityProfile.SetGearWeight((float)Weight.Convert(GearWeightInPounds, Weight.Units.Pound, Weight.Units.Kilogram));
             activityProfile.SetMaxHeartRate(MaximumHeartRate);
 
             for (UInt32 i = 0; i < 5; ++i)
@@ -294,12 +376,12 @@ namespace GarminFitnessPlugin.Data
                 speedZone.SetHighSpeed((float)m_SpeedZones[(int)i].High);
             }
 
-            HRIsInPercentMax = inPercentMax;
+            HRZonesReferential = HRReference;
         }
 
         public void Deserialize(GarXFaceNet._FitnessUserProfile._Activity activityProfile)
         {
-            GearWeight = activityProfile.GetGearWeight();
+            SetGearWeightInUnits(activityProfile.GetGearWeight(), Weight.Units.Kilogram);
             MaximumHeartRate = (Byte)activityProfile.GetMaxHeartRate();
 
             for (UInt32 i = 0; i < 5; ++i)
@@ -324,7 +406,18 @@ namespace GarminFitnessPlugin.Data
 
                 if (currentChild.Name == Constants.ViewAsTCXString)
                 {
-                    m_HRIsInPercentMax.Deserialize(currentChild);
+                    GarminFitnessBool HRIsInPercentMax = new GarminFitnessBool(true,
+                                                                               Constants.PercentMaxTCXString,
+                                                                               Constants.BPMTCXString);
+                    HRIsInPercentMax.Deserialize(currentChild);
+
+                    // When we read % max, make sure we don't overwrite the BPM vs %Max/HRR since there
+                    //  is no difference between both of these in the TCX file
+                    if (!HRIsInPercentMax ||
+                        HRZonesReferential == HRReferential.HRReferential_BPM)
+                    {
+                        HRZonesReferential = HRIsInPercentMax ? HRReferential.HRReferential_PercentMax : HRReferential.HRReferential_BPM;
+                    }
                     viewAsRead = true;
                 }
                 else if (currentChild.Name == Constants.LowTCXString &&
@@ -462,6 +555,7 @@ namespace GarminFitnessPlugin.Data
             Serialize(stream);
             stream.Position = 0;
             clone.Deserialize(stream, Constants.CurrentVersion);
+            stream.Close();
 
             return clone;
         }
@@ -480,15 +574,22 @@ namespace GarminFitnessPlugin.Data
 
             double value = m_HeartRateZones[index].Lower;
 
-            if (HRIsInPercentMax)
-            {
-                return (Byte)Math.Round(value * 100, 0, MidpointRounding.AwayFromZero);
-            }
-            else
+            if (HRZonesReferential == HRReferential.HRReferential_BPM)
             {
                 double lowLimit = Math.Max(Constants.MinHRInBPM, value * MaximumHeartRate);
 
                 return (Byte)Math.Round(lowLimit, 0, MidpointRounding.AwayFromZero);
+            }
+            else if (HRZonesReferential == HRReferential.HRReferential_PercentHRR)
+            {
+                double reserveSize = MaximumHeartRate - GarminProfileManager.Instance.UserProfile.RestingHeartRate;
+                double result = Math.Round((value * MaximumHeartRate - GarminProfileManager.Instance.UserProfile.RestingHeartRate) / reserveSize * 100.0, 0, MidpointRounding.AwayFromZero);
+
+                return (Byte)Utils.Clamp(result, Constants.MinHRInPercentMax, Constants.MaxHRInPercentMax);
+            }
+            else
+            {
+                return (Byte)Math.Round(value * 100, 0, MidpointRounding.AwayFromZero);
             }
         }
 
@@ -498,15 +599,22 @@ namespace GarminFitnessPlugin.Data
 
             double value = m_HeartRateZones[index].Upper;
 
-            if (HRIsInPercentMax)
-            {
-                return (Byte)Math.Round(value * 100, 0, MidpointRounding.AwayFromZero);
-            }
-            else
+            if (HRZonesReferential == HRReferential.HRReferential_BPM)
             {
                 double highLimit = Math.Max(Constants.MinHRInBPM, value * MaximumHeartRate);
 
                 return (Byte)Math.Round(highLimit, 0, MidpointRounding.AwayFromZero);
+            }
+            else if(HRZonesReferential == HRReferential.HRReferential_PercentHRR)
+            {
+                double reserveSize = MaximumHeartRate - GarminProfileManager.Instance.UserProfile.RestingHeartRate;
+                double result = Math.Round((value * MaximumHeartRate - GarminProfileManager.Instance.UserProfile.RestingHeartRate) / reserveSize * 100.0, 0, MidpointRounding.AwayFromZero);
+
+                return (Byte)Utils.Clamp(result, Constants.MinHRInPercentMax, Constants.MaxHRInPercentMax);
+            }
+            else
+            {
+                return (Byte)Math.Round(value * 100, 0, MidpointRounding.AwayFromZero);
             }
         }
 
@@ -516,14 +624,22 @@ namespace GarminFitnessPlugin.Data
 
             double percentValue;
 
-            // Convert to BPM if value is in % HRMax
-            if (HRIsInPercentMax)
+            // Convert to % max if value is in BPM
+            if (HRZonesReferential == HRReferential.HRReferential_BPM)
             {
-                percentValue = value / (double)Constants.MaxHRInPercentMax;
+                percentValue = value / (double)MaximumHeartRate;
+            }
+            // Convert to % max if value is in % HRR
+            else if (HRZonesReferential == HRReferential.HRReferential_PercentHRR)
+            {
+                double reserveSize = MaximumHeartRate - GarminProfileManager.Instance.UserProfile.RestingHeartRate;
+
+                percentValue = ((value / (double)Constants.MaxHRInPercentMax) * reserveSize +
+                                GarminProfileManager.Instance.UserProfile.RestingHeartRate) / (double)MaximumHeartRate;
             }
             else
             {
-                percentValue = value / (double)MaximumHeartRate;
+                percentValue = value / (double)Constants.MaxHRInPercentMax;
             }
 
             if (m_HeartRateZones[index].Lower != percentValue)
@@ -540,14 +656,22 @@ namespace GarminFitnessPlugin.Data
 
             double percentValue;
 
-            // Convert to BPM if value is in % HRMax
-            if (HRIsInPercentMax)
+            // Convert to % max if value is in BPM
+            if (HRZonesReferential == HRReferential.HRReferential_BPM)
             {
-                percentValue = value / (double)Constants.MaxHRInPercentMax;
+                percentValue = value / (double)MaximumHeartRate;
+            }
+            // Convert to % max if value is in % HRR
+            else if (HRZonesReferential == HRReferential.HRReferential_PercentHRR)
+            {
+                double reserveSize = MaximumHeartRate - GarminProfileManager.Instance.UserProfile.RestingHeartRate;
+
+                percentValue = ((value / (double)Constants.MaxHRInPercentMax) * reserveSize +
+                                GarminProfileManager.Instance.UserProfile.RestingHeartRate) / (double)MaximumHeartRate;
             }
             else
             {
-                percentValue = value / (double)MaximumHeartRate;
+                percentValue = value / (double)Constants.MaxHRInPercentMax;
             }
 
             if (m_HeartRateZones[index].Upper != percentValue)
@@ -651,7 +775,7 @@ namespace GarminFitnessPlugin.Data
         public void SetGearWeightInUnits(double weight, Weight.Units unit)
         {
             // Convert to pounds
-            GearWeight = Weight.Convert(weight, unit, Weight.Units.Kilogram);
+            m_GearWeightInPounds.Value = Weight.Convert(weight, unit, Weight.Units.Pound);
         }
 
         public GarminCategories Category
@@ -666,7 +790,7 @@ namespace GarminFitnessPlugin.Data
             {
                 if (m_MaxHeartRate != value)
                 {
-                    if(!HRIsInPercentMax)
+                    if (HRZonesReferential == HRReferential.HRReferential_BPM)
                     {
                         // Update limit values as they will change since stored in %max
                         for (int i = 0; i < Constants.GarminHRZoneCount; ++i)
@@ -686,30 +810,30 @@ namespace GarminFitnessPlugin.Data
             }
         }
 
-        public double GearWeight
+        public double GearWeightInPounds
         {
-            get { return m_GearWeight; }
+            get { return m_GearWeightInPounds; }
             private set
             {
-                if (m_GearWeight != value)
+                if (m_GearWeightInPounds != value)
                 {
-                    m_GearWeight.Value = value;
+                    m_GearWeightInPounds.Value = value;
 
                     TriggerChangedEvent(new PropertyChangedEventArgs("GearWeight"));
                 }
             }
         }
 
-        public bool HRIsInPercentMax
+        public HRReferential HRZonesReferential
         {
-            get { return m_HRIsInPercentMax; }
+            get { return (HRReferential)(Byte)m_HRReferential; }
             set
             {
-                if (m_HRIsInPercentMax != value)
+                if (m_HRReferential != (Byte)value)
                 {
-                    m_HRIsInPercentMax.Value = value;
+                    m_HRReferential.Value = (Byte)value;
 
-                    TriggerChangedEvent(new PropertyChangedEventArgs("HRIsInPercentMax"));
+                    TriggerChangedEvent(new PropertyChangedEventArgs("HRZonesReferential"));
                 }
             }
         }
@@ -748,8 +872,8 @@ namespace GarminFitnessPlugin.Data
 
         private GarminCategories m_Category;
         private GarminFitnessByteRange m_MaxHeartRate = new GarminFitnessByteRange(185, Constants.MinHRInBPM, Constants.MaxHRInBPM);
-        private GarminFitnessDoubleRange m_GearWeight = new GarminFitnessDoubleRange(0, Constants.MinWeight, Constants.MaxWeight);
-        private GarminFitnessBool m_HRIsInPercentMax = new GarminFitnessBool(false, Constants.PercentMaxTCXString, Constants.BPMTCXString);
+        private GarminFitnessDoubleRange m_GearWeightInPounds = new GarminFitnessDoubleRange(0, Constants.MinWeight, Constants.MaxWeight);
+        private GarminFitnessByteRange m_HRReferential = new GarminFitnessByteRange((Byte)HRReferential.HRReferential_BPM, 0, (Byte)HRReferential.HRReferential_Count);
         private GarminFitnessBool m_SpeedIsInPace = new GarminFitnessBool(false, Constants.SpeedOrPaceTCXString[0], Constants.SpeedOrPaceTCXString[1]);
         private List<GarminFitnessValueRange<GarminFitnessDoubleRange>> m_HeartRateZones = new List<GarminFitnessValueRange<GarminFitnessDoubleRange>>();
         private List<GarminFitnessNamedSpeedZone> m_SpeedZones = new List<GarminFitnessNamedSpeedZone>();

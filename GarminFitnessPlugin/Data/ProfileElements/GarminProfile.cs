@@ -21,6 +21,19 @@ namespace GarminFitnessPlugin.Data
             TriggerActivityProfileChangedEvent(profileModified, changedProperty);
         }
 
+        public GarminProfile Clone()
+        {
+            GarminProfile clone = new GarminProfile();
+            MemoryStream tempStream = new MemoryStream();
+
+            Serialize(tempStream);
+            tempStream.Position = 0;
+            clone.Deserialize(tempStream, Constants.CurrentVersion);
+            tempStream.Close();
+
+            return clone;
+        }
+
         public void Cleanup()
         {
             if (m_ActivityProfiles != null)

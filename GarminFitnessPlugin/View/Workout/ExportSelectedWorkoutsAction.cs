@@ -20,7 +20,7 @@ namespace GarminFitnessPlugin.View
             PropertyChanged += new System.ComponentModel.PropertyChangedEventHandler(WorkoutExportAction_PropertyChanged);
         }
 
-        #region IAction Members
+#region IAction Members
 
         public bool Enabled
         {
@@ -40,10 +40,17 @@ namespace GarminFitnessPlugin.View
 
         public System.Drawing.Image Image
         {
-            get
-            {
-                return global::GarminFitnessPlugin.Resources.Resources.Export;
-            }
+            get { return global::GarminFitnessPlugin.Resources.Resources.Export; }
+        }
+
+        public bool Visible
+        {
+            get { return true; }
+        }
+
+        public IList<string> MenuPath
+        {
+            get { return null; }
         }
 
         public void Refresh()
@@ -56,7 +63,7 @@ namespace GarminFitnessPlugin.View
 
         public void Run(System.Drawing.Rectangle rectButton)
         {
-            if ((!GarminDeviceManager.Instance.IsInitialized && GarminDeviceManager.Instance.GetPendingTaskCount() == 1) ||
+            if ((!GarminDeviceManager.Instance.IsInitialized && GarminDeviceManager.Instance.PendingTaskCount == 1) ||
                 GarminDeviceManager.Instance.AreAllTasksFinished)
             {
                 GarminFitnessView currentView = (GarminFitnessView)PluginMain.GetApplication().ActiveView;
@@ -85,7 +92,7 @@ namespace GarminFitnessPlugin.View
             }
         }
 
-        #endregion
+#endregion
 
         #region INotifyPropertyChanged Members
 
@@ -104,13 +111,19 @@ namespace GarminFitnessPlugin.View
             try
             {
                 GarminDeviceManager.Instance.TaskCompleted += new GarminDeviceManager.TaskCompletedEventHandler(OnDeviceManagerTaskCompleted);
-
                 GarminWorkoutControl viewControl = (GarminWorkoutControl)currentView.GetCurrentView();
+                List<IWorkout> workoutsToExport = new List<IWorkout>();
+
                 Utils.HijackMainWindow();
+
+                foreach (IWorkout currentWorkout in viewControl.SelectedConcreteWorkouts)
+                {
+                    workoutsToExport.Add(currentWorkout);
+                }
 
                 // Export using Communicator Plugin
                 GarminDeviceManager.Instance.SetOperatingDevice();
-                GarminDeviceManager.Instance.ExportWorkout(viewControl.SelectedConcreteWorkouts);
+                GarminDeviceManager.Instance.ExportWorkouts(workoutsToExport);
             }
             catch (FileNotFoundException)
             {
@@ -131,43 +144,52 @@ namespace GarminFitnessPlugin.View
         public void ToFileEventHandler(object sender, EventArgs args)
         {
             FileStream file = null;
-            FolderBrowserDialog dlg = new FolderBrowserDialog();
-
-            dlg.SelectedPath = Options.Instance.DefaultExportDirectory;
-            if (dlg.ShowDialog() == DialogResult.OK)
+            try
             {
-                try
+                GarminWorkoutControl viewControl = (GarminWorkoutControl)((GarminFitnessView)PluginMain.GetApplication().ActiveView).GetCurrentView();
+                List<IWorkout> workoutsToExport = new List<IWorkout>();
+                ExportWorkoutsDialog dlg;
+                bool containsFITOnlyFeatures = false;
+
+                // Populate list of workouts to export
+                foreach (Workout currentWorkout in viewControl.SelectedConcreteWorkouts)
                 {
-                    GarminWorkoutControl viewControl = (GarminWorkoutControl)((GarminFitnessView)PluginMain.GetApplication().ActiveView).GetCurrentView();
-                    List<IWorkout> workoutsToExport = new List<IWorkout>();
+                    containsFITOnlyFeatures = containsFITOnlyFeatures || currentWorkout.ContainsFITOnlyFeatures;
 
-                    // Populate list of workouts to export
-                    foreach (IWorkout currentWorkout in viewControl.SelectedConcreteWorkouts)
+                    if (currentWorkout.GetSplitPartsCount() > 1)
                     {
-                        if (currentWorkout.GetSplitPartsCount() > 1)
-                        {
-                            List<WorkoutPart> splitParts = currentWorkout.SplitInSeperateParts();
+                        List<WorkoutPart> splitParts = currentWorkout.SplitInSeperateParts();
 
-                            // Replace the workout by it's parts
-                            foreach (WorkoutPart currentPart in splitParts)
-                            {
-                                workoutsToExport.Add(currentPart);
-                            }
-                        }
-                        else
+                        // Replace the workout by it's parts
+                        foreach (WorkoutPart currentPart in splitParts)
                         {
-                            workoutsToExport.Add(currentWorkout);
+                            workoutsToExport.Add(currentPart);
                         }
                     }
+                    else
+                    {
+                        workoutsToExport.Add(currentWorkout);
+                    }
+                }
 
+                dlg = new ExportWorkoutsDialog(containsFITOnlyFeatures);
+                if (dlg.ShowDialog() == DialogResult.OK)
+                {
                     foreach (IWorkout currentWorkout in workoutsToExport)
                     {
-                        string fileName = Utils.GetWorkoutFilename(currentWorkout);
+                        string fileName = Utils.GetWorkoutFilename(currentWorkout, dlg.SelectedFormat);
 
                         file = File.Create(dlg.SelectedPath + "\\" + fileName);
                         if (file != null)
                         {
-                            WorkoutExporter.ExportWorkout(currentWorkout, file);
+                            if (dlg.SelectedFormat == GarminWorkoutManager.FileFormats.FIT)
+                            {
+                                WorkoutExporter.ExportWorkoutToFIT(currentWorkout, file);
+                            }
+                            else
+                            {
+                                WorkoutExporter.ExportWorkout(currentWorkout, file);
+                            }
                             file.Close();
                         }
                         else
@@ -180,15 +202,16 @@ namespace GarminFitnessPlugin.View
                     MessageBox.Show(String.Format(GarminFitnessView.GetLocalizedString("ExportWorkoutsSuccessText"), dlg.SelectedPath),
                                     GarminFitnessView.GetLocalizedString("SuccessText"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
-                catch (Exception e)
-                {
-                    MessageBox.Show(GarminFitnessView.GetLocalizedString("ExportWorkoutsFailedText"),
-                                    GarminFitnessView.GetLocalizedString("ErrorText"),
-                                    MessageBoxButtons.OK, MessageBoxIcon.Information);
-
-                    throw e;
-                }
-                finally
+            }
+            catch
+            {
+                MessageBox.Show(GarminFitnessView.GetLocalizedString("ExportWorkoutsFailedText"),
+                                GarminFitnessView.GetLocalizedString("ErrorText"),
+                                MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+            finally
+            {
+                if (file != null)
                 {
                     file.Close();
                 }
@@ -201,7 +224,7 @@ namespace GarminFitnessPlugin.View
 
             if (!succeeded)
             {
-                if (task.Type == GarminDeviceManager.BasicTask.TaskTypes.TaskType_Initialize)
+                if (task.Type == GarminDeviceManager.BasicTask.TaskTypes.Initialize)
                 {
                     exportCancelled = true;
 
@@ -209,15 +232,16 @@ namespace GarminFitnessPlugin.View
                                     GarminFitnessView.GetLocalizedString("ErrorText"),
                                     MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
-                else if (task.Type == GarminDeviceManager.BasicTask.TaskTypes.TaskType_SetOperatingDevice)
+                else if (task.Type == GarminDeviceManager.BasicTask.TaskTypes.SetOperatingDevice)
                 {
                     exportCancelled = true;
                 }
-                else if (task.Type == GarminDeviceManager.BasicTask.TaskTypes.TaskType_ExportWorkout)
+                else if (task.Type == GarminDeviceManager.BasicTask.TaskTypes.ExportWorkout)
                 {
                     GarminDeviceManager.ExportWorkoutTask concreteTask = (GarminDeviceManager.ExportWorkoutTask)task;
 
                     m_FailedExportList.AddRange(concreteTask.Workouts);
+                    m_FailedExportErrors.Add(errorText);
                 }
             }
 
@@ -231,15 +255,29 @@ namespace GarminFitnessPlugin.View
                 {
                     if (m_FailedExportList.Count == 0)
                     {
+
                         MessageBox.Show(GarminFitnessView.GetLocalizedString("ExportWorkoutsSuccessText"),
                                         GarminFitnessView.GetLocalizedString("SuccessText"),
                                         MessageBoxButtons.OK, MessageBoxIcon.Information);
                     }
                     else
                     {
-                        m_FailedExportList.Clear();
+                        String allErrors = String.Empty;
 
-                        MessageBox.Show(GarminFitnessView.GetLocalizedString("ExportWorkoutsFailedText"),
+                        if (m_FailedExportErrors.Count > 0)
+                        {
+                            allErrors = "\n\n";
+
+                            foreach (String error in m_FailedExportErrors)
+                            {
+                                allErrors += error + "\n";
+                            }
+                        }
+
+                        m_FailedExportList.Clear();
+                        m_FailedExportErrors.Clear();
+
+                        MessageBox.Show(GarminFitnessView.GetLocalizedString("ExportWorkoutsFailedText") + allErrors,
                                         GarminFitnessView.GetLocalizedString("ErrorText"),
                                         MessageBoxButtons.OK, MessageBoxIcon.Information);
                     }
@@ -247,6 +285,7 @@ namespace GarminFitnessPlugin.View
             }
         }
 
-        private List<Workout> m_FailedExportList = new List<Workout>();
+        private List<IWorkout> m_FailedExportList = new List<IWorkout>();
+        private List<String> m_FailedExportErrors = new List<String>();
     }
 }

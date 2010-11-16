@@ -109,11 +109,22 @@ namespace GarminFitnessPlugin.View
             // 
             // NewNameTextBox
             // 
+            this.NewNameTextBox.AcceptsReturn = false;
+            this.NewNameTextBox.AcceptsTab = false;
+            this.NewNameTextBox.BackColor = System.Drawing.Color.White;
+            this.NewNameTextBox.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(123)))), ((int)(((byte)(114)))), ((int)(((byte)(108)))));
+            this.NewNameTextBox.ButtonImage = null;
             this.NewNameTextBox.Location = new System.Drawing.Point(72, 75);
             this.NewNameTextBox.MaxLength = 15;
+            this.NewNameTextBox.Multiline = false;
             this.NewNameTextBox.Name = "NewNameTextBox";
+            this.NewNameTextBox.ReadOnly = false;
+            this.NewNameTextBox.ReadOnlyColor = System.Drawing.SystemColors.Control;
+            this.NewNameTextBox.ReadOnlyTextColor = System.Drawing.SystemColors.ControlLight;
+            this.NewNameTextBox.RightToLeft = System.Windows.Forms.RightToLeft.No;
             this.NewNameTextBox.Size = new System.Drawing.Size(181, 20);
             this.NewNameTextBox.TabIndex = 4;
+            this.NewNameTextBox.TextAlign = System.Windows.Forms.HorizontalAlignment.Left;
             // 
             // NewNameLabel
             // 
@@ -163,6 +174,7 @@ namespace GarminFitnessPlugin.View
             this.Controls.Add(this.ReplaceRenameIntroLabel);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
             this.Name = "ReplaceRenameDialog";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Replace or rename?";
             this.ReplacePanel.ResumeLayout(false);
             this.ReplacePanel.PerformLayout();

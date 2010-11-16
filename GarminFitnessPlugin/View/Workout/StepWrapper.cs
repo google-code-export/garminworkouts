@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Text;
 using GarminFitnessPlugin.Data;
 using ZoneFiveSoftware.Common.Visuals;
@@ -9,9 +10,13 @@ namespace GarminFitnessPlugin.View
 {
     class StepWrapper : TreeList.TreeListNode
     {
-        public StepWrapper(StepWrapper parent, IStep element)
+        public StepWrapper(StepWrapper parent, IStep element, Workout baseWorkout, bool isWorkoutLinkChild)
             : base(parent, element)
         {
+            Debug.Assert(baseWorkout != null);
+
+            m_BaseWorkout = baseWorkout;
+            m_IsWorkoutLinkChild = isWorkoutLinkChild;
         }
 
         public String DisplayString
@@ -23,24 +28,30 @@ namespace GarminFitnessPlugin.View
         {
             get
             {
+                string result = String.Empty;
                 IStep step = (IStep)Element;
 
-                if (step.ParentConcreteWorkout.GetSplitPartsCount() == 1)
+                if (!(step is WorkoutLinkStep) &&
+                    m_BaseWorkout.GetSplitPartsCount() != 1)
                 {
-                    return String.Empty;
+                    result = m_BaseWorkout.GetStepSplitPart(step).ToString();
                 }
-                else
+
+                if (step.ForceSplitOnStep)
                 {
-                    string result = (step.SplitPartInWorkout + 1).ToString();
-
-                    if (step.ForceSplitOnStep)
-                    {
-                        result = "*" + result;
-                    }
-
-                    return result;
+                    result = "*" + result;
                 }
+
+                return result;
             }
         }
+
+        public bool IsWorkoutLinkChild
+        {
+            get { return m_IsWorkoutLinkChild; }
+        }
+
+        private Workout m_BaseWorkout = null;
+        private bool m_IsWorkoutLinkChild = false;
     }
 }
