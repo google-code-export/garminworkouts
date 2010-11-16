@@ -102,6 +102,20 @@ namespace GarminFitnessPlugin.Resources {
             }
         }
         
+        internal static System.Drawing.Bitmap FITLogo {
+            get {
+                object obj = ResourceManager.GetObject("FITLogo", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        internal static System.Drawing.Bitmap FITWorkoutIcon {
+            get {
+                object obj = ResourceManager.GetObject("FITWorkoutIcon", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
         internal static System.Drawing.Bitmap GarminLogo {
             get {
                 object obj = ResourceManager.GetObject("GarminLogo", resourceCulture);
@@ -137,6 +151,13 @@ namespace GarminFitnessPlugin.Resources {
             }
         }
         
+        internal static System.Drawing.Bitmap NewLinkStepButton {
+            get {
+                object obj = ResourceManager.GetObject("NewLinkStepButton", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
         internal static System.Drawing.Bitmap NewStepButton {
             get {
                 object obj = ResourceManager.GetObject("NewStepButton", resourceCulture);
@@ -154,6 +175,20 @@ namespace GarminFitnessPlugin.Resources {
         internal static System.Drawing.Bitmap PlanWorkout {
             get {
                 object obj = ResourceManager.GetObject("PlanWorkout", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        internal static System.Drawing.Bitmap Print {
+            get {
+                object obj = ResourceManager.GetObject("Print", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        internal static System.Drawing.Bitmap RemoveAllButton {
+            get {
+                object obj = ResourceManager.GetObject("RemoveAllButton", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

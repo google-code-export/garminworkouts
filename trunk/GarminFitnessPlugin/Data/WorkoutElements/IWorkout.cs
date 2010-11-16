@@ -11,7 +11,7 @@ namespace GarminFitnessPlugin.Data
 {
     abstract class IWorkout : IPluginSerializable, IXMLSerializable
     {
-#region IXMLSerializable Members
+        #region IXMLSerializable Members
         public void Serialize(XmlNode parentNode, String nodeName, XmlDocument document)
         {
             if (GetSplitPartsCount() > 1)
@@ -29,6 +29,9 @@ namespace GarminFitnessPlugin.Data
                 XmlNode workoutNode = document.CreateElement(nodeName);
                 XmlAttribute attribute;
 
+                StepsExtensions.Clear();
+                STExtensions.Clear();
+
                 parentNode.AppendChild(workoutNode);
 
                 // Sport attribute
@@ -40,13 +43,7 @@ namespace GarminFitnessPlugin.Data
                 NameInternal.Serialize(workoutNode, "Name", document);
 
                 // Export all steps
-                for (int i = 0; i < Steps.Count; ++i)
-                {
-                    childNode = document.CreateElement("Step");
-
-                    Steps[i].Serialize(childNode, "Step", document);
-                    workoutNode.AppendChild(childNode);
-                }
+                Steps.Serialize(workoutNode, "", document);
 
                 // Scheduled dates
                 for (int i = 0; i < ScheduledDates.Count; ++i)
@@ -65,26 +62,26 @@ namespace GarminFitnessPlugin.Data
                 workoutNode.AppendChild(childNode);
 
                 // Steps extensions
-                if (m_StepsExtensions.Count > 0)
+                if (StepsExtensions.Count > 0)
                 {
                     XmlNode extensionsNode = document.CreateElement("Steps");
                     attribute = document.CreateAttribute("xmlns");
                     attribute.Value = "http://www.garmin.com/xmlschemas/WorkoutExtension/v1";
                     extensionsNode.Attributes.Append(attribute);
 
-                    for (int i = 0; i < m_StepsExtensions.Count; ++i)
+                    for (int i = 0; i < StepsExtensions.Count; ++i)
                     {
-                        XmlNode currentExtension = m_StepsExtensions[i];
+                        XmlNode currentExtension = StepsExtensions[i];
 
                         extensionsNode.AppendChild(currentExtension);
                     }
                     childNode.AppendChild(extensionsNode);
 
-                    m_StepsExtensions.Clear();
+                    StepsExtensions.Clear();
                 }
 
                 // ST extension
-                if (m_STExtensions.Count > 0)
+                if (STExtensions.Count > 0)
                 {
                     XmlNode extensionsNode = document.CreateElement("SportTracksExtensions");
                     attribute = document.CreateAttribute("xmlns");
@@ -96,22 +93,22 @@ namespace GarminFitnessPlugin.Data
                     categoryNode.AppendChild(document.CreateTextNode(Category.ReferenceId));
                     extensionsNode.AppendChild(categoryNode);
 
-                    for (int i = 0; i < m_STExtensions.Count; ++i)
+                    for (int i = 0; i < STExtensions.Count; ++i)
                     {
-                        XmlNode currentExtension = m_STExtensions[i];
+                        XmlNode currentExtension = STExtensions[i];
 
                         extensionsNode.AppendChild(currentExtension);
                     }
                     childNode.AppendChild(extensionsNode);
 
-                    m_STExtensions.Clear();
+                    STExtensions.Clear();
                 }
             }
         }
 
         public abstract void Deserialize(XmlNode parentNode);
 
-#endregion
+        #endregion
 
         public void Serialize(GarXFaceNet._WorkoutList workoutList)
         {
@@ -132,11 +129,7 @@ namespace GarminFitnessPlugin.Data
                 workout.SetNumValidSteps((UInt32)Steps.Count);
                 workout.SetSportType((GarXFaceNet._Workout.SportTypes)Options.Instance.GetGarminCategory(Category));
 
-                UInt32 internalStepId = 0;
-                foreach (IStep step in Steps)
-                {
-                    internalStepId = step.Serialize(workout, internalStepId);
-                }
+                Steps.Serialize(workout, 0);
 
                 workoutList.Add(workout);
             }
@@ -156,6 +149,45 @@ namespace GarminFitnessPlugin.Data
             }
         }
 
+        public virtual void SerializetoFIT(Stream stream)
+        {
+            if (GetSplitPartsCount() > 1)
+            {
+                List<WorkoutPart> splitParts = ConcreteWorkout.SplitInSeperateParts();
+
+                foreach (WorkoutPart part in splitParts)
+                {
+                    part.SerializetoFIT(stream);
+                }
+            }
+            else
+            {
+                FITMessage workoutMessage = new FITMessage(FITGlobalMessageIds.Workout);
+                FITMessageField sportType = new FITMessageField((Byte)FITWorkoutFieldIds.SportType);
+                FITMessageField numValidSteps = new FITMessageField((Byte)FITWorkoutFieldIds.NumSteps);
+                FITMessageField workoutName = new FITMessageField((Byte)FITWorkoutFieldIds.WorkoutName);
+
+                sportType.SetEnum((Byte)Options.Instance.GetFITSport(Category));
+                workoutMessage.AddField(sportType);
+                numValidSteps.SetUInt16(StepCount);
+                workoutMessage.AddField(numValidSteps);
+
+                if (!String.IsNullOrEmpty(Name))
+                {
+                    workoutName.SetString(Name, (Byte)(Constants.MaxNameLength + 1));
+                    workoutMessage.AddField(workoutName);
+                }
+
+                workoutMessage.Serialize(stream);
+
+                foreach (IStep step in Steps)
+                {
+                    step.SerializetoFIT(stream);
+                }
+            }
+        }
+
+        public abstract void DeserializeFromFIT(FITMessage workoutMessage);
         public abstract void Deserialize(GarXFaceNet._Workout workout);
         public abstract void DeserializeOccurances(GarXFaceNet._WorkoutOccuranceList occuranceList);
 
@@ -176,14 +208,30 @@ namespace GarminFitnessPlugin.Data
                 {
                     deserializedSteps.Add(new RegularStep(stream, Constants.CurrentVersion, ConcreteWorkout));
                 }
-                else
+                else if (type == IStep.StepType.Repeat)
                 {
                     deserializedSteps.Add(new RepeatStep(stream, Constants.CurrentVersion, ConcreteWorkout));
+                }
+                else
+                {
+                    WorkoutLinkStep tempLink = new WorkoutLinkStep(stream, Constants.CurrentVersion, ConcreteWorkout);
+
+                    if (tempLink.LinkedWorkout != null)
+                    {
+                        deserializedSteps.Add(tempLink);
+                    }
+                    else
+                    {
+                        WorkoutStepsList linkSteps = new WorkoutStepsList(ConcreteWorkout);
+
+                        linkSteps.Deserialize(stream, Constants.CurrentVersion);
+                        deserializedSteps.AddRange(linkSteps);
+                    }
                 }
             }
 
             // Now that we deserialized, paste in the current workout
-            if (AddStepsToRoot(deserializedSteps))
+            if (Steps.AddStepsToRoot(deserializedSteps))
             {
                 return deserializedSteps;
             }
@@ -193,12 +241,12 @@ namespace GarminFitnessPlugin.Data
 
         public void AddSportTracksExtension(XmlNode extensionNode)
         {
-            m_STExtensions.Add(extensionNode);
+            STExtensions.Add(extensionNode);
         }
 
         public void AddStepExtension(XmlNode extensionNode)
         {
-            m_StepsExtensions.Add(extensionNode);
+            StepsExtensions.Add(extensionNode);
         }
 
         void OnStepChanged(IStep modifiedStep, PropertyChangedEventArgs changedProperty)
@@ -214,13 +262,19 @@ namespace GarminFitnessPlugin.Data
             }
         }
 
-        void OnDurationChanged(IStep modifiedStep, IDuration durationChanged, PropertyChangedEventArgs changedProperty)
+        void OnDurationChanged(RegularStep modifiedStep, IDuration durationChanged, PropertyChangedEventArgs changedProperty)
         {
-            Debug.Assert(modifiedStep.Type == IStep.StepType.Regular);
-
             if (ConcreteWorkout.StepDurationChanged != null)
             {
-                ConcreteWorkout.StepDurationChanged(this, (RegularStep)modifiedStep, durationChanged, changedProperty);
+                ConcreteWorkout.StepDurationChanged(this, modifiedStep, durationChanged, changedProperty);
+            }
+        }
+
+        void OnRepeatDurationChanged(RepeatStep modifiedStep, IRepeatDuration durationChanged, PropertyChangedEventArgs changedProperty)
+        {
+            if (ConcreteWorkout.StepRepeatDurationChanged != null)
+            {
+                ConcreteWorkout.StepRepeatDurationChanged(this, modifiedStep, durationChanged, changedProperty);
             }
         }
 
@@ -310,23 +364,26 @@ namespace GarminFitnessPlugin.Data
             }
         }
 
-        public virtual int GetStepCount()
+        public virtual UInt16 StepCount
         {
-            int result = 0;
-
-            foreach (IStep step in Steps)
+            get
             {
-                result += step.GetStepCount();
-            }
+                UInt16 result = 0;
 
-            return result;
+                foreach (IStep step in Steps)
+                {
+                    result += step.StepCount;
+                }
+
+                return result;
+            }
         }
 
         public virtual UInt16 GetSplitPartsCount()
         {
             if (Steps.Count > 0)
             {
-                return (UInt16)(GetStepSplitPart(Steps[Steps.Count - 1]) + 1);
+                return GetStepSplitPart(Steps[Steps.Count - 1]);
             }
 
             return 0;
@@ -334,53 +391,33 @@ namespace GarminFitnessPlugin.Data
 
         public UInt16 GetStepSplitPart(IStep step)
         {
-            UInt16 partNumber = 0;
             UInt16 counter = 0;
-            IStep topMostRepeat = GetTopMostRepeatForStep(step);
-            IStep stepToFind = step;
+            UInt16 partNumber = 1;
 
-            if (topMostRepeat != null)
+            if (GetStepSplitPart(step, Steps, ref partNumber, ref counter))
             {
-                stepToFind = topMostRepeat;
+                return partNumber;
             }
 
-            for (int i = 0; i < Steps.Count; ++i)
-            {
-                IStep currentStep = Steps[i];
-
-                counter += currentStep.GetStepCount();
-
-                if (i != 0 && (currentStep.ForceSplitOnStep || counter > Constants.MaxStepsPerWorkout))
-                {
-                    partNumber++;
-                    counter = currentStep.GetStepCount();
-                }
-
-                if (currentStep == stepToFind)
-                {
-                    break;
-                }
-            }
-
-            return partNumber;
+            return 0;
         }
 
-        public List<IStep> GetStepsForPart(int partNumber)
+        public WorkoutStepsList GetStepsForPart(int partNumber)
         {
-            List<IStep> result = new List<IStep>();
+            WorkoutStepsList result = new WorkoutStepsList(this);
             UInt16 currentPartNumber = 0;
-            UInt16 counter = 0;
+            int counter = 0;
 
             for (int i = 0; i < Steps.Count; ++i)
             {
                 IStep currentStep = Steps[i];
 
-                counter += currentStep.GetStepCount();
+                counter += currentStep.StepCount;
 
                 if (i != 0 && (currentStep.ForceSplitOnStep || counter > Constants.MaxStepsPerWorkout))
                 {
                     currentPartNumber++;
-                    counter = currentStep.GetStepCount();
+                    counter = currentStep.StepCount;
                 }
 
                 if (currentPartNumber == partNumber)
@@ -397,23 +434,72 @@ namespace GarminFitnessPlugin.Data
             return result;
         }
 
-        public RepeatStep GetTopMostRepeatForStep(IStep step)
+        private bool GetStepSplitPart(IStep step, WorkoutStepsList stepsList, ref UInt16 stepPart, ref UInt16 stepCounter)
         {
-            if (step != null)
+            IStep topMostRepeat = Steps.GetTopMostRepeatForStep(step);
+            IStep stepToFind = step;
+
+            if (topMostRepeat != null)
             {
-                for (int i = 0; i < Steps.Count; ++i)
+                stepToFind = topMostRepeat;
+            }
+
+            if (stepsList.Count > 0 &&
+                stepsList[0].ForceSplitOnStep && stepsList[0] != Steps[0])
+            {
+                stepPart++;
+                stepCounter = 0;
+            }
+
+            foreach (IStep currentStep in stepsList)
+            {
+                if ((currentStep.ForceSplitOnStep && currentStep != Steps[0]) ||
+                    stepCounter + currentStep.StepCount > Constants.MaxStepsPerWorkout)
                 {
-                    if (Steps[i].Type == IStep.StepType.Repeat)
+                    stepPart++;
+                    stepCounter = 0;
+                }
+
+                if (currentStep is WorkoutLinkStep)
+                {
+                    WorkoutLinkStep linkStep = currentStep as WorkoutLinkStep;
+
+                    if (currentStep == step)
                     {
-                        if (((RepeatStep)Steps[i]).IsChildStep(step))
+                        if (linkStep.LinkedWorkoutSteps.Count > 0)
                         {
-                            return (RepeatStep)Steps[i];
+                            // The part # of a workout link is the part number of it's last step
+                            return GetStepSplitPart(linkStep.LinkedWorkoutSteps[linkStep.LinkedWorkoutSteps.Count - 1],
+                                                    linkStep.LinkedWorkoutSteps,
+                                                    ref stepPart,
+                                                    ref stepCounter);
+                        }
+                        else
+                        {
+                            return true;
+                        }
+                    }
+                    else
+                    {
+                        if (GetStepSplitPart(step, linkStep.LinkedWorkoutSteps,
+                                            ref stepPart, ref stepCounter))
+                        {
+                            return true;
                         }
                     }
                 }
+                else
+                {
+                    stepCounter += currentStep.StepCount;
+                }
+
+                if (currentStep == stepToFind)
+                {
+                    return true;
+                }
             }
 
-            return null;
+            return false;
         }
 
         public IStep GetNextStep(IStep previousStep)
@@ -482,354 +568,26 @@ namespace GarminFitnessPlugin.Data
 
         public bool CanAcceptNewStep(IStep newStep, IStep destinationStep)
         {
-            return CanAcceptNewStep(newStep.GetStepCount(), destinationStep);
+            return CanAcceptNewStep(newStep.StepCount, destinationStep);
         }
 
-        public bool AddStepToRoot(IStep stepToAdd)
-        {
-            List<IStep> newStep = new List<IStep>();
-
-            newStep.Add(stepToAdd);
-
-            return AddStepsToRoot(newStep);
-        }
-
-        public bool AddStepsToRoot(List<IStep> stepsToAdd)
-        {
-            if (Steps.Count > 0)
-            {
-                return InsertStepsAfterStep(stepsToAdd, Steps[Steps.Count - 1]);
-            }
-            else
-            {
-                return InsertStepsAfterStep(stepsToAdd, null);
-            }
-        }
-
-        public bool InsertStepInRoot(int index, IStep stepToAdd)
-        {
-            List<IStep> stepsToAdd = new List<IStep>();
-
-            stepsToAdd.Add(stepToAdd);
-
-            return InsertStepsBeforeStep(stepsToAdd, Steps[index]);
-        }
-
-        public bool InsertStepsInRoot(List<IStep> stepsToAdd, int index)
-        {
-            return InsertStepsBeforeStep(stepsToAdd, Steps[index]);
-        }
-
-        public bool InsertStepAfterStep(IStep stepToAdd, IStep previousStep)
-        {
-            List<IStep> stepsToAdd = new List<IStep>();
-
-            stepsToAdd.Add(stepToAdd);
-
-            return InsertStepsAfterStep(stepsToAdd, previousStep);
-        }
-
-        public bool InsertStepsAfterStep(List<IStep> stepsToAdd, IStep previousStep)
-        {
-            int insertStepsCount = 0;
-
-            // We need to count the number of items being moved
-            for (int i = 0; i < stepsToAdd.Count; ++i)
-            {
-                insertStepsCount += stepsToAdd[i].GetStepCount();
-            }
-
-            if (CanAcceptNewStep(insertStepsCount, previousStep))
-            {
-                return InsertStepsAfterStepInternal(stepsToAdd, previousStep);
-            }
-
-            return false;
-        }
-
-        public bool InsertStepBeforeStep(IStep stepToAdd, IStep previousStep)
-        {
-            List<IStep> stepsToAdd = new List<IStep>();
-
-            stepsToAdd.Add(stepToAdd);
-
-            return InsertStepsBeforeStep(stepsToAdd, previousStep);
-        }
-
-        public bool InsertStepsBeforeStep(List<IStep> stepsToAdd, IStep nextStep)
-        {
-            Debug.Assert(nextStep != null);
-
-            int insertStepsCount = 0;
-
-            // We need to count the number of items being moved
-            for (int i = 0; i < stepsToAdd.Count; ++i)
-            {
-                insertStepsCount += stepsToAdd[i].GetStepCount();
-            }
-
-            if (CanAcceptNewStep(insertStepsCount, nextStep))
-            {
-                return InsertStepsBeforeStepInternal(stepsToAdd, nextStep);
-            }
-
-            return false;
-        }
-
-        private bool InsertStepAfterStepInternal(IStep stepToAdd, IStep previousStep)
-        {
-            List<IStep> stepsToAdd = new List<IStep>();
-
-            stepsToAdd.Add(stepToAdd);
-
-            return InsertStepsAfterStepInternal(stepsToAdd, previousStep);
-        }
-
-        private bool InsertStepsAfterStepInternal(List<IStep> stepsToAdd, IStep previousStep)
-        {
-            UInt16 previousPosition = 0;
-            UInt16 preAddSplitCount = ConcreteWorkout.GetSplitPartsCount();
-            List<IStep> parentList = null;
-            List<IStep> tempList;
-            UInt16 tempPosition = 0;
-            bool stepAdded = false;
-            bool addToEnd = false;
-
-            if (!Utils.GetStepInfo(previousStep, ConcreteWorkout.Steps, out parentList, out previousPosition))
-            {
-                addToEnd = true;
-                parentList = ConcreteWorkout.Steps;
-            }
-
-            for (int i = 0; i < stepsToAdd.Count; ++i)
-            {
-                IStep currentStep = stepsToAdd[i];
-
-                // Make sure we don't duplicate the step in the list
-                Debug.Assert(!Utils.GetStepInfo(currentStep, ConcreteWorkout.Steps, out tempList, out tempPosition));
-
-                RegisterStep(currentStep);
-
-                if (addToEnd)
-                {
-                    parentList.Add(currentStep);
-                }
-                else
-                {
-                    parentList.Insert(++previousPosition, currentStep);
-                }
-                stepAdded = true;
-            }
-
-            if (stepAdded)
-            {
-                TriggerWorkoutChangedEvent(new PropertyChangedEventArgs("Steps"));
-
-                if(preAddSplitCount != ConcreteWorkout.GetSplitPartsCount())
-                {
-                    TriggerWorkoutChangedEvent(new PropertyChangedEventArgs("PartsCount"));
-                }
-            }
-
-            return true;
-        }
-
-        private bool InsertStepBeforeStepInternal(IStep stepToAdd, IStep previousStep)
-        {
-            List<IStep> stepsToAdd = new List<IStep>();
-
-            stepsToAdd.Add(stepToAdd);
-
-            return InsertStepsBeforeStepInternal(stepsToAdd, previousStep);
-        }
-
-        private bool InsertStepsBeforeStepInternal(List<IStep> stepsToAdd, IStep nextStep)
-        {
-            UInt16 previousPosition = 0;
-            UInt16 preAddSplitCount = ConcreteWorkout.GetSplitPartsCount();
-            List<IStep> parentList = null;
-
-            if (Utils.GetStepInfo(nextStep, ConcreteWorkout.Steps, out parentList, out previousPosition))
-            {
-                List<IStep> tempList;
-                UInt16 tempPosition = 0;
-                bool stepAdded = false;
-
-                for (int i = 0; i < stepsToAdd.Count; ++i)
-                {
-                    // Make sure we don't duplicate the step in the list
-                    Debug.Assert(!Utils.GetStepInfo(stepsToAdd[i], ConcreteWorkout.Steps, out tempList, out tempPosition));
-
-                    RegisterStep(stepsToAdd[i]);
-
-                    parentList.Insert(previousPosition++, stepsToAdd[i]);
-                    stepAdded = true;
-                }
-
-                if (stepAdded)
-                {
-                    TriggerWorkoutChangedEvent(new PropertyChangedEventArgs("Steps"));
-
-                    if (preAddSplitCount != ConcreteWorkout.GetSplitPartsCount())
-                    {
-                        TriggerWorkoutChangedEvent(new PropertyChangedEventArgs("PartsCount"));
-                    }
-                }
-
-                return true;
-            }
-            else
-            {
-                // We haven't found the right step, this shouldn't happen
-                Debug.Assert(false);
-            }
-
-            return false;
-        }
-
-        public void MoveStepsAfterStep(List<IStep> stepsToMove, IStep previousStep)
-        {
-            if (stepsToMove != null && stepsToMove.Count > 0)
-            {
-                m_EventsActive = false;
-                {
-                    // Mark the destination
-                    IStep positionMarker = new RegularStep(ConcreteWorkout);
-
-                    // Mark position
-                    InsertStepAfterStepInternal(positionMarker, previousStep);
-
-                    // Remove items from their original position
-                    RemoveSteps(stepsToMove);
-
-                    // Add at new position
-                    InsertStepsAfterStepInternal(stepsToMove, positionMarker);
-
-                    // Remove our position marker
-                    RemoveStep(positionMarker);
-
-                    m_EventsActive = true;
-                }
-
-                // Trigger event
-                TriggerWorkoutChangedEvent(new PropertyChangedEventArgs("Steps"));
-            }
-        }
-
-        public void MoveStepsBeforeStep(List<IStep> stepsToMove, IStep nextStep)
-        {
-            if (stepsToMove != null && stepsToMove.Count > 0)
-            {
-                m_EventsActive = false;
-                {
-                    // Make a copy of the destination
-                    IStep positionMarker = nextStep.Clone();
-
-                    // Mark position
-                    InsertStepBeforeStepInternal(positionMarker, nextStep);
-
-                    // Remove items from their original position
-                    RemoveSteps(stepsToMove);
-
-                    // Add at new position
-                    InsertStepsAfterStepInternal(stepsToMove, positionMarker);
-
-                    // Remove our position marker
-                    RemoveStep(positionMarker);
-
-                    m_EventsActive = true;
-                }
-
-                // Trigger event
-                TriggerWorkoutChangedEvent(new PropertyChangedEventArgs("Steps"));
-            }
-        }
-
-        public void RemoveStep(IStep stepToRemove)
-        {
-            List<IStep> stepsToRemove = new List<IStep>(); ;
-
-            stepsToRemove.Add(stepToRemove);
-
-            RemoveSteps(stepsToRemove);
-        }
-
-        public void RemoveSteps(List<IStep> stepsToRemove)
-        {
-            UInt16 preRemoveSplitCount = ConcreteWorkout.GetSplitPartsCount();
-
-            if (stepsToRemove.Count > 0)
-            {
-                List<IStep> selectedList = null;
-                UInt16 selectedPosition = 0;
-
-                foreach (IStep step in stepsToRemove)
-                {
-                    if (Utils.GetStepInfo(step, ConcreteWorkout.Steps, out selectedList, out selectedPosition))
-                    {
-                        selectedList.RemoveAt(selectedPosition);
-
-                        UnregisterStep(step);
-                    }
-                }
-
-                CleanUpAfterDelete();
-
-                TriggerWorkoutChangedEvent(new PropertyChangedEventArgs("Steps"));
-
-                if (preRemoveSplitCount != ConcreteWorkout.GetSplitPartsCount())
-                {
-                    TriggerWorkoutChangedEvent(new PropertyChangedEventArgs("PartsCount"));
-                }
-            }
-        }
-
-        private void CleanUpAfterDelete()
-        {
-            CleanUpAfterDelete(Steps);
-        }
-
-        private void CleanUpAfterDelete(List<IStep> listToClean)
-        {
-            if (listToClean.Count > 0)
-            {
-                List<IStep> stepsToRemove = new List<IStep>();
-
-                // Go through repeat steps and delete the ones which have 0 substeps
-                foreach (IStep currentStep in listToClean)
-                {
-                    if (currentStep.Type == IStep.StepType.Repeat)
-                    {
-                        RepeatStep concreteStep = (RepeatStep)currentStep;
-
-                        CleanUpAfterDelete(concreteStep.StepsToRepeat);
-
-                        if (concreteStep.StepsToRepeat.Count == 0)
-                        {
-                            stepsToRemove.Add(currentStep);
-                        }
-                    }
-                }
-
-                // Remove the empty repeats
-                foreach (IStep step in stepsToRemove)
-                {
-                    listToClean.Remove(step);
-                }
-            }
-
-            if (this is Workout && Steps.Count == 0)
-            {
-                // Cannot have an empty workout, recreate a base step
-                AddStepToRoot(new RegularStep(ConcreteWorkout));
-            }
-        }
-
-        private void RegisterStep(IStep stepToRegister)
+        protected void RegisterStep(IStep stepToRegister)
         {
             stepToRegister.StepChanged += new IStep.StepChangedEventHandler(OnStepChanged);
-            stepToRegister.DurationChanged += new IStep.StepDurationChangedEventHandler(OnDurationChanged);
-            stepToRegister.TargetChanged += new IStep.StepTargetChangedEventHandler(OnTargetChanged);
+
+            if (stepToRegister is RegularStep)
+            {
+                RegularStep regularStep = stepToRegister as RegularStep;
+
+                regularStep.DurationChanged += new RegularStep.StepDurationChangedEventHandler(OnDurationChanged);
+                regularStep.TargetChanged += new RegularStep.StepTargetChangedEventHandler(OnTargetChanged);
+            }
+            else if (stepToRegister is RepeatStep)
+            {
+                RepeatStep repeatStep = stepToRegister as RepeatStep;
+
+                repeatStep.DurationChanged += new RepeatStep.StepDurationChangedEventHandler(OnRepeatDurationChanged);
+            }
 
             stepToRegister.ParentConcreteWorkout = ConcreteWorkout;
 
@@ -847,78 +605,71 @@ namespace GarminFitnessPlugin.Data
             }
         }
 
-        private void UnregisterStep(IStep stepToUnregister)
+        protected void UnregisterStep(IStep stepToUnregister)
         {
             stepToUnregister.StepChanged -= new IStep.StepChangedEventHandler(OnStepChanged);
-            stepToUnregister.DurationChanged -= new IStep.StepDurationChangedEventHandler(OnDurationChanged);
-            stepToUnregister.TargetChanged -= new IStep.StepTargetChangedEventHandler(OnTargetChanged);
-        }
 
-        public IStep GetStepById(int id)
-        {
-            return GetStepByIdInternal(Steps, id, 0);
-        }
-
-        private static IStep GetStepByIdInternal(IList<IStep> steps, int id, int baseId)
-        {
-            int currentId = baseId;
-
-            for (int i = 0; i < steps.Count; ++i)
+            if (stepToUnregister is RegularStep)
             {
-                IStep currentStep = steps[i];
+                RegularStep regularStep = stepToUnregister as RegularStep;
 
-                if (currentId + currentStep.GetStepCount() == id)
-                {
-                    return currentStep;
-                }
-                else if (currentStep.Type == IStep.StepType.Repeat && id <= currentId + currentStep.GetStepCount())
-                {
-                    RepeatStep concreteStep = (RepeatStep)currentStep;
-                    return GetStepByIdInternal(concreteStep.StepsToRepeat, id, currentId);
-                }
-
-                currentId += currentStep.GetStepCount();
+                regularStep.DurationChanged -= new RegularStep.StepDurationChangedEventHandler(OnDurationChanged);
+                regularStep.TargetChanged -= new RegularStep.StepTargetChangedEventHandler(OnTargetChanged);
             }
+            else if (stepToUnregister is RepeatStep)
+            {
+                RepeatStep repeatStep = stepToUnregister as RepeatStep;
 
-            return null;
+                repeatStep.DurationChanged -= new RepeatStep.StepDurationChangedEventHandler(OnRepeatDurationChanged);
+            }
         }
-        
+
         public int GetStepExportId(IStep step)
         {
-            int result = GetStepExportIdInternal(step.ParentWorkout.Steps, step);
+            UInt16 counter = 0;
+            bool result = GetStepExportIdInternal(step, Steps, ref counter);
 
-            Debug.Assert(result != -1);
+            Debug.Assert(result);
 
-            return result;
+            return counter;
         }
 
-        private int GetStepExportIdInternal(IList<IStep> steps, IStep step)
+        private bool GetStepExportIdInternal(IStep step, List<IStep> stepsList, ref UInt16 stepCounter)
         {
-            int currentId = 0;
-
-            for (int i = 0; i < steps.Count; ++i)
+            foreach (IStep currentStep in stepsList)
             {
-                IStep currentStep = steps[i];
-
-                if (currentStep == step)
+                if (currentStep is WorkoutLinkStep)
                 {
-                    return currentId + currentStep.GetStepCount();
-                }
-                else if (currentStep.Type == IStep.StepType.Repeat)
-                {
-                    RepeatStep concreteStep = (RepeatStep)currentStep;
-                    int temp = GetStepExportIdInternal(concreteStep.StepsToRepeat, step);
+                    WorkoutLinkStep concreteStep = currentStep as WorkoutLinkStep;
+                    UInt16 tempCounter = 0;
 
-                    if (temp != -1)
+                    if (GetStepExportIdInternal(step, concreteStep.LinkedWorkoutSteps, ref tempCounter))
                     {
-                        return currentId + temp;
+                        stepCounter += tempCounter;
+                        return true;
+                    }
+                }
+                else if (currentStep is RepeatStep)
+                {
+                    RepeatStep concreteStep = currentStep as RepeatStep;
+                    UInt16 tempCounter = 0;
+
+                    if (GetStepExportIdInternal(step, concreteStep.StepsToRepeat, ref tempCounter))
+                    {
+                        stepCounter += tempCounter;
+                        return true;
                     }
                 }
 
-                currentId += currentStep.GetStepCount();
+                stepCounter += currentStep.StepCount;
+
+                if (currentStep == step)
+                {
+                    return true;
+                }
             }
 
-            return -1;
+            return false;
         }
 
         public void ScheduleWorkout(DateTime date)
@@ -940,6 +691,16 @@ namespace GarminFitnessPlugin.Data
             if (ScheduledDates.Contains(temp))
             {
                 ScheduledDates.Remove(temp);
+
+                TriggerWorkoutChangedEvent(new PropertyChangedEventArgs("Schedule"));
+            }
+        }
+
+        public void RemoveAllScheduledDates()
+        {
+            if (ScheduledDates.Count > 0)
+            {
+                ScheduledDates.Clear();
 
                 TriggerWorkoutChangedEvent(new PropertyChangedEventArgs("Schedule"));
             }
@@ -985,6 +746,22 @@ namespace GarminFitnessPlugin.Data
             }
         }
 
+        public Guid Id
+        {
+            get { return IdInternal; }
+            set
+            {
+                Debug.Assert(!(this is WorkoutPart));
+
+                if (!value.Equals(Id))
+                {
+                    IdInternal.Value = value;
+
+                    TriggerWorkoutChangedEvent(new PropertyChangedEventArgs("Id"));
+                }
+            }
+        }
+
         public string Notes
         {
             get { return NotesInternal; }
@@ -1001,15 +778,36 @@ namespace GarminFitnessPlugin.Data
             }
         }
 
+        public virtual List<XmlNode> StepsExtensions
+        {
+            get { return ConcreteWorkout.StepsExtensions; }
+        }
+
+        public virtual List<XmlNode> STExtensions
+        {
+            get { return ConcreteWorkout.STExtensions; }
+        }
+
+        public bool ContainsFITOnlyFeatures
+        {
+            get { return Steps.ContainsFITOnlyFeatures; }
+        }
+
+        public bool ContainsTCXExtensionFeatures
+        {
+            get { return Steps.ContainsTCXExtensionFeatures; }
+        }
+
         // Abstract mthods
         public abstract bool CanAcceptNewStep(int newStepCount, IStep destinationStep);
         public abstract Workout ConcreteWorkout { get; }
         public abstract GarminFitnessString NameInternal { get; }
+        public abstract GarminFitnessGuid IdInternal { get; }
         public abstract GarminFitnessString NotesInternal { get; }
         public abstract DateTime LastExportDate { get; set; }
         public abstract List<GarminFitnessDate> ScheduledDates { get; }
         public abstract IActivityCategory Category { get; set; }
-        public abstract List<IStep> Steps { get; }
+        public abstract WorkoutStepsList Steps { get; }
         public abstract bool AddToDailyViewOnSchedule { get; set; }
 
         // Members
@@ -1022,12 +820,12 @@ namespace GarminFitnessPlugin.Data
         public delegate void StepDurationChangedEventHandler(IWorkout modifiedWorkout, RegularStep modifiedStep, IDuration modifiedDuration, PropertyChangedEventArgs changedProperty);
         public event StepDurationChangedEventHandler StepDurationChanged;
 
+        public delegate void StepRepeatDurationChangedEventHandler(IWorkout modifiedWorkout, RepeatStep modifiedStep, IRepeatDuration modifiedDuration, PropertyChangedEventArgs changedProperty);
+        public event StepRepeatDurationChangedEventHandler StepRepeatDurationChanged;
+
         public delegate void StepTargetChangedEventHandler(IWorkout modifiedWorkout, RegularStep modifiedStep, ITarget modifiedTarget, PropertyChangedEventArgs changedProperty);
         public event StepTargetChangedEventHandler StepTargetChanged;
 
         private bool m_EventsActive = true;
-
-        private List<XmlNode> m_STExtensions = new List<XmlNode>();
-        private List<XmlNode> m_StepsExtensions = new List<XmlNode>();
     }
 }

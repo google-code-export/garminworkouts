@@ -53,7 +53,7 @@ namespace GarminFitnessPlugin.Controller
 
         public virtual void Deserialize(XmlNode parentNode)
         {
-            GarminProfile newProfile = new GarminProfile();
+            GarminProfile newProfile = UserProfile.Clone();
 
             newProfile.Deserialize(parentNode);
 

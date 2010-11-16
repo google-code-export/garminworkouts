@@ -11,159 +11,76 @@ using System.Windows.Forms;
 using System.Xml;
 using ZoneFiveSoftware.Common.Data.Fitness;
 using ZoneFiveSoftware.Common.Visuals.Fitness;
+using SportTracksPluginFramework;
 using GarminFitnessPlugin.Data;
 using GarminFitnessPlugin.View;
 using GarminFitnessPlugin.Controller;
 
 namespace GarminFitnessPlugin
 {
-    class PluginMain : IPlugin
+    class PluginMain : STFrameworkEntryPoint, IPlugin
     {
-        #region IPlugin Members
-
-        public IApplication Application
+        public PluginMain() : base(GUIDs.PluginMain)
         {
-            set
-            {
-                if (m_App != null)
-                {
-                    m_App.PropertyChanged -= new PropertyChangedEventHandler(AppPropertyChanged);
-                }
-
-                m_App = value;
-
-                if (m_App != null)
-                {
-                    m_App.PropertyChanged += new PropertyChangedEventHandler(AppPropertyChanged);
-                }
-            }
+            STFrameworkEntryPoint.LogbookChanged += new LogbookChangedEventHandler(OnLogbookChanged);
         }
 
-        void AppPropertyChanged(object sender, PropertyChangedEventArgs e)
+        private void OnLogbookChanged(object sender, ILogbook oldLogbook, ILogbook newLogbook)
         {
-            if (e != null && e.PropertyName == "Logbook")
-            {
-                if (m_CurrentLogbook != null)
-                {
-                    m_CurrentLogbook.DataChanged -= new ZoneFiveSoftware.Common.Data.NotifyDataChangedEventHandler(LogbookDataChanged);
-                }
-
-                LoadWorkoutsFromLogbook();
-                if (LogbookChanged != null)
-                {
-                    LogbookChanged(this, m_CurrentLogbook, m_App.Logbook);
-                }
-
-                m_CurrentLogbook = m_App.Logbook;
-
-                if (m_CurrentLogbook != null)
-                {
-                    m_CurrentLogbook.DataChanged += new ZoneFiveSoftware.Common.Data.NotifyDataChangedEventHandler(LogbookDataChanged);
-
-                    if (m_PluginOptions != null)
-                    {
-                        Options.Instance.Deserialize(m_PluginOptions);
-                    }
-                }
-
-                // Check for donation reminder
-                if (Options.Instance.DonationReminderDate.Ticks != 0 &&
-                    Options.Instance.DonationReminderDate >= DateTime.Today)
-                {
-                    DonationReminder dlg = new DonationReminder();
-
-                    if(dlg.ShowDialog() == DialogResult.OK)
-                    {
-                        Options.Instance.DonationReminderDate = new DateTime(0);
-                    }
-                    else
-                    {
-                        Options.Instance.DonationReminderDate = DateTime.Today;
-                        Options.Instance.DonationReminderDate.AddDays(14);
-                    }
-                }
-            }
+            LoadWorkoutsFromLogbook(newLogbook);
         }
 
-        void LogbookDataChanged(object sender, ZoneFiveSoftware.Common.Data.NotifyDataChangedEventArgs e)
-        {
-            IList referenceList = null;
+#region STFrameworkEntryPoint Members
 
-            if (e.Action == ZoneFiveSoftware.Common.Data.NotifyDataChangedAction.PropertySet)
-            {
-                referenceList = e.NewItems;
-            }
-            else if (e.Action == ZoneFiveSoftware.Common.Data.NotifyDataChangedAction.Remove)
-            {
-                referenceList = e.OldItems;
-            }
-
-            if (referenceList != null)
-            {
-                foreach (Object currentItem in referenceList)
-                {
-                    if (currentItem.GetType().FullName == "ZoneFiveSoftware.SportTracks.Data.ZoneCategory")
-                    {
-                        if (ZoneCategoryChanged != null)
-                        {
-                            ZoneCategoryChanged(this, (IZoneCategory)currentItem);
-                        }
-                    }
-                    else if (currentItem.GetType().FullName == "ZoneFiveSoftware.SportTracks.Data.ActivityCategory")
-                    {
-                        if (ActivityCategoryChanged != null)
-                        {
-                            ActivityCategoryChanged(this, (IActivityCategory)currentItem);
-                        }
-                    }
-                }
-            }
-        }
-
-        public Guid Id
-        {
-            get { return GUIDs.PluginMain; }
-        }
-
-        public string Name
+        public override string Name
         {
             get { return GarminFitnessView.GetLocalizedString("GarminFitnessText"); }
         }
 
-        public void ReadOptions(XmlDocument xmlDoc, XmlNamespaceManager nsmgr, XmlElement pluginNode)
+        public override void ReadOptions(XmlDocument xmlDoc, XmlNamespaceManager nsmgr, XmlElement pluginNode)
         {
             m_PluginOptions = pluginNode;
-
-            ActivityCategoryChanged += new PluginMain.ActivityCategoryChangedEventHandler(Options.Instance.OnActivityCategoryChanged);
         }
 
-        public string Version
-        {
-            get { return GetType().Assembly.GetName().Version.ToString(3); }
-        }
-
-        public void WriteOptions(XmlDocument xmlDoc, XmlElement pluginNode)
+        public override void WriteOptions(XmlDocument xmlDoc, XmlElement pluginNode)
         {
             Options.Instance.Serialize(pluginNode, "", xmlDoc);
         }
 
-        #endregion
-
-        public static IApplication GetApplication()
+        protected override void Initialize()
         {
-            return m_App;
         }
 
-        private static void LoadWorkoutsFromLogbook()
+        public override string DonationLink
+        {
+            get { return "https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=RLEX96JT6JRCQ"; }
+        }
+
+        public override Control DonationReminderControl
+        {
+            get
+            {
+                if (m_ReminderControl == null)
+                {
+                    m_ReminderControl = new GarminFitnessDonationReminderControl();
+                }
+
+                return m_ReminderControl;
+            }
+        }
+
+#endregion
+
+        private void LoadWorkoutsFromLogbook(ILogbook logbook)
         {
             // Load data from logbook
-            byte[] extensionData = PluginMain.GetApplication().Logbook.GetExtensionData(GUIDs.PluginMain);
-            MemoryStream stream = new MemoryStream(extensionData);
+            byte[] extensionData = logbook.GetExtensionData(GUIDs.PluginMain);
 
             if (extensionData != null && extensionData.Length > 0)
             {
                 try
                 {
+                    MemoryStream stream = new MemoryStream(extensionData);
                     byte[] headerBuffer = new byte[Constants.DataHeaderIdString.Length];
                     String headerIdString;
                     DataVersion version = new DataVersion(0);
@@ -197,10 +114,18 @@ namespace GarminFitnessPlugin
                     Options.Instance.Deserialize(stream, version);
                     GarminWorkoutManager.Instance.Deserialize(stream, version);
                     GarminProfileManager.Instance.Deserialize(stream, version);
+
+                    if (m_PluginOptions != null)
+                    {
+                        Options.Instance.Deserialize(m_PluginOptions);
+                        m_PluginOptions = null;
+                    }
+
+                    stream.Close();
                 }
                 catch (Exception e)
                 {
-                     throw e;
+                    throw e;
                 }
             }
             else
@@ -208,27 +133,10 @@ namespace GarminFitnessPlugin
                 GarminWorkoutManager.Instance.RemoveAllWorkouts();
                 GarminProfileManager.Instance.UserProfile.Cleanup();
                 Options.Instance.ResetLogbookSettings();
-
-                // Show the wizard on first run
-                GarminFitnessSetupWizard wizard = new GarminFitnessSetupWizard();
-
-                wizard.ShowDialog();
             }
-
-            stream.Close();
         }
 
-        public delegate void LogbookChangedEventHandler(object sender, ILogbook oldLogbook, ILogbook newLogbook); 
-        public static event LogbookChangedEventHandler LogbookChanged;
-
-        public delegate void ZoneCategoryChangedEventHandler(object sender, IZoneCategory category);
-        public static event ZoneCategoryChangedEventHandler ZoneCategoryChanged;
-
-        public delegate void ActivityCategoryChangedEventHandler(object sender, IActivityCategory category);
-        public static event ActivityCategoryChangedEventHandler ActivityCategoryChanged;
-
-        private static IApplication m_App = null;
-        private static ILogbook m_CurrentLogbook = null;
-        XmlNode m_PluginOptions;
+        private GarminFitnessDonationReminderControl m_ReminderControl = null;
+        private XmlNode m_PluginOptions;
     }
 }

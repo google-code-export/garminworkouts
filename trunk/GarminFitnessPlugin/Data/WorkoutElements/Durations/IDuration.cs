@@ -28,6 +28,8 @@ namespace GarminFitnessPlugin.Data
             stream.Write(BitConverter.GetBytes((Int32)Type), 0, sizeof(Int32));
         }
 
+        public abstract void FillFITStepMessage(FITMessage message);
+
         public void Deserialize_V0(Stream stream, DataVersion version)
         {
         }
@@ -70,6 +72,16 @@ namespace GarminFitnessPlugin.Data
             get { return m_ParentStep; }
         }
 
+        public virtual bool ContainsFITOnlyFeatures
+        {
+            get { return false; }
+        }
+
+        public bool ContainsTCXExtensionFeatures
+        {
+            get { return false; }
+        }
+
         public enum DurationType
         {
             [ComboBoxStringProviderAttribute("LapButtonDurationComboBoxText")]
@@ -90,6 +102,12 @@ namespace GarminFitnessPlugin.Data
             [ComboBoxStringProviderAttribute("CaloriesDurationComboBoxText")]
             [StepDescriptionStringProviderAttribute("CaloriesDurationDescriptionText")]
             Calories,
+            [ComboBoxStringProviderAttribute("PowerAboveDurationComboBoxText")]
+            [StepDescriptionStringProviderAttribute("PowerAboveDurationDescriptionText")]
+            PowerAbove,
+            [ComboBoxStringProviderAttribute("PowerBelowDurationComboBoxText")]
+            [StepDescriptionStringProviderAttribute("PowerBelowDurationDescriptionText")]
+            PowerBelow,
             DurationTypeCount
         }
 

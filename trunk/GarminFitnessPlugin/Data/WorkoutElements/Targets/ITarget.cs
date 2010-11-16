@@ -26,6 +26,8 @@ namespace GarminFitnessPlugin.Data
             stream.Write(BitConverter.GetBytes((Int32)Type), 0, sizeof(Int32));
         }
 
+        public abstract void FillFITStepMessage(FITMessage message);
+
         public void Deserialize_V0(Stream stream, DataVersion version)
         {
         }
@@ -74,6 +76,16 @@ namespace GarminFitnessPlugin.Data
         {
             get;
             set;
+        }
+
+        public virtual bool ContainsFITOnlyFeatures
+        {
+            get { return false; }
+        }
+
+        public virtual bool ContainsTCXExtensionFeatures
+        {
+            get { return false; }
         }
 
         public enum TargetType

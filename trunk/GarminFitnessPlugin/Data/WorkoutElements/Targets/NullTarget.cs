@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using System.Xml;
+using GarminFitnessPlugin.Controller;
 
 namespace GarminFitnessPlugin.Data
 {
@@ -22,6 +23,14 @@ namespace GarminFitnessPlugin.Data
         public override void Serialize(Stream stream)
         {
             base.Serialize(stream);
+        }
+
+        public override void FillFITStepMessage(FITMessage message)
+        {
+            FITMessageField targetType = new FITMessageField((Byte)FITWorkoutStepFieldIds.TargetType);
+
+            targetType.SetEnum((Byte)FITWorkoutStepTargetTypes.NoTarget);
+            message.AddField(targetType);
         }
 
         public new void Deserialize_V0(Stream stream, DataVersion version)

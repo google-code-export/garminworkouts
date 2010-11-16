@@ -1,4 +1,6 @@
 using System;
+using System.ComponentModel;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
 using System.Resources;
@@ -15,10 +17,13 @@ namespace GarminFitnessPlugin.View
     {
         public ImportWorkoutsAction()
         {
-            PropertyChanged += new System.ComponentModel.PropertyChangedEventHandler(WorkoutImportWorkoutsAction_PropertyChanged);
+            if (PropertyChanged != null)
+            {
+                PropertyChanged(this, new PropertyChangedEventArgs("Action"));
+            }
         }
 
-        #region IAction Members
+#region IAction Members
 
         public bool Enabled
         {
@@ -38,13 +43,23 @@ namespace GarminFitnessPlugin.View
             }
         }
 
+        public bool Visible
+        {
+            get { return true; }
+        }
+
+        public IList<string> MenuPath
+        {
+            get { return null; }
+        }
+
         public void Refresh()
         {
         }
 
         public void Run(System.Drawing.Rectangle rectButton)
         {
-            if ((!GarminDeviceManager.Instance.IsInitialized && GarminDeviceManager.Instance.GetPendingTaskCount() == 1) ||
+            if ((!GarminDeviceManager.Instance.IsInitialized && GarminDeviceManager.Instance.PendingTaskCount == 1) ||
                 GarminDeviceManager.Instance.AreAllTasksFinished)
             {
                 Control control = PluginMain.GetApplication().ActiveView.CreatePageControl();
@@ -70,15 +85,8 @@ namespace GarminFitnessPlugin.View
             }
         }
 
-        #endregion
+#endregion
 
-        #region INotifyPropertyChanged Members
-
-        void WorkoutImportWorkoutsAction_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
-        {
-        }
-
-        #endregion
 
         public void FromDeviceEventHandler(object sender, EventArgs args)
         {
@@ -87,6 +95,8 @@ namespace GarminFitnessPlugin.View
                 GarminDeviceManager.Instance.TaskCompleted += new GarminDeviceManager.TaskCompletedEventHandler(OnDeviceManagerTaskCompleted);
 
                 Utils.HijackMainWindow();
+                Options.Instance.LastImportCategory = null;
+                Options.Instance.UseLastCategoryForAllImportedWorkout = false;
 
                 // Import using Communicator Plugin
                 GarminDeviceManager.Instance.SetOperatingDevice();
@@ -107,22 +117,47 @@ namespace GarminFitnessPlugin.View
             DialogResult result;
 
             dlg.Title = GarminFitnessView.GetLocalizedString("OpenFileText");
-            dlg.Filter = GarminFitnessView.GetLocalizedString("FileDescriptionText") + " (*.tcx;*.wkt)|*.tcx;*.wkt";
+            dlg.Filter = GarminFitnessView.GetLocalizedString("FileDescriptionText") + " (*.tcx;*.wkt;*.fit)|*.tcx;*.wkt;*.fit";
+            dlg.Multiselect = true;
             dlg.CheckFileExists = true;
             result = dlg.ShowDialog();
 
             if (result == DialogResult.OK)
             {
-                Stream workoutStream = dlg.OpenFile();
+                Options.Instance.LastImportCategory = null;
+                Options.Instance.UseLastCategoryForAllImportedWorkout = false;
 
-                if (!WorkoutImporter.ImportWorkout(workoutStream))
+                foreach (String filename in dlg.FileNames)
                 {
-                    MessageBox.Show(GarminFitnessView.GetLocalizedString("ImportWorkoutsErrorText"),
-                                    GarminFitnessView.GetLocalizedString("ErrorText"),
-                                    MessageBoxButtons.OK, MessageBoxIcon.Error);
-                }
+                    Stream workoutStream = File.OpenRead(filename);
 
-                workoutStream.Close();
+                    // Check if this is a FIT file or not
+                    workoutStream.Seek(8, SeekOrigin.Begin);
+                    Byte[] buffer = new Byte[4];
+                    workoutStream.Read(buffer, 0, 4);
+                    String FITMarker = Encoding.UTF8.GetString(buffer, 0, 4);
+                    workoutStream.Seek(0, SeekOrigin.Begin);
+
+                    if (FITMarker.Equals(FITConstants.FITFileDescriptor))
+                    {
+                        if (!WorkoutImporter.ImportWorkoutFromFIT(workoutStream))
+                        {
+                            MessageBox.Show(GarminFitnessView.GetLocalizedString("ImportWorkoutsErrorText"),
+                                            GarminFitnessView.GetLocalizedString("ErrorText"),
+                                            MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        }
+                    }
+                    else
+                    {
+                        if (!WorkoutImporter.ImportWorkout(workoutStream))
+                        {
+                            MessageBox.Show(GarminFitnessView.GetLocalizedString("ImportWorkoutsErrorText"),
+                                            GarminFitnessView.GetLocalizedString("ErrorText"),
+                                            MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        }
+                    }
+                    workoutStream.Close();
+                }
             }
         }
 
@@ -130,7 +165,7 @@ namespace GarminFitnessPlugin.View
         {
             if (!succeeded)
             {
-                if (task.Type == GarminDeviceManager.BasicTask.TaskTypes.TaskType_Initialize)
+                if (task.Type == GarminDeviceManager.BasicTask.TaskTypes.Initialize)
                 {
                     MessageBox.Show(GarminFitnessView.GetLocalizedString("DeviceCommunicationErrorText"),
                                     GarminFitnessView.GetLocalizedString("ErrorText"),

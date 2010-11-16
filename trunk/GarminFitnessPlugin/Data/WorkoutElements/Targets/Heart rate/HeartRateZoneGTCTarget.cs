@@ -33,6 +33,14 @@ namespace GarminFitnessPlugin.Data
             m_Zone.Serialize(stream);
         }
 
+        public override void FillFITStepMessage(FITMessage message)
+        {
+            FITMessageField HRZone = new FITMessageField((Byte)FITWorkoutStepFieldIds.TargetValue);
+
+            HRZone.SetUInt32(Zone);
+            message.AddField(HRZone);
+        }
+
         public new void Deserialize_V0(Stream stream, DataVersion version)
         {
             // Call base deserialization
@@ -52,7 +60,7 @@ namespace GarminFitnessPlugin.Data
 
             // Type
             attribute = document.CreateAttribute(Constants.XsiTypeTCXString, Constants.xsins);
-            attribute.Value = "PredefinedHeartRateZone_t";
+            attribute.Value = Constants.HeartRateRangeZoneTCXString[0];
             parentNode.Attributes.Append(attribute);
 
             m_Zone.Serialize(parentNode, "Number", document);

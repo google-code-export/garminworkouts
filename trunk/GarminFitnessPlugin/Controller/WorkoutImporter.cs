@@ -1,7 +1,10 @@
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.Diagnostics;
 using System.IO;
 using System.Text;
+using System.Windows.Forms;
 using System.Xml;
 using ZoneFiveSoftware.Common.Data.Fitness;
 using GarminFitnessPlugin.View;
@@ -11,6 +14,14 @@ namespace GarminFitnessPlugin.Controller
 {
     class WorkoutImporter
     {
+        public interface AsyncImportDelegate
+        {
+            void OnAsyncImportCompleted(bool success);
+            void OnProgressChanged(int progressPercent);
+        }
+
+        private delegate DialogResult ShowDialogDelegate(Control mainWindow);
+
         public static bool ImportWorkout(Stream importStream)
         {
             try
@@ -58,56 +69,24 @@ namespace GarminFitnessPlugin.Controller
             }
             catch (GarminFitnessXmlDeserializationException e)
             {
-                System.Windows.Forms.MessageBox.Show(e.Message + "\n\n" + e.ErroneousNode.OuterXml);
+                MessageBox.Show(e.Message + "\n\n" + e.ErroneousNode.OuterXml);
                 return false;
             }
             catch (Exception e)
             {
-                System.Windows.Forms.MessageBox.Show(e.Message + "\n\n" + e.StackTrace);
+                MessageBox.Show(e.Message + "\n\n" + e.StackTrace);
                 return false;
             }
         }
 
         public static bool ImportWorkout(GarXFaceNet._Workout workout, GarXFaceNet._WorkoutOccuranceList occuranceList)
         {
+            GarminFitnessView pluginView = PluginMain.GetApplication().ActiveView as GarminFitnessView;
+            GarminWorkoutControl workoutControl = pluginView.GetCurrentView() as GarminWorkoutControl;
             IActivityCategory category = null;
             String workoutName = workout.GetName();
-            bool isUsedByPart;
 
-            if (!GarminWorkoutManager.Instance.IsWorkoutNameAvailable(workoutName, out isUsedByPart))
-            {
-                if (!isUsedByPart)
-                {
-                    ReplaceRenameDialog dlg = new ReplaceRenameDialog(GarminWorkoutManager.Instance.GetUniqueName(workoutName));
-
-                    if (dlg.ShowDialog() == System.Windows.Forms.DialogResult.Yes)
-                    {
-                        // Yes = replace, delete the current workout from the list
-                        Workout oldWorkout = GarminWorkoutManager.Instance.GetWorkoutWithName(workoutName);
-
-                        category = oldWorkout.Category;
-                        GarminWorkoutManager.Instance.RemoveWorkout(oldWorkout);
-                    }
-                    else
-                    {
-                        // No = rename
-                        workoutName = dlg.NewName;
-                    }
-                }
-                else
-                {
-                    // Auto rename
-                    workoutName = GarminWorkoutManager.Instance.GetUniqueName(workoutName);
-                }
-            }
-
-            if (category == null)
-            {
-                SelectCategoryDialog categoryDlg = new SelectCategoryDialog(workoutName);
-
-                categoryDlg.ShowDialog();
-                category = categoryDlg.SelectedCategory;
-            }
+            workoutControl.GetNewWorkoutNameAndCategory(ref workoutName, ref category);
 
             Workout newWorkout = GarminWorkoutManager.Instance.CreateWorkout(category);
 
@@ -122,6 +101,159 @@ namespace GarminFitnessPlugin.Controller
             return true;
         }
 
+        public static bool ImportWorkoutFromFIT(Stream importStream)
+        {
+            try
+            {
+                Logger.Instance.LogText("Init parser");
+
+                if (FITParser.Instance.Init(importStream))
+                {
+                    FITMessage parsedMessage;
+
+                    do
+                    {
+                        parsedMessage = FITParser.Instance.ReadNextMessage();
+
+                        if (parsedMessage != null)
+                        {
+                            Logger.Instance.LogText(String.Format("FIT parsed message type={0:0}", (int)parsedMessage.GlobalMessageType));
+
+                            switch (parsedMessage.GlobalMessageType)
+                            {
+                                case FITGlobalMessageIds.FileId:
+                                    {
+                                        // Make sure we have a workout file
+                                        FITMessageField fileTypeField = parsedMessage.GetField((Byte)FITFileIdFieldsIds.FileType);
+
+                                        if (fileTypeField != null &&
+                                            (FITFileTypes)fileTypeField.GetEnum() != FITFileTypes.Workout)
+                                        {
+                                            Logger.Instance.LogText("Not a workout FIT file");
+
+                                            return false;
+                                        }
+
+                                        break;
+                                    }
+                                case FITGlobalMessageIds.Workout:
+                                    {
+                                        // Peek name
+                                        FITMessageField nameField = parsedMessage.GetField((Byte)FITWorkoutFieldIds.WorkoutName);
+
+                                        if (nameField != null)
+                                        {
+                                            GarminFitnessView pluginView = PluginMain.GetApplication().ActiveView as GarminFitnessView;
+                                            GarminWorkoutControl workoutControl = pluginView.GetCurrentView() as GarminWorkoutControl;
+                                            IActivityCategory category = null;
+                                            String workoutName = nameField.GetString();
+
+                                            workoutControl.GetNewWorkoutNameAndCategory(ref workoutName, ref category);
+
+                                            Workout newWorkout = GarminWorkoutManager.Instance.CreateWorkout(workoutName, parsedMessage, category);
+                                        }
+                                        else
+                                        {
+                                            throw new FITParserException("No name for workout");
+                                        }
+                                        break;
+                                    }
+                                default:
+                                    {
+                                        // Nothing to do, unsupported message
+                                        break;
+                                    }
+                            }
+                        }
+                    }
+                    while (parsedMessage != null);
+
+                    FITParser.Instance.Close();
+
+                    return true;
+                }
+                else
+                {
+                    Logger.Instance.LogText("FIT parser init failed");
+
+                    return false;
+                }
+            }
+            catch (FITParserException e)
+            {
+                MessageBox.Show("Error parsing FIT file\n\n" +
+                                e.Message + "\n\n" +
+                                e.StackTrace);
+                return false;
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show("General error on import\n\n" +
+                                e.Message + "\n\n" +
+                                e.StackTrace);
+                return false;
+            }
+        }
+
+        public static bool AsyncImportDirectory(string directory, AsyncImportDelegate completedDelegate)
+        {
+            BackgroundWorker importerThread = new BackgroundWorker();
+
+            Debug.Assert(m_AsyncCompletedDelegate == null);
+
+            if (completedDelegate != null)
+            {
+                m_AsyncCompletedDelegate = completedDelegate;
+                m_ImportDirectory = directory;
+
+                importerThread.DoWork += new DoWorkEventHandler(importerThread_DoWork);
+                importerThread.WorkerReportsProgress = true;
+                importerThread.ProgressChanged += new ProgressChangedEventHandler(importerThread_ProgressChanged);
+                importerThread.RunWorkerCompleted += new RunWorkerCompletedEventHandler(importerThread_RunWorkerCompleted);
+                importerThread.WorkerSupportsCancellation = true;
+
+                importerThread.RunWorkerAsync();
+
+                return true;
+            }
+
+            return false;
+        }
+
+        private static void importerThread_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        {
+            m_AsyncCompletedDelegate.OnAsyncImportCompleted(true);
+            m_AsyncCompletedDelegate = null;
+        }
+
+        private static void importerThread_ProgressChanged(object sender, ProgressChangedEventArgs e)
+        {
+            m_AsyncCompletedDelegate.OnProgressChanged(e.ProgressPercentage);
+        }
+
+        private static void importerThread_DoWork(object sender, DoWorkEventArgs e)
+        {
+            BackgroundWorker importerThread = sender as BackgroundWorker;
+            String[] files = Directory.GetFiles(m_ImportDirectory, "*.*", SearchOption.AllDirectories);
+            int progress = 0;
+
+            foreach (string filePath in files)
+            {
+                FileStream file = File.OpenRead(filePath);
+
+                if (filePath.EndsWith(FITConstants.FITFileDescriptor, StringComparison.OrdinalIgnoreCase))
+                {
+                    WorkoutImporter.ImportWorkoutFromFIT(file);
+                }
+                else
+                {
+                    WorkoutImporter.ImportWorkout(file);
+                }
+
+                importerThread.ReportProgress(++progress);
+            }
+        }
+
         private static bool LoadWorkouts(XmlNode workoutsList)
         {
             for (int i = 0; i < workoutsList.ChildNodes.Count; ++i)
@@ -130,44 +262,12 @@ namespace GarminFitnessPlugin.Controller
 
                 if (child.Name == "Workout")
                 {
+                    GarminFitnessView pluginView = PluginMain.GetApplication().ActiveView as GarminFitnessView;
+                    GarminWorkoutControl workoutControl = pluginView.GetCurrentView() as GarminWorkoutControl;
                     IActivityCategory category = PeekWorkoutCategory(child);
-                    string name = PeekWorkoutName(child);
-                    bool isUsedByPart;
+                    String workoutName = PeekWorkoutName(child);
 
-                    if (!GarminWorkoutManager.Instance.IsWorkoutNameAvailable(name, out isUsedByPart))
-                    {
-                        if (!isUsedByPart)
-                        {
-                            ReplaceRenameDialog dlg = new ReplaceRenameDialog(GarminWorkoutManager.Instance.GetUniqueName(name));
-
-                            if (dlg.ShowDialog() == System.Windows.Forms.DialogResult.Yes)
-                            {
-                                // Yes = replace, delete the current workout from the list
-                                Workout oldWorkout = GarminWorkoutManager.Instance.GetWorkoutWithName(name);
-
-                                category = oldWorkout.Category;
-                                GarminWorkoutManager.Instance.RemoveWorkout(oldWorkout);
-                            }
-                            else
-                            {
-                                // No = rename
-                                name = dlg.NewName;
-                            }
-                        }
-                        else
-                        {
-                            // Auto rename
-                            name = GarminWorkoutManager.Instance.GetUniqueName(name);
-                        }
-                    }
-
-                    if (category == null)
-                    {
-                        SelectCategoryDialog categoryDlg = new SelectCategoryDialog(name);
-
-                        categoryDlg.ShowDialog();
-                        category = categoryDlg.SelectedCategory;
-                    }
+                    workoutControl.GetNewWorkoutNameAndCategory(ref workoutName, ref category);
 
                     Workout newWorkout = GarminWorkoutManager.Instance.CreateWorkout(child, category);
 
@@ -176,7 +276,7 @@ namespace GarminFitnessPlugin.Controller
                         return false;
                     }
 
-                    newWorkout.Name = name;
+                    newWorkout.Name = workoutName;
                     newWorkout.Category = category;
                 }
                 else if (child.Name == "Running" ||
@@ -265,5 +365,8 @@ namespace GarminFitnessPlugin.Controller
 
             return category;
         }
+
+        private static AsyncImportDelegate m_AsyncCompletedDelegate = null;
+        private static String m_ImportDirectory = null;
     }
 }

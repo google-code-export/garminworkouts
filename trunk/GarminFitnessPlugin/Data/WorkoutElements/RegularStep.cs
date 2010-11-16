@@ -13,6 +13,15 @@ namespace GarminFitnessPlugin.Data
 {
     class RegularStep : IStep
     {
+        public enum StepIntensity
+        {
+            Active = 0,
+            Rest,
+            Warmup,
+            Cooldown,
+            IntensityCount
+        };
+
         public RegularStep(Workout parent)
             : base(StepType.Regular, parent)
         {
@@ -57,23 +66,71 @@ namespace GarminFitnessPlugin.Data
 
         public override void Serialize(Stream stream)
         {
+            GarminFitnessByteRange intensity = new GarminFitnessByteRange((Byte)m_Intensity);
             base.Serialize(stream);
 
             m_Name.Serialize(stream);
-            m_IsRestingStep.Serialize(stream);
             Duration.Serialize(stream);
             Target.Serialize(stream);
+            intensity.Serialize(stream);
+        }
+
+        public override void FillFITStepMessage(FITMessage message)
+        {
+            FITMessageField stepName = new FITMessageField((Byte)FITWorkoutStepFieldIds.StepName);
+            FITMessageField intensity = new FITMessageField((Byte)FITWorkoutStepFieldIds.Intensity);
+
+            if (!String.IsNullOrEmpty(Name))
+            {
+                stepName.SetString(Name, (Byte)(Constants.MaxNameLength + 1));
+                message.AddField(stepName);
+            }
+
+            Duration.FillFITStepMessage(message);
+            Target.FillFITStepMessage(message);
+
+            intensity.SetEnum((Byte)Intensity);
+            message.AddField(intensity);
+        }
+
+        public override void DeserializeFromFIT(FITMessage stepMessage)
+        {
+            FITMessageField nameField = stepMessage.GetField((Byte)FITWorkoutStepFieldIds.StepName);
+            FITMessageField intensityField = stepMessage.GetField((Byte)FITWorkoutStepFieldIds.Intensity);
+
+            if (nameField != null)
+            {
+                Name = nameField.GetString();
+            }
+
+            if (intensityField != null)
+            {
+                Intensity = (StepIntensity)intensityField.GetEnum();
+            }
+
+            Duration = DurationFactory.Create(stepMessage, this);
+            Target = TargetFactory.Create(stepMessage, this);
         }
 
         public new void Deserialize_V0(Stream stream, DataVersion version)
         {
+            GarminFitnessBool isRestingStep = new GarminFitnessBool(false);
             // Call base deserialization
             Deserialize(typeof(IStep), stream, version);
 
             byte[] intBuffer = new byte[sizeof(Int32)];
 
             m_Name.Deserialize(stream, version);
-            m_IsRestingStep.Deserialize(stream, version);
+            isRestingStep.Deserialize(stream, version);
+
+            if (isRestingStep)
+            {
+                m_Intensity = StepIntensity.Rest;
+            }
+            else
+            {
+                m_Intensity = StepIntensity.Active;
+            }
 
             // Duration
             stream.Read(intBuffer, 0, sizeof(Int32));
@@ -102,8 +159,51 @@ namespace GarminFitnessPlugin.Data
             TargetFactory.Create((ITarget.TargetType)type, stream, version, this);
         }
 
+        public void Deserialize_V17(Stream stream, DataVersion version)
+        {
+            GarminFitnessByteRange intensity = new GarminFitnessByteRange(0);
+
+            // Call base deserialization
+            Deserialize(typeof(IStep), stream, version);
+
+            byte[] intBuffer = new byte[sizeof(Int32)];
+
+            m_Name.Deserialize(stream, version);
+
+            // Duration
+            stream.Read(intBuffer, 0, sizeof(Int32));
+            DurationFactory.Create((IDuration.DurationType)BitConverter.ToInt32(intBuffer, 0), stream, version, this);
+
+            // Target
+            stream.Read(intBuffer, 0, sizeof(Int32));
+            Int32 type = BitConverter.ToInt32(intBuffer, 0);
+
+            // This sucks but I changed the order of the enum between version 0 and 1,
+            //  so make sure the version is right
+            if (version.VersionNumber == 0)
+            {
+                if (type == 3)
+                {
+                    // Null was #3, now #0
+                    type = 0;
+                }
+                else
+                {
+                    // Everything else is pushed up 1 position
+                    ++type;
+                }
+            }
+
+            TargetFactory.Create((ITarget.TargetType)type, stream, version, this);
+
+            intensity.Deserialize(stream, Constants.CurrentVersion);
+            m_Intensity = (StepIntensity)(Byte)intensity;
+        }
+
         public override void Serialize(XmlNode parentNode, String nodeName, XmlDocument document)
         {
+            bool addNodeToExtensions = false;
+
             if (Target.Type == ITarget.TargetType.Power)
             {
                 // Power was added to the format as an extension which gives me a headache
@@ -113,32 +213,48 @@ namespace GarminFitnessPlugin.Data
 
                 // Create the fake target
                 TargetFactory.Create(ITarget.TargetType.Null, this);
-                Serialize(parentNode, "", document);
+                Serialize(parentNode, nodeName, document);
+
+                // Remove the step extension that was added so there's no duplicate
+                ParentWorkout.STExtensions.RemoveAt(ParentWorkout.STExtensions.Count - 1);
 
                 // Restore old target
                 Target = realTarget;
 
                 // Create new parent node and add it to the extensions
-                parentNode = document.CreateElement("Step");
-                ParentConcreteWorkout.AddStepExtension(parentNode);
+                nodeName = "Step";
+                addNodeToExtensions = true;
             }
 
             // Ok now this the real stuff but the target can either be the fake one or the real one
-            base.Serialize(parentNode, "", document);
+            base.Serialize(parentNode, nodeName, document);
 
             if (Name != String.Empty && Name != null)
             {
-                m_Name.Serialize(parentNode, "Name", document);
+                m_Name.Serialize(parentNode.LastChild, "Name", document);
             }
 
             // Duration
-            Duration.Serialize(parentNode, "Duration", document);
+            Duration.Serialize(parentNode.LastChild, "Duration", document);
 
             // Intensity
-            m_IsRestingStep.Serialize(parentNode, "Intensity", document);
+            GarminFitnessBool isRestingStep = new GarminFitnessBool(Intensity == StepIntensity.Active ||
+                                                                    (Intensity == StepIntensity.Warmup && Options.Instance.TCXExportWarmupAs == StepIntensity.Active) ||
+                                                                    (Intensity == StepIntensity.Cooldown && Options.Instance.TCXExportCooldownAs == StepIntensity.Active),
+                                                                    Constants.StepIntensityZoneTCXString[0],
+                                                                    Constants.StepIntensityZoneTCXString[1]);
+            isRestingStep.Serialize(parentNode.LastChild, "Intensity", document);
 
             // Target
-            Target.Serialize(parentNode, "Target", document);
+            Target.Serialize(parentNode.LastChild, "Target", document);
+
+            if (addNodeToExtensions)
+            {
+                XmlNode extensionNode = parentNode.LastChild;
+
+                parentNode.RemoveChild(extensionNode);
+                ParentWorkout.AddStepExtension(extensionNode);
+            }
         }
 
         public override void Deserialize(XmlNode parentNode)
@@ -193,7 +309,20 @@ namespace GarminFitnessPlugin.Data
                 }
                 else if (child.Name == "Intensity")
                 {
-                    m_IsRestingStep.Deserialize(child);
+                    GarminFitnessBool isActiveStep = new GarminFitnessBool(false,
+                                                                            Constants.StepIntensityZoneTCXString[0],
+                                                                            Constants.StepIntensityZoneTCXString[1]);
+                    isActiveStep.Deserialize(child);
+
+                    if (isActiveStep)
+                    {
+                        Intensity = StepIntensity.Active;
+                    }
+                    else
+                    {
+                        Intensity = StepIntensity.Rest;
+                    }
+
                     intensityLoaded = true;
                 }
             }
@@ -209,7 +338,9 @@ namespace GarminFitnessPlugin.Data
             GarXFaceNet._Workout._Step step = workout.GetStep(stepIndex);
 
             step.SetCustomName(Name);
-            step.SetIntensity(this.IsRestingStep ? GarXFaceNet._Workout._Step.IntensityTypes.Rest : GarXFaceNet._Workout._Step.IntensityTypes.Active);
+            step.SetIntensity((Intensity == StepIntensity.Rest || Intensity == StepIntensity.Cooldown) ?
+                                GarXFaceNet._Workout._Step.IntensityTypes.Rest :
+                                GarXFaceNet._Workout._Step.IntensityTypes.Active);
 
             Duration.Serialize(step);
             Target.Serialize(step);
@@ -222,7 +353,15 @@ namespace GarminFitnessPlugin.Data
             GarXFaceNet._Workout._Step step = workout.GetStep(stepIndex);
 
             Name = step.GetCustomName();
-            IsRestingStep = step.GetIntensity() == GarXFaceNet._Workout._Step.IntensityTypes.Rest;
+
+            if (step.GetIntensity() == GarXFaceNet._Workout._Step.IntensityTypes.Rest)
+            {
+                Intensity = StepIntensity.Rest;
+            }
+            else
+            {
+                Intensity = StepIntensity.Active;
+            }
 
             Duration.Deserialize(step);
 
@@ -247,6 +386,26 @@ namespace GarminFitnessPlugin.Data
             stream.Seek(sizeof(Int32), SeekOrigin.Begin);
 
             return new RegularStep(stream, Constants.CurrentVersion, ParentConcreteWorkout);
+        }
+
+        protected void TriggerDurationChangedEvent(IDuration duration, PropertyChangedEventArgs args)
+        {
+            Debug.Assert(Type == StepType.Regular);
+
+            if (DurationChanged != null)
+            {
+                DurationChanged((RegularStep)this, duration, args);
+            }
+        }
+
+        protected void TriggerTargetChangedEvent(ITarget target, PropertyChangedEventArgs args)
+        {
+            Debug.Assert(Type == StepType.Regular);
+
+            if (TargetChanged != null)
+            {
+                TargetChanged((RegularStep)this, target, args);
+            }
         }
 
         public void HandleTargetOverride(XmlNode extensionNode)
@@ -364,9 +523,11 @@ namespace GarminFitnessPlugin.Data
                     }
 
                     m_Duration = value;
+                    Debug.Assert(m_Duration != null);
+
                     m_Duration.DurationChanged += new IDuration.DurationChangedEventHandler(OnDurationChanged);
 
-                    TriggerStepChanged( new PropertyChangedEventArgs("Duration"));
+                    TriggerStepChanged(new PropertyChangedEventArgs("Duration"));
                 }
             }
         }
@@ -411,23 +572,47 @@ namespace GarminFitnessPlugin.Data
             set { Debug.Assert(false); }
         }
 
-        public bool IsRestingStep
+        public StepIntensity Intensity
         {
-            get { return m_IsRestingStep; }
+            get { return m_Intensity; }
             set
             {
-                if (m_IsRestingStep != value)
+                if (m_Intensity != value)
                 {
-                    m_IsRestingStep.Value = value;
-                    
-                    TriggerStepChanged( new PropertyChangedEventArgs("IsRestingStep"));
+                    m_Intensity = value;
+
+                    TriggerStepChanged(new PropertyChangedEventArgs("Intensity"));
                 }
             }
         }
 
-        private IDuration m_Duration;
-        private ITarget m_Target;
+        public override bool ContainsFITOnlyFeatures
+        {
+            get
+            {
+                return Target.ContainsFITOnlyFeatures ||
+                       Duration.ContainsFITOnlyFeatures;
+            }
+        }
+
+        public override bool ContainsTCXExtensionFeatures
+        {
+            get
+            {
+                return Target.ContainsTCXExtensionFeatures ||
+                       Duration.ContainsTCXExtensionFeatures;
+            }
+        }
+
+        public delegate void StepDurationChangedEventHandler(RegularStep modifiedStep, IDuration modifiedDuration, PropertyChangedEventArgs changedProperty);
+        public event StepDurationChangedEventHandler DurationChanged;
+
+        public delegate void StepTargetChangedEventHandler(RegularStep modifiedStep, ITarget modifiedTarget, PropertyChangedEventArgs changedProperty);
+        public event StepTargetChangedEventHandler TargetChanged;
+
+        private IDuration m_Duration = null;
+        private ITarget m_Target = null;
         private GarminFitnessString m_Name = new GarminFitnessString(String.Empty, Constants.MaxNameLength);
-        private GarminFitnessBool m_IsRestingStep = new GarminFitnessBool(false, Constants.StepIntensityZoneTCXString[1], Constants.StepIntensityZoneTCXString[0]);
+        private StepIntensity m_Intensity = StepIntensity.Active;
     }
 }

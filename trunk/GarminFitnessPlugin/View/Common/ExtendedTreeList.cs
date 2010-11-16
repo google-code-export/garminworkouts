@@ -12,7 +12,7 @@ namespace GarminFitnessPlugin.View
     {
         public ExtendedTreeList()
         {
-            base.SelectedChanged += new EventHandler(OnBaseSelectedChanged);
+            base.SelectedItemsChanged += new EventHandler(OnBaseSelectedItemsChanged);
             base.MouseDown += new System.Windows.Forms.MouseEventHandler(OnBaseMouseDown);
             base.MouseUp += new System.Windows.Forms.MouseEventHandler(OnBaseMouseUp);
             base.MouseMove += new System.Windows.Forms.MouseEventHandler(OnBaseMouseMove);
@@ -53,7 +53,7 @@ namespace GarminFitnessPlugin.View
             }
         }
 
-        void OnBaseSelectedChanged(object sender, EventArgs e)
+        void OnBaseSelectedItemsChanged(object sender, EventArgs e)
         {
             if (m_SelectionCancelled)
             {
@@ -65,9 +65,9 @@ namespace GarminFitnessPlugin.View
             }
             else
             {
-                if (SelectedChanged != null)
+                if (SelectedItemsChanged != null)
                 {
-                    SelectedChanged(sender, e);
+                    SelectedItemsChanged(sender, e);
                 }
                 m_LastSelection = Selected;
             }
@@ -80,7 +80,14 @@ namespace GarminFitnessPlugin.View
                 TreeList.RowHitState type;
                 object futureSelection = RowHitTest(e.Location, out type);
 
-                if (futureSelection != null)
+                if (type == TreeList.RowHitState.PlusMinus)
+                {
+                    if(ExpandedChanged != null)
+                    {
+                        ExpandedChanged(futureSelection, !IsExpanded(futureSelection));
+                    }
+                }
+                else if (futureSelection != null)
                 {
                     m_IsMouseDownInList = true;
                     m_MouseMovedPixels = 0;
@@ -204,13 +211,13 @@ namespace GarminFitnessPlugin.View
         {
             get
             {
-                Debug.Assert(typeof(ExtendedRowDataRenderer).IsInstanceOfType(base.RowDataRenderer));
+                Debug.Assert(base.RowDataRenderer is ExtendedRowDataRenderer);
 
                 return base.RowDataRenderer;
             }
             set
             {
-                Debug.Assert(typeof(ExtendedRowDataRenderer).IsInstanceOfType(value));
+                Debug.Assert(value is ExtendedRowDataRenderer);
 
                 base.RowDataRenderer = value;
             }
@@ -222,8 +229,11 @@ namespace GarminFitnessPlugin.View
             set { m_DragAutoScrollSize = value; }
         }
 
-        public new event EventHandler SelectedChanged;
+        public delegate void ExpandedChangedEventHandler(object sender, bool expanded);
+
+        public new event EventHandler SelectedItemsChanged;
         public event EventHandler DragStart;
+        public event ExpandedChangedEventHandler ExpandedChanged;
 
         private Byte m_DragAutoScrollSize = 20;
 

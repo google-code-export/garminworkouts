@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.IO;
 using System.Reflection;
 using System.Text;
@@ -12,6 +13,54 @@ namespace GarminFitnessPlugin.Controller
 {
     class Options : IPluginSerializable, IXMLSerializable
     {
+        private class STCategoriesInfo
+        {
+            public STCategoriesInfo(IActivityCategory STCategory,
+                        GarminCategories garminCategory) :
+                this(STCategory, garminCategory, true, true)
+            {
+            }
+
+            public STCategoriesInfo(IActivityCategory STCategory,
+                                    GarminCategories garminCategory,
+                                    bool expandInWorkoutList,
+                                    bool showInWorkoutList)
+            {
+                m_STCategory = STCategory;
+                m_GarminCategory = garminCategory;
+                m_ExpandInWorkoutList = expandInWorkoutList;
+                m_ShowInWorkoutList = showInWorkoutList;
+            }
+
+            public IActivityCategory STCategory
+            {
+                get { return m_STCategory; }
+            }
+
+            public GarminCategories GarminCategory
+            {
+                get { return m_GarminCategory; }
+                set { m_GarminCategory = value; }
+            }
+
+            public bool ExpandInWorkoutList
+            {
+                get { return m_ExpandInWorkoutList; }
+                set { m_ExpandInWorkoutList = value; }
+            }
+
+            public bool ShowInWorkoutList
+            {
+                get { return m_ShowInWorkoutList; }
+                set { m_ShowInWorkoutList = value; }
+            }
+
+            private IActivityCategory m_STCategory = null;
+            private GarminCategories m_GarminCategory = GarminCategories.GarminCategoriesCount;
+            private bool m_ExpandInWorkoutList = true;
+            private bool m_ShowInWorkoutList = true;
+        }
+
         public override void Serialize(Stream stream)
         {
             // Write the different options that are logbook related
@@ -38,7 +87,7 @@ namespace GarminFitnessPlugin.Controller
             stream.Write(BitConverter.GetBytes(IsPowerZoneDirty), 0, sizeof(bool));
 
             // Garmin to ST category map
-            Dictionary<IActivityCategory, GarminCategories>.Enumerator iter = Options.Instance.STToGarminCategoryMap.GetEnumerator();
+            Dictionary<IActivityCategory, STCategoriesInfo>.Enumerator iter = Options.Instance.STToGarminCategoryMap.GetEnumerator();
             stream.Write(BitConverter.GetBytes(STToGarminCategoryMap.Count), 0, sizeof(int));
             while (iter.MoveNext())
             {
@@ -47,8 +96,20 @@ namespace GarminFitnessPlugin.Controller
                 stream.Write(Encoding.UTF8.GetBytes(iter.Current.Key.ReferenceId), 0, Encoding.UTF8.GetByteCount(iter.Current.Key.ReferenceId));
 
                 // Mapped Garmin category
-                stream.Write(BitConverter.GetBytes((int)iter.Current.Value), 0, sizeof(int));
+                stream.Write(BitConverter.GetBytes((int)iter.Current.Value.GarminCategory), 0, sizeof(int));
+
+                // Visible is workout list
+                stream.Write(BitConverter.GetBytes(iter.Current.Value.ShowInWorkoutList), 0, sizeof(bool));
+
+                // Expanded is workout list
+                stream.Write(BitConverter.GetBytes(iter.Current.Value.ExpandInWorkoutList), 0, sizeof(bool));
             }
+
+            // Export ST HR zones as percent max
+            stream.Write(BitConverter.GetBytes(ExportSportTracksHeartRateAsPercentMax), 0, sizeof(bool));
+
+            // Export ST power zones as percent max
+            stream.Write(BitConverter.GetBytes(ExportSportTracksPowerAsPercentFTP), 0, sizeof(bool));
         }
 
         public new void Deserialize(Stream stream, DataVersion version)
@@ -149,7 +210,8 @@ namespace GarminFitnessPlugin.Controller
                 stream.Read(intBuffer, 0, sizeof(int));
                 garminCategory = BitConverter.ToInt32(intBuffer, 0);
 
-                STToGarminCategoryMap[Utils.FindCategoryByIDSafe(Encoding.UTF8.GetString(stringBuffer))] = (GarminCategories)garminCategory;
+                SetGarminCategory(Utils.FindCategoryByIDSafe(Encoding.UTF8.GetString(stringBuffer)),
+                                  (GarminCategories)garminCategory);
             }
         }
 
@@ -214,9 +276,121 @@ namespace GarminFitnessPlugin.Controller
                 stream.Read(intBuffer, 0, sizeof(int));
                 garminCategory = BitConverter.ToInt32(intBuffer, 0);
 
-                STToGarminCategoryMap[Utils.FindCategoryByIDSafe(Encoding.UTF8.GetString(stringBuffer))] = (GarminCategories)garminCategory;
+                SetGarminCategory(Utils.FindCategoryByIDSafe(Encoding.UTF8.GetString(stringBuffer)),
+                                  (GarminCategories)garminCategory);
             }
         }
+
+        public void Deserialize_V16(Stream stream, DataVersion version)
+        {
+            byte[] boolBuffer = new byte[sizeof(bool)];
+
+            Deserialize_V8(stream, version);
+
+            // HR as %max
+            stream.Read(boolBuffer, 0, sizeof(bool));
+            ExportSportTracksHeartRateAsPercentMax = BitConverter.ToBoolean(boolBuffer, 0);
+        }
+
+        public void Deserialize_V19(Stream stream, DataVersion version)
+        {
+            byte[] boolBuffer = new byte[sizeof(bool)];
+
+            Deserialize_V16(stream, version);
+
+            // Power as FTP
+            stream.Read(boolBuffer, 0, sizeof(bool));
+            ExportSportTracksPowerAsPercentFTP = BitConverter.ToBoolean(boolBuffer, 0);
+        }
+
+        public void Deserialize_V21(Stream stream, DataVersion version)
+        {
+            byte[] intBuffer = new byte[sizeof(Int32)];
+            byte[] boolBuffer = new byte[sizeof(bool)];
+            byte[] stringBuffer;
+            int mappingCount;
+            int stringLength;
+
+            // Read options that are stored in logbook
+            // Use ST HR zones
+            stream.Read(boolBuffer, 0, sizeof(bool));
+            UseSportTracksHeartRateZones = BitConverter.ToBoolean(boolBuffer, 0);
+
+            // Use ST speed zones
+            stream.Read(boolBuffer, 0, sizeof(bool));
+            UseSportTracksSpeedZones = BitConverter.ToBoolean(boolBuffer, 0);
+
+            // Cadence zone
+            stream.Read(intBuffer, 0, sizeof(int));
+            stringLength = BitConverter.ToInt32(intBuffer, 0);
+            stringBuffer = new byte[stringLength];
+            stream.Read(stringBuffer, 0, stringLength);
+            CadenceZoneCategory = Utils.FindZoneCategoryByID(PluginMain.GetApplication().Logbook.CadenceZones, Encoding.UTF8.GetString(stringBuffer));
+
+            // Cadence dirty flag
+            stream.Read(boolBuffer, 0, sizeof(bool));
+            IsCadenceZoneDirty = BitConverter.ToBoolean(boolBuffer, 0);
+
+            // Use ST power zones
+            stream.Read(boolBuffer, 0, sizeof(bool));
+            UseSportTracksPowerZones = BitConverter.ToBoolean(boolBuffer, 0);
+
+            // Power zone
+            stream.Read(intBuffer, 0, sizeof(int));
+            stringLength = BitConverter.ToInt32(intBuffer, 0);
+            stringBuffer = new byte[stringLength];
+            stream.Read(stringBuffer, 0, stringLength);
+            PowerZoneCategory = Utils.FindZoneCategoryByID(PluginMain.GetApplication().Logbook.PowerZones, Encoding.UTF8.GetString(stringBuffer));
+
+            // Power dirty flag
+            stream.Read(boolBuffer, 0, sizeof(bool));
+            IsPowerZoneDirty = BitConverter.ToBoolean(boolBuffer, 0);
+
+            // Load Garmin to ST category map
+            m_STToGarminCategoryMap.Clear();
+            stream.Read(intBuffer, 0, sizeof(int));
+            mappingCount = BitConverter.ToInt32(intBuffer, 0);
+
+            for (int i = 0; i < mappingCount; ++i)
+            {
+                int garminCategory;
+                bool visible = true;
+                bool expanded = true;
+
+                // ST category Id
+                stream.Read(intBuffer, 0, sizeof(int));
+                stringLength = BitConverter.ToInt32(intBuffer, 0);
+                stringBuffer = new byte[stringLength];
+                stream.Read(stringBuffer, 0, stringLength);
+
+                // Mapped Garmin category
+                stream.Read(intBuffer, 0, sizeof(int));
+                garminCategory = BitConverter.ToInt32(intBuffer, 0);
+
+                // Visible in workout list
+                stream.Read(boolBuffer, 0, sizeof(bool));
+                visible = BitConverter.ToBoolean(boolBuffer, 0);
+
+                // Expanded in workoutList
+                stream.Read(boolBuffer, 0, sizeof(bool));
+                expanded = BitConverter.ToBoolean(boolBuffer, 0);
+
+                IActivityCategory stCategory = Utils.FindCategoryByIDSafe(Encoding.UTF8.GetString(stringBuffer));
+                m_STToGarminCategoryMap.Add(stCategory, new STCategoriesInfo(stCategory,
+                                                                             (GarminCategories)garminCategory,
+                                                                             expanded,
+                                                                             visible));
+            }
+
+            // HR as %max
+            stream.Read(boolBuffer, 0, sizeof(bool));
+            ExportSportTracksHeartRateAsPercentMax = BitConverter.ToBoolean(boolBuffer, 0);
+
+            // Power as FTP
+            stream.Read(boolBuffer, 0, sizeof(bool));
+            ExportSportTracksPowerAsPercentFTP = BitConverter.ToBoolean(boolBuffer, 0);
+        }
+
         public void Serialize(System.Xml.XmlNode parentNode, String nodeName, System.Xml.XmlDocument document)
         {
             XmlNode child;
@@ -254,7 +428,7 @@ namespace GarminFitnessPlugin.Controller
             child = document.CreateElement("EnableAutoSplitWorkouts");
             child.AppendChild(document.CreateTextNode(AllowSplitWorkouts.ToString()));
             parentNode.AppendChild(child);
-        }
+       }
 
         public void Deserialize(System.Xml.XmlNode parentNode)
         {
@@ -349,7 +523,7 @@ namespace GarminFitnessPlugin.Controller
         public void OnActivityCategoryChanged(object sender, IActivityCategory categoryChanged)
         {
             List<IActivityCategory> itemsToDelete = new List<IActivityCategory>();
-            Dictionary<IActivityCategory, GarminCategories>.KeyCollection.Enumerator iter = m_STToGarminCategoryMap.Keys.GetEnumerator();
+            Dictionary<IActivityCategory, STCategoriesInfo>.KeyCollection.Enumerator iter = m_STToGarminCategoryMap.Keys.GetEnumerator();
             while(iter.MoveNext())
             {
                 if (Utils.FindCategoryByID(iter.Current.ReferenceId) == null)
@@ -377,11 +551,11 @@ namespace GarminFitnessPlugin.Controller
             m_IsCadenceZoneDirty = false;
 
             // Set default Garmin to ST category map values
-            m_STToGarminCategoryMap = new Dictionary<IActivityCategory, GarminCategories>();
-            ClearAllGarminCategories();
-            for (int i = 0; i < PluginMain.GetApplication().Logbook.ActivityCategories.Count; ++i)
+            m_STToGarminCategoryMap = new Dictionary<IActivityCategory, STCategoriesInfo>();
+            ClearAllSTCategoriesInfo();
+            foreach (IActivityCategory category in PluginMain.GetApplication().Logbook.ActivityCategories)
             {
-                SetGarminCategory(PluginMain.GetApplication().Logbook.ActivityCategories[i], GarminCategories.Other);
+                SetGarminCategory(category, GarminCategories.Other);
             }
 
             TriggerOptionsChangedEvent("");
@@ -402,44 +576,171 @@ namespace GarminFitnessPlugin.Controller
 
         public GarminCategories GetGarminCategory(IActivityCategory STCategory)
         {
-            if (m_STToGarminCategoryMap.ContainsKey(STCategory))
+            if (m_STToGarminCategoryMap.ContainsKey(STCategory) &&
+                m_STToGarminCategoryMap[STCategory].GarminCategory != GarminCategories.GarminCategoriesCount)
             {
-                return m_STToGarminCategoryMap[STCategory];
+                return m_STToGarminCategoryMap[STCategory].GarminCategory;
             }
-            else
+            else if(STCategory.Parent != null)
             {
                 return GetGarminCategory(STCategory.Parent);
             }
+
+            return GarminCategories.Other;
+        }
+
+        public FITSports GetFITSport(IActivityCategory STCategory)
+        {
+            GarminCategories category = GetGarminCategory(STCategory);
+
+            if (category == GarminCategories.Biking)
+            {
+                return FITSports.Cycling;
+            }
+            else if (category == GarminCategories.Running)
+            {
+                return FITSports.Running;
+            }
+
+            return FITSports.Other;
         }
 
         public bool IsCustomGarminCategory(IActivityCategory STCategory)
         {
-            return STToGarminCategoryMap.ContainsKey(STCategory);
+            if (STToGarminCategoryMap.ContainsKey(STCategory))
+            {
+                return STToGarminCategoryMap[STCategory].GarminCategory != GarminCategories.GarminCategoriesCount;
+            }
+            else
+            {
+                return STCategory.Parent == null;
+            }
         }
 
-        public void ClearAllGarminCategories()
+        private void ClearAllSTCategoriesInfo()
         {
             STToGarminCategoryMap.Clear();
         }
 
         public void SetGarminCategory(IActivityCategory STCategory, GarminCategories GarminCategory)
         {
-            if (!m_STToGarminCategoryMap.ContainsKey(STCategory) ||
-                m_STToGarminCategoryMap[STCategory] != GarminCategory)
-            {
-                m_STToGarminCategoryMap[STCategory] = GarminCategory;
+            bool modified = false;
 
+            if(!m_STToGarminCategoryMap.ContainsKey(STCategory))
+            {
+                m_STToGarminCategoryMap[STCategory] = new STCategoriesInfo(STCategory, GarminCategory);
+
+                modified = true;
+            }
+
+            if (m_STToGarminCategoryMap[STCategory].GarminCategory != GarminCategory)
+            {
+                m_STToGarminCategoryMap[STCategory].GarminCategory = GarminCategory;
+
+                modified = true;
+            }
+
+            if (modified)
+            {
                 TriggerOptionsChangedEvent("STToGarminCategoryMap");
             }
         }
 
         public void RemoveGarminCategory(IActivityCategory STCategory)
         {
-            if (m_STToGarminCategoryMap.ContainsKey(STCategory))
+            if (m_STToGarminCategoryMap.ContainsKey(STCategory) &&
+                m_STToGarminCategoryMap[STCategory].GarminCategory != GarminCategories.GarminCategoriesCount)
             {
-                m_STToGarminCategoryMap.Remove(STCategory);
+                m_STToGarminCategoryMap[STCategory].GarminCategory = GarminCategories.GarminCategoriesCount;
 
                 TriggerOptionsChangedEvent("STToGarminCategoryMap");
+            }
+        }
+
+        public bool GetExpandedInWorkoutList(IActivityCategory STCategory)
+        {
+            if (m_STToGarminCategoryMap.ContainsKey(STCategory))
+            {
+                return m_STToGarminCategoryMap[STCategory].ExpandInWorkoutList;
+            }
+
+            return true;
+        }
+
+        public List<IActivityCategory> GetAllExpandedSTCategories()
+        {
+            List<IActivityCategory> result = new List<IActivityCategory>();
+
+            foreach (STCategoriesInfo info in m_STToGarminCategoryMap.Values)
+            {
+                if(info.ExpandInWorkoutList)
+                {
+                    result.Add(info.STCategory);
+                }
+            }
+
+            return result;
+        }
+
+        public void SetExpandedInWorkoutList(IActivityCategory STCategory, bool expanded)
+        {
+            bool modified = false;
+
+            if (!m_STToGarminCategoryMap.ContainsKey(STCategory))
+            {
+                m_STToGarminCategoryMap[STCategory] = new STCategoriesInfo(STCategory,
+                                                                           GarminCategories.GarminCategoriesCount,
+                                                                           expanded, true);
+
+                modified = true;
+            }
+
+            if (m_STToGarminCategoryMap[STCategory].ExpandInWorkoutList != expanded)
+            {
+                m_STToGarminCategoryMap[STCategory].ExpandInWorkoutList = expanded;
+
+                modified = true;
+            }
+
+            if (modified)
+            {
+                TriggerOptionsChangedEvent("STCategoryExpandedInWorkoutList");
+            }
+        }
+
+        public bool GetVisibleInWorkoutList(IActivityCategory STCategory)
+        {
+            if (m_STToGarminCategoryMap.ContainsKey(STCategory))
+            {
+                return m_STToGarminCategoryMap[STCategory].ShowInWorkoutList;
+            }
+
+            return true;
+        }
+
+        public void SetVisibleInWorkoutList(IActivityCategory STCategory, bool show)
+        {
+            bool modified = false;
+
+            if (!m_STToGarminCategoryMap.ContainsKey(STCategory))
+            {
+                m_STToGarminCategoryMap[STCategory] = new STCategoriesInfo(STCategory,
+                                                                           GarminCategories.GarminCategoriesCount,
+                                                                           true, show);
+
+                modified = true;
+            }
+
+            if (m_STToGarminCategoryMap[STCategory].ShowInWorkoutList != show)
+            {
+                m_STToGarminCategoryMap[STCategory].ShowInWorkoutList = show;
+
+                modified = true;
+            }
+
+            if (modified)
+            {
+                TriggerOptionsChangedEvent("STCategoryVisibleInWorkoutList");
             }
         }
 
@@ -526,6 +827,34 @@ namespace GarminFitnessPlugin.Controller
                     m_UseSportTracksHeartRateZones = value;
 
                     TriggerOptionsChangedEvent("UseSportTracksHeartRateZones");
+                }
+            }
+        }
+
+        public bool ExportSportTracksHeartRateAsPercentMax
+        {
+            get { return m_ExportSportTracksHeartRateAsPercentMax; }
+            set
+            {
+                if (ExportSportTracksHeartRateAsPercentMax != value)
+                {
+                    m_ExportSportTracksHeartRateAsPercentMax = value;
+
+                    TriggerOptionsChangedEvent("ExportSportTracksHeartRateAsPercentMax");
+                }
+            }
+        }
+
+        public bool ExportSportTracksPowerAsPercentFTP
+        {
+            get { return m_ExportSportTracksPowerAsPercentFTP; }
+            set
+            {
+                if (ExportSportTracksPowerAsPercentFTP != value)
+                {
+                    m_ExportSportTracksPowerAsPercentFTP = value;
+
+                    TriggerOptionsChangedEvent("ExportSportTracksPowerAsPercentFTP");
                 }
             }
         }
@@ -664,7 +993,64 @@ namespace GarminFitnessPlugin.Controller
             }
         }
 
-        private Dictionary<IActivityCategory, GarminCategories>  STToGarminCategoryMap
+        public bool EnableMassStorageMode
+        {
+            get { return false; }
+        }
+
+        // Use to activate or deactivate logging
+        public bool EnableDebugLog
+        {
+            get { return false; }
+        }
+
+        public IActivityCategory LastImportCategory
+        {
+            get { return m_LastImportCategory; }
+            set { m_LastImportCategory = value; }
+        }
+
+        public bool UseLastCategoryForAllImportedWorkout
+        {
+            get { return m_UseLastCategoryForAllImportedWorkout; }
+            set { m_UseLastCategoryForAllImportedWorkout = value; }
+        }
+
+        public RegularStep.StepIntensity TCXExportWarmupAs
+        {
+            get { return m_TCXExportWarmupAs; }
+            set
+            {
+                Debug.Assert(value == RegularStep.StepIntensity.Active ||
+                             value == RegularStep.StepIntensity.Rest);
+
+                if (m_TCXExportWarmupAs != value)
+                {
+                    m_TCXExportWarmupAs = value;
+
+                    TriggerOptionsChangedEvent("TCXExportWarmupAs");
+                }
+            }
+        }
+
+        public RegularStep.StepIntensity TCXExportCooldownAs
+        {
+            get { return m_TCXExportCooldownAs; }
+            set
+            {
+                Debug.Assert(value == RegularStep.StepIntensity.Active ||
+                             value == RegularStep.StepIntensity.Rest);
+
+                if (m_TCXExportCooldownAs != value)
+                {
+                    m_TCXExportCooldownAs = value;
+
+                    TriggerOptionsChangedEvent("TCXExportWarmupAs");
+                }
+            }
+        }
+
+        private Dictionary<IActivityCategory, STCategoriesInfo> STToGarminCategoryMap
         {
             get { return m_STToGarminCategoryMap; }
             set
@@ -698,11 +1084,13 @@ namespace GarminFitnessPlugin.Controller
         private int m_StepNotesSplitSize = 250;
 
         private bool m_UseSportTracksHeartRateZones;
+        private bool m_ExportSportTracksHeartRateAsPercentMax = true;
         private bool m_UseSportTracksSpeedZones;
         private bool m_UseSportTracksPowerZones;
+        private bool m_ExportSportTracksPowerAsPercentFTP = false;
         private IZoneCategory m_CadenceZoneCategory;
         private IZoneCategory m_PowerZoneCategory;
-        private Dictionary<IActivityCategory, GarminCategories> m_STToGarminCategoryMap = new Dictionary<IActivityCategory, GarminCategories>();
+        private Dictionary<IActivityCategory, STCategoriesInfo> m_STToGarminCategoryMap = new Dictionary<IActivityCategory, STCategoriesInfo>();
         private String m_DefaultExportDirectory;
 
         private DateTime m_DonationReminderDate = DateTime.Today;
@@ -711,5 +1099,11 @@ namespace GarminFitnessPlugin.Controller
 
         private bool m_IsPowerZoneDirty = false;
         private bool m_IsCadenceZoneDirty = false;
+
+        private IActivityCategory m_LastImportCategory = null;
+        private bool m_UseLastCategoryForAllImportedWorkout = false;
+
+        private RegularStep.StepIntensity m_TCXExportWarmupAs = RegularStep.StepIntensity.Active;
+        private RegularStep.StepIntensity m_TCXExportCooldownAs = RegularStep.StepIntensity.Rest;
     }
 }

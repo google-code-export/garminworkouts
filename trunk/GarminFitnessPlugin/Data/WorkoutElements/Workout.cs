@@ -15,12 +15,23 @@ namespace GarminFitnessPlugin.Data
 {
     class Workout : IWorkout, IDirty
     {
+        public Workout(Guid workoutId, string name, IActivityCategory category) :
+            this(name, category)
+        {
+            m_Id.Value = workoutId;
+
+            CreateStepsList();
+
+            WorkoutChanged += new WorkoutChangedEventHandler(OnWorkoutChanged);
+        }
+
         public Workout(string name, IActivityCategory category)
         {
             m_Name.Value = name;
             Category = category;
 
-            AddStepToRoot(new RegularStep(this));
+            CreateStepsList();
+            Steps.AddStepToRoot(new RegularStep(this));
 
             WorkoutChanged += new WorkoutChangedEventHandler(OnWorkoutChanged);
         }
@@ -30,18 +41,36 @@ namespace GarminFitnessPlugin.Data
             m_Name.Value = name;
             Category = category;
 
-            AddStepsToRoot(steps);
+            CreateStepsList();
+            Steps.AddStepsToRoot(steps);
 
             WorkoutChanged += new WorkoutChangedEventHandler(OnWorkoutChanged);
         }
 
         public Workout(Stream stream, DataVersion version)
         {
+            CreateStepsList();
+
             Deserialize(stream, version);
 
             WorkoutChanged += new WorkoutChangedEventHandler(OnWorkoutChanged);
 
             UpdateSplitsCache();
+        }
+
+        void OnStepAdded(IStep addedStep)
+        {
+            RegisterStep(addedStep);
+        }
+
+        void OnStepRemoved(IStep removedStep)
+        {
+            UnregisterStep(removedStep);
+        }
+
+        void OnStepsListChanged(object sender, PropertyChangedEventArgs args)
+        {
+            TriggerWorkoutChangedEvent(args);
         }
 
         void OnWorkoutChanged(IWorkout modifiedWorkout, PropertyChangedEventArgs changedProperty)
@@ -54,20 +83,15 @@ namespace GarminFitnessPlugin.Data
 
         public override void Serialize(Stream stream)
         {
+            m_Id.Serialize(stream);
             m_Name.Serialize(stream);
-
             m_Notes.Serialize(stream);
 
             // Category ID
             stream.Write(BitConverter.GetBytes(Encoding.UTF8.GetByteCount(Category.ReferenceId)), 0, sizeof(Int32));
             stream.Write(Encoding.UTF8.GetBytes(Category.ReferenceId), 0, Encoding.UTF8.GetByteCount(Category.ReferenceId));
 
-            // Steps
-            stream.Write(BitConverter.GetBytes(Steps.Count), 0, sizeof(Int32));
-            for (int i = 0; i < Steps.Count; ++i)
-            {
-                Steps[i].Serialize(stream);
-            }
+            Steps.Serialize(stream);
 
             // Scheduled dates
             stream.Write(BitConverter.GetBytes(ScheduledDates.Count), 0, sizeof(Int32));
@@ -86,10 +110,8 @@ namespace GarminFitnessPlugin.Data
             byte[] intBuffer = new byte[sizeof(Int32)];
             byte[] stringBuffer;
             Int32 stringLength;
-            Int32 stepCount;
 
             m_Name.Deserialize(stream, version);
-
             m_Notes.Deserialize(stream, version);
 
             // Category
@@ -99,32 +121,13 @@ namespace GarminFitnessPlugin.Data
             stream.Read(stringBuffer, 0, stringLength);
             Category = Utils.FindCategoryByIDSafe(Encoding.UTF8.GetString(stringBuffer));
 
-            // Steps
-            stream.Read(intBuffer, 0, sizeof(Int32));
-            stepCount = BitConverter.ToInt32(intBuffer, 0);
-            Steps.Clear();
-            for (int i = 0; i < stepCount; ++i)
-            {
-                IStep.StepType type;
-
-                stream.Read(intBuffer, 0, sizeof(Int32));
-                type = (IStep.StepType)BitConverter.ToInt32(intBuffer, 0);
-
-                if (type == IStep.StepType.Regular)
-                {
-                    AddStepToRoot(new RegularStep(stream, version, this));
-                }
-                else
-                {
-                    AddStepToRoot(new RepeatStep(stream, version, this));
-                }
-            }
+            // steps
+            Steps.Deserialize(stream, version);
         }
 
         public void Deserialize_V4(Stream stream, DataVersion version)
         {
             byte[] intBuffer = new byte[sizeof(Int32)];
-            byte[] dateBuffer = new byte[sizeof(long)];
             Int32 scheduledDatesCount;
 
             Deserialize_V0(stream, version);
@@ -144,8 +147,6 @@ namespace GarminFitnessPlugin.Data
 
         public void Deserialize_V5(Stream stream, DataVersion version)
         {
-            byte[] dateBuffer = new byte[sizeof(long)];
-
             Deserialize_V4(stream, version);
 
             m_LastExportDate.Deserialize(stream, version);
@@ -153,17 +154,28 @@ namespace GarminFitnessPlugin.Data
 
         public void Deserialize_V12(Stream stream, DataVersion version)
         {
-            byte[] dateBuffer = new byte[sizeof(long)];
-
             Deserialize_V5(stream, version);
 
             m_AddToDailyViewOnSchedule.Deserialize(stream, version);
         }
 
+        public void Deserialize_V13(Stream stream, DataVersion version)
+        {
+            m_Id.Deserialize(stream, version);
+
+            // To fix a bug in vesion 1.1.269 where multiple workouts could have the same GUID.
+            //  Since the GUID wasn't used, this only appeared later in 1.1.276, therefore we can
+            //  safely override the GUID if data version is exactly 13
+            if (version.VersionNumber == 13)
+            {
+                m_Id.Value = Guid.NewGuid();
+            }
+
+            Deserialize_V12(stream, version);
+        }
+
         public override void Deserialize(XmlNode parentNode)
         {
-            List<IStep> steps = new List<IStep>();
-            XmlNode StepsExtensionsNode = null;
             XmlNode STExtensionsNode = null;
             bool nameRead = false;
 
@@ -177,33 +189,6 @@ namespace GarminFitnessPlugin.Data
                 {
                     m_Name.Deserialize(child);
                     nameRead = true;
-                }
-                else if (child.Name == "Step")
-                {
-                    if (child.Attributes.Count == 1 && child.Attributes[0].Name == Constants.XsiTypeTCXString)
-                    {
-                        string stepTypeString = child.Attributes[0].Value;
-                        IStep newStep = null;
-
-                        if (stepTypeString == Constants.StepTypeTCXString[(int)IStep.StepType.Regular])
-                        {
-                            newStep = new RegularStep(this);
-                        }
-                        else if (stepTypeString == Constants.StepTypeTCXString[(int)IStep.StepType.Repeat])
-                        {
-                            newStep = new RepeatStep(this);
-                        }
-                        else
-                        {
-                            Debug.Assert(false);
-                        }
-
-                        if (newStep != null)
-                        {
-                            newStep.Deserialize(child);
-                            steps.Add(newStep);
-                        }
-                    }
                 }
                 else if (child.Name == "Notes")
                 {
@@ -235,35 +220,18 @@ namespace GarminFitnessPlugin.Data
                         {
                             STExtensionsNode = currentNode;
                         }
-                        else if(currentNode.Name == "Steps")
-                        {
-                            StepsExtensionsNode = currentNode;
-                        }
                     }
                 }
             }
 
-            if (!nameRead || steps.Count < 1)
+            if (!nameRead)
             {
                 throw new GarminFitnessXmlDeserializationException("Information missing in the XML node", parentNode);
             }
-            else if( steps.Count > 20)
-            {
-                throw new GarminFitnessXmlDeserializationException("Too many steps in the XML node", parentNode);
-            }
 
             m_Name.Value = GarminWorkoutManager.Instance.GetUniqueName(Name);
-            Steps.Clear();
 
-            for (int i = 0; i < steps.Count; ++i)
-            {
-                AddStepToRoot(steps[i]);
-            }
-
-            if (StepsExtensionsNode != null)
-            {
-                HandleStepExtension(StepsExtensionsNode);
-            }
+            Steps.Deserialize(parentNode);
 
             if (STExtensionsNode != null)
             {
@@ -278,23 +246,7 @@ namespace GarminFitnessPlugin.Data
 
             Name = workout.GetName();
 
-            for (UInt32 i = 0; i < workout.GetNumValidSteps(); ++i)
-            {
-                GarXFaceNet._Workout._Step step = workout.GetStep(i);
-                IStep newStep;
-                
-                if(step.GetDurationType() == GarXFaceNet._Workout._Step.DurationTypes.Repeat)
-                {
-                    newStep = new RepeatStep(this);
-                }
-                else
-                {
-                    newStep = new RegularStep(this);
-                }
-
-                newStep.Deserialize(workout, i);
-                AddStepToRoot(newStep);
-            }           
+            Steps.Deserialize(workout);
         }
 
         public override void DeserializeOccurances(GarXFaceNet._WorkoutOccuranceList occuranceList)
@@ -312,6 +264,101 @@ namespace GarminFitnessPlugin.Data
             }
         }
 
+        public override void DeserializeFromFIT(FITMessage workoutMessage)
+        {
+            FITMessage stepMessage;
+            FITMessageField numStepsField = workoutMessage.GetField((Byte)FITWorkoutFieldIds.NumSteps);
+
+            if (numStepsField != null)
+            {
+                UInt16 numSteps = numStepsField.GetUInt16();
+
+                m_Steps.Clear();
+
+                do
+                {
+                    stepMessage = FITParser.Instance.ReadNextMessage();
+
+                    if (stepMessage != null)
+                    {
+                        switch (stepMessage.GlobalMessageType)
+                        {
+                            case FITGlobalMessageIds.WorkoutStep:
+                                {
+                                    FITMessageField stepTypeField = stepMessage.GetField((Byte)FITWorkoutStepFieldIds.DurationType);
+
+                                    if (stepTypeField != null)
+                                    {
+                                        FITWorkoutStepDurationTypes durationType = (FITWorkoutStepDurationTypes)stepTypeField.GetEnum();
+                                        IStep newStep = null;
+
+                                        switch (durationType)
+                                        {
+                                            case FITWorkoutStepDurationTypes.Calories:
+                                            case FITWorkoutStepDurationTypes.Distance:
+                                            case FITWorkoutStepDurationTypes.HeartRateGreaterThan:
+                                            case FITWorkoutStepDurationTypes.HeartRateLessThan:
+                                            case FITWorkoutStepDurationTypes.Open:
+                                            case FITWorkoutStepDurationTypes.Time:
+                                            case FITWorkoutStepDurationTypes.PowerGreaterThan:
+                                            case FITWorkoutStepDurationTypes.PowerLessThan:
+                                                {
+                                                    newStep = new RegularStep(this);
+                                                    break;
+                                                }
+                                            case FITWorkoutStepDurationTypes.RepeatCount:
+                                            case FITWorkoutStepDurationTypes.RepeatUntilCalories:
+                                            case FITWorkoutStepDurationTypes.RepeatUntilDistance:
+                                            case FITWorkoutStepDurationTypes.RepeatUntilHeartRateGreaterThan:
+                                            case FITWorkoutStepDurationTypes.RepeatUntilHeartRateLessThan:
+                                            case FITWorkoutStepDurationTypes.RepeatUntilPowerGreaterThan:
+                                            case FITWorkoutStepDurationTypes.RepeatUntilPowerLessThan:
+                                            case FITWorkoutStepDurationTypes.RepeatUntilTime:
+                                                {
+                                                    newStep = new RepeatStep(this);
+                                                    break;
+                                                }
+                                        }
+
+                                        newStep.DeserializeFromFIT(stepMessage);
+                                        m_Steps.AddStepToRoot(newStep);
+                                    }
+                                    else
+                                    {
+                                        throw new FITParserException("Missing duration type field");
+                                    }
+
+                                    break;
+                                }
+                            default:
+                                {
+                                    // Nothing to do
+                                    break;
+                                }
+                        }
+                    }
+                }
+                while (stepMessage != null && m_Steps.StepCount < numSteps);
+
+                if (m_Steps.StepCount < numSteps)
+                {
+                    throw new FITParserException("Unable to deserialize all steps");
+                }
+            }
+            else
+            {
+                throw new FITParserException("No step count field");
+            }
+        }
+
+        private void CreateStepsList()
+        {
+            m_Steps = new WorkoutStepsList(this);
+            m_Steps.StepAdded += new WorkoutStepsList.StepAddedEventHandler(OnStepAdded);
+            m_Steps.StepRemoved += new WorkoutStepsList.StepRemovedEventHandler(OnStepRemoved);
+            m_Steps.ListChanged += new PropertyChangedEventHandler(OnStepsListChanged);
+        }
+
         public Workout Clone()
         {
             Workout result;
@@ -323,6 +370,22 @@ namespace GarminFitnessPlugin.Data
             stream.Seek(0, SeekOrigin.Begin);
 
             result = GarminWorkoutManager.Instance.CreateWorkout(stream, Constants.CurrentVersion);
+            result.m_Id.Value = Guid.NewGuid();
+
+            return result;
+        }
+
+        public Workout CloneUnregistered()
+        {
+            Workout result;
+            MemoryStream stream = new MemoryStream();
+
+            Serialize(stream);
+
+            // Put back at start but skip the first 4 bytes which are the step type
+            stream.Seek(0, SeekOrigin.Begin);
+            result = new Workout(stream, Constants.CurrentVersion);
+            result.m_Id.Value = Guid.NewGuid();
 
             return result;
         }
@@ -338,51 +401,13 @@ namespace GarminFitnessPlugin.Data
             stream.Seek(0, SeekOrigin.Begin);
 
             result = GarminWorkoutManager.Instance.CreateWorkout(stream, Constants.CurrentVersion, newCategory);
+            result.m_Id.Value = Guid.NewGuid();
 
             stream.Close();
 
             return result;
         }
 
-        private void HandleStepExtension(XmlNode extensionsNode)
-        {
-            for (int i = 0; i < extensionsNode.ChildNodes.Count; ++i)
-            {
-                XmlNode currentExtension = extensionsNode.ChildNodes[i];
-
-                if (currentExtension.Name == "Step")
-                {
-                    IStep step = null;
-
-                    for (int j = 0; j < currentExtension.ChildNodes.Count; ++j)
-                    {
-                        XmlNode childNode = currentExtension.ChildNodes[j];
-
-                        if (childNode.Name == "StepId")
-                        {
-                            try
-                            {
-                                Byte id = Byte.Parse(((XmlText)childNode.FirstChild).Value);
-
-                                step = GetStepById(id);
-                            }
-                            catch
-                            {
-                            }
-                        }
-                        else if (childNode.Name == "Target" && childNode.Attributes.Count == 1 &&
-                            childNode.Attributes[0].Name == Constants.XsiTypeTCXString &&
-                            childNode.Attributes[0].Value == Constants.TargetTypeTCXString[(int)ITarget.TargetType.Power])
-                        {
-                            Debug.Assert(step != null && step.Type == IStep.StepType.Regular);
-                            RegularStep concreteStep = (RegularStep)step;
-
-                            TargetFactory.Create(ITarget.TargetType.Power, childNode, concreteStep);
-                        }
-                    }
-                }
-            }
-        }
 
         private void HandleSTExtension(XmlNode extensionsNode)
         {
@@ -410,7 +435,7 @@ namespace GarminFitnessPlugin.Data
                         XmlNode childNode = currentExtension.ChildNodes[j];
 
                         if (childNode.Name == "StepId" && childNode.ChildNodes.Count == 1 &&
-                            childNode.FirstChild.GetType() == typeof(XmlText) && 
+                            childNode.FirstChild.GetType() == typeof(XmlText) &&
                             Utils.IsTextIntegerInRange(childNode.FirstChild.Value, 1, 20))
                         {
                             idNode = childNode.FirstChild;
@@ -424,9 +449,9 @@ namespace GarminFitnessPlugin.Data
                     if (idNode != null && categoryNode != null)
                     {
                         int stepId = Byte.Parse(idNode.Value);
-                        IStep step = GetStepById(stepId);
+                        IStep step = Steps.GetStepById(stepId);
 
-                        if(step != null)
+                        if (step != null)
                         {
                             Debug.Assert(step.Type == IStep.StepType.Regular);
 
@@ -461,7 +486,7 @@ namespace GarminFitnessPlugin.Data
                     if (idNode != null && notesNode != null)
                     {
                         int stepId = Byte.Parse(idNode.Value);
-                        IStep step = GetStepById(stepId);
+                        IStep step = Steps.GetStepById(stepId);
 
                         step.Notes = notesNode.FirstChild.Value;
                     }
@@ -469,16 +494,19 @@ namespace GarminFitnessPlugin.Data
             }
         }
 
-        public override int GetStepCount()
+        public override UInt16 StepCount
         {
-            byte stepCount = 0;
-
-            for (int i = 0; i < m_Steps.Count; ++i)
+            get
             {
-                stepCount += m_Steps[i].GetStepCount();
-            }
+                UInt16 stepCount = 0;
 
-            return stepCount;
+                foreach (IStep currentStep in Steps)
+                {
+                    stepCount += currentStep.StepCount;
+                }
+
+                return stepCount;
+            }
         }
 
         public List<WorkoutPart> GetSplitParts()
@@ -514,12 +542,12 @@ namespace GarminFitnessPlugin.Data
         public override bool CanAcceptNewStep(int newStepCount, IStep destinationStep)
         {
             // Hard limit at PluginMaxStepsPerWorkout steps
-            if (GetStepCount() + newStepCount > Constants.PluginMaxStepsPerWorkout)
+            if (StepCount + newStepCount > Constants.PluginMaxStepsPerWorkout)
             {
                 return false;
             }
 
-            IStep topMostRepeat = GetTopMostRepeatForStep(destinationStep);
+            IStep topMostRepeat = Steps.GetTopMostRepeatForStep(destinationStep);
 
             if (topMostRepeat == null)
             {
@@ -530,7 +558,7 @@ namespace GarminFitnessPlugin.Data
                 }
                 else
                 {
-                    return GetStepCount() + newStepCount <= Constants.MaxStepsPerWorkout;
+                    return StepCount + newStepCount <= Constants.MaxStepsPerWorkout;
                 }
             }
             else
@@ -540,13 +568,35 @@ namespace GarminFitnessPlugin.Data
                 //  level, check if we bust the limit
                 if (Options.Instance.AllowSplitWorkouts)
                 {
-                    return topMostRepeat.GetStepCount() + newStepCount <= Constants.MaxStepsPerWorkout;
+                    return topMostRepeat.StepCount + newStepCount <= Constants.MaxStepsPerWorkout;
                 }
                 else
                 {
-                    return GetStepCount() + newStepCount <= Constants.MaxStepsPerWorkout;
+                    return StepCount + newStepCount <= Constants.MaxStepsPerWorkout;
                 }
             }
+        }
+
+        public bool ContainsWorkoutLink(Workout workoutLink)
+        {
+            foreach(IStep currentStep in Steps)
+            {
+                if (currentStep is WorkoutLinkStep)
+                {
+                    WorkoutLinkStep linkStep = currentStep as WorkoutLinkStep;
+
+                    if (linkStep.LinkedWorkout == workoutLink)
+                    {
+                        return true;
+                    }
+                    else if (linkStep.LinkedWorkout.ContainsWorkoutLink(workoutLink))
+                    {
+                        return true;
+                    }
+                }
+            }
+
+            return false;
         }
 
         public override Workout ConcreteWorkout
@@ -573,7 +623,7 @@ namespace GarminFitnessPlugin.Data
             get { return m_ScheduledDates; }
         }
 
-        public override List<IStep> Steps
+        public override WorkoutStepsList Steps
         {
             get { return m_Steps; }
         }
@@ -596,6 +646,11 @@ namespace GarminFitnessPlugin.Data
         public override GarminFitnessString NameInternal
         {
             get { return m_Name; }
+        }
+
+        public override GarminFitnessGuid IdInternal
+        {
+            get { return m_Id; }
         }
 
         public override GarminFitnessString NotesInternal
@@ -634,13 +689,26 @@ namespace GarminFitnessPlugin.Data
             set { Debug.Assert(false); }
         }
 
+        public override List<XmlNode> StepsExtensions
+        {
+            get { return m_StepsExtensions; }
+        }
+
+        public override List<XmlNode> STExtensions
+        {
+            get { return m_STExtensions; }
+        }
+
+        private GarminFitnessString m_Name = new GarminFitnessString("", Constants.MaxNameLength);
+        private GarminFitnessGuid m_Id = new GarminFitnessGuid(Guid.NewGuid());
         private GarminFitnessDate m_LastExportDate = new GarminFitnessDate();
         private List<GarminFitnessDate> m_ScheduledDates = new List<GarminFitnessDate>();
-        private List<IStep> m_Steps = new List<IStep>();
+        private WorkoutStepsList m_Steps = null;
         private List<WorkoutPart> m_SplitParts = new List<WorkoutPart>();
         private IActivityCategory m_Category;
-        private GarminFitnessString m_Name = new GarminFitnessString("", 15);
         private GarminFitnessString m_Notes = new GarminFitnessString("", 30000);
         private GarminFitnessBool m_AddToDailyViewOnSchedule = new GarminFitnessBool(false);
+        private List<XmlNode> m_STExtensions = new List<XmlNode>();
+        private List<XmlNode> m_StepsExtensions = new List<XmlNode>();
     }
 }

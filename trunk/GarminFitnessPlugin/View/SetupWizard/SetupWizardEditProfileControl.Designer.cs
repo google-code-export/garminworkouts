@@ -48,22 +48,25 @@ namespace GarminFitnessPlugin.View
             this.ActivitiesPanel = new System.Windows.Forms.Panel();
             this.ActivityPanel = new System.Windows.Forms.Panel();
             this.SpeedZonesGroupBox = new System.Windows.Forms.GroupBox();
+            this.SpeedZonePanel = new System.Windows.Forms.Panel();
+            this.LowSpeedLabel = new System.Windows.Forms.Label();
+            this.HighSpeedLabel = new System.Windows.Forms.Label();
+            this.LowSpeedTextBox = new GarminFitnessPlugin.View.ExtendedTextBox();
+            this.SpeedNameTextBox = new GarminFitnessPlugin.View.ExtendedTextBox();
+            this.NameSpeedLabel = new System.Windows.Forms.Label();
+            this.HighSpeedTextBox = new GarminFitnessPlugin.View.ExtendedTextBox();
             this.PaceRadioButton = new System.Windows.Forms.RadioButton();
             this.SpeedRadioButton = new System.Windows.Forms.RadioButton();
-            this.SpeedNameTextBox = new GarminFitnessPlugin.View.ExtendedTextBox();
-            this.HighSpeedTextBox = new GarminFitnessPlugin.View.ExtendedTextBox();
-            this.NameSpeedLabel = new System.Windows.Forms.Label();
-            this.LowSpeedTextBox = new GarminFitnessPlugin.View.ExtendedTextBox();
-            this.HighSpeedLabel = new System.Windows.Forms.Label();
-            this.LowSpeedLabel = new System.Windows.Forms.Label();
             this.SpeedZonesTreeList = new GarminFitnessPlugin.View.ExtendedTreeList();
             this.HRZonesGroupBox = new System.Windows.Forms.GroupBox();
+            this.HRZonePanel = new System.Windows.Forms.Panel();
+            this.LowHRLabel = new System.Windows.Forms.Label();
+            this.HighHRLabel = new System.Windows.Forms.Label();
+            this.LowHRTextBox = new GarminFitnessPlugin.View.ExtendedTextBox();
+            this.HighHRTextBox = new GarminFitnessPlugin.View.ExtendedTextBox();
+            this.PercentHRRRadioButton = new System.Windows.Forms.RadioButton();
             this.PercentMaxRadioButton = new System.Windows.Forms.RadioButton();
             this.BPMRadioButton = new System.Windows.Forms.RadioButton();
-            this.HighHRTextBox = new GarminFitnessPlugin.View.ExtendedTextBox();
-            this.LowHRTextBox = new GarminFitnessPlugin.View.ExtendedTextBox();
-            this.HighHRLabel = new System.Windows.Forms.Label();
-            this.LowHRLabel = new System.Windows.Forms.Label();
             this.HRZonesTreeList = new GarminFitnessPlugin.View.ExtendedTreeList();
             this.MaxHRLabel = new System.Windows.Forms.Label();
             this.MaxHRBPMLabel = new System.Windows.Forms.Label();
@@ -79,7 +82,9 @@ namespace GarminFitnessPlugin.View
             this.ActivitiesPanel.SuspendLayout();
             this.ActivityPanel.SuspendLayout();
             this.SpeedZonesGroupBox.SuspendLayout();
+            this.SpeedZonePanel.SuspendLayout();
             this.HRZonesGroupBox.SuspendLayout();
+            this.HRZonePanel.SuspendLayout();
             this.SuspendLayout();
             // 
             // pictureBox1
@@ -153,7 +158,7 @@ namespace GarminFitnessPlugin.View
             // WeightUnitLabel
             // 
             this.WeightUnitLabel.AutoSize = true;
-            this.WeightUnitLabel.Location = new System.Drawing.Point(133, 59);
+            this.WeightUnitLabel.Location = new System.Drawing.Point(146, 59);
             this.WeightUnitLabel.Name = "WeightUnitLabel";
             this.WeightUnitLabel.Size = new System.Drawing.Size(15, 13);
             this.WeightUnitLabel.TabIndex = 5;
@@ -161,29 +166,52 @@ namespace GarminFitnessPlugin.View
             // 
             // RestHRTextBox
             // 
+            this.RestHRTextBox.AcceptsReturn = false;
+            this.RestHRTextBox.AcceptsTab = false;
+            this.RestHRTextBox.BackColor = System.Drawing.Color.White;
+            this.RestHRTextBox.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(123)))), ((int)(((byte)(114)))), ((int)(((byte)(108)))));
+            this.RestHRTextBox.ButtonImage = null;
             this.RestHRTextBox.Location = new System.Drawing.Point(472, 56);
             this.RestHRTextBox.MaxLength = 3;
+            this.RestHRTextBox.Multiline = false;
             this.RestHRTextBox.Name = "RestHRTextBox";
+            this.RestHRTextBox.ReadOnly = false;
+            this.RestHRTextBox.ReadOnlyColor = System.Drawing.SystemColors.Control;
+            this.RestHRTextBox.ReadOnlyTextColor = System.Drawing.SystemColors.ControlLight;
+            this.RestHRTextBox.RightToLeft = System.Windows.Forms.RightToLeft.No;
             this.RestHRTextBox.Size = new System.Drawing.Size(44, 20);
             this.RestHRTextBox.TabIndex = 5;
-            this.RestHRTextBox.Validated += new System.EventHandler(this.RestHRTextBox_Validated);
+            this.RestHRTextBox.TextAlign = System.Windows.Forms.HorizontalAlignment.Left;
             this.RestHRTextBox.KeyDown += new System.Windows.Forms.KeyEventHandler(this.OnValidatedKeyDown);
             this.RestHRTextBox.Validating += new System.ComponentModel.CancelEventHandler(this.RestHRTextBox_Validating);
+            this.RestHRTextBox.Validated += new System.EventHandler(this.RestHRTextBox_Validated);
             // 
             // WeightTextBox
             // 
-            this.WeightTextBox.Location = new System.Drawing.Point(63, 56);
+            this.WeightTextBox.AcceptsReturn = false;
+            this.WeightTextBox.AcceptsTab = false;
+            this.WeightTextBox.BackColor = System.Drawing.Color.White;
+            this.WeightTextBox.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(123)))), ((int)(((byte)(114)))), ((int)(((byte)(108)))));
+            this.WeightTextBox.ButtonImage = null;
+            this.WeightTextBox.Location = new System.Drawing.Point(76, 56);
+            this.WeightTextBox.MaxLength = 32767;
+            this.WeightTextBox.Multiline = false;
             this.WeightTextBox.Name = "WeightTextBox";
+            this.WeightTextBox.ReadOnly = false;
+            this.WeightTextBox.ReadOnlyColor = System.Drawing.SystemColors.Control;
+            this.WeightTextBox.ReadOnlyTextColor = System.Drawing.SystemColors.ControlLight;
+            this.WeightTextBox.RightToLeft = System.Windows.Forms.RightToLeft.No;
             this.WeightTextBox.Size = new System.Drawing.Size(64, 20);
             this.WeightTextBox.TabIndex = 3;
-            this.WeightTextBox.Validated += new System.EventHandler(this.WeightTextBox_Validated);
+            this.WeightTextBox.TextAlign = System.Windows.Forms.HorizontalAlignment.Left;
             this.WeightTextBox.KeyDown += new System.Windows.Forms.KeyEventHandler(this.OnValidatedKeyDown);
             this.WeightTextBox.Validating += new System.ComponentModel.CancelEventHandler(this.WeightTextBox_Validating);
+            this.WeightTextBox.Validated += new System.EventHandler(this.WeightTextBox_Validated);
             // 
             // FemaleRadioButton
             // 
             this.FemaleRadioButton.AutoSize = true;
-            this.FemaleRadioButton.Location = new System.Drawing.Point(136, 32);
+            this.FemaleRadioButton.Location = new System.Drawing.Point(149, 31);
             this.FemaleRadioButton.Name = "FemaleRadioButton";
             this.FemaleRadioButton.Size = new System.Drawing.Size(59, 17);
             this.FemaleRadioButton.TabIndex = 2;
@@ -195,7 +223,7 @@ namespace GarminFitnessPlugin.View
             // MaleRadioButton
             // 
             this.MaleRadioButton.AutoSize = true;
-            this.MaleRadioButton.Location = new System.Drawing.Point(63, 32);
+            this.MaleRadioButton.Location = new System.Drawing.Point(76, 31);
             this.MaleRadioButton.Name = "MaleRadioButton";
             this.MaleRadioButton.Size = new System.Drawing.Size(48, 17);
             this.MaleRadioButton.TabIndex = 1;
@@ -252,12 +280,24 @@ namespace GarminFitnessPlugin.View
             // 
             // NameTextBox
             // 
-            this.NameTextBox.Location = new System.Drawing.Point(63, 5);
+            this.NameTextBox.AcceptsReturn = false;
+            this.NameTextBox.AcceptsTab = false;
+            this.NameTextBox.BackColor = System.Drawing.Color.White;
+            this.NameTextBox.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(123)))), ((int)(((byte)(114)))), ((int)(((byte)(108)))));
+            this.NameTextBox.ButtonImage = null;
+            this.NameTextBox.Location = new System.Drawing.Point(75, 5);
+            this.NameTextBox.MaxLength = 32767;
+            this.NameTextBox.Multiline = false;
             this.NameTextBox.Name = "NameTextBox";
-            this.NameTextBox.Size = new System.Drawing.Size(521, 20);
+            this.NameTextBox.ReadOnly = false;
+            this.NameTextBox.ReadOnlyColor = System.Drawing.SystemColors.Control;
+            this.NameTextBox.ReadOnlyTextColor = System.Drawing.SystemColors.ControlLight;
+            this.NameTextBox.RightToLeft = System.Windows.Forms.RightToLeft.No;
+            this.NameTextBox.Size = new System.Drawing.Size(509, 20);
             this.NameTextBox.TabIndex = 0;
-            this.NameTextBox.Validated += new System.EventHandler(this.NameTextBox_Validated);
+            this.NameTextBox.TextAlign = System.Windows.Forms.HorizontalAlignment.Left;
             this.NameTextBox.KeyDown += new System.Windows.Forms.KeyEventHandler(this.OnValidatedKeyDown);
+            this.NameTextBox.Validated += new System.EventHandler(this.NameTextBox_Validated);
             // 
             // ActivitiesPanel
             // 
@@ -287,14 +327,9 @@ namespace GarminFitnessPlugin.View
             // 
             // SpeedZonesGroupBox
             // 
+            this.SpeedZonesGroupBox.Controls.Add(this.SpeedZonePanel);
             this.SpeedZonesGroupBox.Controls.Add(this.PaceRadioButton);
             this.SpeedZonesGroupBox.Controls.Add(this.SpeedRadioButton);
-            this.SpeedZonesGroupBox.Controls.Add(this.SpeedNameTextBox);
-            this.SpeedZonesGroupBox.Controls.Add(this.HighSpeedTextBox);
-            this.SpeedZonesGroupBox.Controls.Add(this.NameSpeedLabel);
-            this.SpeedZonesGroupBox.Controls.Add(this.LowSpeedTextBox);
-            this.SpeedZonesGroupBox.Controls.Add(this.HighSpeedLabel);
-            this.SpeedZonesGroupBox.Controls.Add(this.LowSpeedLabel);
             this.SpeedZonesGroupBox.Controls.Add(this.SpeedZonesTreeList);
             this.SpeedZonesGroupBox.Location = new System.Drawing.Point(10, 166);
             this.SpeedZonesGroupBox.Name = "SpeedZonesGroupBox";
@@ -302,6 +337,111 @@ namespace GarminFitnessPlugin.View
             this.SpeedZonesGroupBox.TabIndex = 3;
             this.SpeedZonesGroupBox.TabStop = false;
             this.SpeedZonesGroupBox.Text = "Speed Zones";
+            // 
+            // SpeedZonePanel
+            // 
+            this.SpeedZonePanel.Controls.Add(this.LowSpeedLabel);
+            this.SpeedZonePanel.Controls.Add(this.HighSpeedLabel);
+            this.SpeedZonePanel.Controls.Add(this.LowSpeedTextBox);
+            this.SpeedZonePanel.Controls.Add(this.SpeedNameTextBox);
+            this.SpeedZonePanel.Controls.Add(this.NameSpeedLabel);
+            this.SpeedZonePanel.Controls.Add(this.HighSpeedTextBox);
+            this.SpeedZonePanel.Location = new System.Drawing.Point(325, 42);
+            this.SpeedZonePanel.Name = "SpeedZonePanel";
+            this.SpeedZonePanel.Size = new System.Drawing.Size(200, 77);
+            this.SpeedZonePanel.TabIndex = 6;
+            // 
+            // LowSpeedLabel
+            // 
+            this.LowSpeedLabel.AutoSize = true;
+            this.LowSpeedLabel.Location = new System.Drawing.Point(3, 3);
+            this.LowSpeedLabel.Name = "LowSpeedLabel";
+            this.LowSpeedLabel.Size = new System.Drawing.Size(33, 13);
+            this.LowSpeedLabel.TabIndex = 1;
+            this.LowSpeedLabel.Text = "Low :";
+            // 
+            // HighSpeedLabel
+            // 
+            this.HighSpeedLabel.AutoSize = true;
+            this.HighSpeedLabel.Location = new System.Drawing.Point(3, 29);
+            this.HighSpeedLabel.Name = "HighSpeedLabel";
+            this.HighSpeedLabel.Size = new System.Drawing.Size(35, 13);
+            this.HighSpeedLabel.TabIndex = 2;
+            this.HighSpeedLabel.Text = "High :";
+            // 
+            // LowSpeedTextBox
+            // 
+            this.LowSpeedTextBox.AcceptsReturn = false;
+            this.LowSpeedTextBox.AcceptsTab = false;
+            this.LowSpeedTextBox.BackColor = System.Drawing.Color.White;
+            this.LowSpeedTextBox.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(123)))), ((int)(((byte)(114)))), ((int)(((byte)(108)))));
+            this.LowSpeedTextBox.ButtonImage = null;
+            this.LowSpeedTextBox.Location = new System.Drawing.Point(60, 0);
+            this.LowSpeedTextBox.MaxLength = 32767;
+            this.LowSpeedTextBox.Multiline = false;
+            this.LowSpeedTextBox.Name = "LowSpeedTextBox";
+            this.LowSpeedTextBox.ReadOnly = false;
+            this.LowSpeedTextBox.ReadOnlyColor = System.Drawing.SystemColors.Control;
+            this.LowSpeedTextBox.ReadOnlyTextColor = System.Drawing.SystemColors.ControlLight;
+            this.LowSpeedTextBox.RightToLeft = System.Windows.Forms.RightToLeft.No;
+            this.LowSpeedTextBox.Size = new System.Drawing.Size(129, 20);
+            this.LowSpeedTextBox.TabIndex = 2;
+            this.LowSpeedTextBox.TextAlign = System.Windows.Forms.HorizontalAlignment.Left;
+            this.LowSpeedTextBox.KeyDown += new System.Windows.Forms.KeyEventHandler(this.OnValidatedKeyDown);
+            this.LowSpeedTextBox.Validating += new System.ComponentModel.CancelEventHandler(this.LowSpeedTextBox_Validating);
+            this.LowSpeedTextBox.Validated += new System.EventHandler(this.LowSpeedTextBox_Validated);
+            // 
+            // SpeedNameTextBox
+            // 
+            this.SpeedNameTextBox.AcceptsReturn = false;
+            this.SpeedNameTextBox.AcceptsTab = false;
+            this.SpeedNameTextBox.BackColor = System.Drawing.Color.White;
+            this.SpeedNameTextBox.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(123)))), ((int)(((byte)(114)))), ((int)(((byte)(108)))));
+            this.SpeedNameTextBox.ButtonImage = null;
+            this.SpeedNameTextBox.Location = new System.Drawing.Point(60, 52);
+            this.SpeedNameTextBox.MaxLength = 15;
+            this.SpeedNameTextBox.Multiline = false;
+            this.SpeedNameTextBox.Name = "SpeedNameTextBox";
+            this.SpeedNameTextBox.ReadOnly = false;
+            this.SpeedNameTextBox.ReadOnlyColor = System.Drawing.SystemColors.Control;
+            this.SpeedNameTextBox.ReadOnlyTextColor = System.Drawing.SystemColors.ControlLight;
+            this.SpeedNameTextBox.RightToLeft = System.Windows.Forms.RightToLeft.No;
+            this.SpeedNameTextBox.Size = new System.Drawing.Size(129, 20);
+            this.SpeedNameTextBox.TabIndex = 4;
+            this.SpeedNameTextBox.TextAlign = System.Windows.Forms.HorizontalAlignment.Left;
+            this.SpeedNameTextBox.KeyDown += new System.Windows.Forms.KeyEventHandler(this.OnValidatedKeyDown);
+            this.SpeedNameTextBox.Validated += new System.EventHandler(this.SpeedNameTextBox_Validated);
+            // 
+            // NameSpeedLabel
+            // 
+            this.NameSpeedLabel.AutoSize = true;
+            this.NameSpeedLabel.Location = new System.Drawing.Point(3, 55);
+            this.NameSpeedLabel.Name = "NameSpeedLabel";
+            this.NameSpeedLabel.Size = new System.Drawing.Size(41, 13);
+            this.NameSpeedLabel.TabIndex = 2;
+            this.NameSpeedLabel.Text = "Name :";
+            // 
+            // HighSpeedTextBox
+            // 
+            this.HighSpeedTextBox.AcceptsReturn = false;
+            this.HighSpeedTextBox.AcceptsTab = false;
+            this.HighSpeedTextBox.BackColor = System.Drawing.Color.White;
+            this.HighSpeedTextBox.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(123)))), ((int)(((byte)(114)))), ((int)(((byte)(108)))));
+            this.HighSpeedTextBox.ButtonImage = null;
+            this.HighSpeedTextBox.Location = new System.Drawing.Point(60, 26);
+            this.HighSpeedTextBox.MaxLength = 32767;
+            this.HighSpeedTextBox.Multiline = false;
+            this.HighSpeedTextBox.Name = "HighSpeedTextBox";
+            this.HighSpeedTextBox.ReadOnly = false;
+            this.HighSpeedTextBox.ReadOnlyColor = System.Drawing.SystemColors.Control;
+            this.HighSpeedTextBox.ReadOnlyTextColor = System.Drawing.SystemColors.ControlLight;
+            this.HighSpeedTextBox.RightToLeft = System.Windows.Forms.RightToLeft.No;
+            this.HighSpeedTextBox.Size = new System.Drawing.Size(129, 20);
+            this.HighSpeedTextBox.TabIndex = 3;
+            this.HighSpeedTextBox.TextAlign = System.Windows.Forms.HorizontalAlignment.Left;
+            this.HighSpeedTextBox.KeyDown += new System.Windows.Forms.KeyEventHandler(this.OnValidatedKeyDown);
+            this.HighSpeedTextBox.Validating += new System.ComponentModel.CancelEventHandler(this.HighSpeedTextBox_Validating);
+            this.HighSpeedTextBox.Validated += new System.EventHandler(this.HighSpeedTextBox_Validated);
             // 
             // PaceRadioButton
             // 
@@ -326,63 +466,6 @@ namespace GarminFitnessPlugin.View
             this.SpeedRadioButton.Text = "Speed";
             this.SpeedRadioButton.UseVisualStyleBackColor = true;
             this.SpeedRadioButton.CheckedChanged += new System.EventHandler(this.SpeedRadioButton_CheckedChanged);
-            // 
-            // SpeedNameTextBox
-            // 
-            this.SpeedNameTextBox.Location = new System.Drawing.Point(396, 91);
-            this.SpeedNameTextBox.MaxLength = 15;
-            this.SpeedNameTextBox.Name = "SpeedNameTextBox";
-            this.SpeedNameTextBox.Size = new System.Drawing.Size(129, 20);
-            this.SpeedNameTextBox.TabIndex = 4;
-            this.SpeedNameTextBox.Validated += new System.EventHandler(this.SpeedNameTextBox_Validated);
-            this.SpeedNameTextBox.KeyDown += new System.Windows.Forms.KeyEventHandler(this.OnValidatedKeyDown);
-            // 
-            // HighSpeedTextBox
-            // 
-            this.HighSpeedTextBox.Location = new System.Drawing.Point(396, 65);
-            this.HighSpeedTextBox.Name = "HighSpeedTextBox";
-            this.HighSpeedTextBox.Size = new System.Drawing.Size(129, 20);
-            this.HighSpeedTextBox.TabIndex = 3;
-            this.HighSpeedTextBox.Validated += new System.EventHandler(this.HighSpeedTextBox_Validated);
-            this.HighSpeedTextBox.KeyDown += new System.Windows.Forms.KeyEventHandler(this.OnValidatedKeyDown);
-            this.HighSpeedTextBox.Validating += new System.ComponentModel.CancelEventHandler(this.HighSpeedTextBox_Validating);
-            // 
-            // NameSpeedLabel
-            // 
-            this.NameSpeedLabel.AutoSize = true;
-            this.NameSpeedLabel.Location = new System.Drawing.Point(339, 94);
-            this.NameSpeedLabel.Name = "NameSpeedLabel";
-            this.NameSpeedLabel.Size = new System.Drawing.Size(41, 13);
-            this.NameSpeedLabel.TabIndex = 2;
-            this.NameSpeedLabel.Text = "Name :";
-            // 
-            // LowSpeedTextBox
-            // 
-            this.LowSpeedTextBox.Location = new System.Drawing.Point(396, 39);
-            this.LowSpeedTextBox.Name = "LowSpeedTextBox";
-            this.LowSpeedTextBox.Size = new System.Drawing.Size(129, 20);
-            this.LowSpeedTextBox.TabIndex = 2;
-            this.LowSpeedTextBox.Validated += new System.EventHandler(this.LowSpeedTextBox_Validated);
-            this.LowSpeedTextBox.KeyDown += new System.Windows.Forms.KeyEventHandler(this.OnValidatedKeyDown);
-            this.LowSpeedTextBox.Validating += new System.ComponentModel.CancelEventHandler(this.LowSpeedTextBox_Validating);
-            // 
-            // HighSpeedLabel
-            // 
-            this.HighSpeedLabel.AutoSize = true;
-            this.HighSpeedLabel.Location = new System.Drawing.Point(339, 68);
-            this.HighSpeedLabel.Name = "HighSpeedLabel";
-            this.HighSpeedLabel.Size = new System.Drawing.Size(35, 13);
-            this.HighSpeedLabel.TabIndex = 2;
-            this.HighSpeedLabel.Text = "High :";
-            // 
-            // LowSpeedLabel
-            // 
-            this.LowSpeedLabel.AutoSize = true;
-            this.LowSpeedLabel.Location = new System.Drawing.Point(339, 42);
-            this.LowSpeedLabel.Name = "LowSpeedLabel";
-            this.LowSpeedLabel.Size = new System.Drawing.Size(33, 13);
-            this.LowSpeedLabel.TabIndex = 1;
-            this.LowSpeedLabel.Text = "Low :";
             // 
             // SpeedZonesTreeList
             // 
@@ -409,16 +492,14 @@ namespace GarminFitnessPlugin.View
             this.SpeedZonesTreeList.ShowPlusMinus = false;
             this.SpeedZonesTreeList.Size = new System.Drawing.Size(298, 72);
             this.SpeedZonesTreeList.TabIndex = 1;
-            this.SpeedZonesTreeList.SelectedChanged += new System.EventHandler(this.SpeedZonesTreeList_SelectedChanged);
+            this.SpeedZonesTreeList.SelectedItemsChanged += new System.EventHandler(this.SpeedZonesTreeList_SelectedItemsChanged);
             // 
             // HRZonesGroupBox
             // 
+            this.HRZonesGroupBox.Controls.Add(this.HRZonePanel);
+            this.HRZonesGroupBox.Controls.Add(this.PercentHRRRadioButton);
             this.HRZonesGroupBox.Controls.Add(this.PercentMaxRadioButton);
             this.HRZonesGroupBox.Controls.Add(this.BPMRadioButton);
-            this.HRZonesGroupBox.Controls.Add(this.HighHRTextBox);
-            this.HRZonesGroupBox.Controls.Add(this.LowHRTextBox);
-            this.HRZonesGroupBox.Controls.Add(this.HighHRLabel);
-            this.HRZonesGroupBox.Controls.Add(this.LowHRLabel);
             this.HRZonesGroupBox.Controls.Add(this.HRZonesTreeList);
             this.HRZonesGroupBox.Location = new System.Drawing.Point(10, 39);
             this.HRZonesGroupBox.Name = "HRZonesGroupBox";
@@ -427,10 +508,95 @@ namespace GarminFitnessPlugin.View
             this.HRZonesGroupBox.TabStop = false;
             this.HRZonesGroupBox.Text = "Heart Rate Zones";
             // 
+            // HRZonePanel
+            // 
+            this.HRZonePanel.Controls.Add(this.LowHRLabel);
+            this.HRZonePanel.Controls.Add(this.HighHRLabel);
+            this.HRZonePanel.Controls.Add(this.LowHRTextBox);
+            this.HRZonePanel.Controls.Add(this.HighHRTextBox);
+            this.HRZonePanel.Location = new System.Drawing.Point(325, 42);
+            this.HRZonePanel.Name = "HRZonePanel";
+            this.HRZonePanel.Size = new System.Drawing.Size(200, 59);
+            this.HRZonePanel.TabIndex = 6;
+            // 
+            // LowHRLabel
+            // 
+            this.LowHRLabel.AutoSize = true;
+            this.LowHRLabel.Location = new System.Drawing.Point(3, 5);
+            this.LowHRLabel.Name = "LowHRLabel";
+            this.LowHRLabel.Size = new System.Drawing.Size(33, 13);
+            this.LowHRLabel.TabIndex = 1;
+            this.LowHRLabel.Text = "Low :";
+            // 
+            // HighHRLabel
+            // 
+            this.HighHRLabel.AutoSize = true;
+            this.HighHRLabel.Location = new System.Drawing.Point(3, 31);
+            this.HighHRLabel.Name = "HighHRLabel";
+            this.HighHRLabel.Size = new System.Drawing.Size(35, 13);
+            this.HighHRLabel.TabIndex = 2;
+            this.HighHRLabel.Text = "High :";
+            // 
+            // LowHRTextBox
+            // 
+            this.LowHRTextBox.AcceptsReturn = false;
+            this.LowHRTextBox.AcceptsTab = false;
+            this.LowHRTextBox.BackColor = System.Drawing.Color.White;
+            this.LowHRTextBox.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(123)))), ((int)(((byte)(114)))), ((int)(((byte)(108)))));
+            this.LowHRTextBox.ButtonImage = null;
+            this.LowHRTextBox.Location = new System.Drawing.Point(60, 2);
+            this.LowHRTextBox.MaxLength = 3;
+            this.LowHRTextBox.Multiline = false;
+            this.LowHRTextBox.Name = "LowHRTextBox";
+            this.LowHRTextBox.ReadOnly = false;
+            this.LowHRTextBox.ReadOnlyColor = System.Drawing.SystemColors.Control;
+            this.LowHRTextBox.ReadOnlyTextColor = System.Drawing.SystemColors.ControlLight;
+            this.LowHRTextBox.RightToLeft = System.Windows.Forms.RightToLeft.No;
+            this.LowHRTextBox.Size = new System.Drawing.Size(129, 20);
+            this.LowHRTextBox.TabIndex = 2;
+            this.LowHRTextBox.TextAlign = System.Windows.Forms.HorizontalAlignment.Left;
+            this.LowHRTextBox.KeyDown += new System.Windows.Forms.KeyEventHandler(this.OnValidatedKeyDown);
+            this.LowHRTextBox.Validating += new System.ComponentModel.CancelEventHandler(this.LowHRTextBox_Validating);
+            this.LowHRTextBox.Validated += new System.EventHandler(this.LowHRTextBox_Validated);
+            // 
+            // HighHRTextBox
+            // 
+            this.HighHRTextBox.AcceptsReturn = false;
+            this.HighHRTextBox.AcceptsTab = false;
+            this.HighHRTextBox.BackColor = System.Drawing.Color.White;
+            this.HighHRTextBox.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(123)))), ((int)(((byte)(114)))), ((int)(((byte)(108)))));
+            this.HighHRTextBox.ButtonImage = null;
+            this.HighHRTextBox.Location = new System.Drawing.Point(60, 28);
+            this.HighHRTextBox.MaxLength = 3;
+            this.HighHRTextBox.Multiline = false;
+            this.HighHRTextBox.Name = "HighHRTextBox";
+            this.HighHRTextBox.ReadOnly = false;
+            this.HighHRTextBox.ReadOnlyColor = System.Drawing.SystemColors.Control;
+            this.HighHRTextBox.ReadOnlyTextColor = System.Drawing.SystemColors.ControlLight;
+            this.HighHRTextBox.RightToLeft = System.Windows.Forms.RightToLeft.No;
+            this.HighHRTextBox.Size = new System.Drawing.Size(129, 20);
+            this.HighHRTextBox.TabIndex = 3;
+            this.HighHRTextBox.TextAlign = System.Windows.Forms.HorizontalAlignment.Left;
+            this.HighHRTextBox.KeyDown += new System.Windows.Forms.KeyEventHandler(this.OnValidatedKeyDown);
+            this.HighHRTextBox.Validating += new System.ComponentModel.CancelEventHandler(this.HighHRTextBox_Validating);
+            this.HighHRTextBox.Validated += new System.EventHandler(this.HighHRTextBox_Validated);
+            // 
+            // PercentHRRRadioButton
+            // 
+            this.PercentHRRRadioButton.AutoSize = true;
+            this.PercentHRRRadioButton.Location = new System.Drawing.Point(296, 19);
+            this.PercentHRRRadioButton.Name = "PercentHRRRadioButton";
+            this.PercentHRRRadioButton.Size = new System.Drawing.Size(92, 17);
+            this.PercentHRRRadioButton.TabIndex = 5;
+            this.PercentHRRRadioButton.TabStop = true;
+            this.PercentHRRRadioButton.Text = "% HRReserve";
+            this.PercentHRRRadioButton.UseVisualStyleBackColor = true;
+            this.PercentHRRRadioButton.CheckedChanged += new System.EventHandler(this.PercentHRRRadioButton_CheckedChanged);
+            // 
             // PercentMaxRadioButton
             // 
             this.PercentMaxRadioButton.AutoSize = true;
-            this.PercentMaxRadioButton.Location = new System.Drawing.Point(120, 19);
+            this.PercentMaxRadioButton.Location = new System.Drawing.Point(139, 19);
             this.PercentMaxRadioButton.Name = "PercentMaxRadioButton";
             this.PercentMaxRadioButton.Size = new System.Drawing.Size(75, 17);
             this.PercentMaxRadioButton.TabIndex = 5;
@@ -450,46 +616,6 @@ namespace GarminFitnessPlugin.View
             this.BPMRadioButton.Text = "BPM";
             this.BPMRadioButton.UseVisualStyleBackColor = true;
             this.BPMRadioButton.CheckedChanged += new System.EventHandler(this.BPMRadioButton_CheckedChanged);
-            // 
-            // HighHRTextBox
-            // 
-            this.HighHRTextBox.Location = new System.Drawing.Point(396, 65);
-            this.HighHRTextBox.MaxLength = 3;
-            this.HighHRTextBox.Name = "HighHRTextBox";
-            this.HighHRTextBox.Size = new System.Drawing.Size(129, 20);
-            this.HighHRTextBox.TabIndex = 3;
-            this.HighHRTextBox.Validated += new System.EventHandler(this.HighHRTextBox_Validated);
-            this.HighHRTextBox.KeyDown += new System.Windows.Forms.KeyEventHandler(this.OnValidatedKeyDown);
-            this.HighHRTextBox.Validating += new System.ComponentModel.CancelEventHandler(this.HighHRTextBox_Validating);
-            // 
-            // LowHRTextBox
-            // 
-            this.LowHRTextBox.Location = new System.Drawing.Point(396, 39);
-            this.LowHRTextBox.MaxLength = 3;
-            this.LowHRTextBox.Name = "LowHRTextBox";
-            this.LowHRTextBox.Size = new System.Drawing.Size(129, 20);
-            this.LowHRTextBox.TabIndex = 2;
-            this.LowHRTextBox.Validated += new System.EventHandler(this.LowHRTextBox_Validated);
-            this.LowHRTextBox.KeyDown += new System.Windows.Forms.KeyEventHandler(this.OnValidatedKeyDown);
-            this.LowHRTextBox.Validating += new System.ComponentModel.CancelEventHandler(this.LowHRTextBox_Validating);
-            // 
-            // HighHRLabel
-            // 
-            this.HighHRLabel.AutoSize = true;
-            this.HighHRLabel.Location = new System.Drawing.Point(339, 68);
-            this.HighHRLabel.Name = "HighHRLabel";
-            this.HighHRLabel.Size = new System.Drawing.Size(35, 13);
-            this.HighHRLabel.TabIndex = 2;
-            this.HighHRLabel.Text = "High :";
-            // 
-            // LowHRLabel
-            // 
-            this.LowHRLabel.AutoSize = true;
-            this.LowHRLabel.Location = new System.Drawing.Point(339, 42);
-            this.LowHRLabel.Name = "LowHRLabel";
-            this.LowHRLabel.Size = new System.Drawing.Size(33, 13);
-            this.LowHRLabel.TabIndex = 1;
-            this.LowHRLabel.Text = "Low :";
             // 
             // HRZonesTreeList
             // 
@@ -516,7 +642,7 @@ namespace GarminFitnessPlugin.View
             this.HRZonesTreeList.ShowPlusMinus = false;
             this.HRZonesTreeList.Size = new System.Drawing.Size(298, 72);
             this.HRZonesTreeList.TabIndex = 1;
-            this.HRZonesTreeList.SelectedChanged += new System.EventHandler(this.HRZonesTreeList_SelectedChanged);
+            this.HRZonesTreeList.SelectedItemsChanged += new System.EventHandler(this.HRZonesTreeList_SelectedItemsChanged);
             // 
             // MaxHRLabel
             // 
@@ -547,24 +673,47 @@ namespace GarminFitnessPlugin.View
             // 
             // MaxHRTextBox
             // 
+            this.MaxHRTextBox.AcceptsReturn = false;
+            this.MaxHRTextBox.AcceptsTab = false;
+            this.MaxHRTextBox.BackColor = System.Drawing.Color.White;
+            this.MaxHRTextBox.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(123)))), ((int)(((byte)(114)))), ((int)(((byte)(108)))));
+            this.MaxHRTextBox.ButtonImage = null;
             this.MaxHRTextBox.Location = new System.Drawing.Point(171, 9);
             this.MaxHRTextBox.MaxLength = 3;
+            this.MaxHRTextBox.Multiline = false;
             this.MaxHRTextBox.Name = "MaxHRTextBox";
+            this.MaxHRTextBox.ReadOnly = false;
+            this.MaxHRTextBox.ReadOnlyColor = System.Drawing.SystemColors.Control;
+            this.MaxHRTextBox.ReadOnlyTextColor = System.Drawing.SystemColors.ControlLight;
+            this.MaxHRTextBox.RightToLeft = System.Windows.Forms.RightToLeft.No;
             this.MaxHRTextBox.Size = new System.Drawing.Size(44, 20);
             this.MaxHRTextBox.TabIndex = 0;
-            this.MaxHRTextBox.Validated += new System.EventHandler(this.MaxHRTextBox_Validated);
+            this.MaxHRTextBox.TextAlign = System.Windows.Forms.HorizontalAlignment.Left;
             this.MaxHRTextBox.KeyDown += new System.Windows.Forms.KeyEventHandler(this.OnValidatedKeyDown);
             this.MaxHRTextBox.Validating += new System.ComponentModel.CancelEventHandler(this.MaxHRTextBox_Validating);
+            this.MaxHRTextBox.Validated += new System.EventHandler(this.MaxHRTextBox_Validated);
             // 
             // GearWeightTextBox
             // 
+            this.GearWeightTextBox.AcceptsReturn = false;
+            this.GearWeightTextBox.AcceptsTab = false;
+            this.GearWeightTextBox.BackColor = System.Drawing.Color.White;
+            this.GearWeightTextBox.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(123)))), ((int)(((byte)(114)))), ((int)(((byte)(108)))));
+            this.GearWeightTextBox.ButtonImage = null;
             this.GearWeightTextBox.Location = new System.Drawing.Point(494, 9);
+            this.GearWeightTextBox.MaxLength = 32767;
+            this.GearWeightTextBox.Multiline = false;
             this.GearWeightTextBox.Name = "GearWeightTextBox";
+            this.GearWeightTextBox.ReadOnly = false;
+            this.GearWeightTextBox.ReadOnlyColor = System.Drawing.SystemColors.Control;
+            this.GearWeightTextBox.ReadOnlyTextColor = System.Drawing.SystemColors.ControlLight;
+            this.GearWeightTextBox.RightToLeft = System.Windows.Forms.RightToLeft.No;
             this.GearWeightTextBox.Size = new System.Drawing.Size(60, 20);
             this.GearWeightTextBox.TabIndex = 1;
-            this.GearWeightTextBox.Validated += new System.EventHandler(this.GearWeightTextBox_Validated);
+            this.GearWeightTextBox.TextAlign = System.Windows.Forms.HorizontalAlignment.Left;
             this.GearWeightTextBox.KeyDown += new System.Windows.Forms.KeyEventHandler(this.OnValidatedKeyDown);
             this.GearWeightTextBox.Validating += new System.ComponentModel.CancelEventHandler(this.GearWeightTextBox_Validating);
+            this.GearWeightTextBox.Validated += new System.EventHandler(this.GearWeightTextBox_Validated);
             // 
             // GearWeightLabel
             // 
@@ -609,8 +758,12 @@ namespace GarminFitnessPlugin.View
             this.ActivityPanel.PerformLayout();
             this.SpeedZonesGroupBox.ResumeLayout(false);
             this.SpeedZonesGroupBox.PerformLayout();
+            this.SpeedZonePanel.ResumeLayout(false);
+            this.SpeedZonePanel.PerformLayout();
             this.HRZonesGroupBox.ResumeLayout(false);
             this.HRZonesGroupBox.PerformLayout();
+            this.HRZonePanel.ResumeLayout(false);
+            this.HRZonePanel.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -660,5 +813,8 @@ namespace GarminFitnessPlugin.View
         private GarminFitnessPlugin.View.ExtendedTextBox GearWeightTextBox;
         private System.Windows.Forms.Label GearWeightLabel;
         private ZoneFiveSoftware.Common.Visuals.ActionBanner GarminActivityBanner;
+        private System.Windows.Forms.Panel HRZonePanel;
+        private System.Windows.Forms.Panel SpeedZonePanel;
+        private System.Windows.Forms.RadioButton PercentHRRRadioButton;
     }
 }

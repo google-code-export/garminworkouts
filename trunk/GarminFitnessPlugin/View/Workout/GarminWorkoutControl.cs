@@ -30,6 +30,7 @@ namespace GarminFitnessPlugin.View
 
             WorkoutsList.RowDataRenderer = new WorkoutRowDataRenderer(WorkoutsList);
             WorkoutsList.LabelProvider = new WorkoutIconLabelProvider();
+            WorkoutsList.ExpandedChanged += new ExtendedTreeList.ExpandedChangedEventHandler(WorkoutsList_ExpandedChanged);
 
             StepsList.RowDataRenderer = new StepRowDataRenderer(StepsList);
             StepsList.LabelProvider = new StepIconLabelProvider();
@@ -41,7 +42,21 @@ namespace GarminFitnessPlugin.View
                 TimeDurationPanel,
                 HeartRateDurationPanel,
                 HeartRateDurationPanel,
-                CaloriesDurationPanel
+                CaloriesDurationPanel,
+                PowerDurationPanel,
+                PowerDurationPanel
+            };
+
+            m_RepeatDurationPanels = new System.Windows.Forms.Panel[]
+            {
+                RepetitionCountPanel,
+                DistanceDurationPanel,
+                TimeDurationPanel,
+                HeartRateDurationPanel,
+                HeartRateDurationPanel,
+                CaloriesDurationPanel,
+                PowerDurationPanel,
+                PowerDurationPanel
             };
 
             SettingsButton.CenterImage = CommonResources.Images.Settings16;
@@ -49,13 +64,14 @@ namespace GarminFitnessPlugin.View
             PasteButton.CenterImage = CommonResources.Images.Paste16;
             DonateButton.CenterImage = CommonResources.Images.Favorite16;
 
-            RegisterChildrenControlsGorFocus(this);
+            RegisterChildrenControlsForFocus(this);
 
             // Register on controller events
             GarminWorkoutManager.Instance.WorkoutListChanged += new GarminWorkoutManager.WorkoutListChangedEventHandler(OnGarminWorkoutManagerWorkoutListChanged);
             GarminWorkoutManager.Instance.WorkoutChanged += new GarminWorkoutManager.WorkoutChangedEventHandler(OnWorkoutChanged);
             GarminWorkoutManager.Instance.WorkoutStepChanged += new GarminWorkoutManager.WorkoutStepChangedEventHandler(OnWorkoutStepChanged);
             GarminWorkoutManager.Instance.WorkoutStepDurationChanged += new GarminWorkoutManager.WorkoutStepDurationChangedEventHandler(OnWorkoutStepDurationChanged);
+            GarminWorkoutManager.Instance.WorkoutStepRepeatDurationChanged += new GarminWorkoutManager.WorkoutStepRepeatDurationChangedEventHandler(OnWorkoutStepRepeatDurationChanged);
             GarminWorkoutManager.Instance.WorkoutStepTargetChanged += new GarminWorkoutManager.WorkoutStepTargetChangedEventHandler(OnWorkoutStepTargetChanged);
 
             WorkoutsList.Columns.Clear();
@@ -66,7 +82,70 @@ namespace GarminFitnessPlugin.View
             StepsList.Columns.Add(new TreeList.Column("DisplayString", "Description", StepsList.Width - 60,
                                                       StringAlignment.Near));
             StepsList.Columns.Add(new TreeList.Column("AutoSplitPart", "Workout Part", 40,
-                                  StringAlignment.Near));
+                                                      StringAlignment.Near));
+
+            AddLinkStepButton.Enabled = GarminWorkoutManager.Instance.Workouts.Count > 1;
+
+            IntensityComboBox.Format += new ListControlConvertEventHandler(IntensityComboBox_Format);
+            UpdateIntensityComboBox();
+
+            DurationComboBox.Format += new ListControlConvertEventHandler(DurationComboBox_Format);
+            UpdateDurationComboBox();
+
+            TargetComboBox.Format += new ListControlConvertEventHandler(TargetComboBox_Format);
+            UpdateTargetComboBox();
+        }
+
+        void IntensityComboBox_Format(object sender, ListControlConvertEventArgs e)
+        {
+            switch((RegularStep.StepIntensity)e.ListItem)
+            {
+                case RegularStep.StepIntensity.Active:
+                    {
+                        e.Value = GarminFitnessView.GetLocalizedString("ActiveText");
+                        break;
+                    }
+                case RegularStep.StepIntensity.Rest:
+                    {
+                        e.Value = GarminFitnessView.GetLocalizedString("RestText");
+                        break;
+                    }
+                case RegularStep.StepIntensity.Warmup:
+                    {
+                        e.Value = GarminFitnessView.GetLocalizedString("WarmupText");
+                        break;
+                    }
+                case RegularStep.StepIntensity.Cooldown:
+                    {
+                        e.Value = GarminFitnessView.GetLocalizedString("CooldownText");
+                        break;
+                    }
+            }
+        }
+
+        void DurationComboBox_Format(object sender, ListControlConvertEventArgs e)
+        {
+            IDuration.DurationType currentDuration = (IDuration.DurationType)e.ListItem;
+            FieldInfo durationFieldInfo = currentDuration.GetType().GetField(Enum.GetName(currentDuration.GetType(), currentDuration));
+            ComboBoxStringProviderAttribute providerAttribute = (ComboBoxStringProviderAttribute)Attribute.GetCustomAttribute(durationFieldInfo, typeof(ComboBoxStringProviderAttribute));
+            String comboboxItemText = GarminFitnessView.GetLocalizedString(providerAttribute.StringName);
+
+            if (currentDuration == IDuration.DurationType.LapButton &&
+                SelectedStep is RepeatStep)
+            {
+                comboboxItemText = GarminFitnessView.GetLocalizedString("RepeatCountComboBoxText");
+            }
+
+            e.Value = comboboxItemText;
+        }
+
+        void TargetComboBox_Format(object sender, ListControlConvertEventArgs e)
+        {
+            ITarget.TargetType currentTarget = (ITarget.TargetType)e.ListItem;
+            FieldInfo targetFieldInfo = currentTarget.GetType().GetField(Enum.GetName(currentTarget.GetType(), currentTarget));
+            ComboBoxStringProviderAttribute providerAttribute = (ComboBoxStringProviderAttribute)Attribute.GetCustomAttribute(targetFieldInfo, typeof(ComboBoxStringProviderAttribute));
+
+            e.Value = GarminFitnessView.GetLocalizedString(providerAttribute.StringName);
         }
 
         void OnOptionsChanged(PropertyChangedEventArgs changedProperty)
@@ -75,110 +154,200 @@ namespace GarminFitnessPlugin.View
             {
                 RefreshWorkoutSelectionControls();
             }
+            else if (changedProperty.PropertyName == "STCategoryVisibleInWorkoutList")
+            {
+                BuildWorkoutsList();
+            }
         }
 
+        private delegate void WorkoutListChangedDelegate();
         private void OnGarminWorkoutManagerWorkoutListChanged()
         {
-            // This callback handles creation & deletion of workouts
-            BuildWorkoutsList();
-            RefreshWorkoutSelection();
+            if (InvokeRequired)
+            {
+                Invoke(new WorkoutListChangedDelegate(OnGarminWorkoutManagerWorkoutListChanged), null); 
+            }
+            else
+            {
+                // This callback handles creation & deletion of workouts
+                BuildWorkoutsList();
+                RefreshWorkoutSelection();
+
+                AddLinkStepButton.Enabled = GarminWorkoutManager.Instance.Workouts.Count > 1;
+            }
         }
 
+        private delegate void WorkoutChangedDelegate(IWorkout modifiedWorkout, PropertyChangedEventArgs changedProperty);
         private void OnWorkoutChanged(IWorkout modifiedWorkout, PropertyChangedEventArgs changedProperty)
         {
-            // When a property changes in a workout, this is triggered
-            if (changedProperty.PropertyName == "Name" ||
-                changedProperty.PropertyName == "Category" ||
-                changedProperty.PropertyName == "PartsCount")
+            if (InvokeRequired)
             {
-                int modifiedWorkoutChildrenCount = -1;
-                WorkoutWrapper modifiedWrapper = GetWorkoutWrapper(modifiedWorkout.ConcreteWorkout);
-
-                if (changedProperty.PropertyName == "PartsCount")
-                {
-                    CleanUpWorkoutPartsSelection();
-                    modifiedWorkoutChildrenCount = modifiedWrapper.Children.Count;
-                }
-
-                BuildWorkoutsList();
-
-                if (changedProperty.PropertyName == "PartsCount" && modifiedWorkoutChildrenCount == 0)
-                {
-                    WorkoutsList.SetExpanded(modifiedWrapper, true);
-                }
+                Invoke(new WorkoutChangedDelegate(OnWorkoutChanged),
+                       new object[] { modifiedWorkout, changedProperty }); 
             }
-
-            if (changedProperty.PropertyName == "Schedule")
+            else
             {
-                RefreshWorkoutCalendar();
-                RefreshCalendarView();
-            }
-
-            if (SelectedWorkout == modifiedWorkout)
-            {
-                if (changedProperty.PropertyName == "Steps")
+                // When a property changes in a workout, this is triggered
+                if (changedProperty.PropertyName == "Name" ||
+                    changedProperty.PropertyName == "Category" ||
+                    changedProperty.PropertyName == "PartsCount")
                 {
-                    BuildStepsList();
+                    int modifiedWorkoutChildrenCount = -1;
+                    WorkoutWrapper modifiedWrapper = GetWorkoutWrapper(modifiedWorkout.ConcreteWorkout);
 
-                    // Update the new step buttons
-                    RefreshWorkoutSelectionControls();
+                    if (changedProperty.PropertyName == "PartsCount")
+                    {
+                        CleanUpWorkoutPartsSelection();
+                        modifiedWorkoutChildrenCount = modifiedWrapper.Children.Count;
+                    }
+
+                    BuildWorkoutsList();
+
+                    if (changedProperty.PropertyName == "PartsCount" && modifiedWorkoutChildrenCount == 0)
+                    {
+                        WorkoutsList.SetExpanded(modifiedWrapper, true);
+                    }
                 }
-                else
+
+                if (changedProperty.PropertyName == "Schedule")
                 {
-                    RefreshUIFromWorkouts();
+                    RefreshWorkoutCalendar();
+                    RefreshCalendarView();
+                }
+
+                if (SelectedWorkout != null &&
+                    SelectedWorkout.ConcreteWorkout == modifiedWorkout)
+                {
+                    if (changedProperty.PropertyName == "Steps")
+                    {
+                        BuildWorkoutsList();
+                        BuildStepsList();
+
+                        // Update the new step buttons
+                        RefreshWorkoutSelectionControls();
+                    }
+                    else
+                    {
+                        RefreshUIFromWorkouts();
+                    }
                 }
             }
         }
 
+        private delegate void WorkoutStepChangedDelegate(IWorkout modifiedWorkout, RegularStep modifiedStep, PropertyChangedEventArgs changedProperty);
         private void OnWorkoutStepChanged(IWorkout modifiedWorkout, IStep stepChanged, PropertyChangedEventArgs changedProperty)
         {
-            if (SelectedWorkout != null && SelectedWorkout.ConcreteWorkout == modifiedWorkout.ConcreteWorkout)
+            if (InvokeRequired)
             {
-                // Refresh the steps list so it updates the name/description
-                StepsList.Invalidate();
-
-                // When a property changes in a workout's step, this callback executes
-                if (SelectedStep == stepChanged)
+                Invoke(new WorkoutStepChangedDelegate(OnWorkoutStepChanged),
+                       new object[] { modifiedWorkout, stepChanged, changedProperty }); 
+            }
+            else
+            {
+                if (SelectedWorkout != null && SelectedWorkout.ConcreteWorkout == modifiedWorkout.ConcreteWorkout)
                 {
-                    if (changedProperty.PropertyName == "ForceSplitOnStep" && SelectedWorkout is WorkoutPart)
+                    // Refresh the steps list so it updates the name/description
+                    WorkoutsList.Invalidate();
+                    StepsList.Invalidate();
+
+                    // When a property changes in a workout's step, this callback executes
+                    if (SelectedStep == stepChanged)
+                    {
+                        if ((changedProperty.PropertyName == "ForceSplitOnStep" && SelectedWorkout is WorkoutPart))
+                        {
+                            BuildStepsList();
+                        }
+
+                        UpdateUIFromStep();
+                    }
+
+                    if (changedProperty.PropertyName == "LinkSteps")
                     {
                         BuildStepsList();
                     }
+                }
+                else if (SelectedStep is WorkoutLinkStep)
+                {
+                    WorkoutLinkStep concreteStep = SelectedStep as WorkoutLinkStep;
 
-                    UpdateUIFromStep();
+                    if (modifiedWorkout.ConcreteWorkout == concreteStep.LinkedWorkout)
+                    {
+                        UpdateUIFromStep();
+                    }
                 }
             }
         }
 
+        private delegate void WorkoutStepDurationChangedDelegate(IWorkout modifiedWorkout, RegularStep modifiedStep, IDuration modifiedDuration, PropertyChangedEventArgs changedProperty);
         void OnWorkoutStepDurationChanged(IWorkout modifiedWorkout, RegularStep modifiedStep, IDuration modifiedDuration, PropertyChangedEventArgs changedProperty)
         {
-            if (SelectedWorkout == modifiedWorkout)
+            if (InvokeRequired)
             {
-                // Refresh the steps list so it updates the name/description
-                StepsList.Invalidate();
-
-                if (modifiedStep == SelectedStep)
+                Invoke(new WorkoutStepDurationChangedDelegate(OnWorkoutStepDurationChanged),
+                       new object[] { modifiedWorkout, modifiedStep, modifiedDuration, changedProperty }); 
+            }
+            else
+            {
+                if (SelectedWorkout == modifiedWorkout)
                 {
-                    UpdateUIFromDuration();
+                    // Refresh the steps list so it updates the name/description
+                    StepsList.Invalidate();
+
+                    if (modifiedStep == SelectedStep)
+                    {
+                        UpdateUIFromDuration();
+                    }
                 }
             }
         }
 
+        private delegate void WorkoutStepRepeatDurationChangedDelegate(IWorkout modifiedWorkout, RepeatStep modifiedStep, IRepeatDuration modifiedDuration, PropertyChangedEventArgs changedProperty); 
+        void OnWorkoutStepRepeatDurationChanged(IWorkout modifiedWorkout, RepeatStep modifiedStep, IRepeatDuration modifiedDuration, PropertyChangedEventArgs changedProperty)
+        {
+            if (InvokeRequired)
+            {
+                Invoke(new WorkoutStepRepeatDurationChangedDelegate(OnWorkoutStepRepeatDurationChanged),
+                       new object[] { modifiedWorkout, modifiedStep, modifiedDuration, changedProperty }); 
+            }
+            else
+            {
+                if (SelectedWorkout == modifiedWorkout)
+                {
+                    // Refresh the steps list so it updates the name/description
+                    StepsList.Invalidate();
+
+                    if (modifiedStep == SelectedStep)
+                    {
+                        UpdateUIFromDuration();
+                    }
+                }
+            }
+        }
+
+        private delegate void WorkoutStepTargetChangedDelegate(IWorkout modifiedWorkout, RegularStep modifiedStep, ITarget modifiedTarget, PropertyChangedEventArgs changedProperty); 
         void OnWorkoutStepTargetChanged(IWorkout modifiedWorkout, RegularStep modifiedStep, ITarget modifiedTarget, PropertyChangedEventArgs changedProperty)
         {
-            if (SelectedWorkout == modifiedWorkout)
+            if (InvokeRequired)
             {
-                // Refresh the steps list so it updates the name/description
-                StepsList.Invalidate();
-
-                if (changedProperty.PropertyName == "ConcreteTarget")
+                Invoke(new WorkoutStepTargetChangedDelegate(OnWorkoutStepTargetChanged),
+                       new object[] {modifiedWorkout, modifiedStep, modifiedTarget, changedProperty}); 
+            }
+            else
+            {
+                if (SelectedWorkout == modifiedWorkout)
                 {
-                    UpdateTargetPanelVisibility();
-                }
+                    // Refresh the steps list so it updates the name/description
+                    StepsList.Invalidate();
 
-                if (modifiedStep == SelectedStep)
-                {
-                    UpdateUIFromTarget();
+                    if (changedProperty.PropertyName == "ConcreteTarget")
+                    {
+                        UpdateTargetPanelVisibility();
+                    }
+
+                    if (modifiedStep == SelectedStep)
+                    {
+                        UpdateUIFromTarget();
+                    }
                 }
             }
         }
@@ -255,13 +424,27 @@ namespace GarminFitnessPlugin.View
 
         private void DurationComboBox_SelectionChangedCommited(object sender, EventArgs e)
         {
-            Debug.Assert(SelectedStep != null && SelectedStep.Type == IStep.StepType.Regular);
-            RegularStep concreteStep = (RegularStep)SelectedStep;
-            IDuration.DurationType newType = (IDuration.DurationType)DurationComboBox.SelectedIndex;
+            Debug.Assert(SelectedStep != null);
 
-            if (concreteStep.Duration.Type != newType)
+            if (SelectedStep is RegularStep)
             {
-                DurationFactory.Create(newType, concreteStep);
+                RegularStep concreteStep = SelectedStep as RegularStep;
+                IDuration.DurationType newType = (IDuration.DurationType)DurationComboBox.SelectedIndex;
+
+                if (concreteStep.Duration.Type != newType)
+                {
+                    DurationFactory.Create(newType, concreteStep);
+                }
+            }
+            else if(SelectedStep is RepeatStep)
+            {
+                RepeatStep concreteStep = SelectedStep as RepeatStep;
+                IRepeatDuration.RepeatDurationType newType = (IRepeatDuration.RepeatDurationType)DurationComboBox.SelectedIndex;
+
+                if (concreteStep.Duration.Type != newType)
+                {
+                    DurationFactory.Create(newType, concreteStep);
+                }
             }
         }
 
@@ -283,7 +466,7 @@ namespace GarminFitnessPlugin.View
 
             SelectedWorkout = GarminWorkoutManager.Instance.CreateWorkout(SelectedCategory);
             SelectedCategory = null;
-            WorkoutsList.Focus();
+            WorkoutNameText.Focus();
         }
 
         private void RemoveWorkoutButton_Click(object sender, EventArgs e)
@@ -296,39 +479,17 @@ namespace GarminFitnessPlugin.View
 
         private void ScheduleWorkoutButton_Click(object sender, EventArgs e)
         {
-            // 1st pass, detect if we'll be able to add to daily view
-            if (PluginMain.GetApplication().Logbook.Activities.Count == 0)
-            {
-                foreach (Workout workout in SelectedConcreteWorkouts)
-                {
-                    // If we don't add to daily view, don't bother
-                    if (workout.AddToDailyViewOnSchedule)
-                    {
-                        // Failure, display message and cancel scheduling
-                        MessageBox.Show(GarminFitnessView.GetLocalizedString("NeedActivityTemplateText"),
-                                        GarminFitnessView.GetLocalizedString("ErrorText"),
-                                        MessageBoxButtons.OK, MessageBoxIcon.Error);
-
-                        return;
-                    }
-                }
-            }
-
             foreach (Workout workout in SelectedConcreteWorkouts)
             {
                 if (workout.AddToDailyViewOnSchedule)
                 {
                     // Create new activity from template
-                    IActivity newActivity = (IActivity)Activator.CreateInstance(PluginMain.GetApplication().Logbook.Activities[0].GetType());
+                    IActivity newActivity = PluginMain.GetApplication().Logbook.Activities.Add(new DateTime(WorkoutCalendar.SelectedDate.Year, WorkoutCalendar.SelectedDate.Month, WorkoutCalendar.SelectedDate.Day, 12, 0, 0));
+
                     newActivity.Category = workout.Category;
                     newActivity.Name = workout.Name;
                     newActivity.Notes = workout.Notes;
-                    // Adjust to GMT
-                    newActivity.StartTime = WorkoutCalendar.SelectedDate - TimeZone.CurrentTimeZone.GetUtcOffset(DateTime.Now);
-                    newActivity.HasStartTime = false;
-
-                    // Add said activity to the logbook
-                    PluginMain.GetApplication().Logbook.Activities.Add(newActivity);
+                    newActivity.HasStartTime = true;
                 }
 
                 // Schedule workout in plugin
@@ -341,6 +502,14 @@ namespace GarminFitnessPlugin.View
             foreach (Workout workout in SelectedConcreteWorkouts)
             {
                 workout.RemoveScheduledDate(WorkoutCalendar.SelectedDate);
+            }
+        }
+
+        private void RemoveAllScheduledButton_Click(object sender, EventArgs e)
+        {
+            foreach (Workout workout in SelectedConcreteWorkouts)
+            {
+                workout.RemoveAllScheduledDates();
             }
         }
 
@@ -360,14 +529,14 @@ namespace GarminFitnessPlugin.View
             RefreshWorkoutCalendar();
         }
 
-        private void StepsList_SelectedChanged(object sender, EventArgs e)
+        private void StepsList_SelectedItemsChanged(object sender, EventArgs e)
         {
             List<IStep> newSelection = new List<IStep>();
 
             // We have multiple items selected
-            for (int i = 0; i < StepsList.Selected.Count; ++i)
+            foreach (StepWrapper currentWrapper in StepsList.Selected)
             {
-                newSelection.Add((IStep)((StepWrapper)StepsList.Selected[i]).Element);
+                newSelection.Add(currentWrapper.Element as IStep);
             }
 
             SelectedSteps = newSelection;
@@ -383,7 +552,7 @@ namespace GarminFitnessPlugin.View
             }
         }
 
-        private void WorkoutsList_SelectedChanged(object sender, EventArgs e)
+        private void WorkoutsList_SelectedItemsChanged(object sender, EventArgs e)
         {
             List<IWorkout> newWorkoutSelection = new List<IWorkout>();
             List<IActivityCategory> newCategorySelection = new List<IActivityCategory>();
@@ -414,11 +583,21 @@ namespace GarminFitnessPlugin.View
             RefreshClipboardControls();
         }
 
+        void WorkoutsList_ExpandedChanged(object sender, bool expanded)
+        {
+            if (sender is ActivityCategoryWrapper)
+            {
+                ActivityCategoryWrapper wrapper = sender as ActivityCategoryWrapper;
+
+                Options.Instance.SetExpandedInWorkoutList((IActivityCategory)wrapper.Element, expanded);
+            }
+        }
+
         private void ChildControl_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.KeyCode == Keys.Enter)
             {
-                SendKeys.Send("{TAB}");
+                bool success = SelectNextControl(sender as Control, true, true, true, true);
             }
         }
 
@@ -431,12 +610,14 @@ namespace GarminFitnessPlugin.View
             concreteStep.Name = StepNameText.Text;
         }
 
-        private void RestingCheckBox_CheckedChanged(object sender, EventArgs e)
+        private void IntensityComboBox_SelectedIndexChanged(object sender, EventArgs e)
         {
-            Debug.Assert(SelectedStep != null && SelectedStep.Type == IStep.StepType.Regular);
-            RegularStep concreteStep = (RegularStep)SelectedStep;
+            if (SelectedStep != null && SelectedStep.Type == IStep.StepType.Regular)
+            {
+                RegularStep concreteStep = (RegularStep)SelectedStep;
 
-            concreteStep.IsRestingStep = RestingCheckBox.Checked;
+                concreteStep.Intensity = (RegularStep.StepIntensity)IntensityComboBox.SelectedItem;
+            }
         }
 
         private void ForceSplitCheckBox_CheckedChanged(object sender, EventArgs e)
@@ -448,193 +629,561 @@ namespace GarminFitnessPlugin.View
 
         private void HeartRateDurationReferenceComboBox_SelectionChangedCommited(object sender, EventArgs e)
         {
-            Debug.Assert(SelectedStep != null && SelectedStep.Type == IStep.StepType.Regular);
-            RegularStep concreteStep = (RegularStep)SelectedStep;
-            Debug.Assert(concreteStep.Duration != null);
-            bool isPercentMax = HeartRateDurationReferenceComboBox.SelectedIndex == 1;
+            Debug.Assert(SelectedStep != null);
 
-            if (concreteStep.Duration.Type == IDuration.DurationType.HeartRateAbove)
+            if (SelectedStep is RegularStep)
             {
-                HeartRateAboveDuration concreteDuration = (HeartRateAboveDuration)concreteStep.Duration;
+                RegularStep concreteStep = SelectedStep as RegularStep;
+                Debug.Assert(concreteStep.Duration != null);
+                bool isPercentMax = HeartRateDurationReferenceComboBox.SelectedIndex == 1;
 
-                if (isPercentMax && concreteDuration.MaxHeartRate > Constants.MaxHRInPercentMax)
+                if (concreteStep.Duration.Type == IDuration.DurationType.HeartRateAbove)
                 {
-                    concreteDuration.MaxHeartRate = Constants.MaxHRInPercentMax;
-                }
-                else if (!isPercentMax && concreteDuration.MaxHeartRate < Constants.MinHRInBPM)
-                {
-                    concreteDuration.MaxHeartRate = Constants.MinHRInBPM;
-                }
+                    HeartRateAboveDuration concreteDuration = concreteStep.Duration as HeartRateAboveDuration;
 
-                concreteDuration.IsPercentageMaxHeartRate = isPercentMax;
+                    concreteDuration.IsPercentageMaxHeartRate = isPercentMax;
+                }
+                else
+                {
+                    HeartRateBelowDuration concreteDuration = concreteStep.Duration as HeartRateBelowDuration;
+
+                    concreteDuration.IsPercentageMaxHeartRate = isPercentMax;
+                }
             }
-            else if (concreteStep.Duration.Type == IDuration.DurationType.HeartRateBelow)
+            else if (SelectedStep is RepeatStep)
             {
-                HeartRateBelowDuration concreteDuration = (HeartRateBelowDuration)concreteStep.Duration;
+                RepeatStep concreteStep = SelectedStep as RepeatStep;
+                Debug.Assert(concreteStep.Duration != null);
+                bool isPercentMax = HeartRateDurationReferenceComboBox.SelectedIndex == 1;
 
-                if (isPercentMax && concreteDuration.MinHeartRate > Constants.MaxHRInPercentMax)
+                if (concreteStep.Duration.Type == IRepeatDuration.RepeatDurationType.RepeatUntilHeartRateAbove)
                 {
-                    concreteDuration.MinHeartRate = Constants.MaxHRInPercentMax;
-                }
-                else if (!isPercentMax && concreteDuration.MinHeartRate < Constants.MinHRInBPM)
-                {
-                    concreteDuration.MinHeartRate = Constants.MinHRInBPM;
-                }
+                    RepeatUntilHeartRateAboveDuration concreteDuration = concreteStep.Duration as RepeatUntilHeartRateAboveDuration;
 
-                concreteDuration.IsPercentageMaxHeartRate = isPercentMax;
+                    concreteDuration.IsPercentageMaxHeartRate = isPercentMax;
+                }
+                else
+                {
+                    RepeatUntilHeartRateBelowDuration concreteDuration = concreteStep.Duration as RepeatUntilHeartRateBelowDuration;
+
+                    concreteDuration.IsPercentageMaxHeartRate = isPercentMax;
+                }
             }
-            else
-            {
-                Debug.Assert(false);
-            }
+
         }
 
         private void HeartRateDurationText_Validating(object sender, CancelEventArgs e)
         {
-            Debug.Assert(SelectedStep != null && SelectedStep.Type == IStep.StepType.Regular);
-            RegularStep concreteStep = (RegularStep)SelectedStep;
-            Debug.Assert(concreteStep.Duration != null && (concreteStep.Duration.Type == IDuration.DurationType.HeartRateAbove || concreteStep.Duration.Type == IDuration.DurationType.HeartRateBelow));
-            bool isPercentMax;
-            UInt16 oldValue, minRange, maxRange;
+            Debug.Assert(SelectedStep != null);
 
-            if (concreteStep.Duration.Type == IDuration.DurationType.HeartRateAbove)
+            if (SelectedStep is RegularStep)
             {
-                HeartRateAboveDuration concreteDuration = (HeartRateAboveDuration)concreteStep.Duration;
+                RegularStep concreteStep = SelectedStep as RegularStep;
+                Debug.Assert(concreteStep.Duration != null &&
+                             (concreteStep.Duration.Type == IDuration.DurationType.HeartRateAbove ||
+                              concreteStep.Duration.Type == IDuration.DurationType.HeartRateBelow));
+                bool isPercentMax;
+                UInt16 oldValue, minRange, maxRange;
 
-                isPercentMax = concreteDuration.IsPercentageMaxHeartRate;
-                oldValue = concreteDuration.MaxHeartRate;
+                if (concreteStep.Duration.Type == IDuration.DurationType.HeartRateAbove)
+                {
+                    HeartRateAboveDuration concreteDuration = concreteStep.Duration as HeartRateAboveDuration;
+
+                    isPercentMax = concreteDuration.IsPercentageMaxHeartRate;
+                    oldValue = concreteDuration.MaxHeartRate;
+                }
+                else
+                {
+                    HeartRateBelowDuration concreteDuration = concreteStep.Duration as HeartRateBelowDuration;
+
+                    isPercentMax = concreteDuration.IsPercentageMaxHeartRate;
+                    oldValue = concreteDuration.MinHeartRate;
+                }
+
+                if (isPercentMax)
+                {
+                    minRange = Constants.MinHRInPercentMax;
+                    maxRange = Constants.MaxHRInPercentMax;
+                }
+                else
+                {
+                    minRange = Constants.MinHRInBPM;
+                    maxRange = Constants.MaxHRInBPM;
+                }
+
+                e.Cancel = !Utils.IsTextIntegerInRange(HeartRateDurationText.Text, minRange, maxRange);
+                if (e.Cancel)
+                {
+                    MessageBox.Show(String.Format(GarminFitnessView.GetLocalizedString("IntegerRangeValidationText"), minRange, maxRange),
+                                    GarminFitnessView.GetLocalizedString("ValueValidationTitleText"), MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    System.Media.SystemSounds.Asterisk.Play();
+
+                    // Reset old valid value
+                    HeartRateDurationText.Text = oldValue.ToString();
+                }
             }
-            else
+            else if(SelectedStep is RepeatStep)
             {
-                HeartRateBelowDuration concreteDuration = (HeartRateBelowDuration)concreteStep.Duration;
+                RepeatStep concreteStep = SelectedStep as RepeatStep;
+                Debug.Assert(concreteStep.Duration != null &&
+                             (concreteStep.Duration.Type == IRepeatDuration.RepeatDurationType.RepeatUntilHeartRateAbove ||
+                              concreteStep.Duration.Type == IRepeatDuration.RepeatDurationType.RepeatUntilHeartRateBelow));
+                bool isPercentMax;
+                UInt16 oldValue, minRange, maxRange;
 
-                isPercentMax = concreteDuration.IsPercentageMaxHeartRate;
-                oldValue = concreteDuration.MinHeartRate;
-            }
+                if (concreteStep.Duration.Type == IRepeatDuration.RepeatDurationType.RepeatUntilHeartRateAbove)
+                {
+                    RepeatUntilHeartRateAboveDuration concreteDuration = concreteStep.Duration as RepeatUntilHeartRateAboveDuration;
 
-            if (isPercentMax)
-            {
-                minRange = Constants.MinHRInPercentMax;
-                maxRange = Constants.MaxHRInPercentMax;
-            }
-            else
-            {
-                minRange = Constants.MinHRInBPM;
-                maxRange = Constants.MaxHRInBPM;
-            }
+                    isPercentMax = concreteDuration.IsPercentageMaxHeartRate;
+                    oldValue = concreteDuration.MaxHeartRate;
+                }
+                else
+                {
+                    RepeatUntilHeartRateBelowDuration concreteDuration = concreteStep.Duration as RepeatUntilHeartRateBelowDuration;
 
-            e.Cancel = !Utils.IsTextIntegerInRange(HeartRateDurationText.Text, minRange, maxRange);
-            if (e.Cancel)
-            {
-                MessageBox.Show(String.Format(GarminFitnessView.GetLocalizedString("IntegerRangeValidationText"), minRange, maxRange),
-                                GarminFitnessView.GetLocalizedString("ValueValidationTitleText"), MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                System.Media.SystemSounds.Asterisk.Play();
+                    isPercentMax = concreteDuration.IsPercentageMaxHeartRate;
+                    oldValue = concreteDuration.MinHeartRate;
+                }
 
-                // Reset old valid value
-                HeartRateDurationText.Text = oldValue.ToString();
+                if (isPercentMax)
+                {
+                    minRange = Constants.MinHRInPercentMax;
+                    maxRange = Constants.MaxHRInPercentMax;
+                }
+                else
+                {
+                    minRange = Constants.MinHRInBPM;
+                    maxRange = Constants.MaxHRInBPM;
+                }
+
+                e.Cancel = !Utils.IsTextIntegerInRange(HeartRateDurationText.Text, minRange, maxRange);
+                if (e.Cancel)
+                {
+                    MessageBox.Show(String.Format(GarminFitnessView.GetLocalizedString("IntegerRangeValidationText"), minRange, maxRange),
+                                    GarminFitnessView.GetLocalizedString("ValueValidationTitleText"), MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    System.Media.SystemSounds.Asterisk.Play();
+
+                    // Reset old valid value
+                    HeartRateDurationText.Text = oldValue.ToString();
+                }
             }
         }
 
         private void HeartRateDurationText_Validated(object sender, EventArgs e)
         {
-            Debug.Assert(SelectedStep != null && SelectedStep.Type == IStep.StepType.Regular);
-            RegularStep concreteStep = (RegularStep)SelectedStep;
-            Debug.Assert(concreteStep.Duration != null && (concreteStep.Duration.Type == IDuration.DurationType.HeartRateAbove || concreteStep.Duration.Type == IDuration.DurationType.HeartRateBelow));
+            Debug.Assert(SelectedStep != null);
 
-            if (concreteStep.Duration.Type == IDuration.DurationType.HeartRateAbove)
+            if (SelectedStep is RegularStep)
             {
-                HeartRateAboveDuration concreteDuration = (HeartRateAboveDuration)concreteStep.Duration;
+                RegularStep concreteStep = SelectedStep as RegularStep;
+                Debug.Assert(concreteStep.Duration != null && (concreteStep.Duration.Type == IDuration.DurationType.HeartRateAbove || concreteStep.Duration.Type == IDuration.DurationType.HeartRateBelow));
 
-                concreteDuration.MaxHeartRate = Byte.Parse(HeartRateDurationText.Text);
+                if (concreteStep.Duration.Type == IDuration.DurationType.HeartRateAbove)
+                {
+                    HeartRateAboveDuration concreteDuration = concreteStep.Duration as HeartRateAboveDuration;
+
+                    concreteDuration.MaxHeartRate = Byte.Parse(HeartRateDurationText.Text);
+                }
+                else
+                {
+                    HeartRateBelowDuration concreteDuration = concreteStep.Duration as HeartRateBelowDuration;
+
+                    concreteDuration.MinHeartRate = Byte.Parse(HeartRateDurationText.Text);
+                }
             }
-            else if (concreteStep.Duration.Type == IDuration.DurationType.HeartRateBelow)
+            else if(SelectedStep is RepeatStep)
             {
-                HeartRateBelowDuration concreteDuration = (HeartRateBelowDuration)concreteStep.Duration;
+                RepeatStep concreteStep = SelectedStep as RepeatStep;
+                Debug.Assert(concreteStep.Duration != null &&
+                             (concreteStep.Duration.Type == IRepeatDuration.RepeatDurationType.RepeatUntilHeartRateAbove ||
+                              concreteStep.Duration.Type == IRepeatDuration.RepeatDurationType.RepeatUntilHeartRateBelow));
 
-                concreteDuration.MinHeartRate = Byte.Parse(HeartRateDurationText.Text);
+                if (concreteStep.Duration.Type == IRepeatDuration.RepeatDurationType.RepeatUntilHeartRateAbove)
+                {
+                    RepeatUntilHeartRateAboveDuration concreteDuration = concreteStep.Duration as RepeatUntilHeartRateAboveDuration; 
+
+                    concreteDuration.MaxHeartRate = Byte.Parse(HeartRateDurationText.Text);
+                }
+                else
+                {
+                    RepeatUntilHeartRateBelowDuration concreteDuration = concreteStep.Duration as RepeatUntilHeartRateBelowDuration;
+
+                    concreteDuration.MinHeartRate = Byte.Parse(HeartRateDurationText.Text);
+                }
             }
-            else
+        }
+
+        private void PowerDurationReferenceComboBox_SelectionChangedCommited(object sender, EventArgs e)
+        {
+            Debug.Assert(SelectedStep != null);
+
+            if (SelectedStep is RegularStep)
             {
-                Debug.Assert(false);
+                RegularStep concreteStep = SelectedStep as RegularStep;
+                Debug.Assert(concreteStep.Duration != null);
+                bool isPercentFTP = PowerDurationReferenceComboBox.SelectedIndex == 1;
+
+                if (concreteStep.Duration.Type == IDuration.DurationType.PowerAbove)
+                {
+                    PowerAboveDuration concreteDuration = concreteStep.Duration as PowerAboveDuration;
+
+                    concreteDuration.IsPercentFTP = isPercentFTP;
+                }
+                else if (concreteStep.Duration.Type == IDuration.DurationType.PowerBelow)
+                {
+                    PowerBelowDuration concreteDuration = concreteStep.Duration as PowerBelowDuration;
+
+                    concreteDuration.IsPercentFTP = isPercentFTP;
+                }
+                else
+                {
+                    Debug.Assert(false);
+                }
+            }
+            else if (SelectedStep is RepeatStep)
+            {
+                RepeatStep concreteStep = SelectedStep as RepeatStep;
+                Debug.Assert(concreteStep.Duration != null);
+                bool isPercentFTP = PowerDurationReferenceComboBox.SelectedIndex == 1;
+
+                if (concreteStep.Duration.Type == IRepeatDuration.RepeatDurationType.RepeatUntilPowerAbove)
+                {
+                    RepeatUntilPowerAboveDuration concreteDuration = concreteStep.Duration as RepeatUntilPowerAboveDuration;
+
+                    concreteDuration.IsPercentFTP = isPercentFTP;
+                }
+                else if (concreteStep.Duration.Type == IRepeatDuration.RepeatDurationType.RepeatUntilPowerBelow)
+                {
+                    RepeatUntilPowerBelowDuration concreteDuration = concreteStep.Duration as RepeatUntilPowerBelowDuration;
+
+                    concreteDuration.IsPercentFTP = isPercentFTP;
+                }
+                else
+                {
+                    Debug.Assert(false);
+                }
+            }
+        }
+
+        private void PowerDurationText_Validating(object sender, CancelEventArgs e)
+        {
+            Debug.Assert(SelectedStep != null);
+
+            if (SelectedStep is RegularStep)
+            {
+                RegularStep concreteStep = SelectedStep as RegularStep;
+                Debug.Assert(concreteStep.Duration != null && (concreteStep.Duration.Type == IDuration.DurationType.PowerAbove || concreteStep.Duration.Type == IDuration.DurationType.PowerBelow));
+                bool isPercentFTP;
+                UInt16 oldValue, minRange, maxRange;
+
+                if (concreteStep.Duration.Type == IDuration.DurationType.PowerAbove)
+                {
+                    PowerAboveDuration concreteDuration = concreteStep.Duration as PowerAboveDuration;
+
+                    isPercentFTP = concreteDuration.IsPercentFTP;
+                    oldValue = concreteDuration.MaxPower;
+                }
+                else
+                {
+                    PowerBelowDuration concreteDuration = concreteStep.Duration as PowerBelowDuration;
+
+                    isPercentFTP = concreteDuration.IsPercentFTP;
+                    oldValue = concreteDuration.MinPower;
+                }
+
+                if (isPercentFTP)
+                {
+                    minRange = Constants.MinPowerInPercentFTP;
+                    maxRange = Constants.MaxPowerInPercentFTP;
+                }
+                else
+                {
+                    minRange = Constants.MinPowerInWatts;
+                    maxRange = Constants.MaxPowerWorkoutInWatts;
+                }
+
+                e.Cancel = !Utils.IsTextIntegerInRange(PowerDurationText.Text, minRange, maxRange);
+                if (e.Cancel)
+                {
+                    MessageBox.Show(String.Format(GarminFitnessView.GetLocalizedString("IntegerRangeValidationText"), minRange, maxRange),
+                                    GarminFitnessView.GetLocalizedString("ValueValidationTitleText"), MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    System.Media.SystemSounds.Asterisk.Play();
+
+                    // Reset old valid value
+                    PowerDurationText.Text = oldValue.ToString();
+                }
+            }
+            else if (SelectedStep is RepeatStep)
+            {
+                RepeatStep concreteStep = SelectedStep as RepeatStep;
+                Debug.Assert(concreteStep.Duration != null &&
+                             (concreteStep.Duration.Type == IRepeatDuration.RepeatDurationType.RepeatUntilPowerAbove ||
+                              concreteStep.Duration.Type == IRepeatDuration.RepeatDurationType.RepeatUntilPowerBelow));
+                bool isPercentFTP;
+                UInt16 oldValue, minRange, maxRange;
+
+                if (concreteStep.Duration.Type == IRepeatDuration.RepeatDurationType.RepeatUntilPowerAbove)
+                {
+                    RepeatUntilPowerAboveDuration concreteDuration = concreteStep.Duration as RepeatUntilPowerAboveDuration;
+
+                    isPercentFTP = concreteDuration.IsPercentFTP;
+                    oldValue = concreteDuration.MaxPower;
+                }
+                else
+                {
+                    RepeatUntilPowerBelowDuration concreteDuration = concreteStep.Duration as RepeatUntilPowerBelowDuration;
+
+                    isPercentFTP = concreteDuration.IsPercentFTP;
+                    oldValue = concreteDuration.MinPower;
+                }
+
+                if (isPercentFTP)
+                {
+                    minRange = Constants.MinPowerInPercentFTP;
+                    maxRange = Constants.MaxPowerInPercentFTP;
+                }
+                else
+                {
+                    minRange = Constants.MinPowerInWatts;
+                    maxRange = Constants.MaxPowerWorkoutInWatts;
+                }
+
+                e.Cancel = !Utils.IsTextIntegerInRange(PowerDurationText.Text, minRange, maxRange);
+                if (e.Cancel)
+                {
+                    MessageBox.Show(String.Format(GarminFitnessView.GetLocalizedString("IntegerRangeValidationText"), minRange, maxRange),
+                                    GarminFitnessView.GetLocalizedString("ValueValidationTitleText"), MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    System.Media.SystemSounds.Asterisk.Play();
+
+                    // Reset old valid value
+                    PowerDurationText.Text = oldValue.ToString();
+                }
+            }
+        }
+
+        private void PowerDurationText_Validated(object sender, EventArgs e)
+        {
+            Debug.Assert(SelectedStep != null);
+
+            if (SelectedStep is RegularStep)
+            {
+                RegularStep concreteStep = SelectedStep as RegularStep;
+                Debug.Assert(concreteStep.Duration != null &&
+                             (concreteStep.Duration.Type == IDuration.DurationType.PowerAbove ||
+                              concreteStep.Duration.Type == IDuration.DurationType.PowerBelow));
+
+                if (concreteStep.Duration.Type == IDuration.DurationType.PowerAbove)
+                {
+                    PowerAboveDuration concreteDuration = concreteStep.Duration as PowerAboveDuration;
+
+                    concreteDuration.MaxPower = UInt16.Parse(PowerDurationText.Text);
+                }
+                else
+                {
+                    PowerBelowDuration concreteDuration = concreteStep.Duration as PowerBelowDuration;
+
+                    concreteDuration.MinPower = UInt16.Parse(PowerDurationText.Text);
+                }
+
+            }
+            else if (SelectedStep is RepeatStep)
+            {
+                RepeatStep concreteStep = SelectedStep as RepeatStep;
+                Debug.Assert(concreteStep.Duration != null &&
+                             (concreteStep.Duration.Type == IRepeatDuration.RepeatDurationType.RepeatUntilPowerAbove ||
+                              concreteStep.Duration.Type == IRepeatDuration.RepeatDurationType.RepeatUntilPowerBelow));
+
+                if (concreteStep.Duration.Type == IRepeatDuration.RepeatDurationType.RepeatUntilPowerAbove)
+                {
+                    RepeatUntilPowerAboveDuration concreteDuration = concreteStep.Duration as RepeatUntilPowerAboveDuration;
+
+                    concreteDuration.MaxPower = UInt16.Parse(PowerDurationText.Text);
+                }
+                else
+                {
+                    RepeatUntilPowerBelowDuration concreteDuration = concreteStep.Duration as RepeatUntilPowerBelowDuration;
+
+                    concreteDuration.MinPower = UInt16.Parse(PowerDurationText.Text);
+                }
             }
         }
 
         private void DistanceDurationText_Validating(object sender, CancelEventArgs e)
         {
-            Debug.Assert(SelectedStep != null && SelectedStep.Type == IStep.StepType.Regular);
-            RegularStep concreteStep = (RegularStep)SelectedStep;
-            Debug.Assert(concreteStep.Duration != null && concreteStep.Duration.Type == IDuration.DurationType.Distance);
-            DistanceDuration concreteDuration = (DistanceDuration)concreteStep.Duration;
-            double maxDistance;
+            Debug.Assert(SelectedStep != null);
 
-            if (Utils.IsStatute(concreteDuration.BaseUnit))
+            if (SelectedStep is RegularStep)
             {
-                maxDistance = Constants.MaxDistanceStatute;
+                RegularStep concreteStep = SelectedStep as RegularStep;
+                Debug.Assert(concreteStep.Duration != null &&
+                             concreteStep.Duration.Type == IDuration.DurationType.Distance);
+                DistanceDuration concreteDuration = concreteStep.Duration as DistanceDuration;
+                double maxDistance;
+
+                if (Utils.IsStatute(concreteDuration.BaseUnit))
+                {
+                    maxDistance = Constants.MaxDistanceStatute;
+                }
+                else
+                {
+                    maxDistance = Constants.MaxDistanceMetric;
+                }
+
+                e.Cancel = !Utils.IsTextFloatInRange(DistanceDurationText.Text, Constants.MinDistance, maxDistance);
+                if (e.Cancel)
+                {
+                    MessageBox.Show(String.Format(GarminFitnessView.GetLocalizedString("DoubleRangeValidationText"), Constants.MinDistance, maxDistance),
+                                    GarminFitnessView.GetLocalizedString("ValueValidationTitleText"), MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    System.Media.SystemSounds.Asterisk.Play();
+
+                    // Reset old valid value
+                    DistanceDurationText.Text = String.Format("{0:0.00}", concreteDuration.GetDistanceInBaseUnit());
+                }
             }
-            else
+            else if (SelectedStep is RepeatStep)
             {
-                maxDistance = Constants.MaxDistanceMetric;
-            }
+                RepeatStep concreteStep = SelectedStep as RepeatStep;
+                Debug.Assert(concreteStep.Duration != null &&
+                             concreteStep.Duration.Type == IRepeatDuration.RepeatDurationType.RepeatUntilDistance);
+                RepeatUntilDistanceDuration concreteDuration = concreteStep.Duration as RepeatUntilDistanceDuration;
+                double maxDistance;
 
-            e.Cancel = !Utils.IsTextFloatInRange(DistanceDurationText.Text, Constants.MinDistance, maxDistance);
-            if (e.Cancel)
-            {
-                MessageBox.Show(String.Format(GarminFitnessView.GetLocalizedString("DoubleRangeValidationText"), Constants.MinDistance, maxDistance),
-                                GarminFitnessView.GetLocalizedString("ValueValidationTitleText"), MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                System.Media.SystemSounds.Asterisk.Play();
+                if (Utils.IsStatute(concreteDuration.BaseUnit))
+                {
+                    maxDistance = Constants.MaxDistanceStatute;
+                }
+                else
+                {
+                    maxDistance = Constants.MaxDistanceMetric;
+                }
 
-                // Reset old valid value
-                DistanceDurationText.Text = String.Format("{0:0.00}", concreteDuration.GetDistanceInBaseUnit());
+                e.Cancel = !Utils.IsTextFloatInRange(DistanceDurationText.Text, Constants.MinDistance, maxDistance);
+                if (e.Cancel)
+                {
+                    MessageBox.Show(String.Format(GarminFitnessView.GetLocalizedString("DoubleRangeValidationText"), Constants.MinDistance, maxDistance),
+                                    GarminFitnessView.GetLocalizedString("ValueValidationTitleText"), MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    System.Media.SystemSounds.Asterisk.Play();
+
+                    // Reset old valid value
+                    DistanceDurationText.Text = String.Format("{0:0.00}", concreteDuration.GetDistanceInBaseUnit());
+                }
             }
         }
 
         private void DistanceDurationText_Validated(object sender, EventArgs e)
         {
-            Debug.Assert(SelectedStep != null && SelectedStep.Type == IStep.StepType.Regular);
-            RegularStep concreteStep = (RegularStep)SelectedStep;
-            Debug.Assert(concreteStep.Duration != null && concreteStep.Duration.Type == IDuration.DurationType.Distance);
-            DistanceDuration concreteDuration = (DistanceDuration)concreteStep.Duration;
+            Debug.Assert(SelectedStep != null);
 
-            concreteDuration.SetDistanceInBaseUnit(double.Parse(DistanceDurationText.Text));
+            if (SelectedStep is RegularStep)
+            {
+                RegularStep concreteStep = SelectedStep as RegularStep;
+                Debug.Assert(concreteStep.Duration != null &&
+                             concreteStep.Duration.Type == IDuration.DurationType.Distance);
+                DistanceDuration concreteDuration = concreteStep.Duration as DistanceDuration;
+
+                concreteDuration.SetDistanceInBaseUnit(double.Parse(DistanceDurationText.Text));
+            }
+            else if (SelectedStep is RepeatStep)
+            {
+                RepeatStep concreteStep = SelectedStep as RepeatStep;
+                Debug.Assert(concreteStep.Duration != null &&
+                             concreteStep.Duration.Type == IRepeatDuration.RepeatDurationType.RepeatUntilDistance);
+                RepeatUntilDistanceDuration concreteDuration = concreteStep.Duration as RepeatUntilDistanceDuration;
+
+                concreteDuration.SetDistanceInBaseUnit(double.Parse(DistanceDurationText.Text));
+            }
         }
 
         private void TimeDurationUpDown_Validated(object sender, EventArgs e)
         {
-            Debug.Assert(SelectedStep != null && SelectedStep.Type == IStep.StepType.Regular);
-            RegularStep concreteStep = (RegularStep)SelectedStep;
-            Debug.Assert(concreteStep.Duration != null && concreteStep.Duration.Type == IDuration.DurationType.Time);
-            TimeDuration concreteDuration = (TimeDuration)concreteStep.Duration;
+            Debug.Assert(SelectedStep != null);
 
-            concreteDuration.TimeInSeconds = TimeDurationUpDown.Duration;
+            if (SelectedStep is RegularStep)
+            {
+                RegularStep concreteStep = SelectedStep as RegularStep;
+                Debug.Assert(concreteStep.Duration != null &&
+                             concreteStep.Duration.Type == IDuration.DurationType.Time);
+                TimeDuration concreteDuration = concreteStep.Duration as TimeDuration;
+
+                concreteDuration.TimeInSeconds = TimeDurationUpDown.Duration;
+            }
+            else if (SelectedStep is RepeatStep)
+            {
+                RepeatStep concreteStep = SelectedStep as RepeatStep;
+                Debug.Assert(concreteStep.Duration != null &&
+                             concreteStep.Duration.Type == IRepeatDuration.RepeatDurationType.RepeatUntilTime);
+                RepeatUntilTimeDuration concreteDuration = concreteStep.Duration as RepeatUntilTimeDuration;
+
+                concreteDuration.TimeInSeconds = TimeDurationUpDown.Duration;
+            }
+
         }
 
         private void CaloriesDurationText_Validating(object sender, CancelEventArgs e)
         {
-            Debug.Assert(SelectedStep != null && SelectedStep.Type == IStep.StepType.Regular);
-            RegularStep concreteStep = (RegularStep)SelectedStep;
-            Debug.Assert(concreteStep.Duration != null && concreteStep.Duration.Type == IDuration.DurationType.Calories);
-            CaloriesDuration concreteDuration = (CaloriesDuration)concreteStep.Duration;
+            Debug.Assert(SelectedStep != null);
 
-            e.Cancel = !Utils.IsTextIntegerInRange(CaloriesDurationText.Text, Constants.MinCalories, Constants.MaxCalories);
-            if (e.Cancel)
+            if (SelectedStep is RegularStep)
             {
-                MessageBox.Show(String.Format(GarminFitnessView.GetLocalizedString("IntegerRangeValidationText"), Constants.MinCalories, Constants.MaxCalories),
-                                GarminFitnessView.GetLocalizedString("ValueValidationTitleText"), MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                System.Media.SystemSounds.Asterisk.Play();
+                RegularStep concreteStep = SelectedStep as RegularStep;
+                Debug.Assert(concreteStep.Duration != null &&
+                             concreteStep.Duration.Type == IDuration.DurationType.Calories);
+                CaloriesDuration concreteDuration = concreteStep.Duration as CaloriesDuration;
 
-                // Reset old valid value
-                CaloriesDurationText.Text = concreteDuration.CaloriesToSpend.ToString();
+                e.Cancel = !Utils.IsTextIntegerInRange(CaloriesDurationText.Text, Constants.MinCalories, Constants.MaxCalories);
+                if (e.Cancel)
+                {
+                    MessageBox.Show(String.Format(GarminFitnessView.GetLocalizedString("IntegerRangeValidationText"), Constants.MinCalories, Constants.MaxCalories),
+                                    GarminFitnessView.GetLocalizedString("ValueValidationTitleText"), MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    System.Media.SystemSounds.Asterisk.Play();
+
+                    // Reset old valid value
+                    CaloriesDurationText.Text = concreteDuration.CaloriesToSpend.ToString();
+                }
+            }
+            else if(SelectedStep is RepeatStep)
+            {
+                RepeatStep concreteStep = SelectedStep as RepeatStep;
+                Debug.Assert(concreteStep.Duration != null &&
+                             concreteStep.Duration.Type == IRepeatDuration.RepeatDurationType.RepeatUntilCalories);
+                RepeatUntilCaloriesDuration concreteDuration = concreteStep.Duration as RepeatUntilCaloriesDuration;
+
+                e.Cancel = !Utils.IsTextIntegerInRange(CaloriesDurationText.Text, Constants.MinCalories, Constants.MaxCalories);
+                if (e.Cancel)
+                {
+                    MessageBox.Show(String.Format(GarminFitnessView.GetLocalizedString("IntegerRangeValidationText"), Constants.MinCalories, Constants.MaxCalories),
+                                    GarminFitnessView.GetLocalizedString("ValueValidationTitleText"), MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    System.Media.SystemSounds.Asterisk.Play();
+
+                    // Reset old valid value
+                    CaloriesDurationText.Text = concreteDuration.CaloriesToSpend.ToString();
+                }
             }
         }
 
         private void CaloriesDurationText_Validated(object sender, EventArgs e)
         {
-            Debug.Assert(SelectedStep != null && SelectedStep.Type == IStep.StepType.Regular);
-            RegularStep concreteStep = (RegularStep)SelectedStep;
-            Debug.Assert(concreteStep.Duration != null && concreteStep.Duration.Type == IDuration.DurationType.Calories);
-            CaloriesDuration concreteDuration = (CaloriesDuration)concreteStep.Duration;
+            Debug.Assert(SelectedStep != null);
 
-            concreteDuration.CaloriesToSpend = UInt16.Parse(CaloriesDurationText.Text);
+            if (SelectedStep is RegularStep)
+            {
+                RegularStep concreteStep = SelectedStep as RegularStep;
+                Debug.Assert(concreteStep.Duration != null &&
+                             concreteStep.Duration.Type == IDuration.DurationType.Calories);
+                CaloriesDuration concreteDuration = (CaloriesDuration)concreteStep.Duration;
+
+                concreteDuration.CaloriesToSpend = UInt16.Parse(CaloriesDurationText.Text);
+            }
+            else if (SelectedStep is RepeatStep)
+            {
+                RepeatStep concreteStep = SelectedStep as RepeatStep;
+                Debug.Assert(concreteStep.Duration != null &&
+                             concreteStep.Duration.Type == IRepeatDuration.RepeatDurationType.RepeatUntilCalories);
+                RepeatUntilCaloriesDuration concreteDuration = (RepeatUntilCaloriesDuration)concreteStep.Duration;
+
+                concreteDuration.CaloriesToSpend = UInt16.Parse(CaloriesDurationText.Text);
+            }
         }
 
         private void ZoneComboBox_SelectionChangedCommited(object sender, EventArgs e)
@@ -778,8 +1327,17 @@ namespace GarminFitnessPlugin.View
                                 PowerRangeTarget concreteTarget = (PowerRangeTarget)baseTarget.ConcreteTarget;
 
                                 oldValue = concreteTarget.MinPower.ToString();
-                                intMin = Constants.MinPower;
-                                intMax = Constants.MaxPowerWorkout;
+
+                                if (concreteTarget.IsPercentFTP)
+                                {
+                                    intMin = Constants.MinPowerInPercentFTP;
+                                    intMax = Constants.MaxPowerInPercentFTP;
+                                }
+                                else
+                                {
+                                    intMin = Constants.MinPowerInWatts;
+                                    intMax = Constants.MaxPowerWorkoutInWatts;
+                                }
                                 inputType = RangeValidationInputType.Integer;
 
                                 break;
@@ -947,7 +1505,7 @@ namespace GarminFitnessPlugin.View
                             }
                             else
                             {
-                                concreteTarget.SetValues(newValue, newValue);
+                                concreteTarget.SetValues(newValue, newValue, concreteTarget.IsPercentFTP);
                                 forceSelectHighTargetText = true;
                             }
                             break;
@@ -1070,8 +1628,17 @@ namespace GarminFitnessPlugin.View
                                 PowerRangeTarget concreteTarget = (PowerRangeTarget)baseTarget.ConcreteTarget;
 
                                 oldValue = concreteTarget.MaxPower.ToString();
-                                intMin = Constants.MinPower;
-                                intMax = Constants.MaxPowerWorkout;
+
+                                if (concreteTarget.IsPercentFTP)
+                                {
+                                    intMin = Constants.MinPowerInPercentFTP;
+                                    intMax = Constants.MaxPowerInPercentFTP;
+                                }
+                                else
+                                {
+                                    intMin = Constants.MinPowerInWatts;
+                                    intMax = Constants.MaxPowerWorkoutInWatts;
+                                }
                                 inputType = RangeValidationInputType.Integer;
 
                                 break;
@@ -1239,7 +1806,7 @@ namespace GarminFitnessPlugin.View
                             }
                             else
                             {
-                                concreteTarget.SetValues(newValue, newValue);
+                                concreteTarget.SetValues(newValue, newValue, concreteTarget.IsPercentFTP);
                                 forceSelectLowTargetText = true;
                             }
                             break;
@@ -1261,8 +1828,11 @@ namespace GarminFitnessPlugin.View
 
         private void RepetitionCountText_Validating(object sender, CancelEventArgs e)
         {
-            Debug.Assert(SelectedStep != null && SelectedStep.Type == IStep.StepType.Repeat);
+            Debug.Assert(SelectedStep != null &
+                         SelectedStep.Type == IStep.StepType.Repeat);
             RepeatStep concreteStep = (RepeatStep)SelectedStep;
+            Debug.Assert(concreteStep.Duration is RepeatCountDuration);
+            RepeatCountDuration duration = concreteStep.Duration as RepeatCountDuration;
 
             e.Cancel = !Utils.IsTextIntegerInRange(RepetitionCountText.Text, Constants.MinRepeats, Constants.MaxRepeats);
             if (e.Cancel)
@@ -1273,7 +1843,7 @@ namespace GarminFitnessPlugin.View
                 System.Media.SystemSounds.Asterisk.Play();
 
                 // Reset old valid value
-                RepetitionCountText.Text = concreteStep.RepetitionCount.ToString();
+                RepetitionCountText.Text = duration.RepetitionCount.ToString();
             }
         }
 
@@ -1281,8 +1851,10 @@ namespace GarminFitnessPlugin.View
         {
             Debug.Assert(SelectedStep != null && SelectedStep.Type == IStep.StepType.Repeat);
             RepeatStep concreteStep = (RepeatStep)SelectedStep;
+            Debug.Assert(concreteStep.Duration is RepeatCountDuration);
+            RepeatCountDuration duration = concreteStep.Duration as RepeatCountDuration;
 
-            concreteStep.RepetitionCount = Byte.Parse(RepetitionCountText.Text);
+            duration.RepetitionCount = Byte.Parse(RepetitionCountText.Text);
         }
 
         private void WorkoutNotesText_Validated(object sender, EventArgs e)
@@ -1306,7 +1878,7 @@ namespace GarminFitnessPlugin.View
         {
             if (!(SelectedWorkout is WorkoutPart))
             {
-                Workout workoutWithSameName = GarminWorkoutManager.Instance.GetWorkoutWithName(WorkoutNameText.Text);
+                Workout workoutWithSameName = GarminWorkoutManager.Instance.GetWorkout(WorkoutNameText.Text);
 
                 if (WorkoutNameText.Text == String.Empty || (workoutWithSameName != null && workoutWithSameName != SelectedWorkout))
                 {
@@ -1341,29 +1913,20 @@ namespace GarminFitnessPlugin.View
             BaseHeartRateTarget baseTarget = (BaseHeartRateTarget)concreteStep.Target;
             Debug.Assert(baseTarget.ConcreteTarget != null && baseTarget.ConcreteTarget.Type == BaseHeartRateTarget.IConcreteHeartRateTarget.HeartRateTargetType.Range);
             HeartRateRangeTarget concreteTarget = (HeartRateRangeTarget)baseTarget.ConcreteTarget;
-            bool isPercentMax = HRRangeReferenceComboBox.SelectedIndex == 1;
-            Byte newMin = concreteTarget.MinHeartRate;
-            Byte newMax = concreteTarget.MaxHeartRate;
 
-            if (isPercentMax && newMin > Constants.MaxHRInPercentMax)
-            {
-                newMin = Constants.MaxHRInPercentMax;
-            }
-            else if (!isPercentMax && newMin < Constants.MinHRInBPM)
-            {
-                newMin = Constants.MinHRInBPM;
-            }
+            concreteTarget.SetIsPercentMax(HRRangeReferenceComboBox.SelectedIndex == 1);
+        }
+        
+        private void PowerRangeReferenceComboBox_SelectionChangedCommited(object sender, EventArgs e)
+        {
+            Debug.Assert(SelectedStep != null && SelectedStep.Type == IStep.StepType.Regular);
+            RegularStep concreteStep = (RegularStep)SelectedStep;
+            Debug.Assert(concreteStep.Target != null && concreteStep.Target.Type == ITarget.TargetType.Power);
+            BasePowerTarget baseTarget = (BasePowerTarget)concreteStep.Target;
+            Debug.Assert(baseTarget.ConcreteTarget != null && baseTarget.ConcreteTarget.Type == BasePowerTarget.IConcretePowerTarget.PowerTargetType.Range);
+            PowerRangeTarget concreteTarget = (PowerRangeTarget)baseTarget.ConcreteTarget;
 
-            if (isPercentMax && newMax > Constants.MaxHRInPercentMax)
-            {
-                newMax = Constants.MaxHRInPercentMax;
-            }
-            else if (!isPercentMax && newMax < Constants.MinHRInBPM)
-            {
-                newMax = Constants.MinHRInBPM;
-            }
-
-            concreteTarget.SetValues(newMin, newMax, isPercentMax);
+            concreteTarget.SetIsPercentFTP(PowerRangeReferenceComboBox.SelectedIndex == 1);
         }
 
         private void WorkoutsList_KeyDown(object sender, KeyEventArgs e)
@@ -1403,6 +1966,7 @@ namespace GarminFitnessPlugin.View
                     {
                         SelectedWorkout = GarminWorkoutManager.Instance.CreateWorkout(SelectedCategory);
                         SelectedCategory = null;
+                        WorkoutNameText.Focus();
                     }
                 }
             }
@@ -1504,8 +2068,8 @@ namespace GarminFitnessPlugin.View
                     }
                 }
                 
-                if(e.KeyCode == Keys.V && SelectedWorkout != null &&
-                        Clipboard.ContainsData(Constants.StepsClipboardID))
+                if (e.KeyCode == Keys.V && SelectedWorkout != null &&
+                    Clipboard.ContainsData(Constants.StepsClipboardID))
                 {
                     PasteStepsFromClipboard();
 
@@ -1586,11 +2150,11 @@ namespace GarminFitnessPlugin.View
             {
                 if (isInUpperHalf)
                 {
-                    SelectedWorkout.MoveStepsBeforeStep(stepsToMove, destinationStep);
+                    SelectedWorkout.ConcreteWorkout.Steps.MoveStepsBeforeStep(stepsToMove, destinationStep);
                 }
                 else
                 {
-                    SelectedWorkout.MoveStepsAfterStep(stepsToMove, destinationStep);
+                    SelectedWorkout.ConcreteWorkout.Steps.MoveStepsAfterStep(stepsToMove, destinationStep);
                 }
             }
             else
@@ -1606,17 +2170,18 @@ namespace GarminFitnessPlugin.View
                 // Add new items
                 if (isInUpperHalf)
                 {
-                    SelectedWorkout.InsertStepsBeforeStep(newSteps, destinationStep);
+                    SelectedWorkout.ConcreteWorkout.Steps.InsertStepsBeforeStep(newSteps, destinationStep);
                 }
                 else
                 {
-                    SelectedWorkout.InsertStepsAfterStep(newSteps, destinationStep);
+                    SelectedWorkout.ConcreteWorkout.Steps.InsertStepsAfterStep(newSteps, destinationStep);
                 }
 
                 SelectedSteps = newSteps;
             }
 
             renderer.IsInDrag = false;
+            UpdateUIFromSteps();
             StepsList.Invalidate();
         }
 
@@ -1626,7 +2191,7 @@ namespace GarminFitnessPlugin.View
 
             e.Effect = DragDropEffects.None;
 
-            if (stepsToMove != null)
+            if (stepsToMove != null && stepsToMove.Count > 0)
             {
                 bool isCtrlKeyDown = (e.KeyState & CTRL_KEY_CODE) != 0;
                 StepRowDataRenderer renderer = (StepRowDataRenderer)StepsList.RowDataRenderer;
@@ -1643,12 +2208,19 @@ namespace GarminFitnessPlugin.View
                 else
                 {
                     destinationStep = (IStep)((StepWrapper)item).Element;
+
+                    // Make sure you only consider the topmost workout link when we're a link child
+                    StepWrapper wrapper = GetStepWrapper(SelectedWorkout.ConcreteWorkout, destinationStep);
+                    while (wrapper.IsWorkoutLinkChild)
+                    {
+                        wrapper = GetStepWrapper(SelectedWorkout.ConcreteWorkout, wrapper.Parent as IStep);
+                    }
                 }
 
                 // We need to count the number of items being moved
                 for (int i = 0; i < stepsToMove.Count; ++i)
                 {
-                    stepsDragged += stepsToMove[i].GetStepCount();
+                    stepsDragged += stepsToMove[i].StepCount;
                 }
 
                 bool canMoveStep = true;
@@ -1658,18 +2230,18 @@ namespace GarminFitnessPlugin.View
                 }
                 else
                 {
-                    IStep destinationStepTopMostRepeat = SelectedWorkout.GetTopMostRepeatForStep(destinationStep);
+                    IStep destinationStepTopMostRepeat = SelectedWorkout.Steps.GetTopMostRepeatForStep(destinationStep);
 
                     for (int i = 0; i < stepsToMove.Count; ++i)
                     {
                         IStep currentMoveStep = stepsToMove[i];
-                        IStep currentMoveStepTopMostRepeat = SelectedWorkout.GetTopMostRepeatForStep(currentMoveStep);
+                        IStep currentMoveStepTopMostRepeat = SelectedWorkout.Steps.GetTopMostRepeatForStep(currentMoveStep);
 
                         if (destinationStepTopMostRepeat != null &&
                             currentMoveStepTopMostRepeat != destinationStepTopMostRepeat)
                         {
                             // It is not allowed to move a repeat inside the top most if we bust
-                            // the limit
+                            // the limit of 20 steps
                             if (!SelectedWorkout.CanAcceptNewStep(stepsDragged, destinationStep))
                             {
                                 canMoveStep = false;
@@ -1743,6 +2315,18 @@ namespace GarminFitnessPlugin.View
         private void AddRepeatButton_Click(object sender, EventArgs e)
         {
             AddNewStep(new RepeatStep(SelectedWorkout.ConcreteWorkout));
+        }
+
+        private void AddLinkStepButton_Click(object sender, EventArgs e)
+        {
+            WorkoutLinkSelectionDialog dlg = new WorkoutLinkSelectionDialog(SelectedWorkout.ConcreteWorkout, SelectedStep);
+            DialogResult result = DialogResult.Cancel;
+
+            result = dlg.ShowDialog();
+            if (result == DialogResult.OK)
+            {
+                AddNewStep(new WorkoutLinkStep(SelectedWorkout.ConcreteWorkout, dlg.SelectedWorkout));
+            }
         }
 
         private void RemoveStepButton_Click(object sender, EventArgs e)
@@ -1950,12 +2534,45 @@ namespace GarminFitnessPlugin.View
                 BuildWorkoutsList();
             }
 
-            if (WorkoutsList.RowData != null)
-            {
-                WorkoutsList.SetExpanded(WorkoutsList.RowData, true, true);
-            }
-
             RefreshClipboardControls();
+        }
+
+        private void UpdateIntensityComboBox()
+        {
+            IntensityComboBox.Items.Clear();
+            for (int i = 0; i < (int)RegularStep.StepIntensity.IntensityCount; ++i)
+            {
+                IntensityComboBox.Items.Add((RegularStep.StepIntensity)i);
+            }
+        }
+
+        private void UpdateDurationComboBox()
+        {
+            DurationComboBox.Items.Clear();
+
+            if (SelectedStep is RepeatStep)
+            {
+                for (int i = 0; i < (int)IRepeatDuration.RepeatDurationType.RepeatDurationTypeCount; ++i)
+                {
+                    DurationComboBox.Items.Add((IRepeatDuration.RepeatDurationType)i);
+                }
+            }
+            else
+            {
+                for (int i = 0; i < (int)IDuration.DurationType.DurationTypeCount; ++i)
+                {
+                    DurationComboBox.Items.Add((IDuration.DurationType)i);
+                }
+            }
+        }
+
+        private void UpdateTargetComboBox()
+        {
+            TargetComboBox.Items.Clear();
+            for (int i = 0; i < (int)ITarget.TargetType.TargetTypeCount; ++i)
+            {
+                TargetComboBox.Items.Add((ITarget.TargetType)i);
+            }
         }
 
         private void UpdateUIStrings()
@@ -1969,19 +2586,18 @@ namespace GarminFitnessPlugin.View
             WorkoutNotesLabel.Text = GarminFitnessView.GetLocalizedString("NotesLabelText");
             StepNotesLabel.Text = GarminFitnessView.GetLocalizedString("NotesLabelText");
             StepNameLabel.Text = GarminFitnessView.GetLocalizedString("StepNameLabelText");
-            RestingCheckBox.Text = GarminFitnessView.GetLocalizedString("RestingCheckBoxText");
-            StepDurationGroup.Text = GarminFitnessView.GetLocalizedString("StepDurationGroupText");
             StepDurationLabel.Text = GarminFitnessView.GetLocalizedString("StepDurationLabelText");
+            StepDurationGroup.Text = GarminFitnessView.GetLocalizedString("StepDurationGroupText");
             StepTargetGroup.Text = GarminFitnessView.GetLocalizedString("StepTargetGroupText");
             StepTargetLabel.Text = GarminFitnessView.GetLocalizedString("StepTargetLabelText");
             CaloriesDurationLabel.Text = GarminFitnessView.GetLocalizedString("CaloriesDurationLabelText");
             DistanceDurationLabel.Text = GarminFitnessView.GetLocalizedString("DistanceDurationLabelText");
             HeartRateDurationLabel.Text = GarminFitnessView.GetLocalizedString("HeartRateDurationLabelText");
+            PowerDurationLabel.Text = GarminFitnessView.GetLocalizedString("PowerDurationLabelText");
             TimeDurationLabel.Text = GarminFitnessView.GetLocalizedString("TimeDurationLabelText");
             ZoneLabel.Text = GarminFitnessView.GetLocalizedString("WhichZoneText");
             LowRangeTargetLabel.Text = GarminFitnessView.GetLocalizedString("BetweenText");
             MiddleRangeTargetLabel.Text = GarminFitnessView.GetLocalizedString("AndText");
-            RepetitionPropertiesGroup.Text = GarminFitnessView.GetLocalizedString("RepetitionPropertiesGroupText");
             RepetitionCountLabel.Text = GarminFitnessView.GetLocalizedString("RepetitionCountLabelText");
             ExportDateTextLabel.Text = GarminFitnessView.GetLocalizedString("LastExportDateText");
             AddDailyViewCheckBox.Text = GarminFitnessView.GetLocalizedString("AddDailyViewCheckBoxText");
@@ -2000,66 +2616,82 @@ namespace GarminFitnessPlugin.View
                     ExportDateLabel.Text = SelectedWorkout.LastExportDate.ToString(culture.DateTimeFormat.ShortDatePattern) +
                                             " " + SelectedWorkout.LastExportDate.ToString(culture.DateTimeFormat.ShortTimePattern);
                 }
+
+                if (SelectedStep is RegularStep)
+                {
+                    StepDurationGroup.Text = GarminFitnessView.GetLocalizedString("StepDurationGroupText");
+                }
+                else
+                {
+                    StepDurationGroup.Text = GarminFitnessView.GetLocalizedString("RepetitionPropertiesGroupText");
+                }
             }
 
-
             // Update duration heart rate reference combo box text
+            int currentSelection = HeartRateDurationReferenceComboBox.SelectedIndex;
             HeartRateDurationReferenceComboBox.Items.Clear();
             HeartRateDurationReferenceComboBox.Items.Add(CommonResources.Text.LabelBPM);
             HeartRateDurationReferenceComboBox.Items.Add(CommonResources.Text.LabelPercentOfMax);
+            HeartRateDurationReferenceComboBox.SelectedIndex = currentSelection;
+
+            // Update duration power reference combo box text
+            currentSelection = PowerDurationReferenceComboBox.SelectedIndex;
+            PowerDurationReferenceComboBox.Items.Clear();
+            PowerDurationReferenceComboBox.Items.Add(CommonResources.Text.LabelWatts);
+            PowerDurationReferenceComboBox.Items.Add(GarminFitnessView.GetLocalizedString("PercentFTPText"));
+            PowerDurationReferenceComboBox.SelectedIndex = currentSelection;
 
             // Update target heart rate reference combo box text
+            currentSelection = HRRangeReferenceComboBox.SelectedIndex;
             HRRangeReferenceComboBox.Items.Clear();
             HRRangeReferenceComboBox.Items.Add(CommonResources.Text.LabelBPM);
             HRRangeReferenceComboBox.Items.Add(CommonResources.Text.LabelPercentOfMax);
+            HRRangeReferenceComboBox.SelectedIndex = currentSelection;
 
-            // Update duration combo box
-            int currentSelection = DurationComboBox.SelectedIndex;
-            DurationComboBox.Items.Clear();
-            for (int i = 0; i < (int)IDuration.DurationType.DurationTypeCount; ++i)
-            {
-                IDuration.DurationType currentDuration = (IDuration.DurationType)i;
-                FieldInfo durationFieldInfo = currentDuration.GetType().GetField(Enum.GetName(currentDuration.GetType(), currentDuration));
-                ComboBoxStringProviderAttribute providerAttribute = (ComboBoxStringProviderAttribute)Attribute.GetCustomAttribute(durationFieldInfo, typeof(ComboBoxStringProviderAttribute));
+            // Update target power reference combo box text
+            currentSelection = PowerRangeReferenceComboBox.SelectedIndex;
+            PowerRangeReferenceComboBox.Items.Clear();
+            PowerRangeReferenceComboBox.Items.Add(CommonResources.Text.LabelWatts);
+            PowerRangeReferenceComboBox.Items.Add(GarminFitnessView.GetLocalizedString("PercentFTPText"));
+            PowerRangeReferenceComboBox.SelectedIndex = currentSelection;
 
-                DurationComboBox.Items.Add(GarminFitnessView.GetLocalizedString(providerAttribute.StringName));
+            // Refresh intensity combobox
+            currentSelection = IntensityComboBox.SelectedIndex;
+            UpdateIntensityComboBox();
+            IntensityComboBox.SelectedIndex = currentSelection;
 
-                if (currentSelection == i)
-                {
-                    DurationComboBox.Text = GarminFitnessView.GetLocalizedString(providerAttribute.StringName);
-                }
-            }
+            // Refresh duration combobox
+            currentSelection = DurationComboBox.SelectedIndex;
+            UpdateDurationComboBox();
+            DurationComboBox.SelectedIndex = currentSelection;
 
-            // Update target combo box
+            // Refresh target combo box
             currentSelection = TargetComboBox.SelectedIndex;
-            TargetComboBox.Items.Clear();
-            for (int i = 0; i < (int)ITarget.TargetType.TargetTypeCount; ++i)
-            {
-                ITarget.TargetType currentTarget = (ITarget.TargetType)i;
-                FieldInfo targetFieldInfo = currentTarget.GetType().GetField(Enum.GetName(currentTarget.GetType(), currentTarget));
-                ComboBoxStringProviderAttribute providerAttribute = (ComboBoxStringProviderAttribute)Attribute.GetCustomAttribute(targetFieldInfo, typeof(ComboBoxStringProviderAttribute));
-
-                TargetComboBox.Items.Add(GarminFitnessView.GetLocalizedString(providerAttribute.StringName));
-
-                if (currentSelection == i)
-                {
-                    TargetComboBox.Text = GarminFitnessView.GetLocalizedString(providerAttribute.StringName);
-                }
-            }
+            UpdateTargetComboBox();
+            TargetComboBox.SelectedIndex = currentSelection;
         }
 
         private void UpdateDurationPanelVisibility()
         {
-            Debug.Assert(SelectedWorkout != null && SelectedStep != null && SelectedStep.Type == IStep.StepType.Regular);
-            RegularStep concreteStep = (RegularStep)SelectedStep;
-            IDuration duration = concreteStep.Duration;
+            Debug.Assert(SelectedWorkout != null && SelectedStep != null);
 
             if (m_CurrentDurationPanel != null)
             {
                 m_CurrentDurationPanel.Visible = false;
             }
 
-            m_CurrentDurationPanel = m_DurationPanels[(int)duration.Type];
+            if (SelectedStep is RegularStep)
+            {
+                RegularStep concreteStep = SelectedStep as RegularStep;
+
+                m_CurrentDurationPanel = m_DurationPanels[(int)concreteStep.Duration.Type];
+            }
+            else if (SelectedStep is RepeatStep)
+            {
+                RepeatStep concreteStep = SelectedStep as RepeatStep;
+
+                m_CurrentDurationPanel = m_RepeatDurationPanels[(int)concreteStep.Duration.Type];
+            }
 
             if (m_CurrentDurationPanel != null)
             {
@@ -2088,6 +2720,7 @@ namespace GarminFitnessPlugin.View
 
                         RangeTargetUnitsLabel.Visible = true;
                         HRRangeReferenceComboBox.Visible = false;
+                        PowerRangeReferenceComboBox.Visible = false;
 
                         BuildSpeedComboBox(baseTarget);
                         SetRangeTargetControlsVisibility(baseTarget.ConcreteTarget.Type == BaseSpeedTarget.IConcreteSpeedTarget.SpeedTargetType.Range);
@@ -2099,6 +2732,7 @@ namespace GarminFitnessPlugin.View
 
                         RangeTargetUnitsLabel.Visible = true;
                         HRRangeReferenceComboBox.Visible = false;
+                        PowerRangeReferenceComboBox.Visible = false;
 
                         BuildCadenceComboBox(baseTarget);
                         SetRangeTargetControlsVisibility(baseTarget.ConcreteTarget.Type == BaseCadenceTarget.IConcreteCadenceTarget.CadenceTargetType.Range);
@@ -2108,24 +2742,24 @@ namespace GarminFitnessPlugin.View
                     {
                         BaseHeartRateTarget baseTarget = (BaseHeartRateTarget)target;
 
-                        RangeTargetUnitsLabel.Visible = false;
-                        HRRangeReferenceComboBox.Visible = true;
-
                         BuildHRComboBox(baseTarget);
                         SetRangeTargetControlsVisibility(baseTarget.ConcreteTarget.Type == BaseHeartRateTarget.IConcreteHeartRateTarget.HeartRateTargetType.Range);
-                        HRRangeReferenceComboBox.Visible = baseTarget.ConcreteTarget.Type == BaseHeartRateTarget.IConcreteHeartRateTarget.HeartRateTargetType.Range;
+
                         RangeTargetUnitsLabel.Visible = false;
+                        HRRangeReferenceComboBox.Visible = baseTarget.ConcreteTarget.Type == BaseHeartRateTarget.IConcreteHeartRateTarget.HeartRateTargetType.Range;
+                        PowerRangeReferenceComboBox.Visible = false;
                         break;
                     }
                 case ITarget.TargetType.Power:
                     {
                         BasePowerTarget baseTarget = (BasePowerTarget)target;
 
-                        RangeTargetUnitsLabel.Visible = true;
-                        HRRangeReferenceComboBox.Visible = false;
-
                         BuildPowerComboBox(baseTarget);
                         SetRangeTargetControlsVisibility(baseTarget.ConcreteTarget.Type == BasePowerTarget.IConcretePowerTarget.PowerTargetType.Range);
+
+                        RangeTargetUnitsLabel.Visible = false;
+                        HRRangeReferenceComboBox.Visible = false;
+                        PowerRangeReferenceComboBox.Visible = baseTarget.ConcreteTarget.Type == BasePowerTarget.IConcretePowerTarget.PowerTargetType.Range;
                         break;
                     }
                 default:
@@ -2214,60 +2848,226 @@ namespace GarminFitnessPlugin.View
         {
             if (SelectedStep != null)
             {
+                StepWrapper wrapper = GetStepWrapper(SelectedWorkout.ConcreteWorkout, SelectedStep);
+
+                StepSplit.Panel2.Enabled = !wrapper.IsWorkoutLinkChild;
+
                 StepNotesText.Text = SelectedStep.Notes;
                 ForceSplitCheckBox.Visible = Options.Instance.AllowSplitWorkouts || SelectedWorkout.GetSplitPartsCount() > 1;
-                ForceSplitCheckBox.Enabled = SelectedWorkout.GetTopMostRepeatForStep(SelectedStep) == null;
+                ForceSplitCheckBox.Enabled = SelectedWorkout.Steps.GetTopMostRepeatForStep(SelectedStep) == null;
                 ForceSplitCheckBox.Checked = SelectedStep.ForceSplitOnStep;
 
                 switch (SelectedStep.Type)
                 {
                     case IStep.StepType.Regular:
+                    {
+                        // Show correct panels/controls
+                        StepDurationGroup.Visible = true;
+                        StepDurationGroup.Text = GarminFitnessView.GetLocalizedString("StepDurationGroupText");
+                        StepTargetGroup.Visible = true;
+                        StepNameLabel.Visible = true;
+                        StepNameText.Visible = true;
+                        IntensityComboBox.Visible = true;
+
+                        RegularStep concreteStep = (RegularStep)SelectedStep;
+
+                        if (concreteStep.Name != null && concreteStep.Name != String.Empty)
                         {
-                            // Show correct panels/controls
-                            RepetitionPropertiesGroup.Visible = false;
-                            StepDurationGroup.Visible = true;
-                            StepTargetGroup.Visible = true;
-                            StepNameLabel.Visible = true;
-                            StepNameText.Visible = true;
-                            RestingCheckBox.Visible = true;
+                            StepNameText.Text = concreteStep.Name;
+                        }
+                        else
+                        {
+                            StepNameText.Text = "";
+                        }
 
-                            RegularStep concreteStep = (RegularStep)SelectedStep;
+                        UpdateDurationComboBox();
 
-                            if (concreteStep.Name != null && concreteStep.Name != String.Empty)
-                            {
-                                StepNameText.Text = concreteStep.Name;
-                            }
-                            else
-                            {
-                                StepNameText.Text = "";
-                            }
-                            RestingCheckBox.Checked = concreteStep.IsRestingStep;
-                            DurationComboBox.SelectedIndex = (int)concreteStep.Duration.Type;
-                            TargetComboBox.SelectedIndex = (int)concreteStep.Target.Type;
+                        IntensityComboBox.SelectedItem = concreteStep.Intensity;
+                        DurationComboBox.SelectedItem = concreteStep.Duration.Type;
+                        TargetComboBox.SelectedIndex = (int)concreteStep.Target.Type;
 
-                            // Update duration
-                            UpdateDurationPanelVisibility();
-                            UpdateUIFromDuration();
+                        // Update duration
+                        UpdateDurationPanelVisibility();
+                        UpdateUIFromDuration();
 
-                            // Update target
-                            UpdateTargetPanelVisibility();
-                            UpdateUIFromTarget();
+                        // Update target
+                        UpdateTargetPanelVisibility();
+                        UpdateUIFromTarget();
+                        break;
+                    }
+                case IStep.StepType.Repeat:
+                    {
+                        // Show correct panels/controls
+                        StepDurationGroup.Visible = true;
+                        StepDurationGroup.Text = GarminFitnessView.GetLocalizedString("RepetitionPropertiesGroupText");
+                        StepTargetGroup.Visible = false;
+                        StepNameLabel.Visible = false;
+                        StepNameText.Visible = false;
+                        IntensityComboBox.Visible = false;
+
+                        RepeatStep concreteStep = SelectedStep as RepeatStep;
+
+                        UpdateDurationComboBox();
+
+                        DurationComboBox.SelectedItem = concreteStep.Duration.Type;
+
+                        // Update duration
+                        UpdateDurationPanelVisibility();
+                        UpdateUIFromDuration();
+
+                        break;
+                    }
+                case IStep.StepType.Link:
+                    {
+                        // Show correct panels/controls
+                        StepDurationGroup.Visible = false;
+                        StepTargetGroup.Visible = false;
+                        StepNameLabel.Visible = false;
+                        StepNameText.Visible = false;
+                        IntensityComboBox.Visible = false;
+
+                        break;
+                    }
+                default:
+                    {
+                        Debug.Assert(false);
+                        break;
+                    }
+                }
+
+                RefreshWorkoutSelectionControls();
+            }
+        }
+
+        private void UpdateUIFromDuration()
+        {
+            Debug.Assert(SelectedWorkout != null && SelectedStep != null);
+
+            if (SelectedStep is RegularStep)
+            {
+                RegularStep concreteStep = SelectedStep as RegularStep; 
+                IDuration duration = concreteStep.Duration;
+
+                switch (concreteStep.Duration.Type)
+                {
+                    case IDuration.DurationType.LapButton:
+                        {
                             break;
                         }
-                    case IStep.StepType.Repeat:
+                    case IDuration.DurationType.Distance:
                         {
-                            // Show correct panels/controls
-                            RepetitionPropertiesGroup.Visible = true;
-                            StepDurationGroup.Visible = false;
-                            StepTargetGroup.Visible = false;
-                            StepNameLabel.Visible = false;
-                            StepNameText.Visible = false;
-                            RestingCheckBox.Visible = false;
+                            DistanceDuration concreteDuration = concreteStep.Duration as DistanceDuration;
+                            double distance = concreteDuration.GetDistanceInBaseUnit();
+                            DistanceDurationText.Text = String.Format("{0:0.00}", distance);
+                            DistanceDurationUnitsLabel.Text = Length.LabelAbbr(concreteDuration.BaseUnit);
+                            break;
+                        }
+                    case IDuration.DurationType.Time:
+                        {
+                            TimeDuration concreteDuration = concreteStep.Duration as TimeDuration;
+                            TimeDurationUpDown.Duration = concreteDuration.TimeInSeconds;
+                            break;
+                        }
+                    case IDuration.DurationType.HeartRateAbove:
+                        {
+                            HeartRateAboveDuration concreteDuration = concreteStep.Duration as HeartRateAboveDuration;
+                            HeartRateDurationText.Text = concreteDuration.MaxHeartRate.ToString();
+                            HeartRateDurationReferenceComboBox.SelectedIndex = concreteDuration.IsPercentageMaxHeartRate ? 1 : 0;
+                            break;
+                        }
+                    case IDuration.DurationType.HeartRateBelow:
+                        {
+                            HeartRateBelowDuration concreteDuration = concreteStep.Duration as HeartRateBelowDuration;
+                            HeartRateDurationText.Text = concreteDuration.MinHeartRate.ToString();
+                            HeartRateDurationReferenceComboBox.SelectedIndex = concreteDuration.IsPercentageMaxHeartRate ? 1 : 0;
+                            break;
+                        }
+                    case IDuration.DurationType.Calories:
+                        {
+                            CaloriesDuration concreteDuration = concreteStep.Duration as CaloriesDuration;
+                            CaloriesDurationText.Text = concreteDuration.CaloriesToSpend.ToString();
+                            break;
+                        }
+                    case IDuration.DurationType.PowerAbove:
+                        {
+                            PowerAboveDuration concreteDuration = concreteStep.Duration as PowerAboveDuration;
+                            PowerDurationText.Text = concreteDuration.MaxPower.ToString();
+                            PowerDurationReferenceComboBox.SelectedIndex = concreteDuration.IsPercentFTP ? 1 : 0;
+                            break;
+                        }
+                    case IDuration.DurationType.PowerBelow:
+                        {
+                            PowerBelowDuration concreteDuration = concreteStep.Duration as PowerBelowDuration; 
+                            PowerDurationText.Text = concreteDuration.MinPower.ToString();
+                            PowerDurationReferenceComboBox.SelectedIndex = concreteDuration.IsPercentFTP ? 1 : 0;
+                            break;
+                        }
+                    default:
+                        {
+                            Debug.Assert(false);
+                            break;
+                        }
+                }
+            }
+            else if (SelectedStep is RepeatStep)
+            {
+                RepeatStep concreteStep = SelectedStep as RepeatStep;
+                IRepeatDuration duration = concreteStep.Duration;
 
-                            RepeatStep concreteStep = (RepeatStep)SelectedStep;
-
-                            RepetitionCountText.Text = concreteStep.RepetitionCount.ToString();
-
+                switch (concreteStep.Duration.Type)
+                {
+                    case IRepeatDuration.RepeatDurationType.RepeatCount:
+                        {
+                            RepeatCountDuration concreteDuration = concreteStep.Duration as RepeatCountDuration;
+                            RepetitionCountText.Text = concreteDuration.RepetitionCount.ToString();
+                            break;
+                        }
+                    case IRepeatDuration.RepeatDurationType.RepeatUntilDistance:
+                        {
+                            RepeatUntilDistanceDuration concreteDuration = concreteStep.Duration as RepeatUntilDistanceDuration;
+                            double distance = concreteDuration.GetDistanceInBaseUnit();
+                            DistanceDurationText.Text = String.Format("{0:0.00}", distance);
+                            DistanceDurationUnitsLabel.Text = Length.LabelAbbr(concreteDuration.BaseUnit);
+                            break;
+                        }
+                    case IRepeatDuration.RepeatDurationType.RepeatUntilTime:
+                        {
+                            RepeatUntilTimeDuration concreteDuration = concreteStep.Duration as RepeatUntilTimeDuration;
+                            TimeDurationUpDown.Duration = concreteDuration.TimeInSeconds;
+                            break;
+                        }
+                    case IRepeatDuration.RepeatDurationType.RepeatUntilHeartRateAbove:
+                        {
+                            RepeatUntilHeartRateAboveDuration concreteDuration = concreteStep.Duration as RepeatUntilHeartRateAboveDuration;
+                            HeartRateDurationText.Text = concreteDuration.MaxHeartRate.ToString();
+                            HeartRateDurationReferenceComboBox.SelectedIndex = concreteDuration.IsPercentageMaxHeartRate ? 1 : 0;
+                            break;
+                        }
+                    case IRepeatDuration.RepeatDurationType.RepeatUntilHeartRateBelow:
+                        {
+                            RepeatUntilHeartRateBelowDuration concreteDuration = concreteStep.Duration as RepeatUntilHeartRateBelowDuration;
+                            HeartRateDurationText.Text = concreteDuration.MinHeartRate.ToString();
+                            HeartRateDurationReferenceComboBox.SelectedIndex = concreteDuration.IsPercentageMaxHeartRate ? 1 : 0;
+                            break;
+                        }
+                    case IRepeatDuration.RepeatDurationType.RepeatUntilCalories:
+                        {
+                            RepeatUntilCaloriesDuration concreteDuration = concreteStep.Duration as RepeatUntilCaloriesDuration;
+                            CaloriesDurationText.Text = concreteDuration.CaloriesToSpend.ToString();
+                            break;
+                        }
+                    case IRepeatDuration.RepeatDurationType.RepeatUntilPowerAbove:
+                        {
+                            RepeatUntilPowerAboveDuration concreteDuration = concreteStep.Duration as RepeatUntilPowerAboveDuration;
+                            PowerDurationText.Text = concreteDuration.MaxPower.ToString();
+                            PowerDurationReferenceComboBox.SelectedIndex = concreteDuration.IsPercentFTP ? 1 : 0;
+                            break;
+                        }
+                    case IRepeatDuration.RepeatDurationType.RepeatUntilPowerBelow:
+                        {
+                            RepeatUntilPowerBelowDuration concreteDuration = concreteStep.Duration as RepeatUntilPowerBelowDuration;
+                            PowerDurationText.Text = concreteDuration.MinPower.ToString();
+                            PowerDurationReferenceComboBox.SelectedIndex = concreteDuration.IsPercentFTP ? 1 : 0;
                             break;
                         }
                     default:
@@ -2277,61 +3077,7 @@ namespace GarminFitnessPlugin.View
                         }
                 }
 
-                RefreshWorkoutSelectionControls();
-            }
-        }
 
-        private void UpdateUIFromDuration()
-        {
-            Debug.Assert(SelectedWorkout != null && SelectedStep != null && SelectedStep.Type == IStep.StepType.Regular);
-            RegularStep concreteStep = (RegularStep)SelectedStep;
-            IDuration duration = concreteStep.Duration;
-
-            switch (concreteStep.Duration.Type)
-            {
-                case IDuration.DurationType.LapButton:
-                    {
-                        break;
-                    }
-                case IDuration.DurationType.Distance:
-                    {
-                        DistanceDuration concreteDuration = (DistanceDuration)concreteStep.Duration;
-                        double distance = concreteDuration.GetDistanceInBaseUnit();
-                        DistanceDurationText.Text = String.Format("{0:0.00}", distance);
-                        DistanceDurationUnitsLabel.Text = Length.LabelAbbr(concreteDuration.BaseUnit);
-                        break;
-                    }
-                case IDuration.DurationType.Time:
-                    {
-                        TimeDuration concreteDuration = (TimeDuration)concreteStep.Duration;
-                        TimeDurationUpDown.Duration = concreteDuration.TimeInSeconds;
-                        break;
-                    }
-                case IDuration.DurationType.HeartRateAbove:
-                    {
-                        HeartRateAboveDuration concreteDuration = (HeartRateAboveDuration)concreteStep.Duration;
-                        HeartRateDurationText.Text = concreteDuration.MaxHeartRate.ToString();
-                        HeartRateDurationReferenceComboBox.SelectedIndex = concreteDuration.IsPercentageMaxHeartRate ? 1 : 0;
-                        break;
-                    }
-                case IDuration.DurationType.HeartRateBelow:
-                    {
-                        HeartRateBelowDuration concreteDuration = (HeartRateBelowDuration)concreteStep.Duration;
-                        HeartRateDurationText.Text = concreteDuration.MinHeartRate.ToString();
-                        HeartRateDurationReferenceComboBox.SelectedIndex = concreteDuration.IsPercentageMaxHeartRate ? 1 : 0;
-                        break;
-                    }
-                case IDuration.DurationType.Calories:
-                    {
-                        CaloriesDuration concreteDuration = (CaloriesDuration)concreteStep.Duration;
-                        CaloriesDurationText.Text = concreteDuration.CaloriesToSpend.ToString();
-                        break;
-                    }
-                default:
-                    {
-                        Debug.Assert(false);
-                        break;
-                    }
             }
         }
 
@@ -2459,8 +3205,6 @@ namespace GarminFitnessPlugin.View
                     }
                 case ITarget.TargetType.Power:
                     {
-                        HRRangeReferenceComboBox.Visible = false;
-
                         BasePowerTarget baseTarget = (BasePowerTarget)target;
 
                         BuildPowerComboBox(baseTarget);
@@ -2483,10 +3227,10 @@ namespace GarminFitnessPlugin.View
                                 {
                                     PowerRangeTarget concreteTarget = (PowerRangeTarget)baseTarget.ConcreteTarget;
 
-                                    RangeTargetUnitsLabel.Text = CommonResources.Text.LabelWatts;
                                     ZoneComboBox.SelectedIndex = 0;
                                     LowRangeTargetText.Text = concreteTarget.MinPower.ToString();
                                     HighRangeTargetText.Text = concreteTarget.MaxPower.ToString();
+                                    PowerRangeReferenceComboBox.SelectedIndex = concreteTarget.IsPercentFTP ? 1 : 0;
                                     break;
                                 }
                         }
@@ -2685,7 +3429,7 @@ namespace GarminFitnessPlugin.View
             {
                 IStep currentStep = SelectedSteps[i];
 
-                selection.Add(GetStepWrapper(currentStep, null));
+                selection.Add(GetStepWrapper(SelectedWorkout.ConcreteWorkout, currentStep, null));
             }
 
             StepsList.Selected = selection;
@@ -2730,15 +3474,15 @@ namespace GarminFitnessPlugin.View
             {
                 bool foundSelectedDatePlanned = false;
 
-                for (int j = 0; j < currentWorkout.ScheduledDates.Count; ++j)
+                foreach (GarminFitnessDate date in currentWorkout.ScheduledDates)
                 {
-                    if (WorkoutCalendar.SelectedDate == currentWorkout.ScheduledDates[j])
+                    if (WorkoutCalendar.SelectedDate == date)
                     {
                         foundSelectedDatePlanned = true;
                         hasScheduledDate = true;
                     }
 
-                    markedDates.Add(currentWorkout.ScheduledDates[j]);
+                    markedDates.Add(date);
                 }
 
                 if (!checkBoxSet || currentWorkout.AddToDailyViewOnSchedule == addToDailyView)
@@ -2760,6 +3504,7 @@ namespace GarminFitnessPlugin.View
 
             ScheduleWorkoutButton.Enabled = SelectedConcreteWorkouts.Count > 0 && WorkoutCalendar.SelectedDate >= DateTime.Today && !areAllWorkoutsScheduledOnDate;
             RemoveScheduledDateButton.Enabled = SelectedConcreteWorkouts.Count > 0 && hasScheduledDate;
+            RemoveAllScheduledButton.Enabled = markedDates.Count > 0;
 
             AddDailyViewCheckBox.Enabled = SelectedConcreteWorkouts.Count > 0;
             if (areAllWorkoutsSameAddToDailyView)
@@ -2802,6 +3547,8 @@ namespace GarminFitnessPlugin.View
                 StepSplit.Enabled = true;
                 AddStepButton.Enabled = SelectedWorkout.CanAcceptNewStep(1, SelectedStep);
                 AddRepeatButton.Enabled = SelectedWorkout.CanAcceptNewStep(2, SelectedStep);
+                AddLinkStepButton.Enabled = AddStepButton.Enabled &&
+                                            GarminWorkoutManager.Instance.Workouts.Count > 1;
                 CalendarSplit.Panel2.Enabled = true;
                 ExportDateTextLabel.Enabled = true;
                 ExportDateLabel.Enabled = true;
@@ -2856,12 +3603,12 @@ namespace GarminFitnessPlugin.View
             if (SelectedStep != null)
             {
                 // Insert after selected
-                succeeded = SelectedWorkout.InsertStepAfterStep(newStep, SelectedStep);
+                succeeded = SelectedWorkout.ConcreteWorkout.Steps.InsertStepAfterStep(newStep, SelectedStep);
             }
             else
             {
                 // Insert as 1st element
-                succeeded = SelectedWorkout.InsertStepInRoot(0, newStep);
+                succeeded = SelectedWorkout.ConcreteWorkout.Steps.InsertStepInRoot(0, newStep);
             }
 
             if (succeeded)
@@ -2871,31 +3618,41 @@ namespace GarminFitnessPlugin.View
             }
         }
 
-        private StepWrapper GetStepWrapper(IStep step)
+        private StepWrapper GetStepWrapper(Workout baseWorkout, IStep step)
         {
-            if (m_StepWrapperMap.ContainsKey(step))
+            if (m_StepWrapperMap.ContainsKey(baseWorkout) &&
+                m_StepWrapperMap[baseWorkout].ContainsKey(step))
             {
-                return m_StepWrapperMap[step];
+                return m_StepWrapperMap[baseWorkout][step];
             }
 
             return null;
         }
 
-        private StepWrapper GetStepWrapper(IStep step, StepWrapper parent)
+        private StepWrapper GetStepWrapper(Workout baseWorkout, IStep step, StepWrapper parent)
         {
             StepWrapper wrapper;
 
-            // If we already have a wrapper for this workout, use it
-            if (m_StepWrapperMap.ContainsKey(step))
+            if (!m_StepWrapperMap.ContainsKey(baseWorkout))
             {
-                wrapper = m_StepWrapperMap[step];
+                m_StepWrapperMap.Add(baseWorkout, new Dictionary<IStep, StepWrapper>());
+            }
+
+            // If we already have a wrapper for this workout, use it
+            if (m_StepWrapperMap[baseWorkout].ContainsKey(step))
+            {
+                wrapper = m_StepWrapperMap[baseWorkout][step];
             }
             else
             {
-                // Create a new wrapper
-                wrapper = new StepWrapper(parent, step);
+                bool isWorkoutLinkChild = parent != null &&
+                                          (parent.IsWorkoutLinkChild ||
+                                            (parent.Element as IStep) is WorkoutLinkStep);
 
-                m_StepWrapperMap[step] = wrapper;
+                // Create a new wrapper
+                wrapper = new StepWrapper(parent, step, baseWorkout, isWorkoutLinkChild);
+
+                m_StepWrapperMap[baseWorkout][step] = wrapper;
             }
 
             return wrapper;
@@ -2978,14 +3735,16 @@ namespace GarminFitnessPlugin.View
         {
             IApplication app = PluginMain.GetApplication();
             List<TreeList.TreeListNode> categories = new List<TreeList.TreeListNode>();
-            bool expandList = WorkoutsList.RowData == null;
 
-            for (int i = 0; i < app.Logbook.ActivityCategories.Count; ++i)
+            foreach (IActivityCategory category in app.Logbook.ActivityCategories)
             {
-                ActivityCategoryWrapper newNode;
+                if (Options.Instance.GetVisibleInWorkoutList(category))
+                {
+                    ActivityCategoryWrapper newNode;
 
-                newNode = CreateCategoryNode(app.Logbook.ActivityCategories[i]);
-                categories.Add(newNode);
+                    newNode = CreateCategoryNode(category);
+                    categories.Add(newNode);
+                }
             }
 
             Dictionary<WorkoutWrapper, bool> expandedMap = new Dictionary<WorkoutWrapper, bool>(); 
@@ -3001,25 +3760,43 @@ namespace GarminFitnessPlugin.View
 
                 WorkoutWrapper newItem = AddWorkoutToList(categories, currentWorkout);
 
-                expandedMap.Add(newItem, expandWorkout);
+                if (newItem != null)
+                {
+                    expandedMap.Add(newItem, expandWorkout);
+                }
             }
 
             WorkoutsList.RowData = categories;
 
-            if (expandList)
+            List<IActivityCategory> expanded = Options.Instance.GetAllExpandedSTCategories();
+
+            if (expanded != null)
             {
-                WorkoutsList.SetExpanded(WorkoutsList.RowData, true, true);
+                WorkoutsList.SetExpanded(WorkoutsList.RowData, false, false);
+
+                foreach (IActivityCategory category in expanded)
+                {
+                    ActivityCategoryWrapper wrapper = GetActivityCategoryWrapper(category, null);
+
+                    if (!WorkoutsList.IsExpanded(wrapper))
+                    {
+                        WorkoutsList.SetExpanded(wrapper, true, false);
+                    }
+                }
             }
             else
             {
-                // This fixes the Workouts losing the expanded state when not the
-                //  first wrapper in the category
-                Dictionary<WorkoutWrapper, bool>.Enumerator iter = expandedMap.GetEnumerator();
-                while(iter.MoveNext())
-                {
-                    WorkoutsList.SetExpanded(iter.Current.Key, iter.Current.Value);
-                }
+                WorkoutsList.SetExpanded(WorkoutsList.RowData, true, true);
             }
+
+            // This fixes the Workouts losing the expanded state when not the
+            //  first wrapper in the category
+            Dictionary<WorkoutWrapper, bool>.Enumerator iter = expandedMap.GetEnumerator();
+            while (iter.MoveNext())
+            {
+                WorkoutsList.SetExpanded(iter.Current.Key, iter.Current.Value);
+            }
+
             RefreshWorkoutSelection();
         }
 
@@ -3112,21 +3889,23 @@ namespace GarminFitnessPlugin.View
             }
             categoryNode.Parent = parent;
 
-            for (int i = 0; i < category.SubCategories.Count; ++i)
+            foreach (IActivityCategory subCategory in category.SubCategories)
             {
-                ActivityCategoryWrapper wrapper = GetActivityCategoryWrapper(category.SubCategories[i], categoryNode);
-                wrapper.Children.Clear();
+                if(Options.Instance.GetVisibleInWorkoutList(subCategory))
+                {
+                    ActivityCategoryWrapper wrapper = GetActivityCategoryWrapper(subCategory, categoryNode);
+                    wrapper.Children.Clear();
 
-                CreateCategoryNode(wrapper, categoryNode);
+                    CreateCategoryNode(wrapper, categoryNode);
+                }
             }
         }
 
         private void AddStepsToList(List<TreeList.TreeListNode> list, List<IStep> steps, StepWrapper parent)
         {
-            for (int i = 0; i < steps.Count; ++i)
+            foreach (IStep currentStep in steps)
             {
-                IStep currentStep = steps[i];
-                StepWrapper wrapper = GetStepWrapper(currentStep, parent);
+                StepWrapper wrapper = GetStepWrapper(SelectedWorkout.ConcreteWorkout, currentStep, parent);
 
                 // Reset hierarchy
                 wrapper.Parent = null;
@@ -3142,11 +3921,17 @@ namespace GarminFitnessPlugin.View
                 }
                 wrapper.Parent = parent;
 
-                if (steps[i].Type == IStep.StepType.Repeat)
+                if (currentStep is RepeatStep)
                 {
-                    RepeatStep concreteStep = (RepeatStep)currentStep;
+                    RepeatStep concreteStep = currentStep as RepeatStep;
 
                     AddStepsToList(list, concreteStep.StepsToRepeat, wrapper);
+                }
+                else if (currentStep is WorkoutLinkStep)
+                {
+                    WorkoutLinkStep concreteStep = currentStep as WorkoutLinkStep;
+
+                    AddStepsToList(list, concreteStep.LinkedWorkoutSteps, wrapper);
                 }
             }
         }
@@ -3202,7 +3987,7 @@ namespace GarminFitnessPlugin.View
             else if (baseTarget.ConcreteTarget.Type == BaseSpeedTarget.IConcreteSpeedTarget.SpeedTargetType.Range &&
                     selectedIndex != 0)
             {
-                if (Options.Instance.UseSportTracksHeartRateZones)
+                if (Options.Instance.UseSportTracksSpeedZones)
                 {
                     baseTarget.ConcreteTarget = new SpeedZoneSTTarget(baseTarget.ParentStep.ParentConcreteWorkout.Category.SpeedZone.Zones[selectedIndex - 1], baseTarget);
                 }
@@ -3265,7 +4050,7 @@ namespace GarminFitnessPlugin.View
                      selectedIndex != 0)
             {
                 // ST zone
-                if (Options.Instance.UseSportTracksHeartRateZones)
+                if (Options.Instance.UseSportTracksPowerZones)
                 {
                     baseTarget.ConcreteTarget = new PowerZoneSTTarget(Options.Instance.PowerZoneCategory.Zones[selectedIndex - 1], baseTarget);
                 }
@@ -3319,9 +4104,9 @@ namespace GarminFitnessPlugin.View
 
         private void DeleteSelectedSteps()
         {
-            object nextSelection = StepsList.FindNextSelectedAfterDelete(GetStepWrapper(SelectedSteps[0]));
+            object nextSelection = StepsList.FindNextSelectedAfterDelete(GetStepWrapper(SelectedWorkout.ConcreteWorkout, SelectedSteps[0]));
 
-            SelectedWorkout.RemoveSteps(SelectedSteps);
+            SelectedWorkout.ConcreteWorkout.Steps.RemoveSteps(SelectedSteps, false);
 
             if (nextSelection != null)
             {
@@ -3405,12 +4190,14 @@ namespace GarminFitnessPlugin.View
             baseSteps = GetMinimalStepsBase(SelectedSteps);
             // Number of steps to deserialize
             stepsData.WriteByte((Byte)baseSteps.Count);
-            for (int i = 0; i < baseSteps.Count; ++i)
+            foreach (IStep step in baseSteps)
             {
-                baseSteps[i].Serialize(stepsData);
+                step.Serialize(stepsData);
             }
 
             Clipboard.SetData(Constants.StepsClipboardID, stepsData);
+
+            stepsData.Close();
         }
 
         private void CutStepSelection()
@@ -3441,11 +4228,12 @@ namespace GarminFitnessPlugin.View
                                 GarminFitnessView.GetLocalizedString("ErrorText"),
                                 MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
+            pasteResult.Close();
 
             StepsList.Focus();
         }
 
-        private void RegisterChildrenControlsGorFocus(Control parent)
+        private void RegisterChildrenControlsForFocus(Control parent)
         {
             foreach (Control control in parent.Controls)
             {
@@ -3453,7 +4241,7 @@ namespace GarminFitnessPlugin.View
 
                 if (control.Controls.Count > 0)
                 {
-                    RegisterChildrenControlsGorFocus(control);
+                    RegisterChildrenControlsForFocus(control);
                 }
             }
         }
@@ -3465,23 +4253,23 @@ namespace GarminFitnessPlugin.View
             List<RepeatStep> repeatSteps = new List<RepeatStep>();
 
             // 1st pass, add all the base repeat steps to the result list
-            for (int i = 0; i < steps.Count; ++i)
+            foreach (IStep currentStep in steps)
             {
-                if (steps[i].Type == IStep.StepType.Repeat)
+                if (currentStep is RepeatStep)
                 {
-                    repeatSteps.Add((RepeatStep)steps[i]);
+                    repeatSteps.Add(currentStep as RepeatStep);
                 }
             }
 
-            for (int i = 0; i < repeatSteps.Count; ++i)
+            foreach (RepeatStep currentRepeat in repeatSteps)
             {
-                RepeatStep currentRepeat = repeatSteps[i];
                 bool isChild = false;
 
                 // We must check if this repeat is a base, or a child of another repeat
-                for (int j = 0; j < repeatSteps.Count; j++)
+                foreach (RepeatStep currentRepeat2 in repeatSteps)
                 {
-                    if (i != j && repeatSteps[j].IsChildStep(currentRepeat))
+                    if (currentRepeat != currentRepeat2 &&
+                        currentRepeat2.IsChildStep(currentRepeat))
                     {
                         isChild = true;
                         break;
@@ -3496,32 +4284,36 @@ namespace GarminFitnessPlugin.View
 
             // We now have all base repeat steps in our result, check all regular steps
             //  for inheritance against that base
-            for (int i = 0; i < steps.Count; ++i)
+            foreach (IStep currentStep in steps)
             {
-                if (steps[i].Type == IStep.StepType.Regular)
+                if (!GetStepWrapper(SelectedWorkout.ConcreteWorkout, currentStep).IsWorkoutLinkChild)
                 {
-                    RegularStep currentStep = (RegularStep)steps[i];
-                    bool isChild = false;
-
-                    for (int j = 0; j < baseRepeatSteps.Count; ++j)
+                    if (currentStep is RepeatStep &&
+                             baseRepeatSteps.Contains(currentStep as RepeatStep))
                     {
-                        // We must check if this repeat is a base, or a child of another repeat
-                        if (baseRepeatSteps[j].IsChildStep(currentStep))
-                        {
-                            isChild = true;
-                            break;
-                        }
-                    }
-
-                    if (!isChild)
-                    {
+                        // Add repeats in the right order
                         result.Add(currentStep);
                     }
-                }
-                else if (baseRepeatSteps.Contains((RepeatStep)steps[i]))
-                {
-                    // Add repeats in the right order
-                    result.Add(steps[i]);
+                    else
+                    {
+                        // We cannot move steps that are inside another workout (workout link child step)
+                        bool isChild = false;
+
+                        for (int j = 0; j < baseRepeatSteps.Count; ++j)
+                        {
+                            // We must check if this repeat is a base, or a child of another repeat
+                            if (baseRepeatSteps[j].IsChildStep(currentStep))
+                            {
+                                isChild = true;
+                                break;
+                            }
+                        }
+
+                        if (!isChild)
+                        {
+                            result.Add(currentStep);
+                        }
+                    }
                 }
             }
 
@@ -3546,6 +4338,70 @@ namespace GarminFitnessPlugin.View
             else
             {
                 return 1;
+            }
+        }
+
+        private delegate void GetNewWorkoutNameAndCategoryDelegate(ref string name, ref IActivityCategory category);
+        public void GetNewWorkoutNameAndCategory(ref string name, ref  IActivityCategory category)
+        {
+            if (InvokeRequired)
+            {
+                object[] parameters = new object[] { name, category };
+
+                Invoke(new GetNewWorkoutNameAndCategoryDelegate(GetNewWorkoutNameAndCategory),
+                       parameters);
+
+                name = parameters[0] as string;
+                category = parameters[1]as IActivityCategory;
+            }
+            else
+            {
+                bool isUsedByPart = false;
+
+                if (!GarminWorkoutManager.Instance.IsWorkoutNameAvailable(name, out isUsedByPart))
+                {
+                    if (!isUsedByPart)
+                    {
+                        ReplaceRenameDialog dlg = new ReplaceRenameDialog(GarminWorkoutManager.Instance.GetUniqueName(name));
+
+                        if (dlg.ShowDialog() == DialogResult.Yes)
+                        {
+                            // Yes = replace, delete the current workout from the list
+                            Workout oldWorkout = GarminWorkoutManager.Instance.GetWorkout(name);
+
+                            category = oldWorkout.Category;
+                            GarminWorkoutManager.Instance.RemoveWorkout(oldWorkout);
+                        }
+                        else
+                        {
+                            // No = rename
+                            name = dlg.NewName;
+                        }
+                    }
+                    else
+                    {
+                        // Auto rename
+                        name = GarminWorkoutManager.Instance.GetUniqueName(name);
+                    }
+                }
+
+                if (category == null)
+                {
+                    if (Options.Instance.UseLastCategoryForAllImportedWorkout &&
+                        Options.Instance.LastImportCategory != null)
+                    {
+                        category = Options.Instance.LastImportCategory;
+                    }
+                    else
+                    {
+                        SelectCategoryDialog categoryDlg = new SelectCategoryDialog(name);
+
+                        categoryDlg.ShowDialog();
+                        category = categoryDlg.SelectedCategory;
+
+                        Options.Instance.LastImportCategory = category;
+                    }
+                }
             }
         }
 
@@ -3784,6 +4640,7 @@ namespace GarminFitnessPlugin.View
 
         private System.Windows.Forms.Panel m_CurrentDurationPanel;
         private readonly System.Windows.Forms.Panel[] m_DurationPanels;
+        private readonly System.Windows.Forms.Panel[] m_RepeatDurationPanels;
         private const int CTRL_KEY_CODE = 8;
 
         private List<IWorkout> m_SelectedWorkouts = new List<IWorkout>();
@@ -3793,7 +4650,7 @@ namespace GarminFitnessPlugin.View
         private Dictionary<Workout, WorkoutWrapper> m_WorkoutWrapperMap = new Dictionary<Workout, WorkoutWrapper>();
         private Dictionary<WorkoutPart, WorkoutPartWrapper> m_WorkoutPartWrapperMap = new Dictionary<WorkoutPart, WorkoutPartWrapper>();
         private Dictionary<IActivityCategory, ActivityCategoryWrapper> m_CategoryWrapperMap = new Dictionary<IActivityCategory, ActivityCategoryWrapper>();
-        private Dictionary<IStep, StepWrapper> m_StepWrapperMap = new Dictionary<IStep, StepWrapper>();
+        private Dictionary<Workout, Dictionary<IStep, StepWrapper>> m_StepWrapperMap = new Dictionary<Workout, Dictionary<IStep, StepWrapper>>();
         private ClipboardControls m_LastClipboardControlFocused = ClipboardControls.Invalid;
         private ExtendedTextBox m_LastFocusTextBox;
     }

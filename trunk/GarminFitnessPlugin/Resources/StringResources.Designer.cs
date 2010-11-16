@@ -61,6 +61,15 @@ namespace GarminFitnessPlugin.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Active.
+        /// </summary>
+        internal static string ActiveText {
+            get {
+                return ResourceManager.GetString("ActiveText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Add to logbook.
         /// </summary>
         internal static string AddDailyViewCheckBoxText {
@@ -295,6 +304,15 @@ namespace GarminFitnessPlugin.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Cooldown.
+        /// </summary>
+        internal static string CooldownText {
+            get {
+                return ResourceManager.GetString("CooldownText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Custom.
         /// </summary>
         internal static string CustomText {
@@ -354,6 +372,15 @@ namespace GarminFitnessPlugin.Resources {
         internal static string DetailsText {
             get {
                 return ResourceManager.GetString("DetailsText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Device communication.
+        /// </summary>
+        internal static string DeviceCommGroupBoxText {
+            get {
+                return ResourceManager.GetString("DeviceCommGroupBoxText", resourceCulture);
             }
         }
         
@@ -457,6 +484,24 @@ namespace GarminFitnessPlugin.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Export as:.
+        /// </summary>
+        internal static string ExportAsLabelText {
+            get {
+                return ResourceManager.GetString("ExportAsLabelText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Export cooldown as.
+        /// </summary>
+        internal static string ExportCooldownAsText {
+            get {
+                return ResourceManager.GetString("ExportCooldownAsText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to There was an error while exporting the profile..
         /// </summary>
         internal static string ExportProfileFailedText {
@@ -475,6 +520,15 @@ namespace GarminFitnessPlugin.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to profile export.
+        /// </summary>
+        internal static string ExportProfileText {
+            get {
+                return ResourceManager.GetString("ExportProfileText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Export Selected.
         /// </summary>
         internal static string ExportSelectedText {
@@ -484,11 +538,38 @@ namespace GarminFitnessPlugin.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Export ST heart rate zones as :.
+        /// </summary>
+        internal static string ExportSTHRZonesAsLabelText {
+            get {
+                return ResourceManager.GetString("ExportSTHRZonesAsLabelText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Export ST power zones as :.
+        /// </summary>
+        internal static string ExportSTPowerZonesAsLabelText {
+            get {
+                return ResourceManager.GetString("ExportSTPowerZonesAsLabelText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Export.
         /// </summary>
         internal static string ExportText {
             get {
                 return ResourceManager.GetString("ExportText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Export warmup as.
+        /// </summary>
+        internal static string ExportWarmupAsText {
+            get {
+                return ResourceManager.GetString("ExportWarmupAsText", resourceCulture);
             }
         }
         
@@ -507,6 +588,15 @@ namespace GarminFitnessPlugin.Resources {
         internal static string ExportWorkoutsSuccessText {
             get {
                 return ResourceManager.GetString("ExportWorkoutsSuccessText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to workouts export.
+        /// </summary>
+        internal static string ExportWorkoutsText {
+            get {
+                return ResourceManager.GetString("ExportWorkoutsText", resourceCulture);
             }
         }
         
@@ -534,6 +624,33 @@ namespace GarminFitnessPlugin.Resources {
         internal static string FinishLabelText {
             get {
                 return ResourceManager.GetString("FinishLabelText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to FIT export.
+        /// </summary>
+        internal static string FITExportText {
+            get {
+                return ResourceManager.GetString("FITExportText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to FIT Files.
+        /// </summary>
+        internal static string FitFileText {
+            get {
+                return ResourceManager.GetString("FitFileText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to FIT import.
+        /// </summary>
+        internal static string FITImportText {
+            get {
+                return ResourceManager.GetString("FITImportText", resourceCulture);
             }
         }
         
@@ -745,7 +862,7 @@ namespace GarminFitnessPlugin.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Go until me heart rate gets above {0} {1}..
+        ///   Looks up a localized string similar to Go until my heart rate gets above {0} {1}..
         /// </summary>
         internal static string HeartRateAboveDurationDescriptionText {
             get {
@@ -763,7 +880,7 @@ namespace GarminFitnessPlugin.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Go until me heart rate gets below {0} {1}..
+        ///   Looks up a localized string similar to Go until my heart rate gets below {0} {1}..
         /// </summary>
         internal static string HeartRateBelowDurationDescriptionText {
             get {
@@ -804,6 +921,15 @@ namespace GarminFitnessPlugin.Resources {
         internal static string HeartRateZoneTargetDescriptionText {
             get {
                 return ResourceManager.GetString("HeartRateZoneTargetDescriptionText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Hide in workout list.
+        /// </summary>
+        internal static string HideInWorkoutListText {
+            get {
+                return ResourceManager.GetString("HideInWorkoutListText", resourceCulture);
             }
         }
         
@@ -889,6 +1015,15 @@ namespace GarminFitnessPlugin.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to profile import.
+        /// </summary>
+        internal static string ImportProfileText {
+            get {
+                return ResourceManager.GetString("ImportProfileText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Import my profile from my unit.
         /// </summary>
         internal static string ImportRadioButtonText {
@@ -907,11 +1042,29 @@ namespace GarminFitnessPlugin.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to workouts import.
+        /// </summary>
+        internal static string ImportWorkoutsText {
+            get {
+                return ResourceManager.GetString("ImportWorkoutsText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to I want to configure the zones independently.
         /// </summary>
         internal static string IndependentModeRadioButtonText {
             get {
                 return ResourceManager.GetString("IndependentModeRadioButtonText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Ink saving mode.
+        /// </summary>
+        internal static string InkFriendlyModeText {
+            get {
+                return ResourceManager.GetString("InkFriendlyModeText", resourceCulture);
             }
         }
         
@@ -984,6 +1137,15 @@ namespace GarminFitnessPlugin.Resources {
         internal static string MaleText {
             get {
                 return ResourceManager.GetString("MaleText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to You will be taken through the manual setup process instead..
+        /// </summary>
+        internal static string ManualProfileConfigurationText {
+            get {
+                return ResourceManager.GetString("ManualProfileConfigurationText", resourceCulture);
             }
         }
         
@@ -1078,11 +1240,20 @@ namespace GarminFitnessPlugin.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The device {0} does not support {1}..
+        ///   Looks up a localized string similar to The device {0} does not support {1}.  This is required for proper functioning..
         /// </summary>
         internal static string NoDeviceSupportText {
             get {
                 return ResourceManager.GetString("NoDeviceSupportText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to mass storage transfer.
+        /// </summary>
+        internal static string NoMassStorageSupportText {
+            get {
+                return ResourceManager.GetString("NoMassStorageSupportText", resourceCulture);
             }
         }
         
@@ -1159,6 +1330,24 @@ namespace GarminFitnessPlugin.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Pack workouts on export (Enable for FR405).
+        /// </summary>
+        internal static string PackWorkoutsOnExportCheckBoxText {
+            get {
+                return ResourceManager.GetString("PackWorkoutsOnExportCheckBoxText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Page setup.
+        /// </summary>
+        internal static string PageSetupText {
+            get {
+                return ResourceManager.GetString("PageSetupText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to part {0}/{1}.
         /// </summary>
         internal static string PartNumberingNotesText {
@@ -1177,6 +1366,15 @@ namespace GarminFitnessPlugin.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to %FTP.
+        /// </summary>
+        internal static string PercentFTPText {
+            get {
+                return ResourceManager.GetString("PercentFTPText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to /h.
         /// </summary>
         internal static string PerHourText {
@@ -1186,7 +1384,52 @@ namespace GarminFitnessPlugin.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Try to keep my power between {0} and {1} watts..
+        ///   Looks up a localized string similar to When my power gets above a certain level.
+        /// </summary>
+        internal static string PowerAboveDurationComboBoxText {
+            get {
+                return ResourceManager.GetString("PowerAboveDurationComboBoxText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Go until my power gets above {0} {1}..
+        /// </summary>
+        internal static string PowerAboveDurationDescriptionText {
+            get {
+                return ResourceManager.GetString("PowerAboveDurationDescriptionText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to When my power gets below a certain level.
+        /// </summary>
+        internal static string PowerBelowDurationComboBoxText {
+            get {
+                return ResourceManager.GetString("PowerBelowDurationComboBoxText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Go until my power gets below {0} {1}..
+        /// </summary>
+        internal static string PowerBelowDurationDescriptionText {
+            get {
+                return ResourceManager.GetString("PowerBelowDurationDescriptionText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to What power level?.
+        /// </summary>
+        internal static string PowerDurationLabelText {
+            get {
+                return ResourceManager.GetString("PowerDurationLabelText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Try to keep my power between {0} and {1} {2}..
         /// </summary>
         internal static string PowerRangeTargetDescriptionText {
             get {
@@ -1240,6 +1483,51 @@ namespace GarminFitnessPlugin.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Print all.
+        /// </summary>
+        internal static string PrintAllText {
+            get {
+                return ResourceManager.GetString("PrintAllText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Print options.
+        /// </summary>
+        internal static string PrintOptionsText {
+            get {
+                return ResourceManager.GetString("PrintOptionsText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Print preview.
+        /// </summary>
+        internal static string PrintPreviewText {
+            get {
+                return ResourceManager.GetString("PrintPreviewText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Print selected.
+        /// </summary>
+        internal static string PrintSelectedText {
+            get {
+                return ResourceManager.GetString("PrintSelectedText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Print.
+        /// </summary>
+        internal static string PrintText {
+            get {
+                return ResourceManager.GetString("PrintText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Profile.
         /// </summary>
         internal static string ProfileText {
@@ -1276,11 +1564,83 @@ namespace GarminFitnessPlugin.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to After it was repeated a certain number of times.
+        /// </summary>
+        internal static string RepeatCountComboBoxText {
+            get {
+                return ResourceManager.GetString("RepeatCountComboBoxText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Repeat the steps below {0} times:.
         /// </summary>
         internal static string RepeatStepDescriptionText {
             get {
                 return ResourceManager.GetString("RepeatStepDescriptionText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Repeat until I burn {0} calories..
+        /// </summary>
+        internal static string RepeatUntilCaloriesDurationDescriptionText {
+            get {
+                return ResourceManager.GetString("RepeatUntilCaloriesDurationDescriptionText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Repeat for {0:0.00} {1}..
+        /// </summary>
+        internal static string RepeatUntilDistanceDurationDescriptionText {
+            get {
+                return ResourceManager.GetString("RepeatUntilDistanceDurationDescriptionText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Repeat until my heart rate gets above {0} {1}..
+        /// </summary>
+        internal static string RepeatUntilHeartRateAboveDurationDescriptionText {
+            get {
+                return ResourceManager.GetString("RepeatUntilHeartRateAboveDurationDescriptionText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Repeat until my heart rate gets below {0} {1}..
+        /// </summary>
+        internal static string RepeatUntilHeartRateBelowDurationDescriptionText {
+            get {
+                return ResourceManager.GetString("RepeatUntilHeartRateBelowDurationDescriptionText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Repeat until my power gets above {0} {1}..
+        /// </summary>
+        internal static string RepeatUntilPowerAboveDurationDescriptionText {
+            get {
+                return ResourceManager.GetString("RepeatUntilPowerAboveDurationDescriptionText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Repeat until my power gets below {0} {1}..
+        /// </summary>
+        internal static string RepeatUntilPowerBelowDurationDescriptionText {
+            get {
+                return ResourceManager.GetString("RepeatUntilPowerBelowDurationDescriptionText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Repeat for {0:00}:{1:00}:{2:00}..
+        /// </summary>
+        internal static string RepeatUntilTimeDurationDescriptionText {
+            get {
+                return ResourceManager.GetString("RepeatUntilTimeDurationDescriptionText", resourceCulture);
             }
         }
         
@@ -1425,6 +1785,24 @@ namespace GarminFitnessPlugin.Resources {
         internal static string SelectDeviceText {
             get {
                 return ResourceManager.GetString("SelectDeviceText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Select Folder.
+        /// </summary>
+        internal static string SelectFolderText {
+            get {
+                return ResourceManager.GetString("SelectFolderText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Select workout.
+        /// </summary>
+        internal static string SelectWorkoutText {
+            get {
+                return ResourceManager.GetString("SelectWorkoutText", resourceCulture);
             }
         }
         
@@ -1582,6 +1960,15 @@ namespace GarminFitnessPlugin.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to TCX Files.
+        /// </summary>
+        internal static string TCXFileText {
+            get {
+                return ResourceManager.GetString("TCXFileText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to After I go a certain amount of time.
         /// </summary>
         internal static string TimeDurationComboBoxText {
@@ -1654,6 +2041,33 @@ namespace GarminFitnessPlugin.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Transferring to device.
+        /// </summary>
+        internal static string TransferringToDeviceText {
+            get {
+                return ResourceManager.GetString("TransferringToDeviceText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unroll repeat steps.
+        /// </summary>
+        internal static string UnrollRepeatsText {
+            get {
+                return ResourceManager.GetString("UnrollRepeatsText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Use category for all workouts.
+        /// </summary>
+        internal static string UseCategoryForAllCheckBoxText {
+            get {
+                return ResourceManager.GetString("UseCategoryForAllCheckBoxText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Use custom category.
         /// </summary>
         internal static string UseCustomCategoryText {
@@ -1677,6 +2091,15 @@ namespace GarminFitnessPlugin.Resources {
         internal static string ValueValidationTitleText {
             get {
                 return ResourceManager.GetString("ValueValidationTitleText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Warmup.
+        /// </summary>
+        internal static string WarmupText {
+            get {
+                return ResourceManager.GetString("WarmupText", resourceCulture);
             }
         }
         
@@ -1749,6 +2172,15 @@ namespace GarminFitnessPlugin.Resources {
         internal static string WizardSTZonesText {
             get {
                 return ResourceManager.GetString("WizardSTZonesText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Workout link: {0}.
+        /// </summary>
+        internal static string WorkoutLinkStepText {
+            get {
+                return ResourceManager.GetString("WorkoutLinkStepText", resourceCulture);
             }
         }
         

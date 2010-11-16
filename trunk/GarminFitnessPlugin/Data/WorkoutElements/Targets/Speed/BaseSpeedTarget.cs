@@ -26,6 +26,8 @@ namespace GarminFitnessPlugin.Data
                 stream.Write(BitConverter.GetBytes((Int32)Type), 0, sizeof(Int32));
             }
 
+            public abstract void FillFITStepMessage(FITMessage message);
+
             public void Deserialize_V0(Stream stream, DataVersion version)
             {
                 // This is the code that was in ITarget in data V0.  Since we changed our
@@ -119,6 +121,16 @@ namespace GarminFitnessPlugin.Data
             ConcreteTarget.Serialize(stream);
         }
 
+        public override void FillFITStepMessage(FITMessage message)
+        {
+            FITMessageField targetType = new FITMessageField((Byte)FITWorkoutStepFieldIds.TargetType);
+
+            targetType.SetEnum((Byte)FITWorkoutStepTargetTypes.Speed);
+            message.AddField(targetType);
+
+            ConcreteTarget.FillFITStepMessage(message);
+        }
+
         public new void Deserialize_V0(Stream stream, DataVersion version)
         {
             // In V0, we only have speed range target
@@ -177,14 +189,14 @@ namespace GarminFitnessPlugin.Data
                 XmlNode child = parentNode.FirstChild;
 
                 if (child.Attributes.Count == 1 && child.Attributes[0].Name == Constants.XsiTypeTCXString &&
-                    child.Attributes[0].Value == "PredefinedSpeedZone_t")
+                    child.Attributes[0].Value.Equals(Constants.SpeedRangeZoneTCXString[0]))
                 {
                     // We have a GTC HR zone
                     ConcreteTarget = new SpeedZoneGTCTarget(this);
                     ConcreteTarget.Deserialize(child);
                 }
                 else if (child.Attributes.Count == 1 && child.Attributes[0].Name == Constants.XsiTypeTCXString &&
-                    child.Attributes[0].Value == "CustomSpeedZone_t")
+                    child.Attributes[0].Value.Equals(Constants.SpeedRangeZoneTCXString[1]))
                 {
                     // We have either a range or a ST HR zone but we can't tell before the
                     //  extension section so create a range and if it ends up being a ST

@@ -1,0 +1,437 @@
+<html>
+<head>
+    <title>Garmin Communicator bridge web page</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" />
+</head>
+<body>
+    <script type="text/javascript" src="js/json.js"></script>
+    <script type="text/javascript" src="js/prototype/prototype.js"></script>
+    <script type="text/javascript" src="js/garmin/util/Util-Broadcaster.js"></script>
+    <script type="text/javascript" src="js/garmin/util/Util-BrowserDetect.js"></script>
+    <script type="text/javascript" src="js/garmin/util/Util-DateTimeFormat.js"></script>
+    <script type="text/javascript" src="js/garmin/util/Util-PluginDetect.js"></script>
+    <script type="text/javascript" src="js/garmin/util/Util-XmlConverter.js"></script>
+    <script type="text/javascript" src="js/garmin/device/GarminObjectGenerator.js"></script>
+    <script type="text/javascript" src="js/garmin/device/GarminGpsDataStructures.js"></script>
+    <script type="text/javascript" src="js/garmin/device/GarminPluginUtils.js"></script>
+    <script type="text/javascript" src="js/garmin/device/GarminDevice.js"></script>
+    <script type="text/javascript" src="js/garmin/device/GarminDevicePlugin.js"></script>
+    <script type="text/javascript" src="js/garmin/device/GarminDeviceControl.js"></script>
+    <script type="text/javascript">
+        var garminController = null;
+        var garminPlugin = null;
+        var listener = Class.create();
+        var listenerHTML = Class.create();
+        var cancelReadableFileListing = false;
+        var cancelReadFitDirectory = false;
+
+        function escapeXmlChars(strInput) {
+            // replace special characters that will error out in xml
+            strInput = strInput.replace(/&/g, "&");
+            strInput = strInput.replace(/[<]/g, "<");
+            strInput = strInput.replace(/>/g, ">");
+            strInput = strInput.replace(/"/g, "\"");
+            strInput = strInput.replace(/'/g, "&apos;");
+            return (strInput);
+        }
+
+        function booleanAttrVal(value) {
+            if (value) {
+                return "'true'";
+            }
+
+            return "'false'";
+        }
+
+        function DevicesString(devices) {
+            var xml = "<Devices>";
+            if (devices !== null) {
+                for (var i = 0; i < devices.length; i++) {
+                    try {
+                        var deviceXml = "<Device";
+                        deviceXml += " Number=" + "'" + devices[i].getNumber() + "'";
+                        deviceXml += " DisplayName=" + "'" + escapeXmlChars(devices[i].getDisplayName()) + "'";
+                        deviceXml += " Id=" + "'" + devices[i].getId() + "'";
+                        deviceXml += " SoftwareVersion=" + "'" + escapeXmlChars(devices[i].getSoftwareVersion()) + "'";
+
+                        var dataTypes = devices[i].getDeviceDataTypes().values();
+                        for (var j = 0; j < dataTypes.length; j++) {
+                            if (dataTypes[j].getTypeName() == "FitnessWorkouts") {
+                                deviceXml += " SupportReadWorkout=" + booleanAttrVal(dataTypes[j].hasReadAccess());
+                                deviceXml += " SupportWriteWorkout=" + booleanAttrVal(dataTypes[j].hasWriteAccess());
+
+                                if (dataTypes[j].getReadFilePath() !== "") {
+                                    deviceXml += " WorkoutFileTransferPath='" + dataTypes[j].getReadFilePath() + "'";
+                                }
+                                else if (dataTypes[j].getWriteFilePath() !== "") {
+                                    deviceXml += " WorkoutFileTransferPath='" + dataTypes[j].getWriteFilePath() + "'";
+                                }
+                            }
+                            else if (dataTypes[j].getTypeName() == "FitnessUserProfile") {
+                                deviceXml += " SupportReadProfile=" + booleanAttrVal(dataTypes[j].hasReadAccess());
+                                deviceXml += " SupportWriteProfile=" + booleanAttrVal(dataTypes[j].hasWriteAccess());
+                            }
+                            else if (dataTypes[j].getTypeName() == "FIT_TYPE_5") {
+                                deviceXml += " SupportsFITWorkouts=" + booleanAttrVal(true);
+
+                                if (dataTypes[j].getReadFilePath() !== "") {
+                                    deviceXml += " FITWorkoutFileReadTransferPath='" + dataTypes[j].getReadFilePath() + "'";
+                                }
+
+                                if (dataTypes[j].getWriteFilePath() !== "") {
+                                    deviceXml += " FITWorkoutFileWriteTransferPath='" + dataTypes[j].getWriteFilePath() + "'";
+                                } 
+                            }
+                        }
+
+                        deviceXml += "/>";
+                        xml += deviceXml;
+                    }
+                    catch (e) {
+                    }
+                }
+            }
+            xml += "<\/Devices>";
+            return xml.toString();
+        }
+
+        listener.prototype =
+          {
+              initialize: function () {
+              },
+              onStartFindDevices: function (json) {
+                  window.external.OnStartFindDevices();
+              },
+              onFinishFindDevices: function (json) {
+                  window.external.OnFinishFindDevices(DevicesString(json.controller.getDevices()));
+              },
+              onProgressReadFromDevice: function (json) {
+                  window.external.OnProgressReadFromDevice(json.progress.getPercentage());
+              },
+              onFinishReadFromDevice: function (json) {
+                  window.external.OnFinishReadFromDevice(json.success, json.controller.gpsDataString);
+              },
+              onFinishReadDirectory: function (json) {
+                  var directoryXml = null;
+
+                  if (json.success) {
+                      directoryXml = garminPlugin.getDirectoryXml();
+                      directoryXml = escapeXmlChars(directoryXml);
+                  }
+
+                  window.external.OnFinishReadDirectory(json.success, directoryXml);
+              },
+              onCancelReadFromDevice: function (json) {
+                  window.external.OnFinishReadFromDevice(false, "");
+              },
+              onProgressWriteToDevice: function (json) {
+                  window.external.OnProgressWriteToDevice(json.progress.getPercentage());
+              },
+              onFinishWriteToDevice: function (json) {
+                  window.external.OnFinishWriteToDevice(json.success, json.controller.gpsDataString);
+              },
+              onCancelWriteToDevice: function (json) {
+                  window.external.OnFinishWriteToDevice(false, "");
+              },
+              onException: function (json) {
+                  window.external.OnExceptionTriggered(json.msg);
+              }
+          };
+
+        listenerHTML.prototype =
+          {
+              initialize: function () {
+              },
+              onStartFindDevices: function (json) {
+              },
+              onFinishFindDevices: function (json) {
+                  SetDeviceNumber(0);
+                  ReadWorkoutsFromFitnessDevice();
+              },
+              onProgressReadFromDevice: function (json) {
+              },
+              onFinishReadFromDevice: function (json) {
+                  alert("Read from devices finish");
+              },
+              onFinishReadDirectory: function (json) {
+              },
+              onCancelReadFromDevice: function (json) {
+              },
+              onProgressWriteToDevice: function (json) {
+              },
+              onFinishWriteToDevice: function (json) {
+                  alert("Write to devices finish");
+              },
+              onCancelWriteToDevice: function (json) {
+              },
+              onException: function (json) {
+                  alert("Exception");
+              }
+          };
+
+        function Initialize() {
+            try {
+                var pluginElement;
+                if (window.ActiveXObject) { // IE
+                    pluginElement = $("GarminActiveXControl");
+                } else { // FireFox
+                    pluginElement = $("GarminNetscapePlugin");
+                }
+
+                // make sure the plugin object exists on the page
+                if (pluginElement == null) {
+                    var error = new Error(Garmin.DeviceControl.MESSAGES.missingPluginTag);
+                    error.name = "HtmlTagNotFoundException";
+                    throw error;
+                }
+
+                // instantiate a garmin plugin
+                garminPlugin = new Garmin.DevicePlugin(pluginElement);
+                garminController = new Garmin.DeviceControl();
+                garminController.register(new listener());
+
+                if (garminController.isPluginInitialized()) {
+                    if (garminController.unlock(["http://code.google.com/p/garminworkouts/", "da513ad4456128dda202f2225970cba7"])) {
+                        window.external.OnInitializeCompleted(true, "");
+                    }
+                    else {
+                        garminController = null;
+                        window.external.OnInitializeCompleted(false, "Garmin.DeviceControl.unlock() failed.");
+                    }
+                }
+                else {
+                    garminController = null;
+                    window.external.OnInitializeCompleted(false, "Garmin.DeviceControl.isPluginInitialized() failed.");
+                }
+            }
+            catch (e) {
+                garminController = null;
+                window.external.OnInitializeCompleted(false, "Could not initialize Garmin.DeviceControl().\n" + e.message);
+            }
+        }
+
+        function InitializeHTML() {
+            try {
+                garminController = new Garmin.DeviceControl();
+                garminController.register(new listenerHTML());
+
+                if (garminController.isPluginInitialized()) {
+                    if (garminController.unlock(["http://code.google.com/p/garminworkouts/", "da513ad4456128dda202f2225970cba7"])) {
+                        alert("Init success");
+                    }
+                    else {
+                        alert("Init failed");
+                    }
+                }
+                else {
+                    alert("Init failed");
+                }
+            }
+            catch (e) {
+                alert("Init failed");
+            }
+        }
+
+        function FindDevices() {
+            try {
+                garminController.findDevices();
+            }
+            catch (e) {
+                window.external.OnExceptionTriggered("FindDevices failed: " + e.message);
+            }
+        }
+
+        function SetDeviceNumber(deviceNum) {
+            try {
+                garminController.setDeviceNumber(deviceNum);
+            }
+            catch (e) {
+                window.external.OnExceptionTriggered("SetDeviceNumber failed: " + e.message);
+            }
+        }
+
+        function ReadUserProfileFromFitnessDevice() {
+            try {
+                garminController.readUserProfileFromFitnessDevice();
+            }
+            catch (e) {
+                window.external.OnExceptionTriggered("ReadUserProfile failed: " + e.message);
+            }
+        }
+
+        function ReadWorkoutsFromFitnessDevice() {
+            try {
+                garminController.readWorkoutsFromFitnessDevice();
+            }
+            catch (e) {
+                window.external.OnExceptionTriggered("ReadWorkouts failed: " + e.message);
+            }
+        }
+
+        function CancelReadFromDevice() {
+            try {
+                garminController.cancelReadFromDevice();
+            }
+            catch (e) {
+                window.external.OnExceptionTriggered("CancelReadFromDevice failed: " + e.message);
+            }
+        }
+
+        function CancelWriteToDevice() {
+            try {
+                garminController.cancelWriteToDevice();
+            }
+            catch (e) {
+                window.external.OnExceptionTriggered("CancelWriteFromDevice failed: " + e.message);
+            }
+        }
+
+        function WriteUserProfileToFitnessDevice(tcxString, fileName) {
+            try {
+                garminController.writeUserProfileToFitnessDevice(tcxString, fileName);
+            }
+            catch (e) {
+                window.external.OnExceptionTriggered("WriteUserProfile failed: " + e.message);
+            }
+        }
+
+        function WriteWorkoutsToFitnessDevice(tcxString, fileName) {
+            try {
+                garminController.writeWorkoutsToFitnessDevice(tcxString, fileName);
+            }
+            catch (e) {
+                window.external.OnExceptionTriggered("WriteWorkouts failed: " + e.message);
+            }
+        }
+
+        function BuildMultipleDeviceDownloadsXML(descriptionArray) {
+            try {
+                var array = new Array();
+
+                for (var i = 0; i < descriptionArray.count(); i = i + 1) {
+                    array[i] = descriptionArray.item(i);
+                }
+
+                return Garmin.GpiUtil.buildMultipleDeviceDownloadsXML(array);
+            }
+            catch (e) {
+                window.external.OnExceptionTriggered("BuildMultipleDownloadXML failed: " + e.message);
+            }
+        }
+
+        function DownloadToDevice(downloadXML) {
+            try {
+                garminController.downloadToDevice(downloadXML);
+            }
+            catch (e) {
+                window.external.OnExceptionTriggered("DownloadToDevice failed: " + e.message);
+            }
+        }
+
+        function ReadFITDirectory() {
+            try {
+                cancelReadFitDirectory = false;
+                garminPlugin.startReadFitDirectory(garminController.getDeviceNumber());
+
+                setTimeout(function () { this._progressReadFitDirectory() } .bind(this), 200);
+            }
+            catch (e) {
+                window.external.OnExceptionTriggered("ReadFITDirectory failed: " + e.message);
+            }
+        }
+
+        function GetWorkoutFiles() {
+            try {
+                cancelReadableFileListing = false;
+                var dataTypes = garminController.getDevices()[garminController.getDeviceNumber()].getDeviceDataTypes().values();
+                var dataType = null;
+
+                for (var i = 0; i < dataTypes.length; i++) {
+                    if (dataTypes[i].getTypeName() == "FitnessWorkouts") {
+                        dataType = dataTypes[i];
+                        break;
+                    }
+                }
+
+                if (dataType != null) {
+                    cancelReadableFileListing = false;
+                    garminPlugin.startReadableFileListing(garminController.getDeviceNumber(), dataType.getTypeName(), dataType.getIdentifier(), true);
+
+                    setTimeout(function () { this._progressReadDirectory() } .bind(this), 200);
+                }
+                else {
+                    this._broadcaster.dispatch("onFinishReadDirectory", { success: false });
+                }
+            }
+            catch (e) {
+                window.external.OnExceptionTriggered("GetWorkoutFiles failed: " + e.message);
+            }
+        }
+
+        function _progressReadFitDirectory() {
+            var status = garminPlugin.finishReadFitDirectory();
+
+            if (status == Garmin.DeviceControl.FINISH_STATES.messageWaiting) {
+                garminPlugin.respondToMessageBox(1);    // close msg box
+            }
+            else if (status == Garmin.DeviceControl.FINISH_STATES.finished ||
+                    cancelReadFitDirectory) {
+                garminController._broadcaster.dispatch("onFinishReadDirectory", { success: !cancelReadFitDirectory });
+            }
+            else {
+                setTimeout(function () { this._progressReadFitDirectory() } .bind(this), 200); //200		 
+            }
+        }
+
+        function _progressReadDirectory() {
+            var status = garminPlugin.finishReadableFileListing();
+
+            if (status == Garmin.DeviceControl.FINISH_STATES.messageWaiting) {
+                garminPlugin.respondToMessageBox(1);    // close msg box
+            }
+            else if (status == Garmin.DeviceControl.FINISH_STATES.finished ||
+                    cancelReadableFileListing) {
+                garminController._broadcaster.dispatch("onFinishReadDirectory", { success: !cancelReadableFileListing });
+            }
+            else {
+                setTimeout(function () { this._progressReadDirectory() } .bind(this), 200); //200		 
+            }
+        }
+
+        function CancelReadableFileListing() {
+            try {
+                this.cancelReadableFileListing = true;
+                garminPlugin.cancelReadableFileListing();
+            }
+            catch (e) {
+                window.external.OnExceptionTriggered("CancelReadableFileListing failed: " + e.message);
+            }
+        }
+
+        function CancelReadFitDirectory() {
+            try {
+                this.cancelReadFitDirectory = true;
+                garminPlugin.cancelReadFitDirectory();
+            }
+            catch (e) {
+                window.external.OnExceptionTriggered("CancelReadFitDirectory failed: " + e.message);
+            }
+        }
+
+        function GetBinaryFile(filePath) {
+            try {
+                garminController.getBinaryFile(garminController.getDeviceNumber(), filePath);
+            }
+            catch (e) {
+                window.external.OnExceptionTriggered("GetBinaryFile failed: " + e.message);
+            }
+        }
+
+    </script>
+    Garmin Fitness Communicator page
+    <form method="GET" action="">
+    <input type="button" onclick="InitializeHTML();" value="Initialize" /><br />
+    <input type="button" onclick="FindDevices();" value="Find devices" /><br />
+    </form>
+</body>
+</html>
