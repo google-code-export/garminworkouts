@@ -22,9 +22,9 @@ This will allow you to navigate between both views easily.
 
 Once you have clicked on "Profile" in the title bar's menu, you will be presented with the following :
 
-http://garminworkouts.googlecode.com/files/Profile%20view.gif
+http://garminworkouts.googlecode.com/files/Profile%20view-b.gif
 
-As you can see, you can edit all your personal information here and edit your different zones.  To do so, simply click on the zone you wish to edit in the list and edit the information in the text boxes on the right.
+As you can see, you can edit all your personal information here and edit your different zones.  To do so, simply click on the zone you wish to edit in the list and edit the information in the text boxes on the right.  You can select to edit your heart rate zones in beats per minute (BPM), percentage of maximum HR (% of max HR) or percent of HR reserve (% of HRR).
 
 == Changing the activity ==
 
