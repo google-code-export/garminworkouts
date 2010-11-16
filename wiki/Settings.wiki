@@ -12,7 +12,7 @@ http://garminworkouts.googlecode.com/files/Settings%20access.gif
 
 Once clicked, this link will lead you to the settings page which has a special section for plugins.  In this section, you will find the "Garmin Fitness Settings".  An alternate way of accessing the settings page is to click on the settings button http://garminworkouts.googlecode.com/files/Settings%20Button.gif in the upper right corner of the Garmin Fitness view.  Both methods lead you to the following screen :
 
-http://garminworkouts.googlecode.com/files/Settings%20passive-g.gif
+http://garminworkouts.googlecode.com/files/Settings%20passive-h.gif
 
 = Zone categories =
 == Workouts and zone categories ==
@@ -82,7 +82,14 @@ You can notice that all the children have been updated to "Running".  That is be
 This option allows you to hide certain categories in the workouts list.  for isntance, you might have a category for your workouts on the home trainer.  Since you never have any workouts in the "Racing" category, you mgiht wish to hide it in order to clean up the display.  By checking the "Hide in workout list" checkbox, you will hide the category from the workout list in the main workout page on the plugin.
 
 = Device Communication =
+The last section of settings is to configure device communication aspects of the plugin.  It looks like the following :
+
+http://garminworkouts.googlecode.com/files/Device%20communication.gif
+
 == Default export directory ==
-The last option available in the settings page is the "Default Export Directory".  This option is used when you select to export your workouts to files.  Rather than asking for the directory at every time you export, the directory entered in this option will automatically be selected, speeding up the export process.
+This option is used when you select to export your workouts to files.  Rather than asking for the directory at every time you export, the directory entered in this option will automatically be selected, speeding up the export process.
+
+== Export warmup & cooldown as ==
+On the newest devices (Edge 500 & 800) two new step intensities have been added, "Warmup" and "Cooldown".  Since these step intensities are not supported by older devices, you have two options to configure if these intensities should be exported as "Active" or "Rest" steps.
 
 Once you are done setting up the plugin, you can move on to the [BasicOperations basic operations].
