@@ -74,7 +74,7 @@ namespace GarminFitnessPlugin.View
                 menu.MenuItems.Add(menuItem);
                 menuItem = new MenuItem(GarminFitnessView.GetLocalizedString("PrintSelectedText"),
                                         new EventHandler(PrintSelectedEventHandler));
-                menuItem.Enabled = (currentView.GetCurrentView() as GarminWorkoutControl).SelectedWorkouts.Count > 0;
+                menuItem.Enabled = (currentView.GetCurrentView() as GarminWorkoutControl).SelectedConcreteWorkouts.Count > 0;
                 menu.MenuItems.Add(menuItem);
 
                 menu.Show(control, control.PointToClient(new Point(rectButton.Right, rectButton.Top)));
