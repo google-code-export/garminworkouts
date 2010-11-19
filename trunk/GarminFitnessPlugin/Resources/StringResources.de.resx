@@ -553,7 +553,7 @@
     <value>Terminplanung</value>
   </data>
   <data name="SelectCategoryDialogText" xml:space="preserve">
-    <value>Wähle eine Kategorie für die Aktivität aus</value>
+    <value>Wähle eine Kategorie für die Aktivität aus </value>
   </data>
   <data name="SelectDateText" xml:space="preserve">
     <value>Wähle ein Datum aus</value>

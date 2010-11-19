@@ -3290,7 +3290,9 @@ namespace GarminFitnessPlugin.View
             ZoneComboBox.Items.Add(GarminFitnessView.GetLocalizedString("CustomText"));
 
             if (type == BasePowerTarget.IConcretePowerTarget.PowerTargetType.ZoneGTC ||
-               (type == BasePowerTarget.IConcretePowerTarget.PowerTargetType.Range && !Options.Instance.UseSportTracksPowerZones))
+                (type == BasePowerTarget.IConcretePowerTarget.PowerTargetType.Range &&
+                 !Options.Instance.UseSportTracksPowerZones &&
+                 Options.Instance.GetGarminCategory(target.ParentStep.ParentConcreteWorkout.Category) == GarminCategories.Biking))
             {
                 for (byte i = 1; i <= Constants.GarminPowerZoneCount; ++i)
                 {
