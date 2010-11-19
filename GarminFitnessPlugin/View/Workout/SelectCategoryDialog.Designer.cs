@@ -32,8 +32,8 @@ namespace GarminFitnessPlugin.View
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.SelectCategoryLabel = new System.Windows.Forms.Label();
             this.ActivityCategoryList = new GarminFitnessPlugin.View.AutoExpandTreeList();
-            this.OkButton = new System.Windows.Forms.Button();
             this.UseCategoryForAllCheckBox = new System.Windows.Forms.CheckBox();
+            this.OkButton = new System.Windows.Forms.Button();
             this.splitContainer.Panel1.SuspendLayout();
             this.splitContainer.Panel2.SuspendLayout();
             this.splitContainer.SuspendLayout();
@@ -78,18 +78,19 @@ namespace GarminFitnessPlugin.View
             // 
             this.splitContainer1.Panel2.Controls.Add(this.ActivityCategoryList);
             this.splitContainer1.Size = new System.Drawing.Size(294, 401);
-            this.splitContainer1.SplitterDistance = 20;
+            this.splitContainer1.SplitterDistance = 39;
             this.splitContainer1.TabIndex = 2;
             // 
             // SelectCategoryLabel
             // 
             this.SelectCategoryLabel.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.SelectCategoryLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.SelectCategoryLabel.Location = new System.Drawing.Point(0, 0);
             this.SelectCategoryLabel.Name = "SelectCategoryLabel";
-            this.SelectCategoryLabel.Size = new System.Drawing.Size(294, 20);
+            this.SelectCategoryLabel.Padding = new System.Windows.Forms.Padding(0, 5, 0, 0);
+            this.SelectCategoryLabel.Size = new System.Drawing.Size(294, 39);
             this.SelectCategoryLabel.TabIndex = 1;
             this.SelectCategoryLabel.Text = "Select category for workout ";
-            this.SelectCategoryLabel.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // ActivityCategoryList
             // 
@@ -115,19 +116,9 @@ namespace GarminFitnessPlugin.View
             this.ActivityCategoryList.RowSeparatorLines = true;
             this.ActivityCategoryList.ShowLines = false;
             this.ActivityCategoryList.ShowPlusMinus = false;
-            this.ActivityCategoryList.Size = new System.Drawing.Size(294, 377);
+            this.ActivityCategoryList.Size = new System.Drawing.Size(294, 358);
             this.ActivityCategoryList.TabIndex = 0;
             this.ActivityCategoryList.DoubleClick += new System.EventHandler(this.ActivityCategoryList_DoubleClick);
-            // 
-            // OkButton
-            // 
-            this.OkButton.Location = new System.Drawing.Point(219, 2);
-            this.OkButton.Name = "OkButton";
-            this.OkButton.Size = new System.Drawing.Size(75, 23);
-            this.OkButton.TabIndex = 0;
-            this.OkButton.Text = "OK";
-            this.OkButton.UseVisualStyleBackColor = true;
-            this.OkButton.Click += new System.EventHandler(this.OkButton_Click);
             // 
             // UseCategoryForAllCheckBox
             // 
@@ -139,6 +130,16 @@ namespace GarminFitnessPlugin.View
             this.UseCategoryForAllCheckBox.Text = "Use category for all workouts";
             this.UseCategoryForAllCheckBox.UseVisualStyleBackColor = true;
             this.UseCategoryForAllCheckBox.CheckedChanged += new System.EventHandler(this.UseCategoryForAllCheckBox_CheckedChanged);
+            // 
+            // OkButton
+            // 
+            this.OkButton.Location = new System.Drawing.Point(219, 2);
+            this.OkButton.Name = "OkButton";
+            this.OkButton.Size = new System.Drawing.Size(75, 23);
+            this.OkButton.TabIndex = 0;
+            this.OkButton.Text = "OK";
+            this.OkButton.UseVisualStyleBackColor = true;
+            this.OkButton.Click += new System.EventHandler(this.OkButton_Click);
             // 
             // SelectCategoryDialog
             // 
