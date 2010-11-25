@@ -194,7 +194,7 @@ namespace GarminFitnessPlugin
         public static readonly string WorkoutsClipboardID = "GFP_WorkoutsList";
         public static readonly string StepsClipboardID = "GFP_StepsList";
 
-        public static readonly DataVersion CurrentVersion = new DataVersion(23);
+        public static readonly DataVersion CurrentVersion = new DataVersion(24);
         public static readonly String DataHeaderIdString = "Garmin Workouts Plugin made by S->G";
    }
 }
