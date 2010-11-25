@@ -110,6 +110,12 @@ namespace GarminFitnessPlugin.Controller
 
             // Export ST power zones as percent max
             stream.Write(BitConverter.GetBytes(ExportSportTracksPowerAsPercentFTP), 0, sizeof(bool));
+
+            // TCX warmup export
+            stream.WriteByte((Byte)m_TCXExportWarmupAs);
+
+            // TCX cooldown export
+            stream.WriteByte((Byte)m_TCXExportCooldownAs);
         }
 
         public new void Deserialize(Stream stream, DataVersion version)
@@ -389,6 +395,17 @@ namespace GarminFitnessPlugin.Controller
             // Power as FTP
             stream.Read(boolBuffer, 0, sizeof(bool));
             ExportSportTracksPowerAsPercentFTP = BitConverter.ToBoolean(boolBuffer, 0);
+        }
+
+        public void Deserialize_V24(Stream stream, DataVersion version)
+        {
+            Deserialize_V21(stream, version);
+
+            // TCX warmup export
+            m_TCXExportWarmupAs = (RegularStep.StepIntensity)stream.ReadByte();
+
+            // TCX cooldown export
+            m_TCXExportCooldownAs = (RegularStep.StepIntensity)stream.ReadByte();
         }
 
         public void Serialize(System.Xml.XmlNode parentNode, String nodeName, System.Xml.XmlDocument document)
