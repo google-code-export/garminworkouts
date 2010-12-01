@@ -38,6 +38,7 @@ namespace GarminFitnessPlugin.Controller
             if (!ValidateCRC(crc))
             {
                 Logger.Instance.LogText("Bad CRC");
+                Close();
                 return false;
             }
 
@@ -45,6 +46,7 @@ namespace GarminFitnessPlugin.Controller
             if (!ValidateHeader())
             {
                 Logger.Instance.LogText("Bad header");
+                Close();
                 return false;
             }
 
@@ -90,6 +92,23 @@ namespace GarminFitnessPlugin.Controller
             }
 
             return null;
+        }
+
+        public FITMessage PrefetchMessageOfType(FITGlobalMessageIds messageType)
+        {
+            long postitionBookmark = m_DataStream.Position;
+            FITMessage readMessage = ReadNextMessage();
+
+            while (readMessage != null &&
+                   readMessage.GlobalMessageType != messageType)
+            {
+                readMessage = ReadNextMessage();
+            }
+
+            // Reset to our original position
+            m_DataStream.Seek(postitionBookmark, SeekOrigin.Begin);
+
+            return readMessage;
         }
 
         private void ProcessMessageDefinition()

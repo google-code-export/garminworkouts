@@ -312,7 +312,7 @@ namespace GarminFitnessPlugin.Controller
                                                      new object[] { tcxString, fileName });
         }
 
-        public void WriteWorkoutsToFile(List<string> files, string destinationPath)
+        public void WriteFilesToDevice(List<string> files, string destinationPath)
         {
             try
             {
@@ -334,7 +334,7 @@ namespace GarminFitnessPlugin.Controller
             m_HiddenWebBrowser.Document.InvokeScript("GetWorkoutFiles");
         }
 
-        public void GetFITWorkoutFiles()
+        public void GetFITDirectoryInfo()
         {
             m_HiddenWebBrowser.Document.InvokeScript("ReadFITDirectory");
         }

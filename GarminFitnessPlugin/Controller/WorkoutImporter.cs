@@ -20,8 +20,6 @@ namespace GarminFitnessPlugin.Controller
             void OnProgressChanged(int progressPercent);
         }
 
-        private delegate DialogResult ShowDialogDelegate(Control mainWindow);
-
         public static bool ImportWorkout(Stream importStream)
         {
             try
@@ -126,11 +124,12 @@ namespace GarminFitnessPlugin.Controller
                                         // Make sure we have a workout file
                                         FITMessageField fileTypeField = parsedMessage.GetField((Byte)FITFileIdFieldsIds.FileType);
 
-                                        if (fileTypeField != null &&
+                                        if (fileTypeField == null ||
                                             (FITFileTypes)fileTypeField.GetEnum() != FITFileTypes.Workout)
                                         {
                                             Logger.Instance.LogText("Not a workout FIT file");
 
+                                            FITParser.Instance.Close();
                                             return false;
                                         }
 
@@ -184,6 +183,7 @@ namespace GarminFitnessPlugin.Controller
                 MessageBox.Show("Error parsing FIT file\n\n" +
                                 e.Message + "\n\n" +
                                 e.StackTrace);
+                FITParser.Instance.Close();
                 return false;
             }
             catch (Exception e)
@@ -191,6 +191,7 @@ namespace GarminFitnessPlugin.Controller
                 MessageBox.Show("General error on import\n\n" +
                                 e.Message + "\n\n" +
                                 e.StackTrace);
+                FITParser.Instance.Close();
                 return false;
             }
         }

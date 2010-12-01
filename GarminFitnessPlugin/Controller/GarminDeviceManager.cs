@@ -152,7 +152,6 @@ namespace GarminFitnessPlugin.Controller
         {
             Logger.Instance.LogText("Importing profile");
 
-
             AddTask(new ImportProfileTask());
         }
 
@@ -408,7 +407,6 @@ namespace GarminFitnessPlugin.Controller
                 {
                     errorText = GarminFitnessView.GetLocalizedString("ImportWorkoutsErrorText");
                 }
-
             }
             else if (CurrentTask.Type == BasicTask.TaskTypes.ImportProfile)
             {
@@ -594,7 +592,7 @@ namespace GarminFitnessPlugin.Controller
             public override void ExecuteTask(IGarminDevice device)
             {
                 // This function is not supported on the device
-                if (!device.SupportsReadProfile)
+                if (!device.SupportsReadProfile && !device.SupportsFITProfile)
                 {
                     throw new NoDeviceSupportException(device, GarminFitnessView.GetLocalizedString("ImportProfileText"));
                 }
