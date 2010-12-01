@@ -80,7 +80,29 @@
 
                                 if (dataTypes[j].getWriteFilePath() !== "") {
                                     deviceXml += " FITWorkoutFileWriteTransferPath='" + dataTypes[j].getWriteFilePath() + "'";
-                                } 
+                                }
+                            }
+                            else if (dataTypes[j].getTypeName() == "FIT_TYPE_2") {
+                                deviceXml += " SupportsFITSettings=" + booleanAttrVal(true);
+
+                                if (dataTypes[j].getReadFilePath() !== "") {
+                                    deviceXml += " FITSettingsFileReadTransferPath='" + dataTypes[j].getReadFilePath() + "'";
+                                }
+
+                                if (dataTypes[j].getWriteFilePath() !== "") {
+                                    deviceXml += " FITSettingsFileWriteTransferPath='" + dataTypes[j].getWriteFilePath() + "'";
+                                }
+                            }
+                            else if (dataTypes[j].getTypeName() == "FIT_TYPE_3") {
+                                deviceXml += " SupportsFITSports=" + booleanAttrVal(true);
+
+                                if (dataTypes[j].getReadFilePath() !== "") {
+                                    deviceXml += " FITSportFileReadTransferPath='" + dataTypes[j].getReadFilePath() + "'";
+                                }
+
+                                if (dataTypes[j].getWriteFilePath() !== "") {
+                                    deviceXml += " FITSportFileWriteTransferPath='" + dataTypes[j].getWriteFilePath() + "'";
+                                }
                             }
                         }
 

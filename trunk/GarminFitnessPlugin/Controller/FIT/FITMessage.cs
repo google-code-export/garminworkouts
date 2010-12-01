@@ -20,6 +20,11 @@ namespace GarminFitnessPlugin.Controller
             m_LittleEndian = isLittleEndian;
         }
 
+        public void Clear()
+        {
+            m_Fields.Clear();
+        }
+
         public void AddField(FITMessageField field)
         {
             Debug.Assert(!m_Fields.ContainsKey(field.DefinitionNumber));
@@ -78,6 +83,25 @@ namespace GarminFitnessPlugin.Controller
             }
 
             return null;
+        }
+
+        public FITMessageField GetExistingOrAddField(Byte fieldDefinitionNumber)
+        {
+            if (m_Fields.ContainsKey(fieldDefinitionNumber))
+            {
+                FITMessageField field = m_Fields[fieldDefinitionNumber];
+
+                if (field.IsValueValid)
+                {
+                    return field;
+                }
+            }
+
+            // Create new field
+            FITMessageField newField = new FITMessageField(fieldDefinitionNumber);
+            AddField(newField);
+
+            return newField;
         }
 
         public FITGlobalMessageIds GlobalMessageType

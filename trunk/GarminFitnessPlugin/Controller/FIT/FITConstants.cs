@@ -22,16 +22,31 @@ namespace GarminFitnessPlugin.Controller
         BigEndian,
     }
 
+    public enum FITBoolean
+    {
+        False = 0,
+        True,
+    }
+
     public enum FITFileTypes
     {
+        Settings = 2,
+        Sport = 3,
         Workout = 5,
     }
 
     public enum FITGlobalMessageIds
     {
         FileId = 0,
+        UserProfile = 3,
+        BikeProfile = 6,
+        ZonesTarget,
+        HRZones,
+        PowerZones,
+        Sport = 12,
         Workout = 26,
-        WorkoutStep = 27
+        WorkoutStep,
+        SpeedZones = 53,
     }
 
     public enum FITSports
@@ -41,6 +56,25 @@ namespace GarminFitnessPlugin.Controller
         Cycling,
     }
 
+    public enum FITGenders
+    {
+        Female = 0,
+        Male,
+    }
+
+    public enum FITHRCalcTypes
+    {
+        Custom = 0,
+        PercentMax,
+        PercentReserve,
+    }
+
+    public enum FITPowerCalcTypes
+    {
+        Custom = 0,
+        PercentFTP,
+    }
+
     public enum FITFileIdFieldsIds
     {
         FileType = 0,
@@ -48,6 +82,65 @@ namespace GarminFitnessPlugin.Controller
         ProductId,
         SerialNumber,
         ExportDate,
+    }
+
+    public enum FITUserProfileFieldIds
+    {
+        MessageIndex = 254,
+        FriendlyName = 0,
+        Gender,
+        Weight = 4,
+        RestingHR = 8,
+    }
+
+    public enum FITBikeProfileFieldIds
+    {
+        MessageIndex = 254,
+        Name = 0,
+        Odometer = 3,
+        CustomWheelSize = 8,
+        AutoWheelSize,
+        Weight,
+        AutoWheelSetting = 12,
+        SpeedCadenceSensorEnabled = 17,
+        PowerSensorEnabled,
+    }
+
+    public enum FITSportFieldIds
+    {
+        Sport = 0,
+        SubSport,
+        Name,
+    }
+
+    public enum FITZonesTargetFieldIds
+    {
+        MaxHR = 1,
+        ThresholdHR,
+        FTP,
+        HRCalcType = 5,
+        PowerCalcType = 7,
+    }
+
+    public enum FITHRZonesFieldIds
+    {
+        MessageIndex = 254,
+        HighBPM = 1,
+        Name,
+    }
+
+    public enum FITSpeedZonesFieldIds
+    {
+        MessageIndex = 254,
+        HighSpeed = 0,
+        Name = 1,
+    }
+
+    public enum FITPowerZonesFieldIds
+    {
+        MessageIndex = 254,
+        HighWatts = 1,
+        Name
     }
 
     public enum FITWorkoutFieldIds

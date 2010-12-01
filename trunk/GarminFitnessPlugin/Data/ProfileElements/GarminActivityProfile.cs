@@ -79,6 +79,128 @@ namespace GarminFitnessPlugin.Data
                 m_SpeedZones[i].InternalName.Serialize(stream);
             }
         }
+        
+        public void SerializeToFITSport(Stream outputStream)
+        {
+            FITMessage sportMessage = new FITMessage(FITGlobalMessageIds.Sport);
+            FITMessageField sport = new FITMessageField((Byte)FITSportFieldIds.Sport);
+            FITMessageField subSport = new FITMessageField((Byte)FITSportFieldIds.SubSport);
+
+            sport.SetEnum((Byte)Utils.GetFITSport(Category));
+            subSport.SetEnum(0);
+
+            sportMessage.AddField(sport);
+            sportMessage.AddField(subSport);
+            sportMessage.Serialize(outputStream);
+
+            SerializeFITZonesTarget(outputStream);
+            SerializeFITHRZones(outputStream);
+            SerializeFITSpeedZones(outputStream);
+            SerializeFITPowerZones(outputStream);
+        }
+
+        public virtual void SerializeFITZonesTarget(Stream outputStream)
+        {
+            FITMessage zonesTargetMessage = new FITMessage(FITGlobalMessageIds.ZonesTarget);
+            FITMessageField maxHR = new FITMessageField((Byte)FITZonesTargetFieldIds.MaxHR);
+            FITMessageField FTP = new FITMessageField((Byte)FITZonesTargetFieldIds.FTP);
+            FITMessageField HRCalcType = new FITMessageField((Byte)FITZonesTargetFieldIds.HRCalcType);
+            FITMessageField powerCalcType = new FITMessageField((Byte)FITZonesTargetFieldIds.PowerCalcType);
+
+            maxHR.SetUInt8(MaximumHeartRate);
+            FTP.SetUInt16(0);
+            HRCalcType.SetEnum((Byte)HRZonesReferential);
+            powerCalcType.SetEnum(0);
+
+            zonesTargetMessage.AddField(maxHR);
+            zonesTargetMessage.AddField(FTP);
+            zonesTargetMessage.AddField(HRCalcType);
+            zonesTargetMessage.AddField(powerCalcType);
+
+            zonesTargetMessage.Serialize(outputStream);
+        }
+
+        public virtual void SerializeFITHRZones(Stream outputStream)
+        {
+            UInt16 i = 0;
+
+            foreach (GarminFitnessValueRange<GarminFitnessDoubleRange> zone in m_HeartRateZones)
+            {
+                FITMessage zonesTargetMessage = new FITMessage(FITGlobalMessageIds.HRZones);
+                FITMessageField index = new FITMessageField((Byte)FITHRZonesFieldIds.MessageIndex);
+                FITMessageField zoneName = new FITMessageField((Byte)FITHRZonesFieldIds.Name);
+                FITMessageField highBPM = new FITMessageField((Byte)FITHRZonesFieldIds.HighBPM);
+
+                if (i == 0)
+                {
+                    index.SetUInt16(i);
+                    zoneName.SetString(String.Format("HR Zone {0}", i), 16);
+                    highBPM.SetUInt8((Byte)(zone.Lower * MaximumHeartRate));
+
+                    zonesTargetMessage.AddField(index);
+                    zonesTargetMessage.AddField(zoneName);
+                    zonesTargetMessage.AddField(highBPM);
+
+                    zonesTargetMessage.Serialize(outputStream);
+                    zonesTargetMessage.Clear();
+                }
+
+                index.SetUInt16((UInt16)(i + 1));
+                zoneName.SetString(String.Format("HR Zone {0}", i + 1), 16);
+                highBPM.SetUInt8((Byte)(zone.Upper * MaximumHeartRate));
+
+                zonesTargetMessage.AddField(index);
+                zonesTargetMessage.AddField(zoneName);
+                zonesTargetMessage.AddField(highBPM);
+
+                zonesTargetMessage.Serialize(outputStream);
+
+                ++i;
+            }
+        }
+
+        public virtual void SerializeFITSpeedZones(Stream outputStream)
+        {
+            UInt16 i = 0;
+
+            foreach (GarminFitnessNamedSpeedZone zone in m_SpeedZones)
+            {
+                FITMessage zonesTargetMessage = new FITMessage(FITGlobalMessageIds.SpeedZones);
+                FITMessageField index = new FITMessageField((Byte)FITSpeedZonesFieldIds.MessageIndex);
+                FITMessageField zoneName = new FITMessageField((Byte)FITSpeedZonesFieldIds.Name);
+                FITMessageField highSpeed = new FITMessageField((Byte)FITSpeedZonesFieldIds.HighSpeed);
+
+                if (i == 0)
+                {
+                    index.SetUInt16(i);
+                    zoneName.SetString(zone.Name, 16);
+                    highSpeed.SetUInt16((UInt16)(zone.Low * 1000));
+
+                    zonesTargetMessage.AddField(index);
+                    zonesTargetMessage.AddField(zoneName);
+                    zonesTargetMessage.AddField(highSpeed);
+
+                    zonesTargetMessage.Serialize(outputStream);
+                    zonesTargetMessage.Clear();
+                }
+
+                index.SetUInt16((UInt16)(i + 1));
+                zoneName.SetString(zone.Name, 16);
+                highSpeed.SetUInt16((UInt16)(zone.High * 1000));
+
+                zonesTargetMessage.AddField(index);
+                zonesTargetMessage.AddField(zoneName);
+                zonesTargetMessage.AddField(highSpeed);
+
+                zonesTargetMessage.Serialize(outputStream);
+
+                ++i;
+            }
+        }
+
+        public virtual void SerializeFITPowerZones(Stream outputStream)
+        {
+        }
 
         public void Deserialize_V8(Stream stream, DataVersion version)
         {
@@ -204,6 +326,100 @@ namespace GarminFitnessPlugin.Data
 
                 m_SpeedZones[i].InternalName.Deserialize(stream, version);
             }
+        }
+
+        public virtual void DeserializeZonesTargetFromFIT(FITMessage zonesTargetMessage)
+        {
+            FITMessageField maxHR = zonesTargetMessage.GetField((Byte)FITZonesTargetFieldIds.MaxHR);
+            FITMessageField HRCalcType = zonesTargetMessage.GetField((Byte)FITZonesTargetFieldIds.HRCalcType);
+
+            if (maxHR != null)
+            {
+                MaximumHeartRate = maxHR.GetUInt8();
+            }
+
+            if (HRCalcType != null)
+            {
+                HRZonesReferential = (HRReferential)HRCalcType.GetEnum();
+            }
+        }
+
+        public virtual void DeserializeHRZonesFromFIT(FITMessage HRZonesMessage)
+        {
+            FITMessageField zoneIndex = HRZonesMessage.GetField((Byte)FITHRZonesFieldIds.MessageIndex);
+            FITMessageField zoneUpperValue = HRZonesMessage.GetField((Byte)FITHRZonesFieldIds.HighBPM);
+
+            if (zoneIndex != null &&
+                zoneUpperValue != null)
+            {
+                UInt16 index = zoneIndex.GetUInt16();
+
+                if (index > Constants.GarminHRZoneCount)
+                {
+                    throw new FITParserException("Invalid index for HR zone");
+                }
+
+                if (index == 0)
+                {
+                    SetHeartRateLowLimit(0, zoneUpperValue.GetUInt8());
+                }
+                else
+                {
+                    SetHeartRateHighLimit(index - 1, zoneUpperValue.GetUInt8());
+
+                    if (index < Constants.GarminHRZoneCount)
+                    {
+                        SetHeartRateLowLimit(index, zoneUpperValue.GetUInt8());
+                    }
+                }
+            }
+            else
+            {
+                throw new FITParserException("Missing fields for HR zone");
+            }
+        }
+
+        public virtual void DeserializeSpeedZonesFromFIT(FITMessage speedZonesMessage)
+        {
+            FITMessageField zoneIndex = speedZonesMessage.GetField((Byte)FITSpeedZonesFieldIds.MessageIndex);
+            FITMessageField zoneUpperValue = speedZonesMessage.GetField((Byte)FITSpeedZonesFieldIds.HighSpeed);
+            FITMessageField zoneName = speedZonesMessage.GetField((Byte)FITSpeedZonesFieldIds.Name);
+
+            if (zoneIndex != null &&
+                zoneUpperValue != null &&
+                zoneName != null)
+            {
+                UInt16 index = zoneIndex.GetUInt16();
+
+                if (index > Constants.GarminSpeedZoneCount)
+                {
+                    throw new FITParserException("Invalid index for for speed zone");
+                }
+
+                if (index == 0)
+                {
+                    SetSpeedLowLimitInMetersPerSecond(index, zoneUpperValue.GetUInt16() / 1000.0);
+                    SetSpeedName(index, zoneName.GetString());
+                }
+                else
+                {
+                    SetSpeedName(index - 1, zoneName.GetString());
+                    SetSpeedHighLimitInMetersPerSecond(index - 1, zoneUpperValue.GetUInt16() / 1000.0);
+
+                    if (index < Constants.GarminSpeedZoneCount)
+                    {
+                        SetSpeedLowLimitInMetersPerSecond(index, zoneUpperValue.GetUInt16() / 1000.0);
+                    }
+                }
+            }
+            else
+            {
+                throw new FITParserException("Missing fields for speed zone");
+            }
+        }
+
+        public virtual void DeserializePowerZonesFromFIT(FITMessage powerZonesMessage)
+        {
         }
 
         public virtual void Serialize(XmlNode parentNode, String nodeName, XmlDocument document)
@@ -732,6 +948,17 @@ namespace GarminFitnessPlugin.Data
 
         }
 
+        public void SetSpeedLowLimitInMetersPerSecond(int index, double value)
+        {
+            if (m_SpeedZones[index].Low != value)
+            {
+                m_SpeedZones[index].Low = value;
+
+                TriggerChangedEvent(new PropertyChangedEventArgs("SpeedZoneLimit"));
+            }
+
+        }
+
         public void SetSpeedLowLimit(int index, double value)
         {
             double realValue = value;
@@ -744,12 +971,18 @@ namespace GarminFitnessPlugin.Data
 
             realValue = Length.Convert(realValue, BaseSpeedUnit, Length.Units.Meter) / Constants.SecondsPerHour;
 
-            if (m_SpeedZones[index].Low != realValue)
+            SetSpeedLowLimitInMetersPerSecond(index, realValue);
+        }
+
+        public void SetSpeedHighLimitInMetersPerSecond(int index, double value)
+        {
+            if (m_SpeedZones[index].High != value)
             {
-                m_SpeedZones[index].Low = realValue;
+                m_SpeedZones[index].High = value;
 
                 TriggerChangedEvent(new PropertyChangedEventArgs("SpeedZoneLimit"));
             }
+
         }
 
         public void SetSpeedHighLimit(int index, double value)
@@ -764,12 +997,7 @@ namespace GarminFitnessPlugin.Data
 
             realValue = Length.Convert(realValue, BaseSpeedUnit, Length.Units.Meter) / Constants.SecondsPerHour;
 
-            if (m_SpeedZones[index].High != realValue)
-            {
-                m_SpeedZones[index].High = realValue;
-
-                TriggerChangedEvent(new PropertyChangedEventArgs("SpeedZoneLimit"));
-            }
+            SetSpeedHighLimitInMetersPerSecond(index, realValue);
         }
 
         public void SetGearWeightInUnits(double weight, Weight.Units unit)

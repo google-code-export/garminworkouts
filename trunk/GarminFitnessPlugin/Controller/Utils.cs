@@ -459,6 +459,39 @@ namespace GarminFitnessPlugin.Controller
             return fileName;
         }
 
+        public static FITSports GetFITSport(GarminCategories category)
+        {
+            if (category == GarminCategories.Biking)
+            {
+                return FITSports.Cycling;
+            }
+            else if (category == GarminCategories.Running)
+            {
+                return FITSports.Running;
+            }
+
+            return FITSports.Other;
+        }
+
+        public static string GetSportName(GarminCategories sport)
+        {
+            switch(sport)
+            {
+                case GarminCategories.Running:
+                {
+                    return "Running";
+                }
+                case GarminCategories.Biking:
+                {
+                    return "Cycling";
+                }
+                default:
+                {
+                    return "Other";
+                }
+            }
+        }
+
         public static double Clamp(double value, double min, double max)
         {
             return Math.Max(Math.Min(value, max), min);

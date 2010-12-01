@@ -81,6 +81,36 @@ namespace GarminFitnessPlugin.Data
             }
         }
 
+        public void SerializeToFITSettings(Stream outputStream)
+        {
+            FITMessage userProfileMessage = new FITMessage(FITGlobalMessageIds.UserProfile);
+            FITMessageField profileName = new FITMessageField((Byte)FITUserProfileFieldIds.FriendlyName);
+            FITMessageField gender = new FITMessageField((Byte)FITUserProfileFieldIds.Gender);
+            FITMessageField weight = new FITMessageField((Byte)FITUserProfileFieldIds.Weight);
+            FITMessageField restingHR = new FITMessageField((Byte)FITUserProfileFieldIds.RestingHR);
+
+            profileName.SetString(ProfileName, 16);
+            userProfileMessage.AddField(profileName);
+
+            gender.SetEnum(IsMale ? (Byte)FITGenders.Male : (Byte)FITGenders.Female);
+            userProfileMessage.AddField(gender);
+
+            weight.SetUInt16((UInt16)(WeightInKilos * 10));
+            userProfileMessage.AddField(weight);
+
+            restingHR.SetUInt8(RestingHeartRate);
+            userProfileMessage.AddField(restingHR);
+
+            userProfileMessage.Serialize(outputStream);
+
+            (m_ActivityProfiles[(int)GarminCategories.Biking] as GarminBikingActivityProfile).SerializeBikeProfiles(outputStream);
+        }
+
+        public void SerializeToFITSport(Stream outputStream, GarminCategories category)
+        {
+            m_ActivityProfiles[(int)category].SerializeToFITSport(outputStream);
+        }
+
         public new void Deserialize(Stream stream, DataVersion version)
         {
             IsDeserializing = true;
@@ -118,6 +148,185 @@ namespace GarminFitnessPlugin.Data
             for (int i = 0; i < (int)GarminCategories.GarminCategoriesCount; ++i)
             {
                 m_ActivityProfiles[i].Deserialize(stream, version);
+            }
+        }
+
+        public void DeserializeFromFIT(Stream importStream)
+        {
+            FITMessageField profileName = null;
+            FITMessageField gender = null;
+            FITMessageField weight = null;
+            FITMessageField restingHR = null;
+
+            GarminActivityProfile[] profiles;
+
+            profiles = new GarminActivityProfile[]
+                {
+                    m_ActivityProfiles[0].Clone(),
+                    m_ActivityProfiles[1].Clone(),
+                    m_ActivityProfiles[2].Clone()
+                };
+
+            Logger.Instance.LogText("Init parser in profile");
+
+            if (FITParser.Instance.Init(importStream))
+            {
+                FITMessage parsedMessage = null;
+                FITMessage sportMessage = null;
+                FITSports fileSportType = FITSports.Other;
+
+                do
+                {
+                    parsedMessage = FITParser.Instance.ReadNextMessage();
+
+                    if (parsedMessage != null)
+                    {
+                        Logger.Instance.LogText(String.Format("FIT parsed message type={0:0}", (int)parsedMessage.GlobalMessageType));
+
+                        switch (parsedMessage.GlobalMessageType)
+                        {
+                            case FITGlobalMessageIds.FileId:
+                                {
+                                    // Make sure we have a profile file (settings or sport)
+                                    FITMessageField fileTypeField = parsedMessage.GetField((Byte)FITFileIdFieldsIds.FileType);
+
+                                    if (fileTypeField == null ||
+                                        ((FITFileTypes)fileTypeField.GetEnum() != FITFileTypes.Settings &&
+                                         (FITFileTypes)fileTypeField.GetEnum() != FITFileTypes.Sport))
+                                    {
+                                        Logger.Instance.LogText("Not a profile FIT file");
+                                        return;
+                                    }
+
+                                    if ((FITFileTypes)fileTypeField.GetEnum() == FITFileTypes.Sport)
+                                    {
+                                        // Prefetch the sport message so we know what to deal with before parsing the other
+                                        //  messages that contain sport relative data
+                                        sportMessage = FITParser.Instance.PrefetchMessageOfType(FITGlobalMessageIds.Sport);
+
+                                        fileSportType = (FITSports)sportMessage.GetField((Byte)FITSportFieldIds.Sport).GetEnum();
+                                    }
+
+                                    break;
+                                }
+                            case FITGlobalMessageIds.UserProfile:
+                                {
+                                    profileName = parsedMessage.GetField((Byte)FITUserProfileFieldIds.FriendlyName);
+                                    gender = parsedMessage.GetField((Byte)FITUserProfileFieldIds.Gender);
+                                    weight = parsedMessage.GetField((Byte)FITUserProfileFieldIds.Weight);
+                                    restingHR = parsedMessage.GetField((Byte)FITUserProfileFieldIds.RestingHR);
+                                    break;
+                                }
+                            case FITGlobalMessageIds.BikeProfile:
+                                {
+                                    (profiles[(int)GarminCategories.Biking] as GarminBikingActivityProfile).DeserializeBikeProfile(parsedMessage);
+                                    break;
+                                }
+                            case FITGlobalMessageIds.ZonesTarget:
+                                {
+                                    if (sportMessage != null)
+                                    {
+                                        GarminActivityProfile activityProfile = profiles[(int)Options.Instance.GetGarminCategory(fileSportType)];
+
+                                        activityProfile.DeserializeZonesTargetFromFIT(parsedMessage);
+                                    }
+                                    else
+                                    {
+                                        throw new FITParserException("No sport defined for zones target");
+                                    }
+                                    break;
+                                }
+                            case FITGlobalMessageIds.HRZones:
+                                {
+                                    if (sportMessage != null)
+                                    {
+                                        GarminActivityProfile activityProfile = profiles[(int)Options.Instance.GetGarminCategory(fileSportType)];
+
+                                        activityProfile.DeserializeHRZonesFromFIT(parsedMessage);
+                                    }
+                                    else
+                                    {
+                                        throw new FITParserException("No sport defined for HR zones");
+                                    }
+                                    break;
+                                }
+                            case FITGlobalMessageIds.SpeedZones:
+                                {
+                                    if (sportMessage != null)
+                                    {
+                                        GarminActivityProfile activityProfile = profiles[(int)Options.Instance.GetGarminCategory(fileSportType)];
+
+                                        activityProfile.DeserializeSpeedZonesFromFIT(parsedMessage);
+                                    }
+                                    else
+                                    {
+                                        throw new FITParserException("No sport defined for speed zones");
+                                    }
+                                    break;
+                                }
+                            case FITGlobalMessageIds.PowerZones:
+                                {
+                                    if (sportMessage != null)
+                                    {
+                                        GarminActivityProfile activityProfile = profiles[(int)Options.Instance.GetGarminCategory(fileSportType)];
+
+                                        activityProfile.DeserializePowerZonesFromFIT(parsedMessage);
+                                    }
+                                    else
+                                    {
+                                        throw new FITParserException("No sport defined for power zones");
+                                    }
+                                    break;
+                                }
+                            default:
+                                {
+                                    // Nothing to do, unsupported message
+                                    break;
+                                }
+                        }
+                    }
+                }
+                while (parsedMessage != null);
+
+                FITParser.Instance.Close();
+
+                // Saved loaded values
+                if (profileName != null)
+                {
+                    ProfileName = profileName.GetString();
+                }
+
+                if (gender != null)
+                {
+                    IsMale = gender.GetEnum() == (Byte)FITGenders.Male;
+                }
+
+                if (weight != null)
+                {
+                    WeightInKilos = weight.GetUInt16() / 10.0;
+                }
+
+                if (restingHR != null)
+                {
+                    RestingHeartRate = restingHR.GetUInt8();
+                }
+
+                // Everything was correctly deserialized, so update with the new profiles
+                for (int i = 0; i < m_ActivityProfiles.Length; ++i)
+                {
+                    m_ActivityProfiles[i].ActivityProfileChanged -= new GarminActivityProfile.ActivityProfileChangedEventHandler(OnActivityProfileChanged);
+                }
+
+                m_ActivityProfiles = profiles;
+
+                for (int i = 0; i < m_ActivityProfiles.Length; ++i)
+                {
+                    m_ActivityProfiles[i].ActivityProfileChanged += new GarminActivityProfile.ActivityProfileChangedEventHandler(OnActivityProfileChanged);
+                }
+
+                TriggerActivityProfileChangedEvent(m_ActivityProfiles[0], new PropertyChangedEventArgs(""));
+                TriggerActivityProfileChangedEvent(m_ActivityProfiles[1], new PropertyChangedEventArgs(""));
+                TriggerActivityProfileChangedEvent(m_ActivityProfiles[2], new PropertyChangedEventArgs(""));
             }
         }
 

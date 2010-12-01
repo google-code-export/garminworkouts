@@ -622,6 +622,20 @@ namespace GarminFitnessPlugin.Controller
             return FITSports.Other;
         }
 
+        public GarminCategories GetGarminCategory(FITSports FITSport)
+        {
+            if (FITSport == FITSports.Cycling)
+            {
+                return GarminCategories.Biking;
+            }
+            else if (FITSport == FITSports.Running)
+            {
+                return GarminCategories.Running;
+            }
+
+            return GarminCategories.Other;
+        }
+
         public bool IsCustomGarminCategory(IActivityCategory STCategory)
         {
             if (STToGarminCategoryMap.ContainsKey(STCategory))
