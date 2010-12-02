@@ -77,7 +77,7 @@ namespace GarminFitnessPlugin
         public static readonly Byte GarminBikeProfileCount = 3;
 
         public static readonly double MinOdometer = 0;
-        public static readonly double MaxOdometer = 65535;
+        public static readonly double MaxOdometer = 42000;
         public static readonly double MaxOdometerMeters = MaxOdometer * 1000;
 
         public static readonly UInt16 MinWheelSize = UInt16.MinValue;

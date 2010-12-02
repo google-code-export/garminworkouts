@@ -600,7 +600,7 @@ xcopy "$(TargetDir)SportTracksPluginFramework*.dll" "%25INSTALLPATH%25\$(Project
 
 REM Create installer
 IF EXIST "$(SolutionDir)$(ProjectName).st3plugin" del "$(SolutionDir)*.st3plugin" /Q
-IF $(ConfigurationName)==Debug GOTO end
+//IF $(ConfigurationName)==Debug GOTO end
 "%25ZIPPATH%25\7z.exe" a -r -tzip "$(SolutionDir)$(ProjectName).st3plugin" "%25INSTALLPATH%25\*.*"
 :end</PostBuildEvent>
   </PropertyGroup>

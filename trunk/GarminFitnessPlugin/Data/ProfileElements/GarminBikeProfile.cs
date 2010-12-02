@@ -121,7 +121,10 @@ namespace GarminFitnessPlugin.Data
                 }
                 else if (currentChild.Name == Constants.OdometerTCXString)
                 {
-                    m_OdometerInMeters.Deserialize(currentChild);
+                    GarminFitnessDoubleRange odometer = new GarminFitnessDoubleRange(0);
+                    odometer.Deserialize(currentChild);
+
+                    m_OdometerInMeters.Value = Math.Min(odometer, Constants.MaxOdometerMeters);
                     odometerRead = true;
                 }
                 else if (currentChild.Name == Constants.WeightTCXString)
