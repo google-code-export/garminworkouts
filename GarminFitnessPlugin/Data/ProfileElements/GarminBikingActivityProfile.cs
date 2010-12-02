@@ -349,7 +349,7 @@ namespace GarminFitnessPlugin.Data
 
                 if (odometer != null)
                 {
-                    profile.OdometerInMeters = odometer.GetUInt32() / 100.0;
+                    profile.OdometerInMeters = Math.Min(odometer.GetUInt32() / 100.0, Constants.MaxOdometerMeters);
                 }
 
                 if (weight != null)

@@ -1032,7 +1032,7 @@ namespace GarminFitnessPlugin.Controller
         // Use to activate or deactivate logging
         public bool EnableDebugLog
         {
-            get { return false; }
+            get { return true; }
         }
 
         public IActivityCategory LastImportCategory

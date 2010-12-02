@@ -204,7 +204,7 @@ namespace GarminFitnessPlugin.Controller
             }
             catch (NoDeviceSupportException e)
             {
-                Logger.Instance.LogText("Error in task execution");
+                Logger.Instance.LogText("Comm : No device support");
 
                 CompleteCurrentTask(false, e.Message);
             }
@@ -550,7 +550,7 @@ namespace GarminFitnessPlugin.Controller
             public override void ExecuteTask(IGarminDevice device)
             {
                 // This function is not supported on the device
-                if (!device.SupportsWriteProfile)
+                if (!device.SupportsWriteProfile && !device.SupportsFITProfile)
                 {
                     throw new NoDeviceSupportException(device, GarminFitnessView.GetLocalizedString("ExportProfileText"));
                 }
