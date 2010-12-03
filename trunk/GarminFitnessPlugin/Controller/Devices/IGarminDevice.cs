@@ -16,6 +16,7 @@ namespace GarminFitnessPlugin.Controller
         WriteProfile
     }
 
+    delegate void DeviceOperationWillCompleteEventHandler(IGarminDevice device, DeviceOperations operation);
     delegate void DeviceOperationCompletedEventHandler(IGarminDevice device, DeviceOperations operation, Boolean succeeded);
     delegate void DeviceOperationProgressedEventHandler(IGarminDevice device, DeviceOperations operation, int progress);
 
@@ -42,6 +43,7 @@ namespace GarminFitnessPlugin.Controller
         String SoftwareVersion { get; }
         String DisplayName { get; }
 
+        event DeviceOperationWillCompleteEventHandler OperationWillComplete;
         event DeviceOperationCompletedEventHandler WriteToDeviceCompleted;
         event DeviceOperationProgressedEventHandler OperationProgressed;
         event DeviceOperationCompletedEventHandler ReadFromDeviceCompleted;

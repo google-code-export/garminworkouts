@@ -745,6 +745,24 @@ namespace GarminFitnessPlugin.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Go to profile.
+        /// </summary>
+        internal static string GoToProfileText {
+            get {
+                return ResourceManager.GetString("GoToProfileText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Go to workouts.
+        /// </summary>
+        internal static string GoToWorkoutsText {
+            get {
+                return ResourceManager.GetString("GoToWorkoutsText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Max Speed.
         /// </summary>
         internal static string GTCSpeedZone10Text {

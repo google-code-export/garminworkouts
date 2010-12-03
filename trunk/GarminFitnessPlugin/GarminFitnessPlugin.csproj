@@ -127,7 +127,7 @@
     <Compile Include="Data\BasicTypes\GarminFitnessUInt16Range.cs" />
     <Compile Include="Data\DataVersion.cs" />
     <Compile Include="Controller\DurationFactory.cs" />
-    <Compile Include="Controller\GarminDeviceManager.cs" />
+    <Compile Include="Controller\Devices\GarminDeviceManager.cs" />
     <Compile Include="Data\GarminFitnessXmlDeserializationException.cs" />
     <Compile Include="Data\ProfileElements\GarminActivityProfile.cs" />
     <Compile Include="Data\ProfileElements\GarminBikeProfile.cs" />
@@ -323,6 +323,7 @@
     <Compile Include="View\SetupWizard\SetupWizardWelcomeControl.Designer.cs">
       <DependentUpon>SetupWizardWelcomeControl.cs</DependentUpon>
     </Compile>
+    <Compile Include="View\Workout\ImportWorkoutsAction.cs" />
     <Compile Include="View\Workout\PrintOptionsDialog.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -391,7 +392,7 @@
     <Compile Include="View\Common\GarminFitnessPluginViews.cs" />
     <Compile Include="View\Common\GarminFitnessView.cs" />
     <Compile Include="View\Workout\WorkoutIconLabelProvider.cs" />
-    <Compile Include="View\Workout\ImportWorkoutsAction.cs" />
+    <Compile Include="View\Common\SwapViewsAction.cs" />
     <Compile Include="View\Common\TimeDurationUpDown.cs">
       <SubType>UserControl</SubType>
     </Compile>

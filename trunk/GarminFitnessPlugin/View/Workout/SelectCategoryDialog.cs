@@ -25,22 +25,24 @@ namespace GarminFitnessPlugin.View
             List<TreeList.TreeListNode> categories = new List<TreeList.TreeListNode>();
             List<TreeList.TreeListNode> selection = new List<TreeList.TreeListNode>();
 
-            for (int i = 0; i < PluginMain.GetApplication().Logbook.ActivityCategories.Count; ++i)
+            foreach (IActivityCategory currentCategory in PluginMain.GetApplication().Logbook.ActivityCategories)
             {
-                IActivityCategory currentCategory = PluginMain.GetApplication().Logbook.ActivityCategories[i];
-                ActivityCategoryWrapper childSelection = null;
-                ActivityCategoryWrapper newNode = new ActivityCategoryWrapper(null, currentCategory);
-
-                categories.Add(newNode);
-                childSelection = AddCategoryNode(newNode, null);
-
-                if (Options.Instance.LastImportCategory == currentCategory)
+                if (Options.Instance.GetVisibleInWorkoutList(currentCategory))
                 {
-                    selection.Add(newNode);
-                }
-                else if (childSelection != null)
-                {
-                    selection.Add(childSelection);
+                    ActivityCategoryWrapper childSelection = null;
+                    ActivityCategoryWrapper newNode = new ActivityCategoryWrapper(null, currentCategory);
+
+                    categories.Add(newNode);
+                    childSelection = AddCategoryNode(newNode, null);
+
+                    if (Options.Instance.LastImportCategory == currentCategory)
+                    {
+                        selection.Add(newNode);
+                    }
+                    else if (childSelection != null)
+                    {
+                        selection.Add(childSelection);
+                    }
                 }
             }
 
@@ -81,17 +83,19 @@ namespace GarminFitnessPlugin.View
                 }
             }
 
-            for (int i = 0; i < category.SubCategories.Count; ++i)
+            foreach (IActivityCategory currentCategory in category.SubCategories)
             {
-                IActivityCategory currentCategory = category.SubCategories[i];
-                ActivityCategoryWrapper childSelection = null;
-                ActivityCategoryWrapper newNode = new ActivityCategoryWrapper(categoryNode, currentCategory);
-
-                childSelection = AddCategoryNode(newNode, categoryNode);
-
-                if (childSelection != null)
+                if (Options.Instance.GetVisibleInWorkoutList(currentCategory))
                 {
-                    selection = childSelection;
+                    ActivityCategoryWrapper childSelection = null;
+                    ActivityCategoryWrapper newNode = new ActivityCategoryWrapper(categoryNode, currentCategory);
+
+                    childSelection = AddCategoryNode(newNode, categoryNode);
+
+                    if (childSelection != null)
+                    {
+                        selection = childSelection;
+                    }
                 }
             }
 
