@@ -10,6 +10,7 @@ using ZoneFiveSoftware.Common.Data.Measurement;
 using ZoneFiveSoftware.Common.Visuals;
 using GarminFitnessPlugin.Data;
 using GarminFitnessPlugin.Controller;
+using System.ComponentModel;
 
 namespace GarminFitnessPlugin.View
 {
@@ -64,25 +65,43 @@ namespace GarminFitnessPlugin.View
             RefreshUIFromCategory();
         }
 
-        void OnProfileChanged(object sender, System.ComponentModel.PropertyChangedEventArgs changedProperty)
+        private delegate void ProfileChanged(object sender, PropertyChangedEventArgs changedProperty);
+        void OnProfileChanged(object sender, PropertyChangedEventArgs changedProperty)
         {
-            RefreshProfileInfo();
-
-            if (changedProperty.PropertyName == "RestingHeartRate")
+            if (InvokeRequired)
             {
-                RefreshUIFromProfile();
+                Invoke(new ProfileChanged(OnProfileChanged),
+                       new object[] { sender, changedProperty });
+            }
+            else
+            {
+                RefreshProfileInfo();
+
+                if (changedProperty.PropertyName == "RestingHeartRate")
+                {
+                    RefreshUIFromProfile();
+                }
             }
         }
 
-        void OnActivityProfileChanged(GarminActivityProfile profileModified, System.ComponentModel.PropertyChangedEventArgs changedProperty)
+        private delegate void ActivityProfileChanged(GarminActivityProfile profileModified, PropertyChangedEventArgs changedProperty);
+        void OnActivityProfileChanged(GarminActivityProfile profileModified, PropertyChangedEventArgs changedProperty)
         {
-            if (profileModified.Category == m_CurrentCategory)
+            if (InvokeRequired)
             {
-                // Make sure we have the right profile, when deserializing from
-                //  XML, this is not valid
-                m_CurrentProfile = GarminProfileManager.Instance.GetProfileForActivity(m_CurrentCategory);
+                Invoke(new ActivityProfileChanged(OnActivityProfileChanged),
+                       new object[] { profileModified, changedProperty }); 
+            }
+            else
+            {
+                if (profileModified.Category == m_CurrentCategory)
+                {
+                    // Make sure we have the right profile, when deserializing from
+                    //  XML, this is not valid
+                    m_CurrentProfile = GarminProfileManager.Instance.GetProfileForActivity(m_CurrentCategory);
 
-                RefreshUIFromProfile();
+                    RefreshUIFromProfile();
+                }
             }
         }
 
