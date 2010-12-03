@@ -601,7 +601,7 @@ namespace GarminFitnessPlugin.Controller
                     ClearTempDirectory();
 
                     // User profile
-                    String fileName = m_TempDirectoryLocation + "\\Settings.fit";
+                    String fileName = m_TempDirectoryLocation + "Settings.fit";
                     Stream settingsFile = File.Create(fileName);
 
                     if (settingsFile != null)
@@ -616,7 +616,7 @@ namespace GarminFitnessPlugin.Controller
                     // Sport profiles
                     for (int i = 0; i < (int)GarminCategories.GarminCategoriesCount; ++i)
                     {
-                        fileName = m_TempDirectoryLocation + "\\" + Utils.GetSportName((GarminCategories)i) + ".fit";
+                        fileName = m_TempDirectoryLocation + Utils.GetSportName((GarminCategories)i) + ".fit";
                         Stream sportFile = File.Create(fileName);
 
                         if (sportFile != null)
