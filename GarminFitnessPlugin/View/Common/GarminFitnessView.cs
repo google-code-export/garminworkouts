@@ -292,7 +292,12 @@ namespace GarminFitnessPlugin.View
             return m_ViewControls[(int)m_CurrentView];
         }
 
-        private void SwapViews()
+        public PluginViews CurrentView
+        {
+            get { return m_CurrentView; }
+        }
+
+        public void SwapViews()
         {
             ((UserControl)GetCurrentView()).Visible = false;
 
@@ -362,6 +367,7 @@ namespace GarminFitnessPlugin.View
 
         private IAction[] m_WorkoutsViewActions = new IAction[]
             {
+                new SwapViewsAction(),
                 new ExportAllWorkoutsAction(),
                 new ExportSelectedWorkoutsAction(),
                 new ImportWorkoutsAction(),
@@ -370,6 +376,7 @@ namespace GarminFitnessPlugin.View
 
         private IAction[] m_ProfileViewActions = new IAction[]
             {
+                new SwapViewsAction(),
                 new ExportProfileAction(),
                 new ImportProfileAction()
             };

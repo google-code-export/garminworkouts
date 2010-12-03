@@ -423,6 +423,11 @@ namespace GarminFitnessPlugin.Controller
             CompleteCurrentTask(succeeded, errorText);
         }
 
+        private void OnOperationToDeviceWillComplete(IGarminDevice device, DeviceOperations operation)
+        {
+            m_TimeoutTimer.Stop();
+        }
+
         private void OnOperationProgressed(IGarminDevice device, DeviceOperations operation, int progress)
         {
             if (progress > m_LastProgressValue)
@@ -674,6 +679,7 @@ namespace GarminFitnessPlugin.Controller
                     {
                         OperatingDevice.ReadFromDeviceCompleted -= new DeviceOperationCompletedEventHandler(OnReadFromDeviceCompleted);
                         OperatingDevice.WriteToDeviceCompleted -= new DeviceOperationCompletedEventHandler(OnWriteToDeviceCompleted);
+                        OperatingDevice.OperationWillComplete -= new DeviceOperationWillCompleteEventHandler(OnOperationToDeviceWillComplete);
                         OperatingDevice.OperationProgressed -= new DeviceOperationProgressedEventHandler(OnOperationProgressed);
                     }
 
@@ -683,6 +689,7 @@ namespace GarminFitnessPlugin.Controller
                     {
                         OperatingDevice.ReadFromDeviceCompleted += new DeviceOperationCompletedEventHandler(OnReadFromDeviceCompleted);
                         OperatingDevice.WriteToDeviceCompleted += new DeviceOperationCompletedEventHandler(OnWriteToDeviceCompleted);
+                        OperatingDevice.OperationWillComplete += new DeviceOperationWillCompleteEventHandler(OnOperationToDeviceWillComplete);
                         OperatingDevice.OperationProgressed += new DeviceOperationProgressedEventHandler(OnOperationProgressed);
                     }
                 }

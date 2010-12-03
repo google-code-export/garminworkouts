@@ -134,6 +134,8 @@ namespace GarminFitnessPlugin.Controller
                     {
                         MemoryStream stream = new MemoryStream(Encoding.UTF8.GetBytes(e.DataString));
 
+                        TriggerOperationWillCompleteEvent();
+
                         success = ProfileImporter.ImportProfile(stream);
                         stream.Close();
                     }
@@ -174,6 +176,8 @@ namespace GarminFitnessPlugin.Controller
                             else
                             {
                                 m_Controller.CommunicatorBridge.ReadFromDeviceCompleted -= new EventHandler<GarminFitnessCommunicatorBridge.TranferCompletedEventArgs>(OnBridgeReadFromDeviceCompleted);
+
+                                TriggerOperationWillCompleteEvent();
 
                                 if (!ProfileImporter.AsyncImportDirectory(m_TempDirectoryLocation, this))
                                 {
@@ -225,6 +229,8 @@ namespace GarminFitnessPlugin.Controller
                             {
                                 m_Controller.CommunicatorBridge.ReadFromDeviceCompleted -= new EventHandler<GarminFitnessCommunicatorBridge.TranferCompletedEventArgs>(OnBridgeReadFromDeviceCompleted);
 
+                                TriggerOperationWillCompleteEvent();
+
                                 if (!WorkoutImporter.AsyncImportDirectory(m_TempDirectoryLocation, this))
                                 {
                                     operationCompleted = true;
@@ -245,6 +251,8 @@ namespace GarminFitnessPlugin.Controller
 
                     if (success)
                     {
+                        TriggerOperationWillCompleteEvent();
+
                         ImportWorkoutFileResult(e.DataString);
                     }
 
@@ -813,6 +821,7 @@ namespace GarminFitnessPlugin.Controller
             get { return m_DisplayName; }
         }
 
+        public event DeviceOperationWillCompleteEventHandler OperationWillComplete;
         public event DeviceOperationCompletedEventHandler WriteToDeviceCompleted;
         public event DeviceOperationCompletedEventHandler ReadFromDeviceCompleted;
         public event DeviceOperationProgressedEventHandler OperationProgressed;
@@ -841,6 +850,14 @@ namespace GarminFitnessPlugin.Controller
         }
 
 #endregion
+
+        private void TriggerOperationWillCompleteEvent()
+        {
+            if (OperationWillComplete != null)
+            {
+                OperationWillComplete(this, m_CurrentOperation);
+            }
+        }
 
         private GarminFitnessCommunicatorDeviceController m_Controller = null;
         private DeviceOperations m_CurrentOperation = DeviceOperations.Idle;

@@ -831,4 +831,10 @@
   <data name="UnrollRepeatsText" xml:space="preserve">
     <value>Unroll repeat steps</value>
   </data>
+  <data name="GoToProfileText" xml:space="preserve">
+    <value>Go to profile</value>
+  </data>
+  <data name="GoToWorkoutsText" xml:space="preserve">
+    <value>Go to workouts</value>
+  </data>
 </root>
