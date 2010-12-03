@@ -657,10 +657,23 @@ namespace GarminFitnessPlugin.View
 
         private void OdometerTextBox_Validating(object sender, System.ComponentModel.CancelEventArgs e)
         {
-            e.Cancel = !Utils.IsTextFloatInRange(OdometerTextBox.Text, Constants.MinOdometer, Constants.MaxOdometer);
+            double enteredValue;
+
+            e.Cancel = !double.TryParse(OdometerTextBox.Text, out enteredValue);
+
+            if(!e.Cancel)
+            {
+                GarminFitnessDoubleRange valueInMeters = new GarminFitnessDoubleRange(0, Constants.MinOdometer, Constants.MaxOdometer);
+
+                e.Cancel = !valueInMeters.IsInRange(Length.Convert(enteredValue, m_CurrentProfile.BaseSpeedUnit, Length.Units.Kilometer));
+            }
+
             if (e.Cancel)
             {
-                MessageBox.Show(String.Format(GarminFitnessView.GetLocalizedString("DoubleRangeValidationText"), Constants.MinOdometer, Constants.MaxOdometer),
+                double minValue = Length.Convert(Constants.MinOdometer, Length.Units.Kilometer, m_CurrentProfile.BaseSpeedUnit);
+                double maxValue = Length.Convert(Constants.MaxOdometer, Length.Units.Kilometer, m_CurrentProfile.BaseSpeedUnit);
+
+                MessageBox.Show(String.Format(GarminFitnessView.GetLocalizedString("DoubleRangeValidationText"), minValue, maxValue),
                                 GarminFitnessView.GetLocalizedString("ValueValidationTitleText"),
                                 MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 System.Media.SystemSounds.Asterisk.Play();
