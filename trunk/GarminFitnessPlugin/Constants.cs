@@ -60,8 +60,10 @@ namespace GarminFitnessPlugin
         public static readonly UInt16 MinPowerInWatts = 20;
         public static readonly UInt16 MaxPowerWorkoutInWatts = 999;
         public static readonly UInt16 MaxPowerProfile = 3999;
+        public static readonly UInt16 MaxPowerFTP = 1000;
         public static readonly UInt16 MinPowerInPercentFTP = 0;
-        public static readonly UInt16 MaxPowerInPercentFTP = 299;
+        public static readonly UInt16 MaxPowerInPercentFTP = 999;
+        public static readonly double MaxPowerInPercentFTPInternal = 199.95;
 
         // Repeat limits
         public static readonly Byte MinRepeats = 2;
@@ -194,7 +196,7 @@ namespace GarminFitnessPlugin
         public static readonly string WorkoutsClipboardID = "GFP_WorkoutsList";
         public static readonly string StepsClipboardID = "GFP_StepsList";
 
-        public static readonly DataVersion CurrentVersion = new DataVersion(24);
+        public static readonly DataVersion CurrentVersion = new DataVersion(25);
         public static readonly String DataHeaderIdString = "Garmin Workouts Plugin made by S->G";
    }
 }
