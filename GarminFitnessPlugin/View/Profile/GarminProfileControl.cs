@@ -544,10 +544,10 @@ namespace GarminFitnessPlugin.View
 
         private void FTPTextBox_Validating(object sender, System.ComponentModel.CancelEventArgs e)
         {
-            e.Cancel = !Utils.IsTextIntegerInRange(FTPTextBox.Text, Constants.MinPowerInWatts, Constants.MaxPowerProfile);
+            e.Cancel = !Utils.IsTextIntegerInRange(FTPTextBox.Text, Constants.MinPowerInWatts, Constants.MaxPowerFTP);
             if (e.Cancel)
             {
-                MessageBox.Show(String.Format(GarminFitnessView.GetLocalizedString("IntegerRangeValidationText"), Constants.MinPowerInWatts, Constants.MaxPowerProfile),
+                MessageBox.Show(String.Format(GarminFitnessView.GetLocalizedString("IntegerRangeValidationText"), Constants.MinPowerInWatts, Constants.MaxPowerFTP),
                                 GarminFitnessView.GetLocalizedString("ValueValidationTitleText"),
                                 MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 System.Media.SystemSounds.Asterisk.Play();
@@ -562,6 +562,18 @@ namespace GarminFitnessPlugin.View
         {
             GarminBikingActivityProfile concreteProfile = (GarminBikingActivityProfile)m_CurrentProfile;
             concreteProfile.FTP = UInt16.Parse(FTPTextBox.Text);
+        }
+
+        private void WattsRadioButton_CheckedChanged(object sender, EventArgs e)
+        {
+            GarminBikingActivityProfile concreteProfile = (GarminBikingActivityProfile)m_CurrentProfile;
+            concreteProfile.PowerZonesInPercentFTP = !WattsRadioButton.Checked;
+        }
+
+        private void PercentFTPRadioButton_CheckedChanged(object sender, EventArgs e)
+        {
+            GarminBikingActivityProfile concreteProfile = (GarminBikingActivityProfile)m_CurrentProfile;
+            concreteProfile.PowerZonesInPercentFTP = PercentFTPRadioButton.Checked;
         }
 
         private void PowerZonesTreeList_SelectedItemsChanged(object sender, EventArgs e)
@@ -580,16 +592,25 @@ namespace GarminFitnessPlugin.View
 
         private void LowPowerTextBox_Validating(object sender, System.ComponentModel.CancelEventArgs e)
         {
-            e.Cancel = !Utils.IsTextIntegerInRange(LowPowerTextBox.Text, Constants.MinPowerInWatts, Constants.MaxPowerProfile);
+            GarminBikingActivityProfile concreteProfile = m_CurrentProfile as GarminBikingActivityProfile;
+            UInt16 minRange = Constants.MinPowerInWatts;
+            UInt16 maxRange = Constants.MaxPowerProfile;
+
+            if (concreteProfile.PowerZonesInPercentFTP)
+            {
+                minRange = Constants.MinPowerInPercentFTP;
+                maxRange = Constants.MaxPowerInPercentFTP;
+            }
+
+            e.Cancel = !Utils.IsTextIntegerInRange(LowPowerTextBox.Text, minRange, maxRange);
             if (e.Cancel)
             {
-                MessageBox.Show(String.Format(GarminFitnessView.GetLocalizedString("IntegerRangeValidationText"), Constants.MinPowerInWatts, Constants.MaxPowerProfile),
+                MessageBox.Show(String.Format(GarminFitnessView.GetLocalizedString("IntegerRangeValidationText"), minRange, maxRange),
                                 GarminFitnessView.GetLocalizedString("ValueValidationTitleText"),
                                 MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 System.Media.SystemSounds.Asterisk.Play();
 
                 // Reset old valid value
-                GarminBikingActivityProfile concreteProfile = (GarminBikingActivityProfile)m_CurrentProfile;
                 LowPowerTextBox.Text = concreteProfile.GetPowerLowLimit(m_SelectedPowerZone.Index).ToString("0");
             }
         }
@@ -605,16 +626,25 @@ namespace GarminFitnessPlugin.View
 
         private void HighPowerTextBox_Validating(object sender, System.ComponentModel.CancelEventArgs e)
         {
-            e.Cancel = !Utils.IsTextIntegerInRange(HighPowerTextBox.Text, Constants.MinPowerInWatts, Constants.MaxPowerProfile);
+            GarminBikingActivityProfile concreteProfile = m_CurrentProfile as GarminBikingActivityProfile;
+            UInt16 minRange = Constants.MinPowerInWatts;
+            UInt16 maxRange = Constants.MaxPowerProfile;
+
+            if (concreteProfile.PowerZonesInPercentFTP)
+            {
+                minRange = Constants.MinPowerInPercentFTP;
+                maxRange = Constants.MaxPowerInPercentFTP;
+            }
+
+            e.Cancel = !Utils.IsTextIntegerInRange(HighPowerTextBox.Text, minRange, maxRange);
             if (e.Cancel)
             {
-                MessageBox.Show(String.Format(GarminFitnessView.GetLocalizedString("IntegerRangeValidationText"), Constants.MinPowerInWatts, Constants.MaxPowerProfile),
+                MessageBox.Show(String.Format(GarminFitnessView.GetLocalizedString("IntegerRangeValidationText"), minRange, maxRange),
                                 GarminFitnessView.GetLocalizedString("ValueValidationTitleText"),
                                 MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 System.Media.SystemSounds.Asterisk.Play();
 
                 // Reset old valid value
-                GarminBikingActivityProfile concreteProfile = (GarminBikingActivityProfile)m_CurrentProfile;
                 HighPowerTextBox.Text = concreteProfile.GetPowerHighLimit(m_SelectedPowerZone.Index).ToString("0");
             }
         }
@@ -940,15 +970,18 @@ namespace GarminFitnessPlugin.View
             }
 
             // Power Zones
-            BikingProfilePanel.Visible = m_CurrentProfile.GetType() == typeof(GarminBikingActivityProfile);
+            BikingProfilePanel.Visible = m_CurrentProfile is GarminBikingActivityProfile;
             PowerZonesTreeList.Invalidate();
             PowerZonePanel.Enabled = m_SelectedPowerZone != null;
-            if (m_CurrentProfile.GetType() == typeof(GarminBikingActivityProfile))
+            if (m_CurrentProfile is GarminBikingActivityProfile)
             {
                 GarminBikingActivityProfile concreteProfile = (GarminBikingActivityProfile)m_CurrentProfile;
                 m_CurrentBikeProfile = ((GarminBikingActivityProfile)m_CurrentProfile).GetBikeProfile(m_BikeProfileIndex);
 
                 FTPTextBox.Text = concreteProfile.FTP.ToString();
+
+                WattsRadioButton.Checked = !concreteProfile.PowerZonesInPercentFTP;
+                PercentFTPRadioButton.Checked = concreteProfile.PowerZonesInPercentFTP;
 
                 if (m_SelectedPowerZone != null)
                 {
@@ -1052,6 +1085,9 @@ namespace GarminFitnessPlugin.View
             // Power zones
             FTPLabel.Text = GarminFitnessView.GetLocalizedString("FTPLabelText");
             FTPUnitsLabel.Text = CommonResources.Text.LabelWatts;
+            WattsRadioButton.Text = CommonResources.Text.LabelWatts;
+            PercentFTPRadioButton.Text = GarminFitnessView.GetLocalizedString("PercentFTPText");
+
             PowerZonesGroupBox.Text = GarminFitnessView.GetLocalizedString("PowerZonesGroupBoxText");
             LowPowerLabel.Text = GarminFitnessView.GetLocalizedString("LowLabelText");
             HighPowerLabel.Text = GarminFitnessView.GetLocalizedString("HighLabelText");

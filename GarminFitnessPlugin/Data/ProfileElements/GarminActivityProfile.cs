@@ -109,8 +109,8 @@ namespace GarminFitnessPlugin.Data
 
             maxHR.SetUInt8(MaximumHeartRate);
             FTP.SetUInt16(0);
-            HRCalcType.SetEnum((Byte)HRZonesReferential);
-            powerCalcType.SetEnum(0);
+            HRCalcType.SetEnum((Byte)FITHRCalcTypes.Custom);
+            powerCalcType.SetEnum((Byte)FITPowerCalcTypes.Custom);
 
             zonesTargetMessage.AddField(maxHR);
             zonesTargetMessage.AddField(FTP);
@@ -331,16 +331,10 @@ namespace GarminFitnessPlugin.Data
         public virtual void DeserializeZonesTargetFromFIT(FITMessage zonesTargetMessage)
         {
             FITMessageField maxHR = zonesTargetMessage.GetField((Byte)FITZonesTargetFieldIds.MaxHR);
-            FITMessageField HRCalcType = zonesTargetMessage.GetField((Byte)FITZonesTargetFieldIds.HRCalcType);
 
             if (maxHR != null)
             {
                 MaximumHeartRate = maxHR.GetUInt8();
-            }
-
-            if (HRCalcType != null)
-            {
-                HRZonesReferential = (HRReferential)HRCalcType.GetEnum();
             }
         }
 

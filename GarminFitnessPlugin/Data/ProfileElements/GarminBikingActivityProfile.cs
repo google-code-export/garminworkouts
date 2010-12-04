@@ -16,12 +16,12 @@ namespace GarminFitnessPlugin.Data
             base(category)
         {
             // Power Zones
-            UInt16 currentPower = 100;
-            UInt16 powerStep = 50;
+            double currentPower = 0.5;
+            double powerStep = 0.2;
             for (int i = 0; i < Constants.GarminPowerZoneCount; ++i)
             {
-                m_PowerZones.Add(new GarminFitnessValueRange<GarminFitnessUInt16Range>(new GarminFitnessUInt16Range(currentPower, Constants.MinPowerInWatts, Constants.MaxPowerProfile),
-                                                                                       new GarminFitnessUInt16Range((UInt16)(currentPower + powerStep), Constants.MinPowerInWatts, Constants.MaxPowerProfile)));
+                m_PowerZones.Add(new GarminFitnessValueRange<GarminFitnessDoubleRange>(new GarminFitnessDoubleRange(currentPower, Constants.MinPowerInPercentFTP, Constants.MaxPowerInPercentFTPInternal),
+                                                                                       new GarminFitnessDoubleRange((UInt16)(currentPower + powerStep), Constants.MinPowerInPercentFTP, Constants.MaxPowerInPercentFTPInternal)));
 
                 currentPower += powerStep;
             }
@@ -46,6 +46,12 @@ namespace GarminFitnessPlugin.Data
         {
             base.Serialize(stream);
 
+            // FTP
+            m_FTP.Serialize(stream);
+
+            // Zones in percent FTP
+            m_PowerZonesInPercentFTP.Serialize(stream);
+
             // Power zones
             for (int i = 0; i < Constants.GarminPowerZoneCount; ++i)
             {
@@ -59,9 +65,6 @@ namespace GarminFitnessPlugin.Data
             {
                 m_Bikes[i].Serialize(stream);
             }
-
-            // FTP
-            m_FTP.Serialize(stream);
         }
 
         public void SerializeBikeProfiles(Stream outputStream)
@@ -117,7 +120,7 @@ namespace GarminFitnessPlugin.Data
 
             maxHR.SetUInt8(MaximumHeartRate);
             FTPvalue.SetUInt16(FTP);
-            HRCalcType.SetEnum((Byte)HRZonesReferential);
+            HRCalcType.SetEnum((Byte)FITHRCalcTypes.Custom);
             powerCalcType.SetEnum((Byte)FITPowerCalcTypes.Custom);
 
             zonesTargetMessage.AddField(maxHR);
@@ -132,7 +135,7 @@ namespace GarminFitnessPlugin.Data
         {
             UInt16 i = 0;
 
-            foreach (GarminFitnessValueRange<GarminFitnessUInt16Range> zone in m_PowerZones)
+            foreach (GarminFitnessValueRange<GarminFitnessDoubleRange> zone in m_PowerZones)
             {
                 FITMessage zonesTargetMessage = new FITMessage(FITGlobalMessageIds.PowerZones);
                 FITMessageField index = new FITMessageField((Byte)FITPowerZonesFieldIds.MessageIndex);
@@ -143,7 +146,7 @@ namespace GarminFitnessPlugin.Data
                 {
                     index.SetUInt16(i);
                     zoneName.SetString(String.Format("Power Zone {0}", i), 16);
-                    highWatts.SetUInt16(zone.Lower);
+                    highWatts.SetUInt16((UInt16)(zone.Lower * FTP));
 
                     zonesTargetMessage.AddField(index);
                     zonesTargetMessage.AddField(zoneName);
@@ -155,7 +158,7 @@ namespace GarminFitnessPlugin.Data
 
                 index.SetUInt16((UInt16)(i + 1));
                 zoneName.SetString(String.Format("Power Zone {0}", i + 1), 16);
-                highWatts.SetUInt16(zone.Upper);
+                highWatts.SetUInt16((UInt16)(zone.Upper * FTP));
 
                 zonesTargetMessage.AddField(index);
                 zonesTargetMessage.AddField(zoneName);
@@ -174,9 +177,13 @@ namespace GarminFitnessPlugin.Data
 
             for (int i = 0; i < Constants.GarminPowerZoneCount; ++i)
             {
-                m_PowerZones[i].Lower.Deserialize(stream, version);
+                GarminFitnessUInt16Range lower = new GarminFitnessUInt16Range(0, Constants.MinPowerInWatts, Constants.MaxPowerProfile);
+                lower.Deserialize(stream, version);
+                SetPowerLowLimit(i, lower);
 
-                m_PowerZones[i].Upper.Deserialize(stream, version);
+                GarminFitnessUInt16Range  upper = new GarminFitnessUInt16Range(0, Constants.MinPowerInWatts, Constants.MaxPowerProfile);
+                upper.Deserialize(stream, version);
+                SetPowerHighLimit(i, upper);
             }
 
             // Wow we serialize too much stuff in V8, 10 power zones instead of 7
@@ -195,6 +202,43 @@ namespace GarminFitnessPlugin.Data
             // Call base deserialization
             Deserialize(typeof(GarminActivityProfile), stream, version);
 
+            List<GarminFitnessValueRange<GarminFitnessUInt16Range>> powerZones = new List<GarminFitnessValueRange<GarminFitnessUInt16Range>>();
+
+            for (int i = 0; i < Constants.GarminPowerZoneCount; ++i)
+            {
+                powerZones.Add(new GarminFitnessValueRange<GarminFitnessUInt16Range>(new GarminFitnessUInt16Range(300, Constants.MinPowerInWatts, Constants.MaxPowerProfile),
+                                                                                     new GarminFitnessUInt16Range(300, Constants.MinPowerInWatts, Constants.MaxPowerProfile)));
+
+                powerZones[i].Lower.Deserialize(stream, version);
+                powerZones[i].Upper.Deserialize(stream, version);
+            }
+
+            // Bike profiles
+            for (int i = 0; i < Constants.GarminBikeProfileCount; ++i)
+            {
+                m_Bikes[i].Deserialize(stream, version);
+            }
+
+            // FTP (was forgotten in V8)
+            m_FTP.Deserialize(stream, version);
+
+            for (int i = 0; i < Constants.GarminPowerZoneCount; ++i)
+            {
+                SetPowerLowLimit(i, powerZones[i].Lower);
+                SetPowerHighLimit(i, powerZones[i].Upper);
+            }
+        }
+
+        public void Deserialize_V25(Stream stream, DataVersion version)
+        {
+            // Call base deserialization
+            Deserialize(typeof(GarminActivityProfile), stream, version);
+
+            // FTP
+            m_FTP.Deserialize(stream, version);
+
+            m_PowerZonesInPercentFTP.Deserialize(stream, version);
+
             for (int i = 0; i < Constants.GarminPowerZoneCount; ++i)
             {
                 m_PowerZones[i].Lower.Deserialize(stream, version);
@@ -207,9 +251,6 @@ namespace GarminFitnessPlugin.Data
             {
                 m_Bikes[i].Deserialize(stream, version);
             }
-
-            // FTP (was forgotten in V8)
-            m_FTP.Deserialize(stream, version);
         }
 
         public override void Serialize(XmlNode parentNode, String nodeName, XmlDocument document)
@@ -249,12 +290,12 @@ namespace GarminFitnessPlugin.Data
 
                 // Low
                 XmlNode low = document.CreateElement(Constants.LowTCXString);
-                low.AppendChild(document.CreateTextNode(m_PowerZones[i].Lower.ToString()));
+                low.AppendChild(document.CreateTextNode((m_PowerZones[i].Lower * FTP).ToString("0")));
                 currentZoneNode.AppendChild(low);
 
                 // High
                 XmlNode high = document.CreateElement(Constants.HighTCXString);
-                high.AppendChild(document.CreateTextNode(m_PowerZones[i].Upper.ToString()));
+                high.AppendChild(document.CreateTextNode((m_PowerZones[i].Upper * FTP).ToString("0")));
                 currentZoneNode.AppendChild(high);
 
                 powerZonesChild.AppendChild(currentZoneNode);
@@ -318,7 +359,8 @@ namespace GarminFitnessPlugin.Data
                     }
                 }
 
-                if (!FTPRead || powerZonesRead != Constants.GarminPowerZoneCount ||
+                if (!FTPRead ||
+                    powerZonesRead != Constants.GarminPowerZoneCount ||
                     bikeProfilesRead != 3)
                 {
                     throw new GarminFitnessXmlDeserializationException("Missing information in biking profile XML node", parentNode);
@@ -393,19 +435,11 @@ namespace GarminFitnessPlugin.Data
         {
             base.DeserializeZonesTargetFromFIT(zonesTargetMessage);
 
-            FITMessageField FTP = zonesTargetMessage.GetField((Byte)FITZonesTargetFieldIds.FTP);
-            FITMessageField powerCalcType = zonesTargetMessage.GetField((Byte)FITZonesTargetFieldIds.PowerCalcType);
+            FITMessageField FTPField = zonesTargetMessage.GetField((Byte)FITZonesTargetFieldIds.FTP);
 
-            if (FTP != null)
+            if (FTPField != null)
             {
-                this.FTP = FTP.GetUInt16();
-            }
-
-            if (powerCalcType != null)
-            {
-                int i = 0;
-                ++i;
-                //HRZonesReferential = (HRReferential)powerCalcType.GetEnum();
+                FTP = FTPField.GetUInt16();
             }
         }
 
@@ -464,6 +498,8 @@ namespace GarminFitnessPlugin.Data
 
             bool lowRead = false;
             bool highRead = false;
+            GarminFitnessValueRange<GarminFitnessUInt16Range> zone = new GarminFitnessValueRange<GarminFitnessUInt16Range>(new GarminFitnessUInt16Range(0),
+                                                                                                                           new GarminFitnessUInt16Range(0));
 
             for (int i = 0; i < parentNode.ChildNodes.Count; ++i)
             {
@@ -471,14 +507,14 @@ namespace GarminFitnessPlugin.Data
 
                 if (currentChild.Name == Constants.LowTCXString)
                 {
-                    m_PowerZones[index].Lower.Deserialize(currentChild);
+                    zone.Lower.Deserialize(currentChild);
                     lowRead = true;
                 }
                 else if (currentChild.Name == Constants.HighTCXString &&
                          currentChild.ChildNodes.Count == 1 &&
                          currentChild.FirstChild.GetType() == typeof(XmlText))
                 {
-                    m_PowerZones[index].Upper.Deserialize(currentChild);
+                    zone.Upper.Deserialize(currentChild);
                     highRead = true;
                 }
             }
@@ -488,11 +524,16 @@ namespace GarminFitnessPlugin.Data
             {
                 throw new GarminFitnessXmlDeserializationException("Missing information in profile power zone XML node", parentNode);
             }
+            else
+            {
+                m_PowerZones[index].Lower.Value = zone.Lower / (double)FTP;
+                m_PowerZones[index].Upper.Value = zone.Upper / (double)FTP;
+            }
 
             // Reorder both elements, GTC doesn't enforce
             if(m_PowerZones[index].Lower > m_PowerZones[index].Upper)
             {
-                GarminFitnessUInt16Range temp = m_PowerZones[index].Lower;
+                GarminFitnessDoubleRange temp = m_PowerZones[index].Lower;
 
                 m_PowerZones[index].Lower = m_PowerZones[index].Upper;
                 m_PowerZones[index].Upper = temp;
@@ -502,24 +543,60 @@ namespace GarminFitnessPlugin.Data
         public UInt16 GetPowerLowLimit(int index)
         {
             Debug.Assert(index >= 0 && index < Constants.GarminPowerZoneCount);
+            UInt16 lowValue = (UInt16)(m_PowerZones[index].Lower * 100);
 
-            return m_PowerZones[index].Lower;
+            if (PowerZonesInPercentFTP)
+            {
+                lowValue = (UInt16)Utils.Clamp(lowValue, Constants.MinPowerInPercentFTP, Constants.MaxPowerInPercentFTP);
+            }
+            else
+            {
+                lowValue = (UInt16)Utils.Clamp(Math.Round(m_PowerZones[index].Lower * FTP, 0),
+                                               Constants.MinPowerInWatts,
+                                               Constants.MaxPowerProfile);
+            }
+
+            return lowValue;
         }
 
         public UInt16 GetPowerHighLimit(int index)
         {
             Debug.Assert(index >= 0 && index < Constants.GarminPowerZoneCount);
+            UInt16 highValue = (UInt16)(m_PowerZones[index].Upper * 100);
 
-            return m_PowerZones[index].Upper;
+            if (PowerZonesInPercentFTP)
+            {
+                highValue = (UInt16)Utils.Clamp(highValue, Constants.MinPowerInPercentFTP, Constants.MaxPowerInPercentFTP);
+            }
+            else
+            {
+                highValue = (UInt16)Utils.Clamp(Math.Round(m_PowerZones[index].Upper * FTP, 0),
+                                               Constants.MinPowerInWatts,
+                                               Constants.MaxPowerProfile);
+            }
+
+            return highValue;
         }
 
         public void SetPowerLowLimit(int index, UInt16 value)
         {
             Debug.Assert(index >= 0 && index < Constants.GarminPowerZoneCount);
+            double FTPBasedValue = value / 100.0;
 
-            if (m_PowerZones[index].Lower != value)
+            if (!PowerZonesInPercentFTP)
             {
-                m_PowerZones[index].Lower = new GarminFitnessUInt16Range(value, Constants.MinPowerInWatts, Constants.MaxPowerProfile);
+                FTPBasedValue = value / (double)FTP;
+            }
+
+            if (m_PowerZones[index].Lower != FTPBasedValue)
+            {
+                m_PowerZones[index].Lower.Value = FTPBasedValue;
+
+                // Reorder both elements
+                if (m_PowerZones[index].Lower > m_PowerZones[index].Upper)
+                {
+                    m_PowerZones[index].Upper.Value = m_PowerZones[index].Lower;
+                }
 
                 TriggerChangedEvent(new PropertyChangedEventArgs("PowerZoneLimit"));
             }
@@ -528,10 +605,22 @@ namespace GarminFitnessPlugin.Data
         public void SetPowerHighLimit(int index, UInt16 value)
         {
             Debug.Assert(index >= 0 && index < Constants.GarminPowerZoneCount);
+            double FTPBasedValue = value / 100.0;
 
-            if (m_PowerZones[index].Upper != value)
+            if (!PowerZonesInPercentFTP)
             {
-                m_PowerZones[index].Upper = new GarminFitnessUInt16Range(value, Constants.MinPowerInWatts, Constants.MaxPowerProfile);
+                FTPBasedValue = value / (double)FTP;
+            }
+
+            if (m_PowerZones[index].Upper != FTPBasedValue)
+            {
+                m_PowerZones[index].Upper.Value = FTPBasedValue;
+
+                // Reorder both elements
+                if (m_PowerZones[index].Lower > m_PowerZones[index].Upper)
+                {
+                    m_PowerZones[index].Lower.Value = m_PowerZones[index].Upper;
+                }
 
                 TriggerChangedEvent(new PropertyChangedEventArgs("PowerZoneLimit"));
             }
@@ -558,6 +647,23 @@ namespace GarminFitnessPlugin.Data
             {
                 if (m_FTP != value)
                 {
+                    if (!PowerZonesInPercentFTP)
+                    {
+                        // Update limit values as they will change since stored in %FTP
+                        for (int i = 0; i < Constants.GarminPowerZoneCount; ++i)
+                        {
+                            double currentLowValue = m_PowerZones[i].Lower;
+                            double currentHighValue = m_PowerZones[i].Upper;
+
+                            m_PowerZones[i].Lower.Value = Utils.Clamp((currentLowValue * FTP) / value,
+                                                                      Constants.MinPowerInPercentFTP,
+                                                                      Constants.MaxPowerInPercentFTPInternal);
+                            m_PowerZones[i].Upper.Value = Utils.Clamp((currentHighValue * FTP) / value,
+                                                                      Constants.MinPowerInPercentFTP,
+                                                                      Constants.MaxPowerInPercentFTPInternal);
+                        }
+                    }
+
                     m_FTP.Value = value;
 
                     TriggerChangedEvent(new PropertyChangedEventArgs("FTP"));
@@ -565,8 +671,23 @@ namespace GarminFitnessPlugin.Data
             }
         }
 
-        private GarminFitnessUInt16Range m_FTP = new GarminFitnessUInt16Range(300, Constants.MinPowerInWatts, Constants.MaxPowerProfile);
-        private List<GarminFitnessValueRange<GarminFitnessUInt16Range>> m_PowerZones = new List<GarminFitnessValueRange<GarminFitnessUInt16Range>>();
+        public bool PowerZonesInPercentFTP
+        {
+            get { return m_PowerZonesInPercentFTP; }
+            set
+            {
+                if (PowerZonesInPercentFTP != value)
+                {
+                    m_PowerZonesInPercentFTP.Value = value;
+
+                    TriggerChangedEvent(new PropertyChangedEventArgs("PowerZonesInPercentFTP"));
+                }
+            }
+        }
+
+        private GarminFitnessBool m_PowerZonesInPercentFTP = new GarminFitnessBool(false);
+        private GarminFitnessUInt16Range m_FTP = new GarminFitnessUInt16Range(300, Constants.MinPowerInWatts, Constants.MaxPowerFTP);
+        private List<GarminFitnessValueRange<GarminFitnessDoubleRange>> m_PowerZones = new List<GarminFitnessValueRange<GarminFitnessDoubleRange>>();
         private GarminBikeProfile[] m_Bikes = new GarminBikeProfile[3];
     }
 }
