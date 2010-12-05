@@ -412,7 +412,8 @@ namespace GarminFitnessPlugin.Controller
             {
                 Logger.Instance.LogText("Completed import profile");
 
-                Debug.Assert(operation == DeviceOperations.ReadProfile);
+                Debug.Assert(operation == DeviceOperations.ReadProfile ||
+                             operation == DeviceOperations.ReadFITProfile);
 
                 if (!succeeded)
                 {

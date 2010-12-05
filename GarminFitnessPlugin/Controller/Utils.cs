@@ -473,7 +473,7 @@ namespace GarminFitnessPlugin.Controller
             return FITSports.Other;
         }
 
-        public static string GetSportName(GarminCategories sport)
+        public static string GetFITSportName(GarminCategories sport)
         {
             switch(sport)
             {
