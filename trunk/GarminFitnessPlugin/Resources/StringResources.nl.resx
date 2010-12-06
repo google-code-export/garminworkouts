@@ -681,4 +681,157 @@
   <data name="WorkoutsWereSplitText" xml:space="preserve">
     <value>Sommige van uw trainingen hebben meer dan 20 stappen. Deze moeten gesplitst worden om de wijziging in uw opties weer te kunnen geven. Wilt u dit nu doen? U moet het zelf handmatig doen als nu kiest voor "Nee".</value>
   </data>
+  <data name="ActiveText" xml:space="preserve">
+    <value>Actief</value>
+  </data>
+  <data name="CooldownText" xml:space="preserve">
+    <value>Cooling down</value>
+  </data>
+  <data name="DeviceCommGroupBoxText" xml:space="preserve">
+    <value>Apparaat communicatie</value>
+  </data>
+  <data name="ExportAsLabelText" xml:space="preserve">
+    <value>Exporteer als:</value>
+  </data>
+  <data name="ExportCooldownAsText" xml:space="preserve">
+    <value>Exporteer cooling down als</value>
+  </data>
+  <data name="ExportProfileText" xml:space="preserve">
+    <value>profiel exporteren</value>
+  </data>
+  <data name="ExportSTHRZonesAsLabelText" xml:space="preserve">
+    <value>Exporteer ST hartslagzones als :</value>
+  </data>
+  <data name="ExportSTPowerZonesAsLabelText" xml:space="preserve">
+    <value>Exporteer ST krachtzones als :</value>
+  </data>
+  <data name="ExportWarmupAsText" xml:space="preserve">
+    <value>Exporteer warming up als</value>
+  </data>
+  <data name="ExportWorkoutsText" xml:space="preserve">
+    <value>trainingen exporteren</value>
+  </data>
+  <data name="FITExportText" xml:space="preserve">
+    <value>FIT exporteren</value>
+  </data>
+  <data name="FitFileText" xml:space="preserve">
+    <value>FIT bestanden</value>
+  </data>
+  <data name="FITImportText" xml:space="preserve">
+    <value>FIT importeren</value>
+  </data>
+  <data name="GoToProfileText" xml:space="preserve">
+    <value>Ga naar profiel</value>
+  </data>
+  <data name="GoToWorkoutsText" xml:space="preserve">
+    <value>Ga naar trainingen</value>
+  </data>
+  <data name="HideInWorkoutListText" xml:space="preserve">
+    <value>Verbergen in trainingsoverzicht</value>
+  </data>
+  <data name="ImportProfileText" xml:space="preserve">
+    <value>profiel importeren</value>
+  </data>
+  <data name="ImportWorkoutsText" xml:space="preserve">
+    <value>trainingen importeren</value>
+  </data>
+  <data name="InkFriendlyModeText" xml:space="preserve">
+    <value>Inkt bespaar modus</value>
+  </data>
+  <data name="ManualProfileConfigurationText" xml:space="preserve">
+    <value>U wordt door het handmatige setup proces geleid</value>
+  </data>
+  <data name="NoDeviceSupportText" xml:space="preserve">
+    <value>Het apparaat {0} ondersteund geen {1}.  Dit is vereist voor correct functioneren </value>
+  </data>
+  <data name="NoMassStorageSupportText" xml:space="preserve">
+    <value>massa-opslag overdracht</value>
+  </data>
+  <data name="PackWorkoutsOnExportCheckBoxText" xml:space="preserve">
+    <value>Combineer trainingen bij exporteren (toestaan voor FR405)</value>
+  </data>
+  <data name="PageSetupText" xml:space="preserve">
+    <value>Pagina instelling</value>
+  </data>
+  <data name="PercentFTPText" xml:space="preserve">
+    <value>%FTP</value>
+  </data>
+  <data name="PowerAboveDurationComboBoxText" xml:space="preserve">
+    <value>Als mijn kracht boven een bepaalde waarde stijgt</value>
+  </data>
+  <data name="PowerAboveDurationDescriptionText" xml:space="preserve">
+    <value>Ga verder to mijn kracht stijgt boven</value>
+  </data>
+  <data name="PowerBelowDurationComboBoxText" xml:space="preserve">
+    <value>Als mijn kracht onder een bepaalde waarde daalt</value>
+  </data>
+  <data name="PowerBelowDurationDescriptionText" xml:space="preserve">
+    <value>Ga verder to mijn kracht daalt onder</value>
+  </data>
+  <data name="PowerDurationLabelText" xml:space="preserve">
+    <value>Welk kracht niveau?</value>
+  </data>
+  <data name="PrintAllText" xml:space="preserve">
+    <value>Alles afdrukken</value>
+  </data>
+  <data name="PrintOptionsText" xml:space="preserve">
+    <value>Afdrukopties</value>
+  </data>
+  <data name="PrintPreviewText" xml:space="preserve">
+    <value>Afdrukvoorbeeld</value>
+  </data>
+  <data name="PrintSelectedText" xml:space="preserve">
+    <value>Alleen het geselecteerde afdrukken</value>
+  </data>
+  <data name="PrintText" xml:space="preserve">
+    <value>Afdrukken</value>
+  </data>
+  <data name="RepeatCountComboBoxText" xml:space="preserve">
+    <value>Nadat het herhaald is voor een bepaald aantal keren</value>
+  </data>
+  <data name="RepeatUntilCaloriesDurationDescriptionText" xml:space="preserve">
+    <value>Herhaal totdat ik {0} calorieën heb verbruikt</value>
+  </data>
+  <data name="RepeatUntilDistanceDurationDescriptionText" xml:space="preserve">
+    <value>Herhaal voor {0:0.00} {1}.</value>
+  </data>
+  <data name="RepeatUntilHeartRateAboveDurationDescriptionText" xml:space="preserve">
+    <value>Herhaal totdat mijn hartslag stijgt boven {0} {1}.</value>
+  </data>
+  <data name="RepeatUntilHeartRateBelowDurationDescriptionText" xml:space="preserve">
+    <value>Herhaal totdat mijn hartslag daalt onder {0} {1}.</value>
+  </data>
+  <data name="RepeatUntilPowerAboveDurationDescriptionText" xml:space="preserve">
+    <value>Herhaal totdat mijn kracht stijgt boven {0} {1}.</value>
+  </data>
+  <data name="RepeatUntilPowerBelowDurationDescriptionText" xml:space="preserve">
+    <value>Herhaal totdat mijn kracht daalt onder {0} {1}.</value>
+  </data>
+  <data name="RepeatUntilTimeDurationDescriptionText" xml:space="preserve">
+    <value>Herhaal voor {0:00}:{1:00}:{2:00}.</value>
+  </data>
+  <data name="SelectFolderText" xml:space="preserve">
+    <value>Selecteer directory</value>
+  </data>
+  <data name="SelectWorkoutText" xml:space="preserve">
+    <value>Selecteer training</value>
+  </data>
+  <data name="TCXFileText" xml:space="preserve">
+    <value>TCX bestanden</value>
+  </data>
+  <data name="TransferringToDeviceText" xml:space="preserve">
+    <value>Verzenden naar apparaat</value>
+  </data>
+  <data name="UnrollRepeatsText" xml:space="preserve">
+    <value>Rol herhalingsstappen uit</value>
+  </data>
+  <data name="UseCategoryForAllCheckBoxText" xml:space="preserve">
+    <value>Gebruik voor alle trainingen</value>
+  </data>
+  <data name="WarmupText" xml:space="preserve">
+    <value>Warming up</value>
+  </data>
+  <data name="WorkoutLinkStepText" xml:space="preserve">
+    <value>Training link: {0}</value>
+  </data>
 </root>
