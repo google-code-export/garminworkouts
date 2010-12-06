@@ -321,6 +321,8 @@ namespace GarminFitnessPlugin.Controller
                 string downloadXML = m_HiddenWebBrowser.Document.InvokeScript("BuildMultipleDeviceDownloadsXML",
                                                                               new object[] { filesList }) as string;
 
+                Logger.Instance.LogText(String.Format("Bridge downloadXML = {0}", downloadXML));
+
                 m_HiddenWebBrowser.Document.InvokeScript("DownloadToDevice", new object[] { downloadXML });
             }
             catch (Exception e)

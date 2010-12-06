@@ -629,6 +629,22 @@ IF EXIST "$(SolutionDir)$(ProjectName).st3plugin" del "$(SolutionDir)*.st3plugin
   <ItemGroup>
     <None Include="Resources\CategoryIcon.png" />
     <Content Include="Communicator\GarminFitness.html" />
+    <Content Include="Communicator\js\garmin\device\GarminDevice.js" />
+    <Content Include="Communicator\js\garmin\device\GarminDeviceControl.js" />
+    <Content Include="Communicator\js\garmin\device\GarminDeviceDisplay.js" />
+    <Content Include="Communicator\js\garmin\device\GarminDevicePlugin.js" />
+    <Content Include="Communicator\js\garmin\device\GarminGeocode.js" />
+    <Content Include="Communicator\js\garmin\device\GarminGpsDataStructures.js" />
+    <Content Include="Communicator\js\garmin\device\GarminObjectGenerator.js" />
+    <Content Include="Communicator\js\garmin\device\GarminPluginUtils.js" />
+    <Content Include="Communicator\js\garmin\device\GoogleMapController.js" />
+    <Content Include="Communicator\js\garmin\util\Util-Broadcaster.js" />
+    <Content Include="Communicator\js\garmin\util\Util-BrowserDetect.js" />
+    <Content Include="Communicator\js\garmin\util\Util-DateTimeFormat.js" />
+    <Content Include="Communicator\js\garmin\util\Util-Json2.js" />
+    <Content Include="Communicator\js\garmin\util\Util-PluginDetect.js" />
+    <Content Include="Communicator\js\garmin\util\Util-XmlConverter.js" />
+    <Content Include="Communicator\js\prototype\prototype.js" />
     <Content Include="Resources\Arrow.png" />
     <Content Include="Resources\btn_donate_LG.gif" />
     <Content Include="Resources\Cut.png" />
