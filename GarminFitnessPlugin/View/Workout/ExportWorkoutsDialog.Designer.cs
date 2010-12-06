@@ -33,6 +33,8 @@
             this.ExportButton = new System.Windows.Forms.Button();
             this.Cancel_Button = new System.Windows.Forms.Button();
             this.FileFormatsComboBox = new System.Windows.Forms.ComboBox();
+            this.flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
+            this.flowLayoutPanel1.SuspendLayout();
             this.SuspendLayout();
             // 
             // DirectoryTree
@@ -59,13 +61,14 @@
             this.DirectoryTree.SelectedPath = "";
             this.DirectoryTree.ShowLines = false;
             this.DirectoryTree.ShowPlusMinus = true;
-            this.DirectoryTree.Size = new System.Drawing.Size(287, 253);
+            this.DirectoryTree.Size = new System.Drawing.Size(331, 253);
             this.DirectoryTree.TabIndex = 0;
             // 
             // ExportAsLabel
             // 
             this.ExportAsLabel.AutoSize = true;
-            this.ExportAsLabel.Location = new System.Drawing.Point(5, 260);
+            this.ExportAsLabel.Location = new System.Drawing.Point(3, 6);
+            this.ExportAsLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 0);
             this.ExportAsLabel.MaximumSize = new System.Drawing.Size(0, 16);
             this.ExportAsLabel.MinimumSize = new System.Drawing.Size(0, 16);
             this.ExportAsLabel.Name = "ExportAsLabel";
@@ -76,7 +79,7 @@
             // 
             // ExportButton
             // 
-            this.ExportButton.Location = new System.Drawing.Point(119, 294);
+            this.ExportButton.Location = new System.Drawing.Point(169, 296);
             this.ExportButton.Name = "ExportButton";
             this.ExportButton.Size = new System.Drawing.Size(75, 23);
             this.ExportButton.TabIndex = 2;
@@ -86,7 +89,7 @@
             // 
             // Cancel_Button
             // 
-            this.Cancel_Button.Location = new System.Drawing.Point(200, 294);
+            this.Cancel_Button.Location = new System.Drawing.Point(250, 296);
             this.Cancel_Button.Name = "Cancel_Button";
             this.Cancel_Button.Size = new System.Drawing.Size(75, 23);
             this.Cancel_Button.TabIndex = 3;
@@ -98,28 +101,39 @@
             // 
             this.FileFormatsComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.FileFormatsComboBox.FormattingEnabled = true;
-            this.FileFormatsComboBox.Location = new System.Drawing.Point(67, 259);
+            this.FileFormatsComboBox.Location = new System.Drawing.Point(66, 3);
             this.FileFormatsComboBox.Name = "FileFormatsComboBox";
-            this.FileFormatsComboBox.Size = new System.Drawing.Size(211, 21);
+            this.FileFormatsComboBox.Size = new System.Drawing.Size(186, 21);
             this.FileFormatsComboBox.TabIndex = 4;
+            // 
+            // flowLayoutPanel1
+            // 
+            this.flowLayoutPanel1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.flowLayoutPanel1.Controls.Add(this.ExportAsLabel);
+            this.flowLayoutPanel1.Controls.Add(this.FileFormatsComboBox);
+            this.flowLayoutPanel1.Location = new System.Drawing.Point(0, 259);
+            this.flowLayoutPanel1.Name = "flowLayoutPanel1";
+            this.flowLayoutPanel1.Size = new System.Drawing.Size(331, 31);
+            this.flowLayoutPanel1.TabIndex = 5;
             // 
             // ExportWorkoutsDialog
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(287, 329);
-            this.Controls.Add(this.FileFormatsComboBox);
+            this.ClientSize = new System.Drawing.Size(331, 326);
+            this.Controls.Add(this.flowLayoutPanel1);
             this.Controls.Add(this.Cancel_Button);
             this.Controls.Add(this.ExportButton);
-            this.Controls.Add(this.ExportAsLabel);
             this.Controls.Add(this.DirectoryTree);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "ExportWorkoutsDialog";
             this.Text = "Select Folder";
+            this.flowLayoutPanel1.ResumeLayout(false);
+            this.flowLayoutPanel1.PerformLayout();
             this.ResumeLayout(false);
-            this.PerformLayout();
 
         }
 
@@ -130,5 +144,6 @@
         private System.Windows.Forms.Button ExportButton;
         private System.Windows.Forms.Button Cancel_Button;
         private System.Windows.Forms.ComboBox FileFormatsComboBox;
+        private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel1;
     }
 }

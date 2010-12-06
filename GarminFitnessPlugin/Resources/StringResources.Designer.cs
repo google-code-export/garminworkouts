@@ -2077,7 +2077,7 @@ namespace GarminFitnessPlugin.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Use category for all workouts.
+        ///   Looks up a localized string similar to Use for all workouts.
         /// </summary>
         internal static string UseCategoryForAllCheckBoxText {
             get {

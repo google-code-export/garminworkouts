@@ -217,7 +217,7 @@
     <value>Détails</value>
   </data>
   <data name="DeviceCommunicationErrorText" xml:space="preserve">
-    <value>Il est impossible de charger le plugin Garmin Communicator.  Veuillez vous assurer que vous avez bien la versio 2.0.3170 de SportTracks of une plus récente et que le plugin Garmin Coommunicator est bien installé et activé dans Internet Explorer.</value>
+    <value>Il est impossible de charger le plugin Garmin Communicator.  Veuillez vous assurer que vous avez bien la version 2.0.3170 de SportTracks ou une plus récente et que le plugin Garmin Communicator est bien installé et activé dans Internet Explorer.</value>
   </data>
   <data name="DistanceDurationComboBoxText" xml:space="preserve">
     <value>Lorsque j'aurai parcouru une certaine distance</value>
@@ -286,7 +286,7 @@
     <value>À partir d'un fichier</value>
   </data>
   <data name="FTPLabelText" xml:space="preserve">
-    <value>Niveau de puissance fonctionnelle :</value>
+    <value>Seuil de puissance fonctionnelle :</value>
   </data>
   <data name="GarminFitnessText" xml:space="preserve">
     <value>Garmin Fitness</value>
@@ -352,7 +352,7 @@
     <value>Lorsque ma FC passe en dessous d'un certain seuil</value>
   </data>
   <data name="HeartRateBelowDurationDescriptionText" xml:space="preserve">
-    <value>Continuer jusqu'à ce que ma FC passe en dessous de {0} {1}.</value>
+    <value>Continuer jusqu'à ce que ma FC passe en sous {0} {1}.</value>
   </data>
   <data name="HeartRateDurationLabelText" xml:space="preserve">
     <value>Quel niveau de FC?</value>
@@ -689,5 +689,155 @@
   </data>
   <data name="WorkoutLinkStepText" xml:space="preserve">
     <value>Lien vers entraînement: {0}</value>
+  </data>
+  <data name="ActiveText" xml:space="preserve">
+    <value>Actif</value>
+  </data>
+  <data name="CooldownText" xml:space="preserve">
+    <value>Retour au calme</value>
+  </data>
+  <data name="DeviceCommGroupBoxText" xml:space="preserve">
+    <value>Communication avec l'appareil</value>
+  </data>
+  <data name="ExportAsLabelText" xml:space="preserve">
+    <value>Exporter en tant que:</value>
+  </data>
+  <data name="ExportCooldownAsText" xml:space="preserve">
+    <value>Exporter le retour au repos en tant que</value>
+  </data>
+  <data name="ExportProfileText" xml:space="preserve">
+    <value>export de profile</value>
+  </data>
+  <data name="ExportSTHRZonesAsLabelText" xml:space="preserve">
+    <value>Exporter les zones de FC de ST en tant que:</value>
+  </data>
+  <data name="ExportWarmupAsText" xml:space="preserve">
+    <value>Exporter le réchauffement en tant que</value>
+  </data>
+  <data name="ExportWorkoutsText" xml:space="preserve">
+    <value>export d'entraînement</value>
+  </data>
+  <data name="FITExportText" xml:space="preserve">
+    <value>export FIT</value>
+  </data>
+  <data name="FitFileText" xml:space="preserve">
+    <value>Fichier FIT</value>
+  </data>
+  <data name="FITImportText" xml:space="preserve">
+    <value>import FIT</value>
+  </data>
+  <data name="GoToProfileText" xml:space="preserve">
+    <value>Aller au profil</value>
+  </data>
+  <data name="GoToWorkoutsText" xml:space="preserve">
+    <value>Aller aux entraînements</value>
+  </data>
+  <data name="HideInWorkoutListText" xml:space="preserve">
+    <value>Cacher dans la liste d'entraînements</value>
+  </data>
+  <data name="ImportProfileText" xml:space="preserve">
+    <value>import d'e profile</value>
+  </data>
+  <data name="ImportWorkoutsText" xml:space="preserve">
+    <value>import d'entraînement</value>
+  </data>
+  <data name="InkFriendlyModeText" xml:space="preserve">
+    <value>Mode économie d'encre</value>
+  </data>
+  <data name="ManualProfileConfigurationText" xml:space="preserve">
+    <value>Vous devrez configurer le plugin manuellement.</value>
+  </data>
+  <data name="NoDeviceSupportText1" xml:space="preserve">
+    <value>L'appareil {0} ne supporte pas {1}.  Ceci est requis pour fonctionner.</value>
+  </data>
+  <data name="NoMassStorageSupportText" xml:space="preserve">
+    <value>transfert en mode disque</value>
+  </data>
+  <data name="PackWorkoutsOnExportCheckBoxText" xml:space="preserve">
+    <value>Compacter les entraînements à L'export (Activer pour FR405)</value>
+  </data>
+  <data name="PageSetupText" xml:space="preserve">
+    <value>Mise en page</value>
+  </data>
+  <data name="PercentFTPText" xml:space="preserve">
+    <value>%FTP</value>
+  </data>
+  <data name="PowerAboveDurationComboBoxText" xml:space="preserve">
+    <value>Lorsque ma puissance dépasse un certain seuil</value>
+  </data>
+  <data name="PowerAboveDurationDescriptionText" xml:space="preserve">
+    <value>Continuer jusqu'à ce que ma puissance dépasse {0} {1}.</value>
+  </data>
+  <data name="PowerBelowDurationComboBoxText" xml:space="preserve">
+    <value>Lorsque ma puissance passe sous un certain seuil</value>
+  </data>
+  <data name="PowerBelowDurationDescriptionText" xml:space="preserve">
+    <value>Continuer jusqu'à ce que ma puissance passe en sous {0} {1}.</value>
+  </data>
+  <data name="PowerDurationLabelText" xml:space="preserve">
+    <value>Quel niveau de puissance?</value>
+  </data>
+  <data name="PrintAllText" xml:space="preserve">
+    <value>Imprimer tous</value>
+  </data>
+  <data name="PrintOptionsText" xml:space="preserve">
+    <value>Options d'impression</value>
+  </data>
+  <data name="PrintPreviewText" xml:space="preserve">
+    <value>Aperçu d'impression</value>
+  </data>
+  <data name="PrintSelectedText" xml:space="preserve">
+    <value>Imprimer sélection</value>
+  </data>
+  <data name="PrintText" xml:space="preserve">
+    <value>Imprimer</value>
+  </data>
+  <data name="RepeatCountComboBoxText" xml:space="preserve">
+    <value>Après un certain nombre de répétitions</value>
+  </data>
+  <data name="RepeatUntilCaloriesDurationDescriptionText" xml:space="preserve">
+    <value>Répéter jusqu'à ce que j'ai brûle {0} calories.</value>
+  </data>
+  <data name="RepeatUntilDistanceDurationDescriptionText" xml:space="preserve">
+    <value>Répéter pour {0:0.00} {1}.</value>
+  </data>
+  <data name="RepeatUntilHeartRateAboveDurationDescriptionText" xml:space="preserve">
+    <value>Répéter jusqu'à ce que ma FC dépasse {0} {1}.</value>
+  </data>
+  <data name="RepeatUntilHeartRateBelowDurationDescriptionText" xml:space="preserve">
+    <value>Répéter jusqu'à ce que ma FC passe sous {0} {1}.</value>
+  </data>
+  <data name="RepeatUntilPowerAboveDurationDescriptionText" xml:space="preserve">
+    <value>Répéter jusqu'à ce que ma puissance dépasse {0} {1}.</value>
+  </data>
+  <data name="RepeatUntilPowerBelowDurationDescriptionText" xml:space="preserve">
+    <value>Répéter jusqu'à ce que ma puissance passe sous {0} {1}.</value>
+  </data>
+  <data name="RepeatUntilTimeDurationDescriptionText" xml:space="preserve">
+    <value>Répéter pour {0:00}:{1:00}:{2:00}.</value>
+  </data>
+  <data name="SelectFolderText" xml:space="preserve">
+    <value>Choisir un dossier</value>
+  </data>
+  <data name="SelectWorkoutText1" xml:space="preserve">
+    <value>Choisir l'entraînement</value>
+  </data>
+  <data name="TCXFileText" xml:space="preserve">
+    <value>Fichier TCX</value>
+  </data>
+  <data name="TransferringToDeviceText" xml:space="preserve">
+    <value>Transfert vers l'appareil</value>
+  </data>
+  <data name="UnrollRepeatsText" xml:space="preserve">
+    <value>Dérouler les répétitions</value>
+  </data>
+  <data name="UseCategoryForAllCheckBoxText" xml:space="preserve">
+    <value>Utiliser pour tous les entraînements</value>
+  </data>
+  <data name="WarmupText" xml:space="preserve">
+    <value>Réchauffement</value>
+  </data>
+  <data name="ExportSTPowerZonesAsLabelText" xml:space="preserve">
+    <value>Exporter les zones de puissance de ST en tant que:</value>
   </data>
 </root>

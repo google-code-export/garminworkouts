@@ -39,37 +39,45 @@ namespace GarminFitnessPlugin.View
             this.RenameExplanationLabel = new System.Windows.Forms.Label();
             this.RenameLabel = new System.Windows.Forms.Label();
             this.RenameArrowPictureBox = new System.Windows.Forms.PictureBox();
+            this.flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
             this.ReplacePanel.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.ReplaceArrowPictureBox)).BeginInit();
             this.RenamePanel.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.RenameArrowPictureBox)).BeginInit();
+            this.flowLayoutPanel1.SuspendLayout();
             this.SuspendLayout();
             // 
             // ReplaceRenameIntroLabel
             // 
+            this.ReplaceRenameIntroLabel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
             this.ReplaceRenameIntroLabel.Location = new System.Drawing.Point(13, 13);
             this.ReplaceRenameIntroLabel.Name = "ReplaceRenameIntroLabel";
-            this.ReplaceRenameIntroLabel.Size = new System.Drawing.Size(259, 61);
+            this.ReplaceRenameIntroLabel.Size = new System.Drawing.Size(311, 61);
             this.ReplaceRenameIntroLabel.TabIndex = 0;
             this.ReplaceRenameIntroLabel.Text = "There is already a workout present that has the same name.  You can either replac" +
                 "e the current workout or rename the new one.";
             // 
             // ReplacePanel
             // 
+            this.ReplacePanel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
             this.ReplacePanel.Controls.Add(this.ReplaceExplanationLabel);
             this.ReplacePanel.Controls.Add(this.ReplaceLabel);
             this.ReplacePanel.Controls.Add(this.ReplaceArrowPictureBox);
             this.ReplacePanel.Location = new System.Drawing.Point(16, 78);
             this.ReplacePanel.Name = "ReplacePanel";
-            this.ReplacePanel.Size = new System.Drawing.Size(256, 82);
+            this.ReplacePanel.Size = new System.Drawing.Size(308, 82);
             this.ReplacePanel.TabIndex = 1;
             this.ReplacePanel.Click += new System.EventHandler(this.ReplacePanel_Click);
             // 
             // ReplaceExplanationLabel
             // 
+            this.ReplaceExplanationLabel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
             this.ReplaceExplanationLabel.Location = new System.Drawing.Point(4, 31);
             this.ReplaceExplanationLabel.Name = "ReplaceExplanationLabel";
-            this.ReplaceExplanationLabel.Size = new System.Drawing.Size(249, 42);
+            this.ReplaceExplanationLabel.Size = new System.Drawing.Size(301, 42);
             this.ReplaceExplanationLabel.TabIndex = 2;
             this.ReplaceExplanationLabel.Text = "Selecting this option will overwrite the current workout that has the same name.";
             // 
@@ -96,14 +104,15 @@ namespace GarminFitnessPlugin.View
             // 
             // RenamePanel
             // 
-            this.RenamePanel.Controls.Add(this.NewNameTextBox);
-            this.RenamePanel.Controls.Add(this.NewNameLabel);
+            this.RenamePanel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.RenamePanel.Controls.Add(this.flowLayoutPanel1);
             this.RenamePanel.Controls.Add(this.RenameExplanationLabel);
             this.RenamePanel.Controls.Add(this.RenameLabel);
             this.RenamePanel.Controls.Add(this.RenameArrowPictureBox);
             this.RenamePanel.Location = new System.Drawing.Point(16, 166);
             this.RenamePanel.Name = "RenamePanel";
-            this.RenamePanel.Size = new System.Drawing.Size(256, 106);
+            this.RenamePanel.Size = new System.Drawing.Size(308, 106);
             this.RenamePanel.TabIndex = 1;
             this.RenamePanel.Click += new System.EventHandler(this.RenamePanel_Click);
             // 
@@ -114,7 +123,7 @@ namespace GarminFitnessPlugin.View
             this.NewNameTextBox.BackColor = System.Drawing.Color.White;
             this.NewNameTextBox.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(123)))), ((int)(((byte)(114)))), ((int)(((byte)(108)))));
             this.NewNameTextBox.ButtonImage = null;
-            this.NewNameTextBox.Location = new System.Drawing.Point(72, 75);
+            this.NewNameTextBox.Location = new System.Drawing.Point(70, 3);
             this.NewNameTextBox.MaxLength = 15;
             this.NewNameTextBox.Multiline = false;
             this.NewNameTextBox.Name = "NewNameTextBox";
@@ -129,7 +138,8 @@ namespace GarminFitnessPlugin.View
             // NewNameLabel
             // 
             this.NewNameLabel.AutoSize = true;
-            this.NewNameLabel.Location = new System.Drawing.Point(4, 78);
+            this.NewNameLabel.Location = new System.Drawing.Point(3, 6);
+            this.NewNameLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 0);
             this.NewNameLabel.Name = "NewNameLabel";
             this.NewNameLabel.Size = new System.Drawing.Size(61, 13);
             this.NewNameLabel.TabIndex = 3;
@@ -137,9 +147,11 @@ namespace GarminFitnessPlugin.View
             // 
             // RenameExplanationLabel
             // 
+            this.RenameExplanationLabel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
             this.RenameExplanationLabel.Location = new System.Drawing.Point(4, 31);
             this.RenameExplanationLabel.Name = "RenameExplanationLabel";
-            this.RenameExplanationLabel.Size = new System.Drawing.Size(249, 42);
+            this.RenameExplanationLabel.Size = new System.Drawing.Size(301, 42);
             this.RenameExplanationLabel.TabIndex = 2;
             this.RenameExplanationLabel.Text = "Selecting this option will use the following name for the workout.";
             // 
@@ -164,11 +176,22 @@ namespace GarminFitnessPlugin.View
             this.RenameArrowPictureBox.TabIndex = 0;
             this.RenameArrowPictureBox.TabStop = false;
             // 
+            // flowLayoutPanel1
+            // 
+            this.flowLayoutPanel1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.flowLayoutPanel1.Controls.Add(this.NewNameLabel);
+            this.flowLayoutPanel1.Controls.Add(this.NewNameTextBox);
+            this.flowLayoutPanel1.Location = new System.Drawing.Point(3, 76);
+            this.flowLayoutPanel1.Name = "flowLayoutPanel1";
+            this.flowLayoutPanel1.Size = new System.Drawing.Size(302, 24);
+            this.flowLayoutPanel1.TabIndex = 5;
+            // 
             // ReplaceRenameDialog
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(284, 286);
+            this.ClientSize = new System.Drawing.Size(336, 286);
             this.Controls.Add(this.RenamePanel);
             this.Controls.Add(this.ReplacePanel);
             this.Controls.Add(this.ReplaceRenameIntroLabel);
@@ -182,6 +205,8 @@ namespace GarminFitnessPlugin.View
             this.RenamePanel.ResumeLayout(false);
             this.RenamePanel.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.RenameArrowPictureBox)).EndInit();
+            this.flowLayoutPanel1.ResumeLayout(false);
+            this.flowLayoutPanel1.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -199,5 +224,6 @@ namespace GarminFitnessPlugin.View
         private System.Windows.Forms.Label RenameLabel;
         private System.Windows.Forms.PictureBox RenameArrowPictureBox;
         private GarminFitnessPlugin.View.ExtendedTextBox NewNameTextBox;
+        private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel1;
     }
 }
