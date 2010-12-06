@@ -386,6 +386,7 @@ namespace GarminFitnessPlugin.Controller
         {
             m_Type = DataType.String;
             m_ByteValues = Encoding.UTF8.GetBytes(value);
+            m_StringLength = stringLength;
         }
 
         public String GetString()
@@ -714,7 +715,7 @@ namespace GarminFitnessPlugin.Controller
                     }
                 case DataType.String:
                     {
-                        Byte[] valueStored = new Byte[ArraySize];
+                        Byte[] valueStored = new Byte[FieldSize];
 
                         for(int i = 0; i < valueStored.Length; ++i)
                         {
@@ -935,7 +936,6 @@ namespace GarminFitnessPlugin.Controller
                     case DataType.UInt8:
                     case DataType.SInt8:
                     case DataType.UInt8z:
-                    case DataType.String:
                     case DataType.Byte:
                         {
                             return 1;
@@ -957,6 +957,10 @@ namespace GarminFitnessPlugin.Controller
                         {
                             return 8;
                         }
+                    case DataType.String:
+                        {
+                            return m_StringLength;
+                        }
                     default:
                         {
                             Debug.Assert(false);
@@ -977,7 +981,6 @@ namespace GarminFitnessPlugin.Controller
                     case DataType.Enum:
                     case DataType.UInt8:
                     case DataType.UInt8z:
-                    case DataType.String:
                     case DataType.Byte:
                         {
                             return m_ByteValues.Length;
@@ -1011,6 +1014,10 @@ namespace GarminFitnessPlugin.Controller
                     case DataType.Float64:
                         {
                             return m_DoubleValues.Length;
+                        }
+                    case DataType.String:
+                        {
+                            return 1;
                         }
                     default:
                         {
@@ -1195,5 +1202,6 @@ namespace GarminFitnessPlugin.Controller
         private Single[] m_SingleValues = null;
         private Double[] m_DoubleValues = null;
         private Byte[] m_ByteValues = null;
+        Byte m_StringLength = 0;
     }
 }
