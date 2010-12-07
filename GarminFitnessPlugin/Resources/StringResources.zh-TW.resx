@@ -127,7 +127,7 @@
     <value>及</value>
   </data>
   <data name="AutoSplitCheckBoxText" xml:space="preserve">
-    <value>允許使用超過二十個階段的訓練</value>
+    <value>允許使用超過二十個步驟的訓練</value>
   </data>
   <data name="AutoText" xml:space="preserve">
     <value>自動</value>
@@ -172,7 +172,7 @@
     <value>開始直到我燃燒 {0} 卡路里。</value>
   </data>
   <data name="CaloriesDurationLabelText" xml:space="preserve">
-    <value>多少卡路里？</value>
+    <value>多少卡路里?</value>
   </data>
   <data name="CategoriesText" xml:space="preserve">
     <value>分類</value>
@@ -235,7 +235,7 @@
     <value>開始 {0:0.00} {1}。</value>
   </data>
   <data name="DistanceDurationLabelText" xml:space="preserve">
-    <value>多遠？</value>
+    <value>多遠?</value>
   </data>
   <data name="DoubleRangeValidationText" xml:space="preserve">
     <value>數值必須為介於 {0:0.00} 和 {1:0.00} 之間的小數</value>
@@ -244,7 +244,7 @@
     <value>騎自行車資訊</value>
   </data>
   <data name="EditProfileExplanationText" xml:space="preserve">
-    <value>您可以在此頁面編輯儲存於資訊中的個人資料。須注意，訓練的顯示方式會受到您選擇的區間（每分鐘心跳 vs ％最高心率及速度 vs 步速），以及該區間於不同運動的種類所影響。</value>
+    <value>您可以在此頁面編輯儲存於資訊中的個人資料。須注意，訓練的顯示方式會受到您選擇的區間（每分鐘心跳 vs %最高心率及速度 vs 步速），以及該區間於不同運動的種類所影響。</value>
   </data>
   <data name="EditProfileText" xml:space="preserve">
     <value>編輯個人資訊</value>
@@ -277,10 +277,10 @@
     <value>匯出選擇項目</value>
   </data>
   <data name="ExportSTHRZonesAsLabelText" xml:space="preserve">
-    <value>匯出 ST 心率區間至:</value>
+    <value>匯出 ST 心率區間方式:</value>
   </data>
   <data name="ExportSTPowerZonesAsLabelText" xml:space="preserve">
-    <value>匯出 ST 功率區間至:</value>
+    <value>匯出 ST 功率區間方式:</value>
   </data>
   <data name="ExportText" xml:space="preserve">
     <value>匯出</value>
@@ -400,7 +400,7 @@
     <value>開始直到我的心率低於 {0} {1}。</value>
   </data>
   <data name="HeartRateDurationLabelText" xml:space="preserve">
-    <value>心率等級？</value>
+    <value>心率等級?</value>
   </data>
   <data name="HeartRateRangeTargetDescriptionText" xml:space="preserve">
     <value>試著將我的心率保持在 {0} 和 {1} {2} 之間。</value>
@@ -415,10 +415,10 @@
     <value>在訓練清單中隱藏</value>
   </data>
   <data name="HighLabelText" xml:space="preserve">
-    <value>高度:</value>
+    <value>高:</value>
   </data>
   <data name="HighText" xml:space="preserve">
-    <value>高度</value>
+    <value>高</value>
   </data>
   <data name="HRSettingsGroupBoxText" xml:space="preserve">
     <value>心率設定</value>
@@ -427,7 +427,7 @@
     <value>心率區間</value>
   </data>
   <data name="ImportEditExplanationText" xml:space="preserve">
-    <value>為了讓您的訓練使用正確的區間，我們必須設定這些區間。即使您已在 SportTracks 模式設定過外掛，您的資訊仍會用於顯示（速度 vs 步速，每分鐘心跳 vs ％最高心率），因此設定個人資訊是很重要的。您可從裝置匯入或以手動編輯個人資訊。</value>
+    <value>為了讓您的訓練使用正確的區間，我們必須設定這些區間。即使您已在 SportTracks 模式設定過外掛，您的資訊仍會用於顯示（速度 vs 步速，每分鐘心跳 vs %最高心率），因此設定個人資訊是很重要的。您可從裝置匯入或以手動編輯個人資訊。</value>
   </data>
   <data name="ImportOrEditProfileText" xml:space="preserve">
     <value>匯入或編輯資訊</value>
@@ -520,7 +520,7 @@
     <value>備註:</value>
   </data>
   <data name="NullTargetComboBoxText" xml:space="preserve">
-    <value>在此階段中無指定的目標</value>
+    <value>在此步驟中無指定的目標</value>
   </data>
   <data name="NullTargetDescriptionText" xml:space="preserve">
     <value />
@@ -529,7 +529,7 @@
     <value>數量</value>
   </data>
   <data name="OdometerLabelText" xml:space="preserve">
-    <value>總里程:</value>
+    <value>里程表:</value>
   </data>
   <data name="OpenFileText" xml:space="preserve">
     <value>匯入訓練</value>
@@ -550,7 +550,7 @@
     <value>部份 {0}/{1}</value>
   </data>
   <data name="PasteStepErrorText" xml:space="preserve">
-    <value>無法貼上階段，您的訓練不能包含這麼多階段。每個訓練中最大的階段數量為二十個。</value>
+    <value>無法貼上步驟，您的訓練不能包含這麼多步驟。每個訓練中最大的步驟數量為二十個。</value>
   </data>
   <data name="PercentFTPText" xml:space="preserve">
     <value>%FTP</value>
@@ -571,7 +571,7 @@
     <value>開始直到我的功率低於 {0} {1}。</value>
   </data>
   <data name="PowerDurationLabelText" xml:space="preserve">
-    <value>功率等級？</value>
+    <value>功率等級?</value>
   </data>
   <data name="PowerRangeTargetDescriptionText" xml:space="preserve">
     <value>試著將我的功率保持在 {0} 和 {1} 瓦特之間。</value>
@@ -622,7 +622,7 @@
     <value>於重複特定次數後。</value>
   </data>
   <data name="RepeatStepDescriptionText" xml:space="preserve">
-    <value>重複下列階段 {0} 次:</value>
+    <value>重複下列步驟 {0} 次:</value>
   </data>
   <data name="RepeatUntilCaloriesDurationDescriptionText" xml:space="preserve">
     <value>重複直到我燃燒 {0} 卡路里。</value>
@@ -646,7 +646,7 @@
     <value>重複 {0:00}:{1:00}:{2:00}。</value>
   </data>
   <data name="RepetitionCountLabelText" xml:space="preserve">
-    <value>您要重複多少次？</value>
+    <value>您要重複多少次?</value>
   </data>
   <data name="RepetitionPropertiesGroupText" xml:space="preserve">
     <value>重複內容</value>
@@ -658,13 +658,13 @@
     <value>取代</value>
   </data>
   <data name="ReplaceRenameDialogText" xml:space="preserve">
-    <value>取代或重新命名？</value>
+    <value>取代或重新命名?</value>
   </data>
   <data name="ReplaceRenameIntroLabelText" xml:space="preserve">
     <value>已存在相同名稱的訓練。您可以取代目前的訓練，或是重新命名為新的名稱。</value>
   </data>
   <data name="RestingCheckBoxText" xml:space="preserve">
-    <value>休息階段</value>
+    <value>休息步驟</value>
   </data>
   <data name="RestingHeartRateLabelText" xml:space="preserve">
     <value>休息心率:</value>
@@ -724,22 +724,22 @@
     <value>SportTracks</value>
   </data>
   <data name="StepDetailsText" xml:space="preserve">
-    <value>階段</value>
+    <value>步驟</value>
   </data>
   <data name="StepDurationGroupText" xml:space="preserve">
-    <value>階段持續時間</value>
+    <value>步驟持續時間</value>
   </data>
   <data name="StepDurationLabelText" xml:space="preserve">
-    <value>此階段結束時間？</value>
+    <value>此步驟結束時間?</value>
   </data>
   <data name="StepNameLabelText" xml:space="preserve">
-    <value>自訂階段名稱:</value>
+    <value>自訂步驟名稱:</value>
   </data>
   <data name="StepTargetGroupText" xml:space="preserve">
-    <value>階段目標</value>
+    <value>步驟目標</value>
   </data>
   <data name="StepTargetLabelText" xml:space="preserve">
-    <value>此階段中您的目標？</value>
+    <value>此步驟中您的目標?</value>
   </data>
   <data name="STModeRadioButtonText" xml:space="preserve">
     <value>我要使用 SportTracks 模式</value>
@@ -757,10 +757,10 @@
     <value>在我開始某個時間之後</value>
   </data>
   <data name="TimeDurationDescriptionText" xml:space="preserve">
-    <value>開始 {0:00}:{1:00}:{2:00}</value>
+    <value>持續 {0:00}:{1:00}:{2:00}</value>
   </data>
   <data name="TimeDurationLabelText" xml:space="preserve">
-    <value>多少時間？</value>
+    <value>多少時間?</value>
   </data>
   <data name="TimeRangeValidationText" xml:space="preserve">
     <value>數值必須為介於 {0:00}:{1:00} 和 {2:00}:{3:00} 的持續時間</value>
@@ -802,7 +802,7 @@
     <value>警告</value>
   </data>
   <data name="WeightLabelText" xml:space="preserve">
-    <value>體重:</value>
+    <value>重量:</value>
   </data>
   <data name="WelcomeLabelText" xml:space="preserve">
     <value>歡迎使用 Garmin Fitness 外掛設定精靈。此精靈將協助您設定日誌所使用的外掛。您可在任何時間點選『結束』按鈕退出精靈。如果您日後想設定此外掛，可由外掛的『設定』頁面啟動此精靈，因此請放心設定。</value>
@@ -817,7 +817,7 @@
     <value>輪胎大小:</value>
   </data>
   <data name="WhichZoneText" xml:space="preserve">
-    <value>區間？</value>
+    <value>區間?</value>
   </data>
   <data name="WizardSTZonesText" xml:space="preserve">
     <value>SportTracks 區間</value>
@@ -829,6 +829,6 @@
     <value>訓練</value>
   </data>
   <data name="WorkoutsWereSplitText" xml:space="preserve">
-    <value>部份訓練包含超過二十個階段。我們會將它們在日誌中自動分段，以便在選項中管理變更，建議您再查看一下內容。</value>
+    <value>部份訓練包含超過二十個步驟。我們會將它們在日誌中自動分段，以便在選項中管理變更，建議您再查看一下內容。</value>
   </data>
 </root>
