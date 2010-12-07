@@ -89,7 +89,7 @@ namespace GarminFitnessPlugin.Data
                 odometer.SetUInt32((UInt32)(bike.OdometerInMeters * 100));
                 customWheelSize.SetUInt16(bike.WheelSize);
                 autoWheelSize.SetUInt16(bike.WheelSize);
-                weight.SetUInt16((UInt16)(Weight.Convert(bike.WeightInPounds, Weight.Units.Pound, Weight.Units.Kilogram) * 10));
+                weight.SetUInt16((UInt16)Math.Round(Weight.Convert(bike.WeightInPounds, Weight.Units.Pound, Weight.Units.Kilogram) * 10, 0));
                 useAutoWheelSize.SetEnum(bike.AutoWheelSize ? (Byte)FITBoolean.True : (Byte)FITBoolean.False);
                 cadenceSensor.SetEnum(bike.HasCadenceSensor ? (Byte)FITBoolean.True : (Byte)FITBoolean.False);
                 powerSensor.SetEnum(bike.HasPowerSensor ? (Byte)FITBoolean.True : (Byte)FITBoolean.False);

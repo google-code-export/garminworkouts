@@ -47,6 +47,11 @@ namespace GarminFitnessPlugin.Controller
                     m_Type == DataType.Enum)
                 {
                     m_ByteValues = new Byte[size];
+
+                    if (m_Type == DataType.String)
+                    {
+                        m_StringLength = size;
+                    }
                 }
                 else if (m_Type == DataType.SInt8)
                 {
