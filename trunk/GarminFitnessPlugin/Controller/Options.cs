@@ -1026,7 +1026,7 @@ namespace GarminFitnessPlugin.Controller
 
         public bool EnableMassStorageMode
         {
-            get { return true; }
+            get { return false; }
         }
 
         // Use to activate or deactivate logging

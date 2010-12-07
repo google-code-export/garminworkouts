@@ -251,7 +251,7 @@ namespace GarminFitnessPlugin.Data
 
         public double WeightInPounds
         {
-            get { return m_WeightInPounds; }
+            get { return Math.Round(m_WeightInPounds, 1); }
             set
             {
                 if (m_WeightInPounds != value)

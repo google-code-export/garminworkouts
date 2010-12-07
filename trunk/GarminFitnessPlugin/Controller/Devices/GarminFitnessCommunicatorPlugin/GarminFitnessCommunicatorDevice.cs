@@ -638,9 +638,10 @@ namespace GarminFitnessPlugin.Controller
                     }
 
                     // Sport profiles
-                    for (int i = 0; i < (int)GarminCategories.GarminCategoriesCount; ++i)
+//                    for (int i = 0; i < (int)GarminCategories.GarminCategoriesCount; ++i)
                     {
-                        fileName = Utils.GetFITSportName((GarminCategories)i) + ".fit";
+                        GarminCategories sportCategory = GarminCategories.Biking;//(GarminCategories)i;
+                        fileName = Utils.GetFITSportName(sportCategory) + ".fit";
                         Stream sportFile = File.Create(m_TempDirectoryLocation + fileName);
 
                         if (sportFile != null)
@@ -648,7 +649,7 @@ namespace GarminFitnessPlugin.Controller
                             Logger.Instance.LogText(String.Format("Comm. : FIT sport profile {0}", fileName));
 
                             ProfileExporter.ExportProfileToFITSport(GarminProfileManager.Instance.UserProfile,
-                                                                    (GarminCategories)i,
+                                                                    sportCategory,
                                                                     sportFile);
                             filenames.Add(fileName);
                         }
