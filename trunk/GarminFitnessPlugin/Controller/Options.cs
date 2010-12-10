@@ -928,7 +928,7 @@ namespace GarminFitnessPlugin.Controller
                     m_CadenceZoneCategory = value;
                     IsCadenceZoneDirty = false;
 
-                    if (m_CadenceZoneCategory != null)
+                    if (m_CadenceZoneCategory != null && !IsDeserializing)
                     {
                         GarminWorkoutManager.Instance.MarkAllCadenceSTZoneTargetsAsDirty();
                     }
@@ -948,7 +948,7 @@ namespace GarminFitnessPlugin.Controller
                     m_PowerZoneCategory = value;
                     IsPowerZoneDirty = false;
 
-                    if (m_PowerZoneCategory != null)
+                    if (m_PowerZoneCategory != null && !IsDeserializing)
                     {
                         GarminWorkoutManager.Instance.MarkAllPowerSTZoneTargetsAsDirty();
                     }
