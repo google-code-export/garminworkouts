@@ -4108,7 +4108,7 @@ namespace GarminFitnessPlugin.View
         {
             object nextSelection = StepsList.FindNextSelectedAfterDelete(GetStepWrapper(SelectedWorkout.ConcreteWorkout, SelectedSteps[0]));
 
-            SelectedWorkout.ConcreteWorkout.Steps.RemoveSteps(SelectedSteps, false);
+            SelectedWorkout.ConcreteWorkout.Steps.RemoveSteps(SelectedSteps, true);
 
             if (nextSelection != null)
             {
