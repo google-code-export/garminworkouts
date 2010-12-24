@@ -65,9 +65,21 @@ namespace GarminFitnessPlugin.Data
                 if (StepsExtensions.Count > 0)
                 {
                     XmlNode extensionsNode = document.CreateElement("Steps");
+
+                    // xmlns namespace attribute
                     attribute = document.CreateAttribute("xmlns");
-                    attribute.Value = "http://www.garmin.com/xmlschemas/WorkoutExtension/v1 http://www.garmin.com/xmlschemas/WorkoutExtensionv1.xsd";
+                    attribute.Value = "http://www.garmin.com/xmlschemas/WorkoutExtension/v1";
                     extensionsNode.Attributes.Append(attribute);
+
+/*                    // xmlns:xsi namespace attribute
+                    attribute = document.CreateAttribute("xmlns", "xsi", Constants.xmlns);
+                    attribute.Value = "http://www.w3.org/2001/XMLSchema-instance";
+                    extensionsNode.Attributes.Append(attribute);
+
+                    // xsi:schemaLocation namespace attribute
+                    attribute = document.CreateAttribute("xsi", "schemaLocation", Constants.xsins);
+                    attribute.Value = "http://www.garmin.com/xmlschemas/WorkoutExtension/v1 http://www.garmin.com/xmlschemas/WorkoutExtensionv1.xsd";
+                    extensionsNode.Attributes.Append(attribute);*/
 
                     for (int i = 0; i < StepsExtensions.Count; ++i)
                     {
