@@ -361,7 +361,7 @@ namespace GarminFitnessPlugin.Controller
             }
         }
 
-        private void OnWriteToDeviceCompleted(IGarminDevice device, DeviceOperations operation, Boolean succeeded)
+        private void OnWriteToDeviceCompleted(IGarminDevice device, DeviceOperations operation, Boolean succeeded, String failureMessage)
         {
             String errorText = String.Empty;
 
@@ -374,6 +374,11 @@ namespace GarminFitnessPlugin.Controller
                 if (!succeeded)
                 {
                     errorText = GarminFitnessView.GetLocalizedString("ExportWorkoutsErrorText");
+
+                    if (!String.IsNullOrEmpty(failureMessage))
+                    {
+                        errorText += "\n\n" + failureMessage;
+                    }
                 }
             }
             else if (CurrentTask.Type == BasicTask.TaskTypes.ExportProfile)
@@ -385,13 +390,18 @@ namespace GarminFitnessPlugin.Controller
                 if (!succeeded)
                 {
                     errorText = GarminFitnessView.GetLocalizedString("ExportProfileErrorText");
+
+                    if (!String.IsNullOrEmpty(failureMessage))
+                    {
+                        errorText += "\n\n" + failureMessage;
+                    }
                 }
             }
 
             CompleteCurrentTask(succeeded, errorText);
         }
 
-        private void OnReadFromDeviceCompleted(IGarminDevice device, DeviceOperations operation, Boolean succeeded)
+        private void OnReadFromDeviceCompleted(IGarminDevice device, DeviceOperations operation, Boolean succeeded, String failureMessage)
         {
             String errorText = String.Empty;
 
@@ -406,6 +416,11 @@ namespace GarminFitnessPlugin.Controller
                 if (!succeeded)
                 {
                     errorText = GarminFitnessView.GetLocalizedString("ImportWorkoutsErrorText");
+
+                    if(!String.IsNullOrEmpty(failureMessage))
+                    {
+                        errorText += "\n\n" + failureMessage;
+                    }
                 }
             }
             else if (CurrentTask.Type == BasicTask.TaskTypes.ImportProfile)
@@ -418,6 +433,11 @@ namespace GarminFitnessPlugin.Controller
                 if (!succeeded)
                 {
                     errorText = GarminFitnessView.GetLocalizedString("ImportProfileErrorText");
+
+                    if (!String.IsNullOrEmpty(failureMessage))
+                    {
+                        errorText += "\n\n" + failureMessage;
+                    }
                 }
             }
 
