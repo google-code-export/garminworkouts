@@ -101,6 +101,8 @@ namespace GarminFitnessPlugin.Controller
 
         void OnBridgeExceptionTriggered(object sender, GarminFitnessCommunicatorBridge.ExceptionEventArgs e)
         {
+            m_CancellationError = e.ExceptionText;
+
             switch(m_CurrentOperation)
             {
                 case DeviceOperations.ReadProfile:
@@ -277,7 +279,7 @@ namespace GarminFitnessPlugin.Controller
 
                 if (ReadFromDeviceCompleted != null)
                 {
-                    ReadFromDeviceCompleted(this, lastOperation, success);
+                    ReadFromDeviceCompleted(this, lastOperation, success, m_CancellationError);
                 }
             }
         }
@@ -312,7 +314,7 @@ namespace GarminFitnessPlugin.Controller
 
             if (WriteToDeviceCompleted != null)
             {
-                WriteToDeviceCompleted(this, lastOperation, success);
+                WriteToDeviceCompleted(this, lastOperation, success, m_CancellationError);
             }
         }
 
@@ -378,7 +380,7 @@ namespace GarminFitnessPlugin.Controller
 
                 if (ReadFromDeviceCompleted != null)
                 {
-                    ReadFromDeviceCompleted(this, lastOperation, e.Success);
+                    ReadFromDeviceCompleted(this, lastOperation, e.Success, m_CancellationError);
                 }
             }
         }
@@ -488,6 +490,7 @@ namespace GarminFitnessPlugin.Controller
             }
 
             m_Controller.CommunicatorBridge.SetDeviceNumber(m_DeviceNumber);
+            m_CancellationError = "";
 
             if (!exportToFIT && !SupportsFITWorkouts)
             {
@@ -577,6 +580,7 @@ namespace GarminFitnessPlugin.Controller
 
             Debug.Assert(m_CurrentOperation == DeviceOperations.Idle);
 
+            m_CancellationError = "";
             m_Controller.CommunicatorBridge.SetDeviceNumber(m_DeviceNumber);
 
             if (SupportsFITWorkouts ||
@@ -611,6 +615,7 @@ namespace GarminFitnessPlugin.Controller
 
             Debug.Assert(m_CurrentOperation == DeviceOperations.Idle);
 
+            m_CancellationError = "";
             m_Controller.CommunicatorBridge.SetDeviceNumber(m_DeviceNumber);
 
             if (SupportsFITProfile)
@@ -688,6 +693,10 @@ namespace GarminFitnessPlugin.Controller
 
             Debug.Assert(m_CurrentOperation == DeviceOperations.Idle);
 
+            m_CancellationError = "";
+            m_Controller.CommunicatorBridge.ReadDirectoryCompleted += new EventHandler<GarminFitnessCommunicatorBridge.TranferCompletedEventArgs>(OnBridgeReadDirectoryCompleted);
+            m_Controller.CommunicatorBridge.SetDeviceNumber(m_DeviceNumber);
+
             if (SupportsFITProfile)
             {
                 Logger.Instance.LogText("Comm. : Reading FIT directory for profile");
@@ -695,18 +704,12 @@ namespace GarminFitnessPlugin.Controller
                 m_MassStorageFileReadCount = 0;
                 ClearTempDirectory();
 
-                m_Controller.CommunicatorBridge.ReadDirectoryCompleted += new EventHandler<GarminFitnessCommunicatorBridge.TranferCompletedEventArgs>(OnBridgeReadDirectoryCompleted);
-
                 m_CurrentOperation = DeviceOperations.ReadFITProfile;
-                m_Controller.CommunicatorBridge.SetDeviceNumber(m_DeviceNumber);
                 m_Controller.CommunicatorBridge.GetFITDirectoryInfo();
             }
             else
             {
-                m_Controller.CommunicatorBridge.ReadFromDeviceCompleted += new EventHandler<GarminFitnessCommunicatorBridge.TranferCompletedEventArgs>(OnBridgeReadFromDeviceCompleted);
-
                 m_CurrentOperation = DeviceOperations.ReadProfile;
-                m_Controller.CommunicatorBridge.SetDeviceNumber(m_DeviceNumber);
                 m_Controller.CommunicatorBridge.ReadProfileFromFitnessDevice();
             }
         }
@@ -852,7 +855,7 @@ namespace GarminFitnessPlugin.Controller
 
             if (ReadFromDeviceCompleted != null)
             {
-                ReadFromDeviceCompleted(this, lastOperation, success);
+                ReadFromDeviceCompleted(this, lastOperation, success, m_CancellationError);
             }
         }
 
@@ -889,6 +892,7 @@ namespace GarminFitnessPlugin.Controller
         private string m_FITSettingsFileReadPath = String.Empty;
         private string m_FITSportFileWritePath = String.Empty;
         private string m_FITSportFileReadPath = String.Empty;
+        private string m_CancellationError = "";
         private int m_MassStorageFileReadCount = 0;
         private bool m_SupportsReadWorkout = false;
         private bool m_SupportsWriteWorkout = false;
@@ -897,5 +901,5 @@ namespace GarminFitnessPlugin.Controller
         private bool m_SupportsFITWorkouts = false;
         private bool m_SupportsFITSettings = false;
         private bool m_SupportsFITSports = false;
-}
+    }
 }

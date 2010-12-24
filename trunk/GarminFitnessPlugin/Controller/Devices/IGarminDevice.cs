@@ -17,7 +17,7 @@ namespace GarminFitnessPlugin.Controller
     }
 
     delegate void DeviceOperationWillCompleteEventHandler(IGarminDevice device, DeviceOperations operation);
-    delegate void DeviceOperationCompletedEventHandler(IGarminDevice device, DeviceOperations operation, Boolean succeeded);
+    delegate void DeviceOperationCompletedEventHandler(IGarminDevice device, DeviceOperations operation, Boolean succeeded, String failureMessage);
     delegate void DeviceOperationProgressedEventHandler(IGarminDevice device, DeviceOperations operation, int progress);
 
     interface IGarminDevice
