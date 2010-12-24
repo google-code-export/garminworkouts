@@ -377,7 +377,7 @@ namespace GarminFitnessPlugin.Controller
 
                     if (!String.IsNullOrEmpty(failureMessage))
                     {
-                        errorText += "\n\n" + failureMessage;
+                        errorText += "\n\nReason :\n" + failureMessage;
                     }
                 }
             }
@@ -393,7 +393,7 @@ namespace GarminFitnessPlugin.Controller
 
                     if (!String.IsNullOrEmpty(failureMessage))
                     {
-                        errorText += "\n\n" + failureMessage;
+                        errorText += "\n\nReason :\n" + failureMessage;
                     }
                 }
             }
@@ -419,7 +419,7 @@ namespace GarminFitnessPlugin.Controller
 
                     if(!String.IsNullOrEmpty(failureMessage))
                     {
-                        errorText += "\n\n" + failureMessage;
+                        errorText += "\n\nReason :\n" + failureMessage;
                     }
                 }
             }
@@ -436,7 +436,7 @@ namespace GarminFitnessPlugin.Controller
 
                     if (!String.IsNullOrEmpty(failureMessage))
                     {
-                        errorText += "\n\n" + failureMessage;
+                        errorText += "\n\nReason :\n" + failureMessage;
                     }
                 }
             }

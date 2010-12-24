@@ -66,7 +66,7 @@ namespace GarminFitnessPlugin.Data
                 {
                     XmlNode extensionsNode = document.CreateElement("Steps");
                     attribute = document.CreateAttribute("xmlns");
-                    attribute.Value = "http://www.garmin.com/xmlschemas/WorkoutExtension/v1";
+                    attribute.Value = "http://www.garmin.com/xmlschemas/WorkoutExtension/v1 http://www.garmin.com/xmlschemas/WorkoutExtensionv1.xsd";
                     extensionsNode.Attributes.Append(attribute);
 
                     for (int i = 0; i < StepsExtensions.Count; ++i)
