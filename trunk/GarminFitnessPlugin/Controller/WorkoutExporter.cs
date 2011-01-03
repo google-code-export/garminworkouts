@@ -17,12 +17,7 @@ namespace GarminFitnessPlugin.Controller
 
             workouts.Add(workout);
 
-            ExportWorkouts(workouts, exportStream, false);
-        }
-
-        public static void ExportWorkouts(List<IWorkout> workouts, Stream exportStream)
-        {
-            ExportWorkouts(workouts, exportStream, false);
+            ExportWorkouts(workouts, exportStream);
         }
 
         public static void ExportWorkoutToFIT(IWorkout workout, Stream exportStream)
@@ -31,15 +26,10 @@ namespace GarminFitnessPlugin.Controller
 
             workouts.Add(workout);
 
-            ExportWorkoutsToFIT(workouts, exportStream, false);
+            ExportWorkoutsToFIT(workouts, exportStream);
         }
 
-        public static void ExportWorkoutsToFIT(List<IWorkout> workouts, Stream exportStream)
-        {
-            ExportWorkoutsToFIT(workouts, exportStream, false);
-        }
-
-        private static void ExportWorkouts(List<IWorkout> workouts, Stream exportStream, bool skipExtensions)
+        public static void ExportWorkouts(List<IWorkout> workouts, Stream exportStream)
         {
             Debug.Assert(exportStream.CanWrite && exportStream.Length == 0);
             XmlDocument document = new XmlDocument();
@@ -94,7 +84,7 @@ namespace GarminFitnessPlugin.Controller
             document.Save(new StreamWriter(exportStream));
         }
 
-        private static void ExportWorkoutsToFIT(List<IWorkout> workouts, Stream exportStream, bool skipExtensions)
+        private static void ExportWorkoutsToFIT(List<IWorkout> workouts, Stream exportStream)
         {
             MemoryStream dataStream = new MemoryStream();
 
