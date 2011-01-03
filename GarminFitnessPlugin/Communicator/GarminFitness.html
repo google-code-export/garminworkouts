@@ -128,7 +128,9 @@
                   window.external.OnFinishFindDevices(DevicesString(json.controller.getDevices()));
               },
               onProgressReadFromDevice: function (json) {
-                  window.external.OnProgressReadFromDevice(json.progress.getPercentage());
+                  if (json.progress.getPercentage() != null) {
+                      window.external.OnProgressReadFromDevice(json.progress.getPercentage());
+                  }
               },
               onFinishReadFromDevice: function (json) {
                   window.external.OnFinishReadFromDevice(json.success, json.controller.gpsDataString);
@@ -147,7 +149,9 @@
                   window.external.OnFinishReadFromDevice(false, "");
               },
               onProgressWriteToDevice: function (json) {
-                  window.external.OnProgressWriteToDevice(json.progress.getPercentage());
+                  if (json.progress.getPercentage() != null) {
+                      window.external.OnProgressWriteToDevice(json.progress.getPercentage());
+                  }
               },
               onFinishWriteToDevice: function (json) {
                   window.external.OnFinishWriteToDevice(json.success, json.controller.gpsDataString);

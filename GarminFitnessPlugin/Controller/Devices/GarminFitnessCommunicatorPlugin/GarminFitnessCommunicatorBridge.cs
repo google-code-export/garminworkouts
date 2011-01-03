@@ -66,9 +66,9 @@ namespace GarminFitnessPlugin.Controller
             private string m_DevicesString = String.Empty;
         }
 
-        public class TranferCompletedEventArgs : EventArgs
+        public class TransferCompletedEventArgs : EventArgs
         {
-            public TranferCompletedEventArgs(bool success, string dataString)
+            public TransferCompletedEventArgs(bool success, string dataString)
             {
                 m_Success = success;
                 m_DataString = dataString;
@@ -86,6 +86,21 @@ namespace GarminFitnessPlugin.Controller
 
             private bool m_Success = false;
             private string m_DataString = String.Empty;
+        }
+
+        public class TransferProgressedEventArgs : EventArgs
+        {
+            public TransferProgressedEventArgs(int progress)
+            {
+                m_Progress = progress;
+            }
+
+            public int Progress
+            {
+                get { return m_Progress; }
+            }
+
+            private int m_Progress = 0;
         }
 
         [PermissionSet(SecurityAction.Demand, Name = "FullTrust")]
@@ -223,13 +238,17 @@ namespace GarminFitnessPlugin.Controller
 
         public void OnProgressReadFromDevice(string percentage)
         {
+            if(ProgressChanged != null)
+            {
+                ProgressChanged(this, new TransferProgressedEventArgs(int.Parse(percentage)));
+            }
         }
 
         public void OnFinishReadFromDevice(bool success, string dataString)
         {
             if (ReadFromDeviceCompleted != null)
             {
-                ReadFromDeviceCompleted(this, new TranferCompletedEventArgs(success, dataString));
+                ReadFromDeviceCompleted(this, new TransferCompletedEventArgs(success, dataString));
             }
         }
 
@@ -237,19 +256,23 @@ namespace GarminFitnessPlugin.Controller
         {
             if (ReadDirectoryCompleted != null)
             {
-                ReadDirectoryCompleted(this, new TranferCompletedEventArgs(success, directoryString));
+                ReadDirectoryCompleted(this, new TransferCompletedEventArgs(success, directoryString));
             }
         }
 
         public void OnProgressWriteToDevice(string percentage)
         {
+            if (ProgressChanged != null)
+            {
+                ProgressChanged(this, new TransferProgressedEventArgs(int.Parse(percentage)));
+            }
         }
 
         public void OnFinishWriteToDevice(bool success, string dataString)
         {
             if(WriteToDeviceCompleted != null)
             {
-                WriteToDeviceCompleted(this, new TranferCompletedEventArgs(success, dataString));
+                WriteToDeviceCompleted(this, new TransferCompletedEventArgs(success, dataString));
             }
         }
 
@@ -378,9 +401,10 @@ namespace GarminFitnessPlugin.Controller
         public event EventHandler<ExceptionEventArgs> ExceptionTriggered;
         public event EventHandler<InitializeCompletedEventArgs> InitializeCompleted;
         public event EventHandler<FinishFindDevicesEventArgs> FinishFindDevices;
-        public event EventHandler<TranferCompletedEventArgs> WriteToDeviceCompleted;
-        public event EventHandler<TranferCompletedEventArgs> ReadFromDeviceCompleted;
-        public event EventHandler<TranferCompletedEventArgs> ReadDirectoryCompleted;
+        public event EventHandler<TransferCompletedEventArgs> WriteToDeviceCompleted;
+        public event EventHandler<TransferCompletedEventArgs> ReadFromDeviceCompleted;
+        public event EventHandler<TransferCompletedEventArgs> ReadDirectoryCompleted;
+        public event EventHandler<TransferProgressedEventArgs> ProgressChanged;
 
         private WebBrowser m_HiddenWebBrowser = new WebBrowser();
         private static String m_LocalWebPageLocation;
