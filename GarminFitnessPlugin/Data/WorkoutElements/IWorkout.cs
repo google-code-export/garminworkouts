@@ -97,7 +97,7 @@ namespace GarminFitnessPlugin.Data
                 {
                     XmlNode extensionsNode = document.CreateElement("SportTracksExtensions");
                     attribute = document.CreateAttribute("xmlns");
-                    attribute.Value = "http://www.zonefivesoftware.com/SportTracks/Plugins/plugin_detail.php?id=97";
+                    attribute.Value = "http://www.zonefivesoftware.com/sporttracks/plugins/?p=garmin-fitness";
                     extensionsNode.Attributes.Append(attribute);
 
                     // Category
