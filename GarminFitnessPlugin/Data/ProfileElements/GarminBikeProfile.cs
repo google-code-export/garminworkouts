@@ -51,7 +51,9 @@ namespace GarminFitnessPlugin.Data
 
             m_Name.Deserialize(stream, version);
 
-            m_OdometerInMeters.Deserialize(stream, version);
+            GarminFitnessDoubleRange odometerInMeters = new GarminFitnessDoubleRange(0);
+            odometerInMeters.Deserialize(stream, version);
+            m_OdometerInMeters.Value = Utils.Clamp(odometerInMeters, Constants.MinOdometer, Constants.MaxOdometerMeters);
 
             m_WeightInPounds.Deserialize(stream, version);
 
@@ -124,7 +126,7 @@ namespace GarminFitnessPlugin.Data
                     GarminFitnessDoubleRange odometer = new GarminFitnessDoubleRange(0);
                     odometer.Deserialize(currentChild);
 
-                    m_OdometerInMeters.Value = Math.Min(odometer, Constants.MaxOdometerMeters);
+                    m_OdometerInMeters.Value = Utils.Clamp(odometer, Constants.MinOdometer, Constants.MaxOdometerMeters);
                     odometerRead = true;
                 }
                 else if (currentChild.Name == Constants.WeightTCXString)
