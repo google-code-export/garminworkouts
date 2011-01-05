@@ -59,6 +59,7 @@ namespace GarminFitnessPlugin.Controller
             FITMessageField productId = new FITMessageField((Byte)FITFileIdFieldsIds.ProductId);
             FITMessageField serialNumber = new FITMessageField((Byte)FITFileIdFieldsIds.SerialNumber);
             FITMessageField exportDate = new FITMessageField((Byte)FITFileIdFieldsIds.ExportDate);
+            FITMessageField number = new FITMessageField((Byte)FITFileIdFieldsIds.Number);
 
             fileType.SetEnum((Byte)FITFileTypes.Settings);
             fileIdMessage.AddField(fileType);
@@ -68,8 +69,10 @@ namespace GarminFitnessPlugin.Controller
             fileIdMessage.AddField(productId);
             serialNumber.SetUInt32z(0);
             fileIdMessage.AddField(serialNumber);
-            exportDate.SetUInt32((UInt32)(DateTime.Now - new DateTime(1989, 12, 31)).TotalSeconds);
+            exportDate.SetUInt32((UInt32)(DateTime.UtcNow - new DateTime(1989, 12, 31)).TotalSeconds);
             fileIdMessage.AddField(exportDate);
+            number.SetUInt16(0);
+            fileIdMessage.AddField(number);
 
             fileIdMessage.Serialize(dataStream);
 
@@ -113,6 +116,7 @@ namespace GarminFitnessPlugin.Controller
             FITMessageField productId = new FITMessageField((Byte)FITFileIdFieldsIds.ProductId);
             FITMessageField serialNumber = new FITMessageField((Byte)FITFileIdFieldsIds.SerialNumber);
             FITMessageField exportDate = new FITMessageField((Byte)FITFileIdFieldsIds.ExportDate);
+            FITMessageField number = new FITMessageField((Byte)FITFileIdFieldsIds.Number);
 
             fileType.SetEnum((Byte)FITFileTypes.Sport);
             fileIdMessage.AddField(fileType);
@@ -124,6 +128,8 @@ namespace GarminFitnessPlugin.Controller
             fileIdMessage.AddField(serialNumber);
             exportDate.SetUInt32((UInt32)(DateTime.Now - new DateTime(1989, 12, 31)).TotalSeconds);
             fileIdMessage.AddField(exportDate);
+            number.SetUInt16(1);
+            fileIdMessage.AddField(number);
 
             fileIdMessage.Serialize(dataStream);
 

@@ -158,7 +158,9 @@ namespace GarminFitnessPlugin.View
             {
                 try
                 {
-                    foreach (Workout currentWorkout in GarminWorkoutManager.Instance.Workouts)
+                    UInt16 fileIdNumber = 0;
+
+                    foreach (Workout currentWorkout in workoutsToExport)
                     {
                         string fileName = Utils.GetWorkoutFilename(currentWorkout, dlg.SelectedFormat);
 
@@ -167,7 +169,7 @@ namespace GarminFitnessPlugin.View
                         {
                             if (dlg.SelectedFormat == GarminWorkoutManager.FileFormats.FIT)
                             {
-                                WorkoutExporter.ExportWorkoutToFIT(currentWorkout, file);
+                                WorkoutExporter.ExportWorkoutToFIT(currentWorkout, file, fileIdNumber);
                             }
                             else
                             {
@@ -180,6 +182,8 @@ namespace GarminFitnessPlugin.View
                             // Error creating file, throw error to display message below
                             throw new Exception();
                         }
+
+                        ++fileIdNumber;
                     }
 
                     MessageBox.Show(String.Format(GarminFitnessView.GetLocalizedString("ExportWorkoutsSuccessText"), dlg.SelectedPath),
