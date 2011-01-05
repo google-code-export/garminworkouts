@@ -532,16 +532,20 @@ namespace GarminFitnessPlugin.Controller
                     // FIT export
                     if (SupportsFITWorkouts)
                     {
+                        UInt16 fileIdNumber = 0;
+
                         foreach (IWorkout currentWorkout in concreteWorkouts)
                         {
                             string fileName = Utils.GetWorkoutFilename(currentWorkout, GarminWorkoutManager.FileFormats.FIT);
                             FileStream fileStream = File.Create(m_TempDirectoryLocation + fileName);
 
-                            WorkoutExporter.ExportWorkoutToFIT(currentWorkout, fileStream);
+                            WorkoutExporter.ExportWorkoutToFIT(currentWorkout, fileStream, fileIdNumber);
                             fileStream.Close();
                             filenames.Add(fileName);
 
                             Logger.Instance.LogText(String.Format("Export workout : {0}", fileName));
+
+                            ++fileIdNumber;
                         }
 
                         exportPath = m_FITWorkoutFileWritePath;

@@ -82,6 +82,7 @@ namespace GarminFitnessPlugin.Controller
         ProductId,
         SerialNumber,
         ExportDate,
+        Number,
     }
 
     public enum FITUserProfileFieldIds

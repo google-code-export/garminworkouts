@@ -20,15 +20,6 @@ namespace GarminFitnessPlugin.Controller
             ExportWorkouts(workouts, exportStream);
         }
 
-        public static void ExportWorkoutToFIT(IWorkout workout, Stream exportStream)
-        {
-            List<IWorkout> workouts = new List<IWorkout>();
-
-            workouts.Add(workout);
-
-            ExportWorkoutsToFIT(workouts, exportStream);
-        }
-
         public static void ExportWorkouts(List<IWorkout> workouts, Stream exportStream)
         {
             Debug.Assert(exportStream.CanWrite && exportStream.Length == 0);
@@ -84,7 +75,7 @@ namespace GarminFitnessPlugin.Controller
             document.Save(new StreamWriter(exportStream));
         }
 
-        private static void ExportWorkoutsToFIT(List<IWorkout> workouts, Stream exportStream)
+        public static void ExportWorkoutToFIT(IWorkout workout, Stream exportStream, UInt16 fileIdNumber)
         {
             MemoryStream dataStream = new MemoryStream();
 
@@ -98,6 +89,7 @@ namespace GarminFitnessPlugin.Controller
             FITMessageField productId = new FITMessageField((Byte)FITFileIdFieldsIds.ProductId);
             FITMessageField serialNumber = new FITMessageField((Byte)FITFileIdFieldsIds.SerialNumber);
             FITMessageField exportDate = new FITMessageField((Byte)FITFileIdFieldsIds.ExportDate);
+            FITMessageField number = new FITMessageField((Byte)FITFileIdFieldsIds.Number);
 
             fileType.SetEnum((Byte)FITFileTypes.Workout);
             fileIdMessage.AddField(fileType);
@@ -107,30 +99,17 @@ namespace GarminFitnessPlugin.Controller
             fileIdMessage.AddField(productId);
             serialNumber.SetUInt32z(0);
             fileIdMessage.AddField(serialNumber);
-            exportDate.SetUInt32((UInt32)(DateTime.Now - new DateTime(1989, 12, 31)).TotalSeconds);
+            exportDate.SetUInt32((UInt32)(DateTime.UtcNow - new DateTime(1989, 12, 31)).TotalSeconds);
             fileIdMessage.AddField(exportDate);
+            number.SetUInt16(fileIdNumber);
+            fileIdMessage.AddField(number);
 
             fileIdMessage.Serialize(dataStream);
 
-            // Write workouts
-            // Write workouts file id
-            foreach (IWorkout currentWorkout in workouts)
-            {
-                currentWorkout.LastExportDate = DateTime.Now;
-                if (currentWorkout.GetSplitPartsCount() > 1)
-                {
-                    List<WorkoutPart> parts = currentWorkout.SplitInSeperateParts();
-
-                    foreach (WorkoutPart part in parts)
-                    {
-                        part.SerializetoFIT(dataStream);
-                    }
-                }
-                else
-                {
-                    currentWorkout.SerializetoFIT(dataStream);
-                }
-            }
+            // Write workout
+            Debug.Assert(!(workout is WorkoutPart));
+            workout.LastExportDate = DateTime.Now;
+            workout.SerializetoFIT(dataStream);
 
             // Write FIT header at the start of the stream
             GarminFitnessByteRange headerSize = new GarminFitnessByteRange(12);
