@@ -92,8 +92,7 @@ namespace GarminFitnessPlugin.Controller
         public void ExportWorkouts(List<IWorkout> workouts)
         {
             String workoutsText = String.Empty;
-            List<IWorkout> regularWorkouts = new List<IWorkout>();
-            List<IWorkout> extensionWorkouts = new List<IWorkout>();
+            List<IWorkout> workoutsToExport = new List<IWorkout>();
 
             foreach(Workout current in workouts)
             {
@@ -101,14 +100,7 @@ namespace GarminFitnessPlugin.Controller
 
                 if (current.GetSplitPartsCount() == 1)
                 {
-                    if (!current.ContainsTCXExtensionFeatures)
-                    {
-                        regularWorkouts.Add(current);
-                    }
-                    else
-                    {
-                        extensionWorkouts.Add(current);
-                    }
+                    workoutsToExport.Add(current);
                 }
                 else
                 {
@@ -116,28 +108,16 @@ namespace GarminFitnessPlugin.Controller
 
                     foreach (WorkoutPart part in parts)
                     {
-                        if (!part.ContainsTCXExtensionFeatures)
-                        {
-                            regularWorkouts.Add(part);
-                        }
-                        else
-                        {
-                            extensionWorkouts.Add(part);
-                        }
+                        workoutsToExport.Add(part);
                     }
                 }
             }
 
             Logger.Instance.LogText(String.Format("Exporting workouts({0}){1}", workouts.Count, workoutsText));
 
-            if (regularWorkouts.Count > 0)
+            if (workoutsToExport.Count > 0)
             {
-                AddTask(new ExportWorkoutTask(regularWorkouts));
-            }
-
-            if (extensionWorkouts.Count > 0)
-            {
-                AddTask(new ExportWorkoutTask(extensionWorkouts));
+                AddTask(new ExportWorkoutTask(workoutsToExport));
             }
         }
 
