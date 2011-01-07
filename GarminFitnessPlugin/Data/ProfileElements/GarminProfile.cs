@@ -619,7 +619,7 @@ namespace GarminFitnessPlugin.Data
         private GarminFitnessString m_ProfileName = new GarminFitnessString("New User");
         private GarminFitnessByteRange m_RestingHeartRate = new GarminFitnessByteRange(60, Constants.MinHRInBPM, Constants.MaxHRInBPM);
         private GarminFitnessBool m_IsGenderMale = new GarminFitnessBool(true, Constants.GenderMaleTCXString, Constants.GenderFemaleTCXString);
-        private GarminFitnessDoubleRange m_WeightInKilos = new GarminFitnessDoubleRange(70, Constants.MinWeight, Constants.MaxWeight);
+        private GarminFitnessDoubleRange m_WeightInKilos = new GarminFitnessDoubleRange(70, Constants.MinWeight, Constants.MaxWeightInKg);
         private GarminFitnessDate m_BirthDate = new GarminFitnessDate(DateTime.Today);
         private GarminActivityProfile[] m_ActivityProfiles;
 

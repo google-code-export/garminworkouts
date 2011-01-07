@@ -71,7 +71,8 @@ namespace GarminFitnessPlugin
 
         // Profile limits
         public static readonly double MinWeight = 0;
-        public static readonly double MaxWeight = 65535;
+        public static readonly double MaxWeightInKg = 65535;
+        public static readonly double MaxWeightInLbs = Weight.Convert(MaxWeightInKg, Weight.Units.Kilogram, Weight.Units.Pound);
 
         public static readonly Byte GarminHRZoneCount = 5;
         public static readonly Byte GarminSpeedZoneCount = 10;

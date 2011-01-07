@@ -51,9 +51,7 @@ namespace GarminFitnessPlugin.Data
 
             m_Name.Deserialize(stream, version);
 
-            GarminFitnessDoubleRange odometerInMeters = new GarminFitnessDoubleRange(0);
-            odometerInMeters.Deserialize(stream, version);
-            m_OdometerInMeters.Value = Utils.Clamp(odometerInMeters, Constants.MinOdometer, Constants.MaxOdometerMeters);
+            m_OdometerInMeters.Deserialize(stream, version);
 
             m_WeightInPounds.Deserialize(stream, version);
 
@@ -123,10 +121,7 @@ namespace GarminFitnessPlugin.Data
                 }
                 else if (currentChild.Name == Constants.OdometerTCXString)
                 {
-                    GarminFitnessDoubleRange odometer = new GarminFitnessDoubleRange(0);
-                    odometer.Deserialize(currentChild);
-
-                    m_OdometerInMeters.Value = Utils.Clamp(odometer, Constants.MinOdometer, Constants.MaxOdometerMeters);
+                    m_OdometerInMeters.Deserialize(currentChild);
                     odometerRead = true;
                 }
                 else if (currentChild.Name == Constants.WeightTCXString)
@@ -287,7 +282,7 @@ namespace GarminFitnessPlugin.Data
         private GarminFitnessBool m_AutoWheelSize = new GarminFitnessBool(true, true.ToString().ToLower(), false.ToString().ToLower());
         private GarminFitnessString m_Name = new GarminFitnessString("Bike", Constants.MaxNameLength);
         private GarminFitnessDoubleRange m_OdometerInMeters = new GarminFitnessDoubleRange(0, Constants.MinOdometer, Constants.MaxOdometerMeters);
-        private GarminFitnessDoubleRange m_WeightInPounds = new GarminFitnessDoubleRange(0, Constants.MinWeight, Constants.MaxWeight);
+        private GarminFitnessDoubleRange m_WeightInPounds = new GarminFitnessDoubleRange(0, Constants.MinWeight, Constants.MaxWeightInLbs);
         private GarminFitnessUInt16Range m_WheelSize = new GarminFitnessUInt16Range(2100, Constants.MinWheelSize, Constants.MaxWheelSize);
     }
 }

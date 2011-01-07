@@ -78,9 +78,12 @@ namespace GarminFitnessPlugin.View
 
         private void CadenceZoneComboBox_SelectionChangedCommited(object sender, System.EventArgs e)
         {
-            Debug.Assert(PluginMain.GetApplication().Logbook.CadenceZones.Count > CadenceZoneComboBox.SelectedIndex);
+            if (PluginMain.GetApplication().Logbook != null)
+            {
+                Debug.Assert(PluginMain.GetApplication().Logbook.CadenceZones.Count > CadenceZoneComboBox.SelectedIndex);
 
-            Options.Instance.CadenceZoneCategory = PluginMain.GetApplication().Logbook.CadenceZones[CadenceZoneComboBox.SelectedIndex];
+                Options.Instance.CadenceZoneCategory = PluginMain.GetApplication().Logbook.CadenceZones[CadenceZoneComboBox.SelectedIndex];
+            }
         }
 
         private void PowerGarminRadioButton_CheckedChanged(object sender, System.EventArgs e)
@@ -105,9 +108,12 @@ namespace GarminFitnessPlugin.View
 
         private void PowerZoneComboBox_SelectionChangedCommited(object sender, System.EventArgs e)
         {
-            Debug.Assert(PluginMain.GetApplication().Logbook.PowerZones.Count > PowerZoneComboBox.SelectedIndex);
+            if (PluginMain.GetApplication().Logbook != null)
+            {
+                Debug.Assert(PluginMain.GetApplication().Logbook.PowerZones.Count > PowerZoneComboBox.SelectedIndex);
 
-            Options.Instance.PowerZoneCategory = PluginMain.GetApplication().Logbook.PowerZones[PowerZoneComboBox.SelectedIndex];
+                Options.Instance.PowerZoneCategory = PluginMain.GetApplication().Logbook.PowerZones[PowerZoneComboBox.SelectedIndex];
+            }
         }
 
         private void ParentCategoryRadioButton_CheckedChanged(object sender, System.EventArgs e)
@@ -366,16 +372,18 @@ namespace GarminFitnessPlugin.View
 
         private void UpdateCategoriesTreeList()
         {
-            IApplication app = PluginMain.GetApplication();
             List<TreeList.TreeListNode> categories = new List<TreeList.TreeListNode>();
 
-            for (int i = 0; i < app.Logbook.ActivityCategories.Count; ++i)
+            if (PluginMain.GetApplication().Logbook != null)
             {
-                IActivityCategory currentCategory = app.Logbook.ActivityCategories[i];
-                STToGarminActivityCategoryWrapper newNode = new STToGarminActivityCategoryWrapper(null, currentCategory);
+                for (int i = 0; i < PluginMain.GetApplication().Logbook.ActivityCategories.Count; ++i)
+                {
+                    IActivityCategory currentCategory = PluginMain.GetApplication().Logbook.ActivityCategories[i];
+                    STToGarminActivityCategoryWrapper newNode = new STToGarminActivityCategoryWrapper(null, currentCategory);
 
-                categories.Add(newNode);
-                AddCategoryNode(newNode, null);
+                    categories.Add(newNode);
+                    AddCategoryNode(newNode, null);
+                }
             }
 
             ActivityCategoryList.RowData = categories;
@@ -388,24 +396,33 @@ namespace GarminFitnessPlugin.View
         private void UpdateComboBoxes()
         {
             CadenceZoneComboBox.Items.Clear();
-            for (int i = 0; i < PluginMain.GetApplication().Logbook.CadenceZones.Count; ++i)
-            {
-                IZoneCategory currentZone = PluginMain.GetApplication().Logbook.CadenceZones[i];
 
-                CadenceZoneComboBox.Items.Add(currentZone.Name);
+            if (PluginMain.GetApplication().Logbook != null)
+            {
+                for (int i = 0; i < PluginMain.GetApplication().Logbook.CadenceZones.Count; ++i)
+                {
+                    IZoneCategory currentZone = PluginMain.GetApplication().Logbook.CadenceZones[i];
+
+                    CadenceZoneComboBox.Items.Add(currentZone.Name);
+                }
             }
 
             PowerZoneComboBox.Items.Clear();
-            for (int i = 0; i < PluginMain.GetApplication().Logbook.PowerZones.Count; ++i)
+            if (PluginMain.GetApplication().Logbook != null)
             {
-                IZoneCategory currentZone = PluginMain.GetApplication().Logbook.PowerZones[i];
+                for (int i = 0; i < PluginMain.GetApplication().Logbook.PowerZones.Count; ++i)
+                {
+                    IZoneCategory currentZone = PluginMain.GetApplication().Logbook.PowerZones[i];
 
-                PowerZoneComboBox.Items.Add(currentZone.Name);
+                    PowerZoneComboBox.Items.Add(currentZone.Name);
+                }
             }
         }
 
         private void UpdateOptionsUI()
         {
+            this.Enabled = PluginMain.GetApplication().Logbook != null;
+
             UpdateCategoriesTreeList();
             UpdateComboBoxes();
 
@@ -421,14 +438,21 @@ namespace GarminFitnessPlugin.View
             SpeedSportTracksRadioButton.Checked = Options.Instance.UseSportTracksSpeedZones;
 
             // Cadence
-            int cadenceSelectedIndex = Utils.FindIndexForZoneCategory(PluginMain.GetApplication().Logbook.CadenceZones, Options.Instance.CadenceZoneCategory);
-            CadenceZoneComboBox.SelectedIndex = cadenceSelectedIndex;
+            if (PluginMain.GetApplication().Logbook != null)
+            {
+                int cadenceSelectedIndex = Utils.FindIndexForZoneCategory(PluginMain.GetApplication().Logbook.CadenceZones, Options.Instance.CadenceZoneCategory);
+                CadenceZoneComboBox.SelectedIndex = cadenceSelectedIndex;
+            }
 
             // Power
-            int powerSelectedIndex = Utils.FindIndexForZoneCategory(PluginMain.GetApplication().Logbook.PowerZones, Options.Instance.PowerZoneCategory);
+            if (PluginMain.GetApplication().Logbook != null)
+            {
+                int powerSelectedIndex = Utils.FindIndexForZoneCategory(PluginMain.GetApplication().Logbook.PowerZones, Options.Instance.PowerZoneCategory);
+                PowerZoneComboBox.SelectedIndex = powerSelectedIndex;
+            }
+
             PowerGarminRadioButton.Checked = !Options.Instance.UseSportTracksPowerZones;
             PowerSportTracksRadioButton.Checked = Options.Instance.UseSportTracksPowerZones;
-            PowerZoneComboBox.SelectedIndex = powerSelectedIndex;
             ExportPowerAsPanel.Enabled = Options.Instance.UseSportTracksPowerZones;
             PercentFTPRadioButton.Checked = Options.Instance.ExportSportTracksPowerAsPercentFTP;
             WattsRadioButton.Checked = !Options.Instance.ExportSportTracksPowerAsPercentFTP;

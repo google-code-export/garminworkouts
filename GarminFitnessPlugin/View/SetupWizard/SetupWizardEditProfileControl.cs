@@ -123,10 +123,23 @@ namespace GarminFitnessPlugin.View
 
         private void WeightTextBox_Validating(object sender, System.ComponentModel.CancelEventArgs e)
         {
-            e.Cancel = !Utils.IsTextFloatInRange(WeightTextBox.Text, Constants.MinWeight, Constants.MaxWeight);
+            double enteredValue = 0;
+
+            e.Cancel = !double.TryParse(WeightTextBox.Text, out enteredValue);
+
+            if (!e.Cancel)
+            {
+                GarminFitnessDoubleRange valueInKilos = new GarminFitnessDoubleRange(0, Constants.MinWeight, Constants.MaxWeightInKg);
+
+                e.Cancel = !valueInKilos.IsInRange(Weight.Convert(enteredValue, PluginMain.GetApplication().SystemPreferences.WeightUnits, Weight.Units.Kilogram));
+            }
+
             if (e.Cancel)
             {
-                MessageBox.Show(String.Format(GarminFitnessView.GetLocalizedString("DoubleRangeValidationText"), Constants.MinWeight, Constants.MaxWeight),
+                double minValue = Weight.Convert(Constants.MinWeight, Weight.Units.Kilogram, PluginMain.GetApplication().SystemPreferences.WeightUnits);
+                double maxValue = Weight.Convert(Constants.MaxWeightInKg, Weight.Units.Kilogram, PluginMain.GetApplication().SystemPreferences.WeightUnits);
+
+                MessageBox.Show(String.Format(GarminFitnessView.GetLocalizedString("DoubleRangeValidationText"), minValue, maxValue),
                                 GarminFitnessView.GetLocalizedString("ValueValidationTitleText"), MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 System.Media.SystemSounds.Asterisk.Play();
 
@@ -185,10 +198,23 @@ namespace GarminFitnessPlugin.View
 
         private void GearWeightTextBox_Validating(object sender, System.ComponentModel.CancelEventArgs e)
         {
-            e.Cancel = !Utils.IsTextFloatInRange(GearWeightTextBox.Text, Constants.MinWeight, Constants.MaxWeight);
+            double enteredValue = 0;
+
+            e.Cancel = !double.TryParse(GearWeightTextBox.Text, out enteredValue);
+
+            if (!e.Cancel)
+            {
+                GarminFitnessDoubleRange valueInKilos = new GarminFitnessDoubleRange(0, Constants.MinWeight, Constants.MaxWeightInKg);
+
+                e.Cancel = !valueInKilos.IsInRange(Weight.Convert(enteredValue, PluginMain.GetApplication().SystemPreferences.WeightUnits, Weight.Units.Kilogram));
+            }
+
             if (e.Cancel)
             {
-                MessageBox.Show(String.Format(GarminFitnessView.GetLocalizedString("DoubleRangeValidationText"), Constants.MinWeight, Constants.MaxWeight),
+                double minValue = Weight.Convert(Constants.MinWeight, Weight.Units.Kilogram, PluginMain.GetApplication().SystemPreferences.WeightUnits);
+                double maxValue = Weight.Convert(Constants.MaxWeightInKg, Weight.Units.Kilogram, PluginMain.GetApplication().SystemPreferences.WeightUnits);
+
+                MessageBox.Show(String.Format(GarminFitnessView.GetLocalizedString("DoubleRangeValidationText"), minValue, maxValue),
                                 GarminFitnessView.GetLocalizedString("ValueValidationTitleText"), MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 System.Media.SystemSounds.Asterisk.Play();
 
