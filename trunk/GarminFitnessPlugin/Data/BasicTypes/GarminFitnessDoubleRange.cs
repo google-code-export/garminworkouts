@@ -83,9 +83,7 @@ namespace GarminFitnessPlugin.Data
         {
             set
             {
-                Debug.Assert(IsInRange(value));
-
-                m_Value = value;
+                m_Value = Utils.Clamp(value, m_MinimumValue, m_MaximumValue);
             }
         }
 
