@@ -624,7 +624,7 @@ namespace GarminFitnessPlugin.Controller
 
         public void WriteProfile(GarminFitnessPlugin.Data.GarminProfile profile)
         {
-            Logger.Instance.LogText("Comm. : Writing workouts");
+            Logger.Instance.LogText("Comm. : Writing profile");
 
             Debug.Assert(m_CurrentOperation == DeviceOperations.Idle);
 
@@ -652,6 +652,7 @@ namespace GarminFitnessPlugin.Controller
 
                         Logger.Instance.LogText(String.Format("Comm. : FIT user profile {0}", fileName));
 
+                        settingsFile.Close();
                         filenames.Add(fileName);
                     }
 
@@ -669,6 +670,8 @@ namespace GarminFitnessPlugin.Controller
                             ProfileExporter.ExportProfileToFITSport(GarminProfileManager.Instance.UserProfile,
                                                                     sportCategory,
                                                                     sportFile);
+
+                            sportFile.Close();
                             filenames.Add(fileName);
                         }
                     }
