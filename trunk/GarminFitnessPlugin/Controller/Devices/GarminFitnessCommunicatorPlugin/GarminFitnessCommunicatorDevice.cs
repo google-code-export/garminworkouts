@@ -657,9 +657,9 @@ namespace GarminFitnessPlugin.Controller
                     }
 
                     // Sport profiles
-//                    for (int i = 0; i < (int)GarminCategories.GarminCategoriesCount; ++i)
+                    for (int i = 0; i < (int)GarminCategories.GarminCategoriesCount; ++i)
                     {
-                        GarminCategories sportCategory = GarminCategories.Biking;//(GarminCategories)i;
+                        GarminCategories sportCategory = (GarminCategories)i;
                         fileName = Utils.GetFITSportName(sportCategory) + ".fit";
                         Stream sportFile = File.Create(m_TempDirectoryLocation + fileName);
 
