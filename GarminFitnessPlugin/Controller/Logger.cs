@@ -8,7 +8,10 @@ namespace GarminFitnessPlugin.Controller
     {
         private Logger()
         {
-            m_LogFile = File.CreateText("GF_Log.txt");
+            String logPath = typeof(PluginMain).Assembly.Location;
+            logPath = logPath.Substring(0, logPath.LastIndexOf('\\'));
+
+            m_LogFile = File.CreateText(logPath + "\\GF_Log.txt");
             m_LogFile.AutoFlush = true;
 
             //MessageBox.Show((m_LogFile.BaseStream as FileStream).Name);
