@@ -48,6 +48,10 @@ namespace GarminFitnessPlugin.Controller
         {
             XmlDocument devicesDocument = new XmlDocument();
 
+            foreach (IGarminDevice device in m_Devices)
+            {
+                device.Dispose();
+            }
             m_Devices.Clear();
 
             try
