@@ -20,7 +20,7 @@ namespace GarminFitnessPlugin.Controller
     delegate void DeviceOperationCompletedEventHandler(IGarminDevice device, DeviceOperations operation, Boolean succeeded, String failureMessage);
     delegate void DeviceOperationProgressedEventHandler(IGarminDevice device, DeviceOperations operation, int progress);
 
-    interface IGarminDevice
+    interface IGarminDevice : IDisposable
     {
         void CancelWrite();
         void CancelRead();
