@@ -145,13 +145,12 @@ namespace GarminFitnessPlugin.Data
 
         public override void Serialize(XmlNode parentNode, String nodeName, XmlDocument document)
         {
-
             base.Serialize(parentNode, nodeName, document);
 
             // This node was added by our parent...
             parentNode = parentNode.LastChild;
 
-            float lastMaxHR = PluginMain.GetApplication().Logbook.Athlete.InfoEntries.LastEntryAsOfDate(DateTime.Now).MaximumHeartRatePerMinute;
+            float lastMaxHR = GarminProfileManager.Instance.UserProfile.GetProfileForActivity(Options.Instance.GetGarminCategory(BaseTarget.ParentStep.ParentWorkout.Category)).MaximumHeartRate;
             XmlAttribute attribute;
             XmlNode childNode;
             GarminFitnessBool exportAsPercentMax = new GarminFitnessBool(Options.Instance.ExportSportTracksHeartRateAsPercentMax, Constants.HeartRateReferenceTCXString[1], Constants.HeartRateReferenceTCXString[0]);
@@ -167,8 +166,8 @@ namespace GarminFitnessPlugin.Data
             {
                 float baseMultiplier = Constants.MaxHRInPercentMax / lastMaxHR;
 
-                lowValue.Value = (Byte)Math.Round(Zone.Low * baseMultiplier, 0, MidpointRounding.AwayFromZero);
-                highValue.Value = (Byte)Math.Min(Constants.MaxHRInPercentMax, Math.Round(Zone.High * baseMultiplier, 0, MidpointRounding.AwayFromZero));
+                lowValue.Value = (Byte)Utils.Clamp(Math.Round(Zone.Low * baseMultiplier, 0, MidpointRounding.AwayFromZero), Constants.MinHRInPercentMax, Constants.MaxHRInPercentMax);
+                highValue.Value = (Byte)Utils.Clamp(Math.Round(Zone.High * baseMultiplier, 0, MidpointRounding.AwayFromZero), Constants.MinHRInPercentMax, Constants.MaxHRInPercentMax);
             }
             else
             {
