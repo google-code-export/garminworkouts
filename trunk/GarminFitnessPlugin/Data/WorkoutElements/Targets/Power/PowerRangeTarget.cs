@@ -126,14 +126,14 @@ namespace GarminFitnessPlugin.Data
                 {
                     if (child.Attributes.Count != 1 && child.Attributes[0].Name != Constants.XsiTypeTCXString)
                     {
-                        throw new GarminFitnessXmlDeserializationException("Invalid heart rate range attribute in XML node", parentNode);
+                        throw new GarminFitnessXmlDeserializationException("Invalid power range attribute in XML node", parentNode);
                     }
 
                     bool percentRead = m_IsPercentFTP.GetTextValue(child.Attributes[0].Value);
 
                     if (isPercentFTPReadCount > 0 && percentRead != isPercentFTP)
                     {
-                        throw new GarminFitnessXmlDeserializationException("Inconsistent heart rate range attribute in XML node", parentNode);
+                        throw new GarminFitnessXmlDeserializationException("Inconsistent power range attribute in XML node", parentNode);
                     }
 
                     isPercentFTPReadCount++;
@@ -154,14 +154,14 @@ namespace GarminFitnessPlugin.Data
                 {
                     if (child.Attributes.Count != 1 && child.Attributes[0].Name != Constants.XsiTypeTCXString)
                     {
-                        throw new GarminFitnessXmlDeserializationException("Invalid heart rate range attribute in XML node", parentNode);
+                        throw new GarminFitnessXmlDeserializationException("Invalid power range attribute in XML node", parentNode);
                     }
 
                     bool percentRead = m_IsPercentFTP.GetTextValue(child.Attributes[0].Value);
 
                     if (isPercentFTPReadCount > 0 && percentRead != isPercentFTP)
                     {
-                        throw new GarminFitnessXmlDeserializationException("Inconsistent heart rate range attribute in XML node", parentNode);
+                        throw new GarminFitnessXmlDeserializationException("Inconsistent power range attribute in XML node", parentNode);
                     }
 
                     isPercentFTPReadCount++;
@@ -184,6 +184,7 @@ namespace GarminFitnessPlugin.Data
                 throw new GarminFitnessXmlDeserializationException("Missing information in power range target XML node", parentNode);
             }
 
+            m_IsPercentFTP.Value = isPercentFTP;
             SetValues(Math.Min(MinPower, MaxPower), Math.Max(MinPower, MaxPower), isPercentFTP);
         }
 
