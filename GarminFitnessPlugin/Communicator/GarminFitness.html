@@ -497,12 +497,18 @@
 
         function GetBinaryFile(filePath) {
             try {
-                garminController.getBinaryFile(garminController.getDeviceNumber(), filePath);
+                m_FileDownloadPath = filePath;
+                setTimeout(function () { this._AsyncGetBinaryFile() } .bind(this), 50);		 
             }
             catch (e) {
                 window.external.OnExceptionTriggered("GetBinaryFile failed: " + e.message);
             }
         }
+
+        function _AsyncGetBinaryFile() {
+            garminController.getBinaryFile(garminController.getDeviceNumber(), m_FileDownloadPath);
+        }
+
 
     </script>
     Garmin Fitness Communicator page
