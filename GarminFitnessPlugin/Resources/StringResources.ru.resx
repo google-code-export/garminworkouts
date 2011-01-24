@@ -117,4 +117,718 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="ActiveText" xml:space="preserve">
+    <value>Активность</value>
+  </data>
+  <data name="AddDailyViewCheckBoxText" xml:space="preserve">
+    <value>Добавить в дневник</value>
+  </data>
+  <data name="AndText" xml:space="preserve">
+    <value>и</value>
+  </data>
+  <data name="AutoSplitCheckBoxText" xml:space="preserve">
+    <value>Разрешить тренировки с более чем с 20 этапами</value>
+  </data>
+  <data name="AutoText" xml:space="preserve">
+    <value>Авто</value>
+  </data>
+  <data name="BetweenText" xml:space="preserve">
+    <value>Между</value>
+  </data>
+  <data name="BikeProfileExplanationText" xml:space="preserve">
+    <value>Некоторые данные в профиле относятся только к велоспорту. В их число входят различные зоны мощности, а также профили велосипедов. Если у вас нет устройств, поддерживающих велоспорт, этот раздел можно пропустить.</value>
+  </data>
+  <data name="BikeProfileMenuItemText" xml:space="preserve">
+    <value>Велосипед {0} ({1})</value>
+  </data>
+  <data name="BikingText" xml:space="preserve">
+    <value>Велоспорт</value>
+  </data>
+  <data name="BirthDateLabelText" xml:space="preserve">
+    <value>Дата рождения :</value>
+  </data>
+  <data name="BrowseButtonText" xml:space="preserve">
+    <value>Просмотр...</value>
+  </data>
+  <data name="CadenceRangeTargetDescriptionText" xml:space="preserve">
+    <value>Стараться удерживать каденс от {0} до {1} {2}.</value>
+  </data>
+  <data name="CadenceSettingsGroupBoxText" xml:space="preserve">
+    <value>Настройки каденса</value>
+  </data>
+  <data name="CadenceTargetComboBoxText" xml:space="preserve">
+    <value>Стараться удерживать каденс в указанной зоне</value>
+  </data>
+  <data name="CadenceZoneSelectionLabelText" xml:space="preserve">
+    <value>Использовать для моих тренировок эту зону каденса :</value>
+  </data>
+  <data name="CadenceZoneTargetDescriptionText" xml:space="preserve">
+    <value>Стараться удерживать каденс в зоне {0}.</value>
+  </data>
+  <data name="CaloriesDurationComboBoxText" xml:space="preserve">
+    <value>Когда я израсходую заданное число калорий</value>
+  </data>
+  <data name="CaloriesDurationDescriptionText" xml:space="preserve">
+    <value>Пока я не израсходую {0} калорий.</value>
+  </data>
+  <data name="CaloriesDurationLabelText" xml:space="preserve">
+    <value>Сколько калорий?</value>
+  </data>
+  <data name="CategoriesText" xml:space="preserve">
+    <value>Категории</value>
+  </data>
+  <data name="CategoryAssociationExplanationText" xml:space="preserve">
+    <value>Чтобы тренировки корректно отображались на навигаторе, нужно сопоставить каждой категории SportTracks соответствующую на Garmin. Благодаря этому в тренировках будут использоваться пульсовые и скоростные зоны, заданные в профиле.</value>
+  </data>
+  <data name="CategoryAssociationText" xml:space="preserve">
+    <value>Соответствующая категория Garmin</value>
+  </data>
+  <data name="CategoryText" xml:space="preserve">
+    <value>Категория</value>
+  </data>
+  <data name="CompletedExplanationText" xml:space="preserve">
+    <value>Мастер настройки успешно завершен. Подключаемый модуль можно вызвать через меню "Выберите вид". Внимание: все настройки можно в любой момент найти на странице "Настройки" модуля Garmin Fitness и на экране "Профиль".</value>
+  </data>
+  <data name="CompletedLabelText" xml:space="preserve">
+    <value>Чтобы закрыть мастер, нажмите "Готово"</value>
+  </data>
+  <data name="CompletedText" xml:space="preserve">
+    <value>Готово</value>
+  </data>
+  <data name="ContinueLabelText" xml:space="preserve">
+    <value>Чтобы настроить модуль, нажмите "Далее"</value>
+  </data>
+  <data name="CooldownText" xml:space="preserve">
+    <value>Заминка</value>
+  </data>
+  <data name="CustomText" xml:space="preserve">
+    <value>Пользовательские</value>
+  </data>
+  <data name="DataTooRecentErrorText" xml:space="preserve">
+    <value>Установленная версия модуля Garmin Fitness не может открыть эти данные. Установите новейшую версию.</value>
+  </data>
+  <data name="DefaultExportDirectoryGroupBoxText" xml:space="preserve">
+    <value>Папка для экспорта по умолчанию</value>
+  </data>
+  <data name="DefaultHeartRateZoneLabelText" xml:space="preserve">
+    <value>Использовать пульсовые зоны от :</value>
+  </data>
+  <data name="DefaultPowerZoneLabelText" xml:space="preserve">
+    <value>Использовать зоны мощности от :</value>
+  </data>
+  <data name="DefaultSpeedZoneLabelText" xml:space="preserve">
+    <value>Использовать зоны скорости от :</value>
+  </data>
+  <data name="DetailsText" xml:space="preserve">
+    <value>Подробности</value>
+  </data>
+  <data name="DeviceCommGroupBoxText" xml:space="preserve">
+    <value>Связь с устройством</value>
+  </data>
+  <data name="DeviceCommunicationErrorText" xml:space="preserve">
+    <value>Не могу загрузить модуль Garmin Communicator.  Убедитесь, что версия SportTracks не ниже 2.0.3170, а модуль Garmin Cummunicator установлен и активирован в Internet Explorer.</value>
+  </data>
+  <data name="DistanceDurationComboBoxText" xml:space="preserve">
+    <value>Когда я пройду заданную дистанцию</value>
+  </data>
+  <data name="DistanceDurationDescriptionText" xml:space="preserve">
+    <value>Двигаться {0:0.00} {1}.</value>
+  </data>
+  <data name="DistanceDurationLabelText" xml:space="preserve">
+    <value>Насколько далеко?</value>
+  </data>
+  <data name="DoubleRangeValidationText" xml:space="preserve">
+    <value>Значение должно быть десятичным числом от {0:0.00} до {1:0.00}</value>
+  </data>
+  <data name="EditBikingProfileText" xml:space="preserve">
+    <value>Велосипедный профиль</value>
+  </data>
+  <data name="EditProfileExplanationText" xml:space="preserve">
+    <value>На этой странице вы можете отредактировать личные сведения, которые будут записаны в профиле. Внимание: отображение тренировок зависит от того, какой тип зон вы выберете (ЧСС или % ЧСС макс. и скорость или темп); при этом для каждого вида спорта заданы свои зоны.</value>
+  </data>
+  <data name="EditProfileText" xml:space="preserve">
+    <value>Редактировать профиль</value>
+  </data>
+  <data name="EditRadioButtonText" xml:space="preserve">
+    <value>Редактировать профиль вручную</value>
+  </data>
+  <data name="ErrorText" xml:space="preserve">
+    <value>Ошибка</value>
+  </data>
+  <data name="ExportAllText" xml:space="preserve">
+    <value>Экспортировать все</value>
+  </data>
+  <data name="ExportAsLabelText" xml:space="preserve">
+    <value>Экспортировать как:</value>
+  </data>
+  <data name="ExportCooldownAsText" xml:space="preserve">
+    <value>Экспортировать заминку как</value>
+  </data>
+  <data name="ExportProfileFailedText" xml:space="preserve">
+    <value>Ошибка при экспорте профиля.</value>
+  </data>
+  <data name="ExportProfileSuccessText" xml:space="preserve">
+    <value>Профиль успешно экспортирован на навигатор.</value>
+  </data>
+  <data name="ExportProfileText" xml:space="preserve">
+    <value>экспорт профиля</value>
+  </data>
+  <data name="ExportSelectedText" xml:space="preserve">
+    <value>Экспортировать выбранные</value>
+  </data>
+  <data name="ExportSTHRZonesAsLabelText" xml:space="preserve">
+    <value>Экспортировать пульсовые зоны ST как :</value>
+  </data>
+  <data name="ExportSTPowerZonesAsLabelText" xml:space="preserve">
+    <value>Экспортировать зоны мощности ST как :</value>
+  </data>
+  <data name="ExportText" xml:space="preserve">
+    <value>Экспорт</value>
+  </data>
+  <data name="ExportWarmupAsText" xml:space="preserve">
+    <value>Экспортировать разминку как</value>
+  </data>
+  <data name="ExportWorkoutsFailedText" xml:space="preserve">
+    <value>Ошибка при экспорте тренировок.</value>
+  </data>
+  <data name="ExportWorkoutsSuccessText" xml:space="preserve">
+    <value>Тренировки экспортированы успешно.</value>
+  </data>
+  <data name="ExportWorkoutsText" xml:space="preserve">
+    <value>экспорт тренировок</value>
+  </data>
+  <data name="FemaleText" xml:space="preserve">
+    <value>Женский</value>
+  </data>
+  <data name="FileDescriptionText" xml:space="preserve">
+    <value>Файлы тренировок</value>
+  </data>
+  <data name="FinishLabelText" xml:space="preserve">
+    <value>Чтобы настроить модуль позже, нажмите "Готово"</value>
+  </data>
+  <data name="FITExportText" xml:space="preserve">
+    <value>экспорт FIT</value>
+  </data>
+  <data name="FitFileText" xml:space="preserve">
+    <value>Файлы FIT</value>
+  </data>
+  <data name="FITImportText" xml:space="preserve">
+    <value>импорт FIT</value>
+  </data>
+  <data name="ForceSplitCheckBoxText" xml:space="preserve">
+    <value>Разбить принудительно</value>
+  </data>
+  <data name="FromDeviceText" xml:space="preserve">
+    <value>С навигатора</value>
+  </data>
+  <data name="FromFileText" xml:space="preserve">
+    <value>Из файла</value>
+  </data>
+  <data name="FTPLabelText" xml:space="preserve">
+    <value>Функциональный порог мощности (FTP) :</value>
+  </data>
+  <data name="GarminFitnessText" xml:space="preserve">
+    <value>Garmin Fitness</value>
+  </data>
+  <data name="GarminModeRadioButtonText" xml:space="preserve">
+    <value>Использовать режим Garmin</value>
+  </data>
+  <data name="GarminOrSTText" xml:space="preserve">
+    <value>Режим Garmin или SportTracks</value>
+  </data>
+  <data name="GarminText" xml:space="preserve">
+    <value>Garmin</value>
+  </data>
+  <data name="GearWeightLabelText" xml:space="preserve">
+    <value>Вес снаряжения :</value>
+  </data>
+  <data name="GenderLabelText" xml:space="preserve">
+    <value>Пол :</value>
+  </data>
+  <data name="GoToProfileText" xml:space="preserve">
+    <value>Перейти к профилю</value>
+  </data>
+  <data name="GoToWorkoutsText" xml:space="preserve">
+    <value>Перейти к тренировкам</value>
+  </data>
+  <data name="GTCSpeedZone10Text" xml:space="preserve">
+    <value>Скорость макс.</value>
+  </data>
+  <data name="GTCSpeedZone1Text" xml:space="preserve">
+    <value>Подъем 4</value>
+  </data>
+  <data name="GTCSpeedZone2Text" xml:space="preserve">
+    <value>Подъем 3</value>
+  </data>
+  <data name="GTCSpeedZone3Text" xml:space="preserve">
+    <value>Подъем 2</value>
+  </data>
+  <data name="GTCSpeedZone4Text" xml:space="preserve">
+    <value>Подъем 1</value>
+  </data>
+  <data name="GTCSpeedZone5Text" xml:space="preserve">
+    <value>Ровно 3</value>
+  </data>
+  <data name="GTCSpeedZone6Text" xml:space="preserve">
+    <value>Ровно 2</value>
+  </data>
+  <data name="GTCSpeedZone7Text" xml:space="preserve">
+    <value>Ровно 1</value>
+  </data>
+  <data name="GTCSpeedZone8Text" xml:space="preserve">
+    <value>Спуск</value>
+  </data>
+  <data name="GTCSpeedZone9Text" xml:space="preserve">
+    <value>Спринт</value>
+  </data>
+  <data name="HasCadenceText" xml:space="preserve">
+    <value>Есть датчик каденса</value>
+  </data>
+  <data name="HasPowerText" xml:space="preserve">
+    <value>Есть датчик мощности</value>
+  </data>
+  <data name="HeartRateAboveDurationComboBoxText" xml:space="preserve">
+    <value>Когда частота пульса превысит указанный порог</value>
+  </data>
+  <data name="HeartRateAboveDurationDescriptionText" xml:space="preserve">
+    <value>Двигаться, пока ЧСС не превысит {0} {1}.</value>
+  </data>
+  <data name="HeartRateBelowDurationComboBoxText" xml:space="preserve">
+    <value>Когда частота пульса упадет ниже указанного порога</value>
+  </data>
+  <data name="HeartRateBelowDurationDescriptionText" xml:space="preserve">
+    <value>Двигаться, пока ЧСС не упадет ниже {0} {1}.</value>
+  </data>
+  <data name="HeartRateDurationLabelText" xml:space="preserve">
+    <value>Какой уровень ЧСС?</value>
+  </data>
+  <data name="HeartRateRangeTargetDescriptionText" xml:space="preserve">
+    <value>Стараться удерживать ЧСС от {0} до {1} {2}.</value>
+  </data>
+  <data name="HeartRateTargetComboBoxText" xml:space="preserve">
+    <value>Стараться удерживать ЧСС в указанной зоне</value>
+  </data>
+  <data name="HeartRateZoneTargetDescriptionText" xml:space="preserve">
+    <value>Удерживать ЧСС в зоне {0}.</value>
+  </data>
+  <data name="HideInWorkoutListText" xml:space="preserve">
+    <value>Скрыть в списке тренировок</value>
+  </data>
+  <data name="HighLabelText" xml:space="preserve">
+    <value>Высокий :</value>
+  </data>
+  <data name="HighText" xml:space="preserve">
+    <value>Высокий</value>
+  </data>
+  <data name="HRSettingsGroupBoxText" xml:space="preserve">
+    <value>Настройки ЧСС</value>
+  </data>
+  <data name="HRZonesGroupBoxText" xml:space="preserve">
+    <value>Пульсовые зоны</value>
+  </data>
+  <data name="ImportEditExplanationText" xml:space="preserve">
+    <value>Чтобы использовать в тренировках правильные зоны, их нужно настроить. Даже если вы настроили модуль в режиме SportTracks, ваш профиль используется для отображения (скорость или темп, ЧСС или % ЧСС макс.), так что настроить его необходимо. Можно импортировать профиль с навигатора или отредактировать его вручную.</value>
+  </data>
+  <data name="ImportOrEditProfileText" xml:space="preserve">
+    <value>Импортировать или редактировать профиль</value>
+  </data>
+  <data name="ImportProfileErrorText" xml:space="preserve">
+    <value>Ошибка при импорте профиля.</value>
+  </data>
+  <data name="ImportProfileText" xml:space="preserve">
+    <value>импорт профиля</value>
+  </data>
+  <data name="ImportRadioButtonText" xml:space="preserve">
+    <value>Импортировать мой профиль из навигатора</value>
+  </data>
+  <data name="ImportWorkoutsErrorText" xml:space="preserve">
+    <value>Ошибка при импорте тренировок.</value>
+  </data>
+  <data name="ImportWorkoutsText" xml:space="preserve">
+    <value>импорт тренировок</value>
+  </data>
+  <data name="IndependentModeRadioButtonText" xml:space="preserve">
+    <value>Я хочу задать зоны отдельно</value>
+  </data>
+  <data name="InkFriendlyModeText" xml:space="preserve">
+    <value>Режим экономии тонера</value>
+  </data>
+  <data name="IntegerRangeValidationText" xml:space="preserve">
+    <value>Значение должно быть целым числом от {0} до {1}</value>
+  </data>
+  <data name="InvalidWorkoutNameText" xml:space="preserve">
+    <value>Введенное название тренировки недействительно. Название должно быть уникальным и непустым.</value>
+  </data>
+  <data name="LapButtonDurationComboBoxText" xml:space="preserve">
+    <value>Когда я нажму кнопку навигатора "Круг"</value>
+  </data>
+  <data name="LapButtonDurationDescriptionText" xml:space="preserve">
+    <value>Двигаться, пока я не нажму кнопку навигатора "Круг".</value>
+  </data>
+  <data name="LastExportDateText" xml:space="preserve">
+    <value>Последний раз экспортировалось :</value>
+  </data>
+  <data name="LowLabelText" xml:space="preserve">
+    <value>Низкий :</value>
+  </data>
+  <data name="LowText" xml:space="preserve">
+    <value>Низкий</value>
+  </data>
+  <data name="MaleText" xml:space="preserve">
+    <value>Мужской</value>
+  </data>
+  <data name="ManualProfileConfigurationText" xml:space="preserve">
+    <value>Вместо этого вам будет предложено провести процедуру настройки вручную.</value>
+  </data>
+  <data name="ManualSTGarminZonesExplanationText" xml:space="preserve">
+    <value>Вы выбрали ручную конфигурацию зон. Выберите режим использования каждого типа зон, доступных в моделе.</value>
+  </data>
+  <data name="MaxHRLabelText" xml:space="preserve">
+    <value>Максимальная частота пульса :</value>
+  </data>
+  <data name="MillimeterText" xml:space="preserve">
+    <value>мм</value>
+  </data>
+  <data name="MinuteAbbrText" xml:space="preserve">
+    <value>мин</value>
+  </data>
+  <data name="ModeExplanationText" xml:space="preserve">
+    <value>Одна из особенностей модуля Garmin Fitness заключается в том, что он обеспечивает более тесную интеграцию со SportTracks. Благодаря этому можно использовать заданные в SportTracks зоны частоты пульса, скорости и мощности вместо заданных в Garmin. Выбор можно также настроить по каждому типу зон.</value>
+  </data>
+  <data name="NameLabelText" xml:space="preserve">
+    <value>Название :</value>
+  </data>
+  <data name="NameText" xml:space="preserve">
+    <value>Название</value>
+  </data>
+  <data name="NeedActivityTemplateText" xml:space="preserve">
+    <value>Чтобы создать из этой тренировки занятие, необходимо наличие в дневнике хотя бы 1 занятия. Судя по всему, ваш дневник пуст, поэтому создайте пустое занятие, заново внесите тренировку в план, а затем удалите временное занятие.</value>
+  </data>
+  <data name="NeverExportedText" xml:space="preserve">
+    <value>Не экспортировалось ни разу</value>
+  </data>
+  <data name="NewNameLabelText" xml:space="preserve">
+    <value>Новое название :</value>
+  </data>
+  <data name="NoDeviceSupportText" xml:space="preserve">
+    <value>Устройство {0} не поддерживает {1}, необходимый для правильного функционирования.</value>
+  </data>
+  <data name="NoMassStorageSupportText" xml:space="preserve">
+    <value>перенос на внешнее устройство памяти</value>
+  </data>
+  <data name="NotesLabelText" xml:space="preserve">
+    <value>Примечания :</value>
+  </data>
+  <data name="NullTargetComboBoxText" xml:space="preserve">
+    <value>У меня нет специфической цели для этого этапа</value>
+  </data>
+  <data name="NullTargetDescriptionText" xml:space="preserve">
+    <value />
+  </data>
+  <data name="NumberText" xml:space="preserve">
+    <value>Число</value>
+  </data>
+  <data name="OdometerLabelText" xml:space="preserve">
+    <value>Одометр :</value>
+  </data>
+  <data name="OpenFileText" xml:space="preserve">
+    <value>Импортировать тренировку</value>
+  </data>
+  <data name="OtherText" xml:space="preserve">
+    <value>Другие</value>
+  </data>
+  <data name="PaceRangeTargetDescriptionText" xml:space="preserve">
+    <value>Стараться удерживать темп от {0:00}:{1:00} до {2:00}:{3:00} мин/{4}.</value>
+  </data>
+  <data name="PackWorkoutsOnExportCheckBoxText" xml:space="preserve">
+    <value>Упаковать тренировки на экспорт (допускается для FR405)</value>
+  </data>
+  <data name="PageSetupText" xml:space="preserve">
+    <value>Параметры страницы</value>
+  </data>
+  <data name="PartNumberingNotesText" xml:space="preserve">
+    <value>часть {0}/{1}</value>
+  </data>
+  <data name="PasteStepErrorText" xml:space="preserve">
+    <value>Не удалось вставить этапы, тренировка не может содержать так много этапов. Максимальное число этапов тренировки - 20.</value>
+  </data>
+  <data name="PercentFTPText" xml:space="preserve">
+    <value>%FTP</value>
+  </data>
+  <data name="PerHourText" xml:space="preserve">
+    <value>/ч</value>
+  </data>
+  <data name="PowerAboveDurationComboBoxText" xml:space="preserve">
+    <value>Когда мощность превысит заданный порог</value>
+  </data>
+  <data name="PowerAboveDurationDescriptionText" xml:space="preserve">
+    <value>Двигаться, пока мощность не превысит {0} {1}.</value>
+  </data>
+  <data name="PowerBelowDurationComboBoxText" xml:space="preserve">
+    <value>Когда мощность упадет ниже заданного порога</value>
+  </data>
+  <data name="PowerBelowDurationDescriptionText" xml:space="preserve">
+    <value>Двигаться, пока мощность не упадет ниже {0} {1}.</value>
+  </data>
+  <data name="PowerDurationLabelText" xml:space="preserve">
+    <value>Какой уровень мощности?</value>
+  </data>
+  <data name="PowerRangeTargetDescriptionText" xml:space="preserve">
+    <value>Стараться удерживать мощность от {0} до {1} Вт.</value>
+  </data>
+  <data name="PowerSettingsGroupBoxText" xml:space="preserve">
+    <value>Настройки мощности</value>
+  </data>
+  <data name="PowerTargetComboBoxText" xml:space="preserve">
+    <value>Стараться удерживать мощность в указанной зоне</value>
+  </data>
+  <data name="PowerZoneSelectionLabelText" xml:space="preserve">
+    <value>Использовать для тренировках эту зону мощности :</value>
+  </data>
+  <data name="PowerZonesGroupBoxText" xml:space="preserve">
+    <value>Зоны мощности</value>
+  </data>
+  <data name="PowerZoneTargetDescriptionText" xml:space="preserve">
+    <value>Стараться удерживать мощность в зоне {0}.</value>
+  </data>
+  <data name="PrintAllText" xml:space="preserve">
+    <value>Печатать все</value>
+  </data>
+  <data name="PrintOptionsText" xml:space="preserve">
+    <value>Настройки печати</value>
+  </data>
+  <data name="PrintPreviewText" xml:space="preserve">
+    <value>Предварительный просмотр</value>
+  </data>
+  <data name="PrintSelectedText" xml:space="preserve">
+    <value>Печатать выделенный фрагмент</value>
+  </data>
+  <data name="PrintText" xml:space="preserve">
+    <value>Печать</value>
+  </data>
+  <data name="ProfileText" xml:space="preserve">
+    <value>Профиль</value>
+  </data>
+  <data name="RefreshButtonText" xml:space="preserve">
+    <value>Обновить список устройств</value>
+  </data>
+  <data name="RenameExplanationLabelText" xml:space="preserve">
+    <value>При выборе этой опции для тренировки будет использоваться следующее название.</value>
+  </data>
+  <data name="RenameLabelText" xml:space="preserve">
+    <value>Переименовать</value>
+  </data>
+  <data name="RepeatCountComboBoxText" xml:space="preserve">
+    <value>После заданного числа повторов</value>
+  </data>
+  <data name="RepeatStepDescriptionText" xml:space="preserve">
+    <value>Повторить следующие этапы {0} раз:</value>
+  </data>
+  <data name="RepeatUntilCaloriesDurationDescriptionText" xml:space="preserve">
+    <value>Повторять, пока я не израсходую {0} калорий.</value>
+  </data>
+  <data name="RepeatUntilDistanceDurationDescriptionText" xml:space="preserve">
+    <value>Повторять {0:0.00} {1}.</value>
+  </data>
+  <data name="RepeatUntilHeartRateAboveDurationDescriptionText" xml:space="preserve">
+    <value>Повторять, пока частота пульса не превысит {0} {1}.</value>
+  </data>
+  <data name="RepeatUntilHeartRateBelowDurationDescriptionText" xml:space="preserve">
+    <value>Повторять, пока частота пульса не упадет ниже {0} {1}.</value>
+  </data>
+  <data name="RepeatUntilPowerAboveDurationDescriptionText" xml:space="preserve">
+    <value>Повторять, пока мощность не превысит {0} {1}.</value>
+  </data>
+  <data name="RepeatUntilPowerBelowDurationDescriptionText" xml:space="preserve">
+    <value>Повторять, пока мощность не упадет ниже {0} {1}.</value>
+  </data>
+  <data name="RepeatUntilTimeDurationDescriptionText" xml:space="preserve">
+    <value>Повторять {0:00}:{1:00}:{2:00}.</value>
+  </data>
+  <data name="RepetitionCountLabelText" xml:space="preserve">
+    <value>Сколько повторов вы хотите сделать?</value>
+  </data>
+  <data name="RepetitionPropertiesGroupText" xml:space="preserve">
+    <value>Свойства повтора</value>
+  </data>
+  <data name="ReplaceExplanationLabelText" xml:space="preserve">
+    <value>При выборе этой опции текущая тренировка будет записана вместо тренировки с тем же названием.</value>
+  </data>
+  <data name="ReplaceLabelText" xml:space="preserve">
+    <value>Заменить</value>
+  </data>
+  <data name="ReplaceRenameDialogText" xml:space="preserve">
+    <value>Заменить или переименовать?</value>
+  </data>
+  <data name="ReplaceRenameIntroLabelText" xml:space="preserve">
+    <value>Тренировка с таким же названием уже есть. Вы можете либо заменить текущую тренировку, либо дать ей новое название.</value>
+  </data>
+  <data name="RestingCheckBoxText" xml:space="preserve">
+    <value>Этап отдыха</value>
+  </data>
+  <data name="RestingHeartRateLabelText" xml:space="preserve">
+    <value>Частота пульса в покое :</value>
+  </data>
+  <data name="RestText" xml:space="preserve">
+    <value>Отдых</value>
+  </data>
+  <data name="RunningText" xml:space="preserve">
+    <value>Бег</value>
+  </data>
+  <data name="RunWizardText" xml:space="preserve">
+    <value>Запустить мастер настройки...</value>
+  </data>
+  <data name="ScheduleBannerText" xml:space="preserve">
+    <value>График</value>
+  </data>
+  <data name="SelectCategoryDialogText" xml:space="preserve">
+    <value>Выберите категорию тренировки </value>
+  </data>
+  <data name="SelectDateText" xml:space="preserve">
+    <value>Выберите дату</value>
+  </data>
+  <data name="SelectDeviceIntroText" xml:space="preserve">
+    <value>Выберите тип навигатора из списка. Если устройство в списке отсутствует, убедитесь, что оно подключено к ПК и нажмите кнопку "Обновить".</value>
+  </data>
+  <data name="SelectDeviceText" xml:space="preserve">
+    <value>Выбрать устройство</value>
+  </data>
+  <data name="SelectFolderText" xml:space="preserve">
+    <value>Выбрать папку</value>
+  </data>
+  <data name="SelectWorkoutText" xml:space="preserve">
+    <value>Выбрать тренировку</value>
+  </data>
+  <data name="SettingsPageNameText" xml:space="preserve">
+    <value>Параметры Garmin Fitness </value>
+  </data>
+  <data name="SetupGarminOrSTZonesText" xml:space="preserve">
+    <value>Индивидуальная настройка зон</value>
+  </data>
+  <data name="SpeedRangeTargetDescriptionText" xml:space="preserve">
+    <value>Стараться удерживать скорость от {0:0.00} {2}/ч до {1:0.00} {2}/ч.</value>
+  </data>
+  <data name="SpeedSettingsGroupBoxText" xml:space="preserve">
+    <value>Настройки скорости</value>
+  </data>
+  <data name="SpeedTargetComboBoxText" xml:space="preserve">
+    <value>Стараться удерживать скорость в указанной зоне</value>
+  </data>
+  <data name="SpeedZonesGroupBoxText" xml:space="preserve">
+    <value>Зоны скорости</value>
+  </data>
+  <data name="SpeedZoneTargetDescriptionText" xml:space="preserve">
+    <value>Стараться удерживаться скорость в зоне {0}</value>
+  </data>
+  <data name="SportTracksText" xml:space="preserve">
+    <value>SportTracks</value>
+  </data>
+  <data name="StepDetailsText" xml:space="preserve">
+    <value>Этап</value>
+  </data>
+  <data name="StepDurationGroupText" xml:space="preserve">
+    <value>Продолжительность этапа</value>
+  </data>
+  <data name="StepDurationLabelText" xml:space="preserve">
+    <value>Когда этот этап закончится?</value>
+  </data>
+  <data name="StepNameLabelText" xml:space="preserve">
+    <value>Пользовательское название этапа:</value>
+  </data>
+  <data name="StepTargetGroupText" xml:space="preserve">
+    <value>Цель этапа</value>
+  </data>
+  <data name="StepTargetLabelText" xml:space="preserve">
+    <value>Какова ваша цель на этом этапе?</value>
+  </data>
+  <data name="STModeRadioButtonText" xml:space="preserve">
+    <value>Я хочу использовать режим SportTracks</value>
+  </data>
+  <data name="STZonesExplanationText" xml:space="preserve">
+    <value>При использовании зон SportTracks модуль применяет зоны частоты пульса и скорости, заданные в категории, к которой отнесена тренировка. Категории занятий SportTracks лишены зоны каденас и мощности, и поэтому их необходимо задать отдельно.</value>
+  </data>
+  <data name="SuccessText" xml:space="preserve">
+    <value>Успешно</value>
+  </data>
+  <data name="TCXFileText" xml:space="preserve">
+    <value>Файлы TCX</value>
+  </data>
+  <data name="TimeDurationComboBoxText" xml:space="preserve">
+    <value>По истечении заданного периода времени</value>
+  </data>
+  <data name="TimeDurationDescriptionText" xml:space="preserve">
+    <value>Двигаться в течение {0:00}:{1:00}:{2:00}</value>
+  </data>
+  <data name="TimeDurationLabelText" xml:space="preserve">
+    <value>В течение какого времени?</value>
+  </data>
+  <data name="TimeRangeValidationText" xml:space="preserve">
+    <value>Значение должно быть периодом времени от {0:00}:{1:00} до {2:00}:{3:00}</value>
+  </data>
+  <data name="ToDeviceText" xml:space="preserve">
+    <value>В навигатор</value>
+  </data>
+  <data name="ToFileText" xml:space="preserve">
+    <value>В файл</value>
+  </data>
+  <data name="ToLabelText" xml:space="preserve">
+    <value>в</value>
+  </data>
+  <data name="TooRecentDataText" xml:space="preserve">
+    <value>Данные слишком новы для установленной версии модуля. Установите новейшую версию модуля.</value>
+  </data>
+  <data name="TransferringToDeviceText" xml:space="preserve">
+    <value>Передается на устройство</value>
+  </data>
+  <data name="UnrollRepeatsText" xml:space="preserve">
+    <value>Развернуть повторяющиеся этапы</value>
+  </data>
+  <data name="UseCategoryForAllCheckBoxText" xml:space="preserve">
+    <value>Использовать для всех тренировок</value>
+  </data>
+  <data name="UseCustomCategoryText" xml:space="preserve">
+    <value>Использовать пользовательскую категорию</value>
+  </data>
+  <data name="UseParentCategoryText" xml:space="preserve">
+    <value>Использовать родительскую категорию</value>
+  </data>
+  <data name="ValueValidationTitleText" xml:space="preserve">
+    <value>Недопустимое значение</value>
+  </data>
+  <data name="WarmupText" xml:space="preserve">
+    <value>Разминка</value>
+  </data>
+  <data name="WarningText" xml:space="preserve">
+    <value>Внимание</value>
+  </data>
+  <data name="WeightLabelText" xml:space="preserve">
+    <value>Вес :</value>
+  </data>
+  <data name="WelcomeLabelText" xml:space="preserve">
+    <value>Добро пожаловать в мастер настройки модуля Garmin Fitness. Он поможет вам настроить модуль для вашего дневника. Вы можете выйти из мастера в любой момент, нажав на кнопку "Готово". Кроме того, вы можете вызвать мастер в любой момент со страницы "Параметры" модуля, чтобы изменить настройки впоследствии по собственному вкусу.</value>
+  </data>
+  <data name="WelcomeText" xml:space="preserve">
+    <value>Добро пожаловать</value>
+  </data>
+  <data name="WheelSizeGroupBoxText" xml:space="preserve">
+    <value>Размер колес</value>
+  </data>
+  <data name="WheelSizeLabelText" xml:space="preserve">
+    <value>Размер колес:</value>
+  </data>
+  <data name="WhichZoneText" xml:space="preserve">
+    <value>Какая зона?</value>
+  </data>
+  <data name="WizardSTZonesText" xml:space="preserve">
+    <value>Зоны SportTracks</value>
+  </data>
+  <data name="WorkoutLinkStepText" xml:space="preserve">
+    <value>Ссылка на тренировку: {0}</value>
+  </data>
+  <data name="WorkoutsText" xml:space="preserve">
+    <value>Тренировки</value>
+  </data>
+  <data name="WorkoutsWereSplitText" xml:space="preserve">
+    <value>В некоторых тренировках более 20 этапов. Мы автоматически разбили их в вашем дневнике, чтобы обработать изменения в параметрах, и я предлагаю вам взглянуть на них.</value>
+  </data>
 </root>
