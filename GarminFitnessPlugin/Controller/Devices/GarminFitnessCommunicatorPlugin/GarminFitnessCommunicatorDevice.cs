@@ -161,96 +161,57 @@ namespace GarminFitnessPlugin.Controller
 
                     break;
                 }
-                case DeviceOperations.ReadFITProfile:
-                {
-                    Logger.Instance.LogText("Comm. : Mass storage profile read");
-
-                    if (success)
-                    {
-                        if (OperationProgressed != null)
-                        {
-                            OperationProgressed(this, m_CurrentOperation, ++m_MassStorageFileReadCount);
-                        }
-
-                        if (m_MassStorageFilesToDownload != null)
-                        {
-                            operationCompleted = false;
-
-                            Debug.Assert(m_MassStorageFilesToDownload.Count > 0);
-
-                            String profileFilename = m_TempDirectoryLocation + m_MassStorageFilesToDownload[0].Replace('/', '\\');
-                            String profileDirectory = profileFilename.Substring(0, profileFilename.LastIndexOf('\\'));
-                            Directory.CreateDirectory(profileDirectory);
-                            FileStream newProfile = File.Create(profileFilename);
-                            Byte[] decodedData = UUDecode(e.DataString);
-
-                            m_MassStorageFilesToDownload.RemoveAt(0);
-                            newProfile.Write(decodedData, 0, decodedData.Length);
-                            newProfile.Close();
-
-                            if (m_MassStorageFilesToDownload.Count > 0)
-                            {
-                                m_Controller.CommunicatorBridge.GetBinaryFile(m_MassStorageFilesToDownload[0]);
-                            }
-                            else
-                            {
-                                TriggerOperationWillCompleteEvent();
-
-                                if (!ProfileImporter.AsyncImportDirectory(m_TempDirectoryLocation, this))
-                                {
-                                    operationCompleted = true;
-                                }
-                            }
-                        }
-                    }
-                    else
-                    {
-                        TriggerOperationWillCompleteEvent();
-
-                        m_MassStorageFilesToDownload.Clear();
-                    }
-
-                    break;
-                }
                 case DeviceOperations.ReadMassStorageWorkouts:
                 case DeviceOperations.ReadFITWorkouts:
+                case DeviceOperations.ReadFITProfile:
                 {
-                    Logger.Instance.LogText("Comm. : Mass storage workout read");
-
                     if (success)
                     {
+                        if (m_CurrentOperation == DeviceOperations.ReadFITProfile)
+                        {
+                            Logger.Instance.LogText("Comm. : Mass storage profile read");
+                        }
+                        else
+                        {
+                            Logger.Instance.LogText("Comm. : Mass storage workout read");
+                        }
+
+                        ++m_MassStorageFileReadCount;
                         if (OperationProgressed != null)
                         {
-                            OperationProgressed(this, m_CurrentOperation, ++m_MassStorageFileReadCount);
+                            OperationProgressed(this, m_CurrentOperation, m_MassStorageFileReadCount);
                         }
 
                         if (m_MassStorageFilesToDownload != null)
                         {
-                            operationCompleted = false;
-
                             Debug.Assert(m_MassStorageFilesToDownload.Count > 0);
 
-                            String workoutFilename = m_TempDirectoryLocation + m_MassStorageFilesToDownload[0].Replace('/', '\\');
-                            String workoutDirectory = workoutFilename.Substring(0, workoutFilename.LastIndexOf('\\'));
-                            Directory.CreateDirectory(workoutDirectory);
-                            FileStream newWorkout = File.Create(workoutFilename);
+                            String currentFilename = m_TempDirectoryLocation + m_MassStorageFilesToDownload[0].Replace('/', '\\');
+                            String fileDirectory = currentFilename.Substring(0, currentFilename.LastIndexOf('\\'));
+                            Directory.CreateDirectory(fileDirectory);
+                            FileStream newFile = File.Create(currentFilename);
                             Byte[] decodedData = UUDecode(e.DataString);
 
+                            newFile.Write(decodedData, 0, decodedData.Length);
+                            newFile.Close();
                             m_MassStorageFilesToDownload.RemoveAt(0);
-                            newWorkout.Write(decodedData, 0, decodedData.Length);
-                            newWorkout.Close();
 
                             if (m_MassStorageFilesToDownload.Count > 0)
                             {
+                                operationCompleted = false;
                                 m_Controller.CommunicatorBridge.GetBinaryFile(m_MassStorageFilesToDownload[0]);
                             }
                             else
                             {
                                 TriggerOperationWillCompleteEvent();
 
-                                if (!WorkoutImporter.AsyncImportDirectory(m_TempDirectoryLocation, this))
+                                if (m_CurrentOperation == DeviceOperations.ReadFITProfile)
                                 {
-                                    operationCompleted = true;
+                                    success = ProfileImporter.AsyncImportDirectory(m_TempDirectoryLocation, this);
+                                }
+                                else
+                                {
+                                    success = WorkoutImporter.AsyncImportDirectory(m_TempDirectoryLocation, this);
                                 }
                             }
                         }
@@ -258,7 +219,6 @@ namespace GarminFitnessPlugin.Controller
                     else
                     {
                         TriggerOperationWillCompleteEvent();
-
                         m_MassStorageFilesToDownload.Clear();
                     }
 
@@ -298,6 +258,8 @@ namespace GarminFitnessPlugin.Controller
 
         void OnBridgeProgressChanged(object sender, GarminFitnessCommunicatorBridge.TransferProgressedEventArgs e)
         {
+            Logger.Instance.LogText(String.Format("Comm. : Operation progress : {0}", e.Progress));
+
             if (OperationProgressed != null)
             {
                 OperationProgressed(this, m_CurrentOperation, e.Progress);
@@ -346,6 +308,8 @@ namespace GarminFitnessPlugin.Controller
                 if (m_CurrentOperation == DeviceOperations.ReadMassStorageWorkouts)
                 {
                     m_MassStorageFilesToDownload = GetFilePaths(e.DataString);
+
+                    Logger.Instance.LogText(String.Format("Comm. : Mass storage workout file count = {0}", m_MassStorageFilesToDownload.Count));
                 }
                 else if (m_CurrentOperation == DeviceOperations.ReadFITWorkouts)
                 {
@@ -360,6 +324,8 @@ namespace GarminFitnessPlugin.Controller
                             m_MassStorageFilesToDownload.Add(fitFile);
                         }
                     }
+
+                    Logger.Instance.LogText(String.Format("Comm. : Workout file count = {0}", m_MassStorageFilesToDownload.Count));
                 }
                 else if (m_CurrentOperation == DeviceOperations.ReadFITProfile)
                 {
@@ -384,7 +350,6 @@ namespace GarminFitnessPlugin.Controller
                 if (m_MassStorageFilesToDownload.Count > 0)
                 {
                     operationComplete = false;
-
 
                     m_Controller.CommunicatorBridge.GetBinaryFile(m_MassStorageFilesToDownload[0]);
                 }
@@ -749,7 +714,7 @@ namespace GarminFitnessPlugin.Controller
 
             decodedBytes = System.Convert.FromBase64String(data);
 
-            Logger.Instance.LogText(String.Format("UU decoded result = {0}", Encoding.UTF8.GetString(decodedBytes)));
+            Logger.Instance.LogText(String.Format("UU decoded result length = {0}", Encoding.UTF8.GetString(decodedBytes).Length));
 
             return decodedBytes;
         }
