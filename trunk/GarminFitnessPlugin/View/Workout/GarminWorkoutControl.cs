@@ -86,6 +86,17 @@ namespace GarminFitnessPlugin.View
 
             AddLinkStepButton.Enabled = GarminWorkoutManager.Instance.Workouts.Count > 1;
 
+            // There are problems with DPI settings and split containers, so resize depending on DPI
+            Graphics graphics = this.CreateGraphics();
+            StepsNotesSplitter.Panel1MinSize = (int)Math.Ceiling(2.6 * graphics.DpiX);
+            StepsNotesSplitter.SplitterDistance = StepsNotesSplitter.Panel1MinSize;
+            graphics.Dispose();
+
+            if (Options.Instance.StepNotesSplitSize < StepsNotesSplitter.Panel1MinSize)
+            {
+                Options.Instance.StepNotesSplitSize = StepsNotesSplitter.Panel1MinSize;
+            }
+
             IntensityComboBox.Format += new ListControlConvertEventHandler(IntensityComboBox_Format);
             UpdateIntensityComboBox();
 
