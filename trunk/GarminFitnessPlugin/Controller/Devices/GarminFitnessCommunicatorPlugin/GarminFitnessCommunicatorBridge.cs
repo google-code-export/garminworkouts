@@ -298,9 +298,9 @@ namespace GarminFitnessPlugin.Controller
 
         public void SetDeviceNumber(int deviceNumber)
         {
-		    m_HiddenWebBrowser.Document.InvokeScript("SetDeviceNumber",
+            m_HiddenWebBrowser.Document.InvokeScript("SetDeviceNumber",
                                                      new object[] { deviceNumber });
-	    }
+        }
 
 	    public void ReadProfileFromFitnessDevice()
         {
@@ -368,6 +368,8 @@ namespace GarminFitnessPlugin.Controller
         {
             try
             {
+                Logger.Instance.LogText(String.Format("Comm. : Requesting binary file {0}", filePath));
+
                 m_HiddenWebBrowser.Document.InvokeScript("GetBinaryFile", new object[] { filePath });
             }
             catch (Exception e)
