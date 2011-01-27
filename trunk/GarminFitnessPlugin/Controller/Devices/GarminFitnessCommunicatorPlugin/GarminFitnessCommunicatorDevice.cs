@@ -195,10 +195,10 @@ namespace GarminFitnessPlugin.Controller
                             newFile.Write(decodedData, 0, decodedData.Length);
                             newFile.Close();
                             m_MassStorageFilesToDownload.RemoveAt(0);
+                            operationCompleted = false;
 
                             if (m_MassStorageFilesToDownload.Count > 0)
                             {
-                                operationCompleted = false;
                                 m_Controller.CommunicatorBridge.GetBinaryFile(m_MassStorageFilesToDownload[0]);
                             }
                             else
