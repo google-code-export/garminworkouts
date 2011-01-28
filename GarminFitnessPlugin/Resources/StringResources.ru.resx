@@ -121,7 +121,7 @@
     <value>Активность</value>
   </data>
   <data name="AddDailyViewCheckBoxText" xml:space="preserve">
-    <value>Добавить в дневник</value>
+    <value>Внести в дневник</value>
   </data>
   <data name="AndText" xml:space="preserve">
     <value>и</value>
@@ -190,10 +190,10 @@
     <value>Мастер настройки успешно завершен. Подключаемый модуль можно вызвать через меню "Выберите вид". Внимание: все настройки можно в любой момент найти на странице "Настройки" модуля Garmin Fitness и на экране "Профиль".</value>
   </data>
   <data name="CompletedLabelText" xml:space="preserve">
-    <value>Чтобы закрыть мастер, нажмите "Готово"</value>
+    <value>Чтобы закрыть мастер, нажмите "Завершить"</value>
   </data>
   <data name="CompletedText" xml:space="preserve">
-    <value>Готово</value>
+    <value>Завершить</value>
   </data>
   <data name="ContinueLabelText" xml:space="preserve">
     <value>Чтобы настроить модуль, нажмите "Далее"</value>
@@ -235,7 +235,7 @@
     <value>Двигаться {0:0.00} {1}.</value>
   </data>
   <data name="DistanceDurationLabelText" xml:space="preserve">
-    <value>Насколько далеко?</value>
+    <value>Какое расстояние?</value>
   </data>
   <data name="DoubleRangeValidationText" xml:space="preserve">
     <value>Значение должно быть десятичным числом от {0:0.00} до {1:0.00}</value>
@@ -256,13 +256,13 @@
     <value>Ошибка</value>
   </data>
   <data name="ExportAllText" xml:space="preserve">
-    <value>Экспортировать все</value>
+    <value>Экспорт всех</value>
   </data>
   <data name="ExportAsLabelText" xml:space="preserve">
-    <value>Экспортировать как:</value>
+    <value>Экспорт как:</value>
   </data>
   <data name="ExportCooldownAsText" xml:space="preserve">
-    <value>Экспортировать заминку как</value>
+    <value>Экспорт заминки как</value>
   </data>
   <data name="ExportProfileFailedText" xml:space="preserve">
     <value>Ошибка при экспорте профиля.</value>
@@ -274,19 +274,19 @@
     <value>экспорт профиля</value>
   </data>
   <data name="ExportSelectedText" xml:space="preserve">
-    <value>Экспортировать выбранные</value>
+    <value>Экспорт выбранных</value>
   </data>
   <data name="ExportSTHRZonesAsLabelText" xml:space="preserve">
-    <value>Экспортировать пульсовые зоны ST как :</value>
+    <value>Экспорт пульсовых зон ST как :</value>
   </data>
   <data name="ExportSTPowerZonesAsLabelText" xml:space="preserve">
-    <value>Экспортировать зоны мощности ST как :</value>
+    <value>Экспорт зон мощности ST как :</value>
   </data>
   <data name="ExportText" xml:space="preserve">
     <value>Экспорт</value>
   </data>
   <data name="ExportWarmupAsText" xml:space="preserve">
-    <value>Экспортировать разминку как</value>
+    <value>Экспорт разминки как</value>
   </data>
   <data name="ExportWorkoutsFailedText" xml:space="preserve">
     <value>Ошибка при экспорте тренировок.</value>
@@ -304,7 +304,7 @@
     <value>Файлы тренировок</value>
   </data>
   <data name="FinishLabelText" xml:space="preserve">
-    <value>Чтобы настроить модуль позже, нажмите "Готово"</value>
+    <value>Чтобы настроить модуль позже, нажмите "Завершить"</value>
   </data>
   <data name="FITExportText" xml:space="preserve">
     <value>экспорт FIT</value>
@@ -457,7 +457,7 @@
     <value>Значение должно быть целым числом от {0} до {1}</value>
   </data>
   <data name="InvalidWorkoutNameText" xml:space="preserve">
-    <value>Введенное название тренировки недействительно. Название должно быть уникальным и непустым.</value>
+    <value>Введенное имя тренировки недействительно. Имя должно быть уникальным и непустым.</value>
   </data>
   <data name="LapButtonDurationComboBoxText" xml:space="preserve">
     <value>Когда я нажму кнопку навигатора "Круг"</value>
@@ -484,7 +484,7 @@
     <value>Вы выбрали ручную конфигурацию зон. Выберите режим использования каждого типа зон, доступных в моделе.</value>
   </data>
   <data name="MaxHRLabelText" xml:space="preserve">
-    <value>Максимальная частота пульса :</value>
+    <value>Максимальная ЧСС:</value>
   </data>
   <data name="MillimeterText" xml:space="preserve">
     <value>мм</value>
@@ -496,10 +496,10 @@
     <value>Одна из особенностей модуля Garmin Fitness заключается в том, что он обеспечивает более тесную интеграцию со SportTracks. Благодаря этому можно использовать заданные в SportTracks зоны частоты пульса, скорости и мощности вместо заданных в Garmin. Выбор можно также настроить по каждому типу зон.</value>
   </data>
   <data name="NameLabelText" xml:space="preserve">
-    <value>Название :</value>
+    <value>Имя :</value>
   </data>
   <data name="NameText" xml:space="preserve">
-    <value>Название</value>
+    <value>Имя</value>
   </data>
   <data name="NeedActivityTemplateText" xml:space="preserve">
     <value>Чтобы создать из этой тренировки занятие, необходимо наличие в дневнике хотя бы 1 занятия. Судя по всему, ваш дневник пуст, поэтому создайте пустое занятие, заново внесите тренировку в план, а затем удалите временное занятие.</value>
@@ -508,7 +508,7 @@
     <value>Не экспортировалось ни разу</value>
   </data>
   <data name="NewNameLabelText" xml:space="preserve">
-    <value>Новое название :</value>
+    <value>Новое имя :</value>
   </data>
   <data name="NoDeviceSupportText" xml:space="preserve">
     <value>Устройство {0} не поддерживает {1}, необходимый для правильного функционирования.</value>
@@ -613,7 +613,7 @@
     <value>Обновить список устройств</value>
   </data>
   <data name="RenameExplanationLabelText" xml:space="preserve">
-    <value>При выборе этой опции для тренировки будет использоваться следующее название.</value>
+    <value>При выборе этой опции для тренировки будет использоваться следующее имя.</value>
   </data>
   <data name="RenameLabelText" xml:space="preserve">
     <value>Переименовать</value>
@@ -652,7 +652,7 @@
     <value>Свойства повтора</value>
   </data>
   <data name="ReplaceExplanationLabelText" xml:space="preserve">
-    <value>При выборе этой опции текущая тренировка будет записана вместо тренировки с тем же названием.</value>
+    <value>При выборе этой опции текущая тренировка будет записана вместо тренировки с тем же именем.</value>
   </data>
   <data name="ReplaceLabelText" xml:space="preserve">
     <value>Заменить</value>
@@ -661,13 +661,13 @@
     <value>Заменить или переименовать?</value>
   </data>
   <data name="ReplaceRenameIntroLabelText" xml:space="preserve">
-    <value>Тренировка с таким же названием уже есть. Вы можете либо заменить текущую тренировку, либо дать ей новое название.</value>
+    <value>Тренировка с таким же именем уже есть. Вы можете либо заменить текущую тренировку, либо дать ей новое имя.</value>
   </data>
   <data name="RestingCheckBoxText" xml:space="preserve">
     <value>Этап отдыха</value>
   </data>
   <data name="RestingHeartRateLabelText" xml:space="preserve">
-    <value>Частота пульса в покое :</value>
+    <value>ЧСС в покое :</value>
   </data>
   <data name="RestText" xml:space="preserve">
     <value>Отдых</value>
@@ -733,7 +733,7 @@
     <value>Когда этот этап закончится?</value>
   </data>
   <data name="StepNameLabelText" xml:space="preserve">
-    <value>Пользовательское название этапа:</value>
+    <value>Пользовательское имя этапа:</value>
   </data>
   <data name="StepTargetGroupText" xml:space="preserve">
     <value>Цель этапа</value>
@@ -760,7 +760,7 @@
     <value>Двигаться в течение {0:00}:{1:00}:{2:00}</value>
   </data>
   <data name="TimeDurationLabelText" xml:space="preserve">
-    <value>В течение какого времени?</value>
+    <value>Через какое время?</value>
   </data>
   <data name="TimeRangeValidationText" xml:space="preserve">
     <value>Значение должно быть периодом времени от {0:00}:{1:00} до {2:00}:{3:00}</value>
@@ -787,7 +787,7 @@
     <value>Использовать для всех тренировок</value>
   </data>
   <data name="UseCustomCategoryText" xml:space="preserve">
-    <value>Использовать пользовательскую категорию</value>
+    <value>Использовать свою категорию</value>
   </data>
   <data name="UseParentCategoryText" xml:space="preserve">
     <value>Использовать родительскую категорию</value>
@@ -805,7 +805,7 @@
     <value>Вес :</value>
   </data>
   <data name="WelcomeLabelText" xml:space="preserve">
-    <value>Добро пожаловать в мастер настройки модуля Garmin Fitness. Он поможет вам настроить модуль для вашего дневника. Вы можете выйти из мастера в любой момент, нажав на кнопку "Готово". Кроме того, вы можете вызвать мастер в любой момент со страницы "Параметры" модуля, чтобы изменить настройки впоследствии по собственному вкусу.</value>
+    <value>Добро пожаловать в мастер настройки модуля Garmin Fitness. Он поможет вам настроить модуль для вашего дневника. Вы можете выйти из мастера в любой момент, нажав на кнопку "Завершить". Кроме того, вы можете вызвать мастер в любой момент со страницы "Параметры" модуля, чтобы изменить настройки впоследствии по собственному вкусу.</value>
   </data>
   <data name="WelcomeText" xml:space="preserve">
     <value>Добро пожаловать</value>
