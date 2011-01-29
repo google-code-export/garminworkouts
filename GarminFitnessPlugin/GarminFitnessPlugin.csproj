@@ -85,8 +85,8 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\References\GarXFaceNet.dll</HintPath>
     </Reference>
-    <Reference Include="SportTracksPluginFramework1.0.7">
-      <HintPath>..\References\SportTracksPluginFramework\SportTracksPluginFramework1.0.7.dll</HintPath>
+    <Reference Include="SportTracksPluginFramework1.0.8">
+      <HintPath>..\References\SportTracksPluginFramework\SportTracksPluginFramework1.0.8.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
