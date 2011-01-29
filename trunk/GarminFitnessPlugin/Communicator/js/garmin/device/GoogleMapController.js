@@ -46,7 +46,7 @@ Garmin.MapController.prototype = {
 			this.map.addControl(new GMapTypeControl());
         	new GKeyboardHandler(this.map);
         } catch (e) {
-        	alert("WARNING: application will not function properly with missing Google script element or invalid Google map key.  Error: "+e);
+        	alert("WARNING: application will not function properly with missing Google script element or invalid Google map key.  Error: " + e.message);
         }
         window.onUnload = "GUnload()";
     },
@@ -95,7 +95,7 @@ Garmin.MapController.prototype = {
 		        this.addStartFinishMarkers(series);
 		        this.bounds = this.findAZoomLevel(drawnPoints);
 		        this.setOnBounds( this.bounds );
-			} catch(e){ alert("GoogleMapControl.drawTrack, IE error on map.addOverlay("+polyline+") err: "+e); }
+			} catch(e){ alert("GoogleMapControl.drawTrack, IE error on map.addOverlay("+polyline+") err: " + e.message); }
         }
     },
 
