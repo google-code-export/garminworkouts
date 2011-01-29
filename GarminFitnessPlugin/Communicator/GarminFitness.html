@@ -410,7 +410,11 @@
                 cancelReadFitDirectory = false;
                 garminPlugin.startReadFitDirectory(garminController.getDeviceNumber());
 
-                setTimeout(function () { this._progressReadFitDirectory() } .bind(this), 200);
+                window.external.WriteLog("HTML: Reading FIT dir");
+
+                setTimeout(function () { this._progressReadFitDirectory() } .bind(this), 300);
+
+                window.external.WriteLog("HTML: Async reading FIT dir called");
             }
             catch (e) {
                 window.external.OnExceptionTriggered("ReadFITDirectory failed: " + e.message);
@@ -419,6 +423,8 @@
 
         function GetWorkoutFiles() {
             try {
+                window.external.WriteLog("HTML: Reading workouts dir");
+
                 cancelReadableFileListing = false;
                 var dataTypes = garminController.getDevices()[garminController.getDeviceNumber()].getDeviceDataTypes().values();
                 var dataType = null;
@@ -431,10 +437,14 @@
                 }
 
                 if (dataType != null) {
+                    window.external.WriteLog("HTML: Reading workouts dir, found dataType");
+
                     cancelReadableFileListing = false;
                     garminPlugin.startReadableFileListing(garminController.getDeviceNumber(), dataType.getTypeName(), dataType.getIdentifier(), true);
 
-                    setTimeout(function () { this._progressReadDirectory() } .bind(this), 200);
+                    setTimeout(function () { this._progressReadDirectory() } .bind(this), 300);
+
+                    window.external.WriteLog("HTML: Async reading workouts dir");
                 }
                 else {
                     this._broadcaster.dispatch("onFinishReadDirectory", { success: false });
@@ -446,32 +456,50 @@
         }
 
         function _progressReadFitDirectory() {
-            var status = garminPlugin.finishReadFitDirectory();
+            try {
+                var status = garminPlugin.finishReadFitDirectory();
 
-            if (status == Garmin.DeviceControl.FINISH_STATES.messageWaiting) {
-                garminPlugin.respondToMessageBox(1);    // close msg box
-            }
-            else if (status == Garmin.DeviceControl.FINISH_STATES.finished ||
+                window.external.WriteLog("HTML: Progress FIT dir.  Status: " + status);
+
+                if (status == Garmin.DeviceControl.FINISH_STATES.messageWaiting) {
+                    garminPlugin.respondToMessageBox(1);    // close msg box
+                }
+                else if (status == Garmin.DeviceControl.FINISH_STATES.finished ||
                     cancelReadFitDirectory) {
-                garminController._broadcaster.dispatch("onFinishReadDirectory", { success: !cancelReadFitDirectory });
+                    garminController._broadcaster.dispatch("onFinishReadDirectory", { success: !cancelReadFitDirectory });
+                }
+                else {
+                    setTimeout(function () { this._progressReadFitDirectory() } .bind(this), 300); //300		 
+
+                    window.external.WriteLog("HTML: Async reading FIT dir called");
+                }
             }
-            else {
-                setTimeout(function () { this._progressReadFitDirectory() } .bind(this), 200); //200		 
+            catch (e) {
+                window.external.OnExceptionTriggered("_progressReadFitDirectory failed: " + e.message);
             }
         }
 
         function _progressReadDirectory() {
-            var status = garminPlugin.finishReadableFileListing();
+            try {
+                var status = garminPlugin.finishReadableFileListing();
 
-            if (status == Garmin.DeviceControl.FINISH_STATES.messageWaiting) {
-                garminPlugin.respondToMessageBox(1);    // close msg box
+                window.external.WriteLog("HTML: Progress dir.  Status: " + status);
+
+                if (status == Garmin.DeviceControl.FINISH_STATES.messageWaiting) {
+                    garminPlugin.respondToMessageBox(1);    // close msg box
+                }
+                else if (status == Garmin.DeviceControl.FINISH_STATES.finished ||
+                         cancelReadableFileListing) {
+                    garminController._broadcaster.dispatch("onFinishReadDirectory", { success: !cancelReadableFileListing });
+                }
+                else {
+                    setTimeout(function () { this._progressReadDirectory() } .bind(this), 300); //300		 
+                }
+
+                window.external.WriteLog("HTML: Async reading dir called");
             }
-            else if (status == Garmin.DeviceControl.FINISH_STATES.finished ||
-                    cancelReadableFileListing) {
-                garminController._broadcaster.dispatch("onFinishReadDirectory", { success: !cancelReadableFileListing });
-            }
-            else {
-                setTimeout(function () { this._progressReadDirectory() } .bind(this), 200); //200		 
+            catch (e) {
+                window.external.OnExceptionTriggered("_progressReadDirectory failed: " + e.message);
             }
         }
 
@@ -497,8 +525,12 @@
 
         function GetBinaryFile(filePath) {
             try {
+                window.external.WriteLog("HTML: Get binary called");
+
                 m_FileDownloadPath = filePath;
-                setTimeout(function () { this._AsyncGetBinaryFile() } .bind(this), 50);		 
+                setTimeout(function () { this._AsyncGetBinaryFile() } .bind(this), 300);
+
+                window.external.WriteLog("HTML: Async get binary called");
             }
             catch (e) {
                 window.external.OnExceptionTriggered("GetBinaryFile failed: " + e.message);
@@ -506,7 +538,16 @@
         }
 
         function _AsyncGetBinaryFile() {
-            garminController.getBinaryFile(garminController.getDeviceNumber(), m_FileDownloadPath);
+            try {
+                window.external.WriteLog("HTML: _AsyncGetBinaryFile called");
+
+                garminController.getBinaryFile(garminController.getDeviceNumber(), m_FileDownloadPath);
+
+                window.external.WriteLog("HTML: Async get binary called");
+            }
+            catch (e) {
+                window.external.OnExceptionTriggered("_AsyncGetBinaryFile failed: " + e.message);
+            }
         }
 
 
