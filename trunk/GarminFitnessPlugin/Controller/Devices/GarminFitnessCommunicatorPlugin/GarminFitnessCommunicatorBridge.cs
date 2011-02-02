@@ -264,7 +264,10 @@ namespace GarminFitnessPlugin.Controller
         {
             if (ProgressChanged != null)
             {
-                ProgressChanged(this, new TransferProgressedEventArgs(int.Parse(percentage)));
+                int progress = 0;
+
+                int.TryParse(percentage, out progress);
+                ProgressChanged(this, new TransferProgressedEventArgs(progress));
             }
         }
 
