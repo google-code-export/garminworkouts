@@ -1162,7 +1162,7 @@ Garmin.DeviceControl.prototype = {
             if (percentageNode.getAttribute("Type") == "Percentage") {
                 progress.setPercentage(percentageNode.getAttribute("Value"));
             } else if (percentageNode.getAttribute("Type") == "Indefinite") {
-                progress.setPercentage(100);
+                progress.setPercentage("100");
             }
         }
 
