@@ -184,34 +184,51 @@ namespace GarminFitnessPlugin.Controller
 
                         if (m_MassStorageFilesToDownload != null)
                         {
-                            Debug.Assert(m_MassStorageFilesToDownload.Count > 0);
-
-                            String currentFilename = m_TempDirectoryLocation + m_MassStorageFilesToDownload[0].Replace('/', '\\');
-                            String fileDirectory = currentFilename.Substring(0, currentFilename.LastIndexOf('\\'));
-                            Directory.CreateDirectory(fileDirectory);
-                            FileStream newFile = File.Create(currentFilename);
-                            Byte[] decodedData = UUDecode(e.DataString);
-
-                            newFile.Write(decodedData, 0, decodedData.Length);
-                            newFile.Close();
-                            m_MassStorageFilesToDownload.RemoveAt(0);
-                            operationCompleted = false;
+                            //Debug.Assert(m_MassStorageFilesToDownload.Count > 0);
+                            Logger.Instance.LogText(String.Format("Mass storage files remaining = {0}", m_MassStorageFilesToDownload.Count));
 
                             if (m_MassStorageFilesToDownload.Count > 0)
                             {
-                                m_Controller.CommunicatorBridge.GetBinaryFile(m_MassStorageFilesToDownload[0]);
-                            }
-                            else
-                            {
-                                TriggerOperationWillCompleteEvent();
+                                String currentFilename = m_TempDirectoryLocation + m_MassStorageFilesToDownload[0].Replace('/', '\\');
+                                String fileDirectory = currentFilename.Substring(0, currentFilename.LastIndexOf('\\'));
+                                Directory.CreateDirectory(fileDirectory);
+                                FileStream newFile = File.Create(currentFilename);
+                                Byte[] decodedData = UUDecode(e.DataString);
 
-                                if (m_CurrentOperation == DeviceOperations.ReadFITProfile)
+                                newFile.Write(decodedData, 0, decodedData.Length);
+                                newFile.Close();
+                                m_MassStorageFilesToDownload.RemoveAt(0);
+                                operationCompleted = false;
+
+                                Logger.Instance.LogText(String.Format("Mass storage files remaining after delete = {0}", m_MassStorageFilesToDownload.Count));
+
+                                if (m_MassStorageFilesToDownload.Count > 0)
                                 {
-                                    success = ProfileImporter.AsyncImportDirectory(m_TempDirectoryLocation, this);
+                                    m_Controller.CommunicatorBridge.GetBinaryFile(m_MassStorageFilesToDownload[0]);
                                 }
                                 else
                                 {
-                                    success = WorkoutImporter.AsyncImportDirectory(m_TempDirectoryLocation, this);
+                                    TriggerOperationWillCompleteEvent();
+
+                                    if (m_CurrentOperation == DeviceOperations.ReadFITProfile)
+                                    {
+                                        success = ProfileImporter.AsyncImportDirectory(m_TempDirectoryLocation, this);
+                                    }
+                                    else
+                                    {
+                                        success = WorkoutImporter.AsyncImportDirectory(m_TempDirectoryLocation, this);
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                try
+                                {
+                                    throw new Exception();
+                                }
+                                catch (Exception exception)
+                                {
+                                    Logger.Instance.LogText("Caught empty mass storage list\n" + exception.StackTrace);
                                 }
                             }
                         }
