@@ -25,6 +25,7 @@ namespace GarminFitnessPlugin.Controller
                 IGarminDeviceController newController = new GarminFitnessCommunicatorDeviceController();
                 newController.InitializationCompleted += new DeviceControllerOperationCompletedEventHandler(OnControllerInitializationCompleted);
                 newController.FindDevicesCompleted += new DeviceControllerOperationCompletedEventHandler(OnControllerFindDevicesCompleted);
+                newController.ExceptionTriggered += new EventHandler<GarminFitnessCommunicatorBridge.ExceptionEventArgs>(OnControllerExceptionTriggered);
                 m_Controllers.Add(newController);
 
                 Initialize();
@@ -151,9 +152,12 @@ namespace GarminFitnessPlugin.Controller
 
         private void CancelPendingTasks()
         {
-            Logger.Instance.LogText("Cancelling pending tasks");
+            if (m_TaskQueue.Count > 0)
+            {
+                Logger.Instance.LogText("Cancelling pending tasks");
 
-            m_TaskQueue.RemoveRange(1, m_TaskQueue.Count - 1);
+                m_TaskQueue.RemoveRange(1, m_TaskQueue.Count - 1);
+            }
         }
 
         private void AddTask(BasicTask task)
@@ -192,24 +196,31 @@ namespace GarminFitnessPlugin.Controller
 
         private void CompleteCurrentTask(bool success, String errorText)
         {
-            Logger.Instance.LogText(String.Format("Task {0} completed with result {1}", CurrentTask.Type.ToString(), success));
-
-            BasicTask task = CurrentTask;
-
-            m_TimeoutTimer.Stop();
-            m_TaskQueue.RemoveAt(0);
-
-            if (TaskCompleted != null)
+            if (CurrentTask != null)
             {
-                TaskCompleted(this, task, success, errorText);
-            }
+                Logger.Instance.LogText(String.Format("Task {0} completed with result {1}", CurrentTask.Type.ToString(), success));
 
-            if (success)
-            {
-                if (PendingTaskCount > 0 && task.Type != BasicTask.TaskTypes.RefreshDevices)
+                BasicTask task = CurrentTask;
+
+                m_TimeoutTimer.Stop();
+                m_TaskQueue.RemoveAt(0);
+
+                if (TaskCompleted != null)
                 {
-                    StartNextTask();
+                    TaskCompleted(this, task, success, errorText);
                 }
+
+                if (success)
+                {
+                    if (PendingTaskCount > 0 && task.Type != BasicTask.TaskTypes.RefreshDevices)
+                    {
+                        StartNextTask();
+                    }
+                }
+            }
+            else
+            {
+                Logger.Instance.LogText(String.Format("Null current task, ignoring completion.\nError text : {0}", errorText));
             }
         }
 
@@ -260,6 +271,8 @@ namespace GarminFitnessPlugin.Controller
         private void OnControllerFindDevicesCompleted(object sender, Boolean succeeded)
         {
             bool setDeviceSucceeded = succeeded;
+
+            m_TimeoutTimer.Stop();
 
             if (succeeded)
             {
@@ -338,6 +351,21 @@ namespace GarminFitnessPlugin.Controller
             else
             {
                 CompleteCurrentTask(setDeviceSucceeded);
+            }
+        }
+
+        void OnControllerExceptionTriggered(object sender, GarminFitnessCommunicatorBridge.ExceptionEventArgs e)
+        {
+            if (CurrentTask != null &&
+                (CurrentTask.Type == BasicTask.TaskTypes.Initialize ||
+                 CurrentTask.Type == BasicTask.TaskTypes.RefreshDevices ||
+                 CurrentTask.Type == BasicTask.TaskTypes.SetOperatingDevice))
+            {
+                Logger.Instance.LogText(String.Format("Controller exception caught in manager : {0}", e.ExceptionText));
+
+                m_TimeoutTimer.Stop();
+                CancelPendingTasks();
+                CompleteCurrentTask(false, e.ExceptionText);
             }
         }
 
@@ -616,7 +644,15 @@ namespace GarminFitnessPlugin.Controller
 
         public BasicTask CurrentTask
         {
-            get { return m_TaskQueue[0]; }
+            get
+            {
+                if (m_TaskQueue.Count > 0)
+                {
+                    return m_TaskQueue[0];
+                }
+
+                return null;
+            }
         }
 
         public static GarminDeviceManager Instance

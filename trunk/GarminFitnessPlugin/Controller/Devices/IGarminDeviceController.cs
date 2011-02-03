@@ -17,5 +17,6 @@ namespace GarminFitnessPlugin.Controller
 
         event DeviceControllerOperationCompletedEventHandler InitializationCompleted;
         event DeviceControllerOperationCompletedEventHandler FindDevicesCompleted;
+        event EventHandler<GarminFitnessCommunicatorBridge.ExceptionEventArgs> ExceptionTriggered;
     }
 }

@@ -23,6 +23,10 @@ namespace GarminFitnessPlugin.Controller
 
         private void OnCommunicatorBridgeExceptionTriggered(object sender, GarminFitnessCommunicatorBridge.ExceptionEventArgs e)
         {
+            if (ExceptionTriggered != null)
+            {
+                ExceptionTriggered(sender, e);
+            }
         }
 
         void OnCommunicatorBridgeControllerReady(object sender, EventArgs e)
@@ -124,6 +128,7 @@ namespace GarminFitnessPlugin.Controller
 
         public event DeviceControllerOperationCompletedEventHandler InitializationCompleted;
         public event DeviceControllerOperationCompletedEventHandler FindDevicesCompleted;
+        public event EventHandler<GarminFitnessCommunicatorBridge.ExceptionEventArgs> ExceptionTriggered;
 
 #endregion
 
