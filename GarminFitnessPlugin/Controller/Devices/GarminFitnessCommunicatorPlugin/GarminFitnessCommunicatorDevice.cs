@@ -120,6 +120,8 @@ namespace GarminFitnessPlugin.Controller
         {
             m_CancellationError = e.ExceptionText;
 
+            Logger.Instance.LogText(String.Format("Bridge exception caught in device : {0}", e.ExceptionText));
+
             switch(m_CurrentOperation)
             {
                 case DeviceOperations.ReadProfile:

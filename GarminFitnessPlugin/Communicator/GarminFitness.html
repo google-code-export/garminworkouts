@@ -4,7 +4,6 @@
     <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" />
 </head>
 <body>
-    <script type="text/javascript" src="js/json.js"></script>
     <script type="text/javascript" src="js/prototype/prototype.js"></script>
     <script type="text/javascript" src="js/garmin/util/Util-Broadcaster.js"></script>
     <script type="text/javascript" src="js/garmin/util/Util-BrowserDetect.js"></script>
@@ -124,96 +123,146 @@
         }
 
         listener.prototype =
-          {
-              initialize: function () {
-              },
-              onStartFindDevices: function (json) {
-                  window.external.OnStartFindDevices();
-              },
-              onFinishFindDevices: function (json) {
-                  window.external.OnFinishFindDevices(DevicesString(json.controller.getDevices()));
-              },
-              onProgressReadFromDevice: function (json) {
-                  var progress = json.progress.getPercentage();
+        {
+            initialize: function () {
+            },
+            onStartFindDevices: function (json) {
+                try {
+                    window.external.OnStartFindDevices();
+                }
+                catch (e) {
+                    window.external.OnExceptionTriggered(e.message);
+                }
+            },
+            onFinishFindDevices: function (json) {
+                try {
+                    window.external.OnFinishFindDevices(DevicesString(json.controller.getDevices()));
+                }
+                catch (e) {
+                    window.external.OnExceptionTriggered(e.message);
+                }
+            },
+            onProgressReadFromDevice: function (json) {
+                try {
+                    var progress = json.progress.getPercentage();
 
-                  if (progress == null) {
-                      progress = "0";
-                  }
+                    if (progress == null) {
+                        progress = "0";
+                    }
 
-                  window.external.OnProgressReadFromDevice(progress);
-              },
-              onFinishReadFromDevice: function (json) {
-                  var success = json.success;
-                  var result = json.controller.gpsDataString;
+                    window.external.OnProgressReadFromDevice(progress);
+                }
+                catch (e) {
+                    window.external.OnExceptionTriggered(e.message);
+                }
+            },
+            onFinishReadFromDevice: function (json) {
+                try {
+                    var success = json.success;
+                    var result = json.controller.gpsDataString;
 
-                  if (result == null) {
-                      result = "";
-                  }
+                    if (result == null) {
+                        result = "";
+                    }
 
-                  if (success == null) {
-                      success = false;
-                  }
+                    if (success == null) {
+                        success = false;
+                    }
 
-                  window.external.OnFinishReadFromDevice(success, result);
-              },
-              onFinishReadDirectory: function (json) {
-                  var success = json.success;
-                  var directoryXml = null;
+                    window.external.OnFinishReadFromDevice(success, result);
+                }
+                catch (e) {
+                    window.external.OnExceptionTriggered(e.message);
+                }
+            },
+            onFinishReadDirectory: function (json) {
+                try {
+                    var success = json.success;
+                    var directoryXml = null;
 
-                  if (success == null) {
-                      success = false;
-                  }
+                    if (success == null) {
+                        success = false;
+                    }
 
-                  if (success) {
-                      directoryXml = garminPlugin.getDirectoryXml();
-                      directoryXml = escapeXmlChars(directoryXml);
-                  }
+                    if (success) {
+                        directoryXml = garminPlugin.getDirectoryXml();
+                        directoryXml = escapeXmlChars(directoryXml);
+                    }
 
-                  if (directoryXml == null) {
-                      directoryXml = "";
-                  }
+                    if (directoryXml == null) {
+                        directoryXml = "";
+                    }
 
-                  window.external.OnFinishReadDirectory(success, directoryXml);
-              },
-              onCancelReadFromDevice: function (json) {
-                  window.external.OnFinishReadFromDevice(false, "");
-              },
-              onProgressWriteToDevice: function (json) {
-                  var progress = json.progress.getPercentage();
+                    window.external.OnFinishReadDirectory(success, directoryXml);
+                }
+                catch (e) {
+                    window.external.OnExceptionTriggered(e.message);
+                }
+            },
+            onCancelReadFromDevice: function (json) {
+                try {
+                    window.external.OnFinishReadFromDevice(false, "");
+                }
+                catch (e) {
+                    window.external.OnExceptionTriggered(e.message);
+                }
+            },
+            onProgressWriteToDevice: function (json) {
+                try {
+                    var progress = json.progress.getPercentage();
 
-                  if (progress == null) {
-                      progress = "0";
-                  }
+                    if (progress == null) {
+                        progress = "0";
+                    }
 
-                  window.external.OnProgressWriteToDevice(progress);
-              },
-              onFinishWriteToDevice: function (json) {
-                  var success = json.success;
-                  var result = json.controller.gpsDataString;
+                    window.external.OnProgressWriteToDevice(progress);
+                }
+                catch (e) {
+                    window.external.OnExceptionTriggered(e.message);
+                }
+            },
+            onFinishWriteToDevice: function (json) {
+                try {
+                    var success = json.success;
+                    var result = json.controller.gpsDataString;
 
-                  if (result == null) {
-                      result = "";
-                  }
+                    if (result == null) {
+                        result = "";
+                    }
 
-                  if (success == null) {
-                      success = false;
-                  }
+                    if (success == null) {
+                        success = false;
+                    }
 
-                  window.external.OnFinishWriteToDevice(success, result);
-              },
-              onCancelWriteToDevice: function (json) {
-                  window.external.OnFinishWriteToDevice(false, "");
-              },
-              onException: function (json) {
-                  var message = json.msg.message;
+                    window.external.OnFinishWriteToDevice(success, result);
+                }
+                catch (e) {
+                    window.external.OnExceptionTriggered(e.message);
+                }
+            },
+            onCancelWriteToDevice: function (json) {
+                try {
+                    window.external.OnFinishWriteToDevice(false, "");
+                }
+                catch (e) {
+                    window.external.OnExceptionTriggered(e.message);
+                }
+            },
+            onException: function (json) {
+                try {
+                    var message = json.msg.message;
 
-                  if (message == null) {
-                      message = "";
-                  }
+                    if (message == null) {
+                        message = "";
+                    }
 
-                  window.external.OnExceptionTriggered(message);
-              }
-          };
+                    window.external.OnExceptionTriggered(message);
+                }
+                catch (e) {
+                    window.external.OnExceptionTriggered(e.message);
+                }
+            }
+        };
 
         listenerHTML.prototype =
           {
