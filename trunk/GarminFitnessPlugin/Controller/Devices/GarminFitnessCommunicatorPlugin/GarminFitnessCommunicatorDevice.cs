@@ -20,11 +20,6 @@ namespace GarminFitnessPlugin.Controller
             m_TempDirectoryLocation = m_TempDirectoryLocation + "\\Communicator\\temp\\";
 
             m_Controller = controller;
-            m_Controller.CommunicatorBridge.ExceptionTriggered += new EventHandler<GarminFitnessCommunicatorBridge.ExceptionEventArgs>(OnBridgeExceptionTriggered);
-            m_Controller.CommunicatorBridge.ProgressChanged += new EventHandler<GarminFitnessCommunicatorBridge.TransferProgressedEventArgs>(OnBridgeProgressChanged);
-            m_Controller.CommunicatorBridge.ReadFromDeviceCompleted += new EventHandler<GarminFitnessCommunicatorBridge.TransferCompletedEventArgs>(OnBridgeReadFromDeviceCompleted);
-            m_Controller.CommunicatorBridge.ReadDirectoryCompleted += new EventHandler<GarminFitnessCommunicatorBridge.TransferCompletedEventArgs>(OnBridgeReadDirectoryCompleted);
-            m_Controller.CommunicatorBridge.WriteToDeviceCompleted += new EventHandler<GarminFitnessCommunicatorBridge.TransferCompletedEventArgs>(OnBridgeWriteToDeviceCompleted);
 
             foreach (XmlAttribute attribute in deviceXml.Attributes)
             {
@@ -120,7 +115,14 @@ namespace GarminFitnessPlugin.Controller
         {
             m_CancellationError = e.ExceptionText;
 
-            Logger.Instance.LogText(String.Format("Bridge exception caught in device : {0}", e.ExceptionText));
+            try
+            {
+                throw new Exception(e.ExceptionText);
+            }
+            catch (Exception exception)
+            {
+                Logger.Instance.LogText(String.Format("Bridge exception caught in device : {0}\nStack:{1}", exception.Message, exception.StackTrace));
+            }
 
             switch(m_CurrentOperation)
             {
@@ -322,6 +324,8 @@ namespace GarminFitnessPlugin.Controller
         {
             bool operationComplete = true;
 
+            m_IsReadingDirectory = false;
+
             if (e.Success)
             {
                 if (m_CurrentOperation == DeviceOperations.ReadMassStorageWorkouts)
@@ -388,60 +392,18 @@ namespace GarminFitnessPlugin.Controller
 
 #region IDevice Members
 
-        private bool ImportWorkoutFileResult(String workoutsXml)
+        public void Initialize()
         {
-            try
-            {
-                bool result = false;
-
-                // UU encoduded base 64, decode first
-                if (workoutsXml.StartsWith("begin-base64"))
-                {
-                    Byte[] decodedBytes = UUDecode(workoutsXml);
-                    workoutsXml = Encoding.UTF8.GetString(decodedBytes);
-                }
-
-                MemoryStream stream = new MemoryStream(Encoding.UTF8.GetBytes(workoutsXml));
-
-                result = WorkoutImporter.ImportWorkout(stream);
-                stream.Close();
-
-                return result;
-            }
-            catch
-            {
-                return false;
-            }
+            m_Controller.CommunicatorBridge.ExceptionTriggered += new EventHandler<GarminFitnessCommunicatorBridge.ExceptionEventArgs>(OnBridgeExceptionTriggered);
+            m_Controller.CommunicatorBridge.ProgressChanged += new EventHandler<GarminFitnessCommunicatorBridge.TransferProgressedEventArgs>(OnBridgeProgressChanged);
+            m_Controller.CommunicatorBridge.ReadFromDeviceCompleted += new EventHandler<GarminFitnessCommunicatorBridge.TransferCompletedEventArgs>(OnBridgeReadFromDeviceCompleted);
+            m_Controller.CommunicatorBridge.ReadDirectoryCompleted += new EventHandler<GarminFitnessCommunicatorBridge.TransferCompletedEventArgs>(OnBridgeReadDirectoryCompleted);
+            m_Controller.CommunicatorBridge.WriteToDeviceCompleted += new EventHandler<GarminFitnessCommunicatorBridge.TransferCompletedEventArgs>(OnBridgeWriteToDeviceCompleted);
         }
 
-        private bool ImportFITWorkoutFileResult(String workoutData)
+        public void Uninitialize()
         {
-            try
-            {
-                Byte[] decodedBytes = null;
-                bool result = false;
-
-                // UU encoduded base 64, decode first
-                if (workoutData.StartsWith("begin-base64"))
-                {
-                    decodedBytes = UUDecode(workoutData);
-                }
-                else
-                {
-                    decodedBytes = Encoding.UTF8.GetBytes(workoutData);
-                }
-
-                MemoryStream stream = new MemoryStream(decodedBytes);
-
-                result = WorkoutImporter.ImportWorkoutFromFIT(stream);
-                stream.Close();
-
-                return result;
-            }
-            catch
-            {
-                return false;
-            }
+            Dispose();
         }
 
         public void CancelWrite()
@@ -455,7 +417,14 @@ namespace GarminFitnessPlugin.Controller
         {
             Debug.Assert(m_CurrentOperation != DeviceOperations.Idle);
 
-            m_Controller.CommunicatorBridge.CancelReadFromDevice();
+            if (m_IsReadingDirectory)
+            {
+                m_Controller.CommunicatorBridge.CancelReadFitDirectory();
+            }
+            else
+            {
+                m_Controller.CommunicatorBridge.CancelReadFromDevice();
+            }
         }
 
         public void WriteWorkouts(List<IWorkout> workouts)
@@ -590,6 +559,7 @@ namespace GarminFitnessPlugin.Controller
                 SupportsWorkoutMassStorageTransfer)
             {
                 m_MassStorageFileReadCount = 0;
+                m_IsReadingDirectory = true;
                 ClearTempDirectory();
 
                 if (SupportsFITWorkouts)
@@ -703,6 +673,7 @@ namespace GarminFitnessPlugin.Controller
                 Logger.Instance.LogText("Comm. : Reading FIT directory for profile");
 
                 m_MassStorageFileReadCount = 0;
+                m_IsReadingDirectory = true;
                 ClearTempDirectory();
 
                 m_CurrentOperation = DeviceOperations.ReadFITProfile;
@@ -736,6 +707,62 @@ namespace GarminFitnessPlugin.Controller
             Logger.Instance.LogText(String.Format("UU decoded result length = {0}", Encoding.UTF8.GetString(decodedBytes).Length));
 
             return decodedBytes;
+        }
+
+        private bool ImportWorkoutFileResult(String workoutsXml)
+        {
+            try
+            {
+                bool result = false;
+
+                // UU encoduded base 64, decode first
+                if (workoutsXml.StartsWith("begin-base64"))
+                {
+                    Byte[] decodedBytes = UUDecode(workoutsXml);
+                    workoutsXml = Encoding.UTF8.GetString(decodedBytes);
+                }
+
+                MemoryStream stream = new MemoryStream(Encoding.UTF8.GetBytes(workoutsXml));
+
+                result = WorkoutImporter.ImportWorkout(stream);
+                stream.Close();
+
+                return result;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+        private bool ImportFITWorkoutFileResult(String workoutData)
+        {
+            try
+            {
+                Byte[] decodedBytes = null;
+                bool result = false;
+
+                // UU encoduded base 64, decode first
+                if (workoutData.StartsWith("begin-base64"))
+                {
+                    decodedBytes = UUDecode(workoutData);
+                }
+                else
+                {
+                    decodedBytes = Encoding.UTF8.GetBytes(workoutData);
+                }
+
+                MemoryStream stream = new MemoryStream(decodedBytes);
+
+                result = WorkoutImporter.ImportWorkoutFromFIT(stream);
+                stream.Close();
+
+                return result;
+            }
+            catch
+            {
+                return false;
+            }
         }
 
         private List<string> GetFilePaths(String directoryXml)
@@ -902,5 +929,6 @@ namespace GarminFitnessPlugin.Controller
         private bool m_SupportsFITWorkouts = false;
         private bool m_SupportsFITSettings = false;
         private bool m_SupportsFITSports = false;
+        private bool m_IsReadingDirectory = false;
     }
 }

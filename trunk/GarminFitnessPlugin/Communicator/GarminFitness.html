@@ -565,7 +565,7 @@
         function CancelReadFitDirectory() {
             try {
                 this.cancelReadFitDirectory = true;
-                garminPlugin.cancelReadFitDirectory();
+                garminPlugin.cancelReadFitnessDirectory();
             }
             catch (e) {
                 window.external.OnExceptionTriggered("CancelReadFitDirectory failed: " + e.message);
@@ -592,7 +592,7 @@
 
                 garminController.getBinaryFile(garminController.getDeviceNumber(), m_FileDownloadPath);
 
-                window.external.WriteLog("HTML: Async get binary called");
+                window.external.WriteLog("HTML: _AsyncGetBinaryFile terminated");
             }
             catch (e) {
                 window.external.OnExceptionTriggered("_AsyncGetBinaryFile failed: " + e.message);

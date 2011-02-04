@@ -318,7 +318,11 @@ namespace GarminFitnessPlugin.Controller
         public void CancelReadFromDevice()
         {
             m_HiddenWebBrowser.Document.InvokeScript("CancelReadFromDevice");
-            m_HiddenWebBrowser.Document.InvokeScript("CancelReadFitnessDirectory");
+        }
+
+        public void CancelReadFitDirectory()
+        {
+            m_HiddenWebBrowser.Document.InvokeScript("CancelReadFitDirectory");
         }
 
         public void CancelWriteToDevice()

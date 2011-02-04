@@ -22,6 +22,9 @@ namespace GarminFitnessPlugin.Controller
 
     interface IGarminDevice : IDisposable
     {
+        void Initialize();
+        void Uninitialize();
+
         void CancelWrite();
         void CancelRead();
 
