@@ -685,99 +685,104 @@ namespace GarminFitnessPlugin.View
 
         private void HeartRateDurationText_Validating(object sender, CancelEventArgs e)
         {
-            Debug.Assert(SelectedStep != null);
-
-            if (SelectedStep is RegularStep)
+            if (SelectedStep != null)
             {
-                RegularStep concreteStep = SelectedStep as RegularStep;
-                Debug.Assert(concreteStep.Duration != null &&
-                             (concreteStep.Duration.Type == IDuration.DurationType.HeartRateAbove ||
-                              concreteStep.Duration.Type == IDuration.DurationType.HeartRateBelow));
-                bool isPercentMax;
-                UInt16 oldValue, minRange, maxRange;
-
-                if (concreteStep.Duration.Type == IDuration.DurationType.HeartRateAbove)
+                if (SelectedStep is RegularStep)
                 {
-                    HeartRateAboveDuration concreteDuration = concreteStep.Duration as HeartRateAboveDuration;
+                    RegularStep concreteStep = SelectedStep as RegularStep;
+                    Debug.Assert(concreteStep.Duration != null &&
+                                 (concreteStep.Duration.Type == IDuration.DurationType.HeartRateAbove ||
+                                  concreteStep.Duration.Type == IDuration.DurationType.HeartRateBelow));
+                    bool isPercentMax;
+                    UInt16 oldValue, minRange, maxRange;
 
-                    isPercentMax = concreteDuration.IsPercentageMaxHeartRate;
-                    oldValue = concreteDuration.MaxHeartRate;
+                    if (concreteStep.Duration.Type == IDuration.DurationType.HeartRateAbove)
+                    {
+                        HeartRateAboveDuration concreteDuration = concreteStep.Duration as HeartRateAboveDuration;
+
+                        isPercentMax = concreteDuration.IsPercentageMaxHeartRate;
+                        oldValue = concreteDuration.MaxHeartRate;
+                    }
+                    else
+                    {
+                        HeartRateBelowDuration concreteDuration = concreteStep.Duration as HeartRateBelowDuration;
+
+                        isPercentMax = concreteDuration.IsPercentageMaxHeartRate;
+                        oldValue = concreteDuration.MinHeartRate;
+                    }
+
+                    if (isPercentMax)
+                    {
+                        minRange = Constants.MinHRInPercentMax;
+                        maxRange = Constants.MaxHRInPercentMax;
+                    }
+                    else
+                    {
+                        minRange = Constants.MinHRInBPM;
+                        maxRange = Constants.MaxHRInBPM;
+                    }
+
+                    e.Cancel = !Utils.IsTextIntegerInRange(HeartRateDurationText.Text, minRange, maxRange);
+                    if (e.Cancel)
+                    {
+                        MessageBox.Show(String.Format(GarminFitnessView.GetLocalizedString("IntegerRangeValidationText"), minRange, maxRange),
+                                        GarminFitnessView.GetLocalizedString("ValueValidationTitleText"), MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        System.Media.SystemSounds.Asterisk.Play();
+
+                        // Reset old valid value
+                        HeartRateDurationText.Text = oldValue.ToString();
+                    }
                 }
-                else
+                else if (SelectedStep is RepeatStep)
                 {
-                    HeartRateBelowDuration concreteDuration = concreteStep.Duration as HeartRateBelowDuration;
+                    RepeatStep concreteStep = SelectedStep as RepeatStep;
+                    Debug.Assert(concreteStep.Duration != null &&
+                                 (concreteStep.Duration.Type == IRepeatDuration.RepeatDurationType.RepeatUntilHeartRateAbove ||
+                                  concreteStep.Duration.Type == IRepeatDuration.RepeatDurationType.RepeatUntilHeartRateBelow));
+                    bool isPercentMax;
+                    UInt16 oldValue, minRange, maxRange;
 
-                    isPercentMax = concreteDuration.IsPercentageMaxHeartRate;
-                    oldValue = concreteDuration.MinHeartRate;
-                }
+                    if (concreteStep.Duration.Type == IRepeatDuration.RepeatDurationType.RepeatUntilHeartRateAbove)
+                    {
+                        RepeatUntilHeartRateAboveDuration concreteDuration = concreteStep.Duration as RepeatUntilHeartRateAboveDuration;
 
-                if (isPercentMax)
-                {
-                    minRange = Constants.MinHRInPercentMax;
-                    maxRange = Constants.MaxHRInPercentMax;
-                }
-                else
-                {
-                    minRange = Constants.MinHRInBPM;
-                    maxRange = Constants.MaxHRInBPM;
-                }
+                        isPercentMax = concreteDuration.IsPercentageMaxHeartRate;
+                        oldValue = concreteDuration.MaxHeartRate;
+                    }
+                    else
+                    {
+                        RepeatUntilHeartRateBelowDuration concreteDuration = concreteStep.Duration as RepeatUntilHeartRateBelowDuration;
 
-                e.Cancel = !Utils.IsTextIntegerInRange(HeartRateDurationText.Text, minRange, maxRange);
-                if (e.Cancel)
-                {
-                    MessageBox.Show(String.Format(GarminFitnessView.GetLocalizedString("IntegerRangeValidationText"), minRange, maxRange),
-                                    GarminFitnessView.GetLocalizedString("ValueValidationTitleText"), MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                    System.Media.SystemSounds.Asterisk.Play();
+                        isPercentMax = concreteDuration.IsPercentageMaxHeartRate;
+                        oldValue = concreteDuration.MinHeartRate;
+                    }
 
-                    // Reset old valid value
-                    HeartRateDurationText.Text = oldValue.ToString();
+                    if (isPercentMax)
+                    {
+                        minRange = Constants.MinHRInPercentMax;
+                        maxRange = Constants.MaxHRInPercentMax;
+                    }
+                    else
+                    {
+                        minRange = Constants.MinHRInBPM;
+                        maxRange = Constants.MaxHRInBPM;
+                    }
+
+                    e.Cancel = !Utils.IsTextIntegerInRange(HeartRateDurationText.Text, minRange, maxRange);
+                    if (e.Cancel)
+                    {
+                        MessageBox.Show(String.Format(GarminFitnessView.GetLocalizedString("IntegerRangeValidationText"), minRange, maxRange),
+                                        GarminFitnessView.GetLocalizedString("ValueValidationTitleText"), MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        System.Media.SystemSounds.Asterisk.Play();
+
+                        // Reset old valid value
+                        HeartRateDurationText.Text = oldValue.ToString();
+                    }
                 }
             }
-            else if(SelectedStep is RepeatStep)
+            else
             {
-                RepeatStep concreteStep = SelectedStep as RepeatStep;
-                Debug.Assert(concreteStep.Duration != null &&
-                             (concreteStep.Duration.Type == IRepeatDuration.RepeatDurationType.RepeatUntilHeartRateAbove ||
-                              concreteStep.Duration.Type == IRepeatDuration.RepeatDurationType.RepeatUntilHeartRateBelow));
-                bool isPercentMax;
-                UInt16 oldValue, minRange, maxRange;
-
-                if (concreteStep.Duration.Type == IRepeatDuration.RepeatDurationType.RepeatUntilHeartRateAbove)
-                {
-                    RepeatUntilHeartRateAboveDuration concreteDuration = concreteStep.Duration as RepeatUntilHeartRateAboveDuration;
-
-                    isPercentMax = concreteDuration.IsPercentageMaxHeartRate;
-                    oldValue = concreteDuration.MaxHeartRate;
-                }
-                else
-                {
-                    RepeatUntilHeartRateBelowDuration concreteDuration = concreteStep.Duration as RepeatUntilHeartRateBelowDuration;
-
-                    isPercentMax = concreteDuration.IsPercentageMaxHeartRate;
-                    oldValue = concreteDuration.MinHeartRate;
-                }
-
-                if (isPercentMax)
-                {
-                    minRange = Constants.MinHRInPercentMax;
-                    maxRange = Constants.MaxHRInPercentMax;
-                }
-                else
-                {
-                    minRange = Constants.MinHRInBPM;
-                    maxRange = Constants.MaxHRInBPM;
-                }
-
-                e.Cancel = !Utils.IsTextIntegerInRange(HeartRateDurationText.Text, minRange, maxRange);
-                if (e.Cancel)
-                {
-                    MessageBox.Show(String.Format(GarminFitnessView.GetLocalizedString("IntegerRangeValidationText"), minRange, maxRange),
-                                    GarminFitnessView.GetLocalizedString("ValueValidationTitleText"), MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                    System.Media.SystemSounds.Asterisk.Play();
-
-                    // Reset old valid value
-                    HeartRateDurationText.Text = oldValue.ToString();
-                }
+                e.Cancel = true;
             }
         }
 
@@ -879,97 +884,102 @@ namespace GarminFitnessPlugin.View
 
         private void PowerDurationText_Validating(object sender, CancelEventArgs e)
         {
-            Debug.Assert(SelectedStep != null);
-
-            if (SelectedStep is RegularStep)
+            if (SelectedStep != null)
             {
-                RegularStep concreteStep = SelectedStep as RegularStep;
-                Debug.Assert(concreteStep.Duration != null && (concreteStep.Duration.Type == IDuration.DurationType.PowerAbove || concreteStep.Duration.Type == IDuration.DurationType.PowerBelow));
-                bool isPercentFTP;
-                UInt16 oldValue, minRange, maxRange;
-
-                if (concreteStep.Duration.Type == IDuration.DurationType.PowerAbove)
+                if(SelectedStep is RegularStep)
                 {
-                    PowerAboveDuration concreteDuration = concreteStep.Duration as PowerAboveDuration;
+                    RegularStep concreteStep = SelectedStep as RegularStep;
+                    Debug.Assert(concreteStep.Duration != null && (concreteStep.Duration.Type == IDuration.DurationType.PowerAbove || concreteStep.Duration.Type == IDuration.DurationType.PowerBelow));
+                    bool isPercentFTP;
+                    UInt16 oldValue, minRange, maxRange;
 
-                    isPercentFTP = concreteDuration.IsPercentFTP;
-                    oldValue = concreteDuration.MaxPower;
+                    if (concreteStep.Duration.Type == IDuration.DurationType.PowerAbove)
+                    {
+                        PowerAboveDuration concreteDuration = concreteStep.Duration as PowerAboveDuration;
+
+                        isPercentFTP = concreteDuration.IsPercentFTP;
+                        oldValue = concreteDuration.MaxPower;
+                    }
+                    else
+                    {
+                        PowerBelowDuration concreteDuration = concreteStep.Duration as PowerBelowDuration;
+
+                        isPercentFTP = concreteDuration.IsPercentFTP;
+                        oldValue = concreteDuration.MinPower;
+                    }
+
+                    if (isPercentFTP)
+                    {
+                        minRange = Constants.MinPowerInPercentFTP;
+                        maxRange = Constants.MaxPowerInPercentFTP;
+                    }
+                    else
+                    {
+                        minRange = Constants.MinPowerInWatts;
+                        maxRange = Constants.MaxPowerWorkoutInWatts;
+                    }
+
+                    e.Cancel = !Utils.IsTextIntegerInRange(PowerDurationText.Text, minRange, maxRange);
+                    if (e.Cancel)
+                    {
+                        MessageBox.Show(String.Format(GarminFitnessView.GetLocalizedString("IntegerRangeValidationText"), minRange, maxRange),
+                                        GarminFitnessView.GetLocalizedString("ValueValidationTitleText"), MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        System.Media.SystemSounds.Asterisk.Play();
+
+                        // Reset old valid value
+                        PowerDurationText.Text = oldValue.ToString();
+                    }
                 }
-                else
+                else if (SelectedStep is RepeatStep)
                 {
-                    PowerBelowDuration concreteDuration = concreteStep.Duration as PowerBelowDuration;
+                    RepeatStep concreteStep = SelectedStep as RepeatStep;
+                    Debug.Assert(concreteStep.Duration != null &&
+                                 (concreteStep.Duration.Type == IRepeatDuration.RepeatDurationType.RepeatUntilPowerAbove ||
+                                  concreteStep.Duration.Type == IRepeatDuration.RepeatDurationType.RepeatUntilPowerBelow));
+                    bool isPercentFTP;
+                    UInt16 oldValue, minRange, maxRange;
 
-                    isPercentFTP = concreteDuration.IsPercentFTP;
-                    oldValue = concreteDuration.MinPower;
-                }
+                    if (concreteStep.Duration.Type == IRepeatDuration.RepeatDurationType.RepeatUntilPowerAbove)
+                    {
+                        RepeatUntilPowerAboveDuration concreteDuration = concreteStep.Duration as RepeatUntilPowerAboveDuration;
 
-                if (isPercentFTP)
-                {
-                    minRange = Constants.MinPowerInPercentFTP;
-                    maxRange = Constants.MaxPowerInPercentFTP;
-                }
-                else
-                {
-                    minRange = Constants.MinPowerInWatts;
-                    maxRange = Constants.MaxPowerWorkoutInWatts;
-                }
+                        isPercentFTP = concreteDuration.IsPercentFTP;
+                        oldValue = concreteDuration.MaxPower;
+                    }
+                    else
+                    {
+                        RepeatUntilPowerBelowDuration concreteDuration = concreteStep.Duration as RepeatUntilPowerBelowDuration;
 
-                e.Cancel = !Utils.IsTextIntegerInRange(PowerDurationText.Text, minRange, maxRange);
-                if (e.Cancel)
-                {
-                    MessageBox.Show(String.Format(GarminFitnessView.GetLocalizedString("IntegerRangeValidationText"), minRange, maxRange),
-                                    GarminFitnessView.GetLocalizedString("ValueValidationTitleText"), MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                    System.Media.SystemSounds.Asterisk.Play();
+                        isPercentFTP = concreteDuration.IsPercentFTP;
+                        oldValue = concreteDuration.MinPower;
+                    }
 
-                    // Reset old valid value
-                    PowerDurationText.Text = oldValue.ToString();
+                    if (isPercentFTP)
+                    {
+                        minRange = Constants.MinPowerInPercentFTP;
+                        maxRange = Constants.MaxPowerInPercentFTP;
+                    }
+                    else
+                    {
+                        minRange = Constants.MinPowerInWatts;
+                        maxRange = Constants.MaxPowerWorkoutInWatts;
+                    }
+
+                    e.Cancel = !Utils.IsTextIntegerInRange(PowerDurationText.Text, minRange, maxRange);
+                    if (e.Cancel)
+                    {
+                        MessageBox.Show(String.Format(GarminFitnessView.GetLocalizedString("IntegerRangeValidationText"), minRange, maxRange),
+                                        GarminFitnessView.GetLocalizedString("ValueValidationTitleText"), MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        System.Media.SystemSounds.Asterisk.Play();
+
+                        // Reset old valid value
+                        PowerDurationText.Text = oldValue.ToString();
+                    }
                 }
             }
-            else if (SelectedStep is RepeatStep)
+            else
             {
-                RepeatStep concreteStep = SelectedStep as RepeatStep;
-                Debug.Assert(concreteStep.Duration != null &&
-                             (concreteStep.Duration.Type == IRepeatDuration.RepeatDurationType.RepeatUntilPowerAbove ||
-                              concreteStep.Duration.Type == IRepeatDuration.RepeatDurationType.RepeatUntilPowerBelow));
-                bool isPercentFTP;
-                UInt16 oldValue, minRange, maxRange;
-
-                if (concreteStep.Duration.Type == IRepeatDuration.RepeatDurationType.RepeatUntilPowerAbove)
-                {
-                    RepeatUntilPowerAboveDuration concreteDuration = concreteStep.Duration as RepeatUntilPowerAboveDuration;
-
-                    isPercentFTP = concreteDuration.IsPercentFTP;
-                    oldValue = concreteDuration.MaxPower;
-                }
-                else
-                {
-                    RepeatUntilPowerBelowDuration concreteDuration = concreteStep.Duration as RepeatUntilPowerBelowDuration;
-
-                    isPercentFTP = concreteDuration.IsPercentFTP;
-                    oldValue = concreteDuration.MinPower;
-                }
-
-                if (isPercentFTP)
-                {
-                    minRange = Constants.MinPowerInPercentFTP;
-                    maxRange = Constants.MaxPowerInPercentFTP;
-                }
-                else
-                {
-                    minRange = Constants.MinPowerInWatts;
-                    maxRange = Constants.MaxPowerWorkoutInWatts;
-                }
-
-                e.Cancel = !Utils.IsTextIntegerInRange(PowerDurationText.Text, minRange, maxRange);
-                if (e.Cancel)
-                {
-                    MessageBox.Show(String.Format(GarminFitnessView.GetLocalizedString("IntegerRangeValidationText"), minRange, maxRange),
-                                    GarminFitnessView.GetLocalizedString("ValueValidationTitleText"), MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                    System.Media.SystemSounds.Asterisk.Play();
-
-                    // Reset old valid value
-                    PowerDurationText.Text = oldValue.ToString();
-                }
+                e.Cancel = true;
             }
         }
 
@@ -1022,63 +1032,68 @@ namespace GarminFitnessPlugin.View
 
         private void DistanceDurationText_Validating(object sender, CancelEventArgs e)
         {
-            Debug.Assert(SelectedStep != null);
-
-            if (SelectedStep is RegularStep)
+            if (SelectedStep != null)
             {
-                RegularStep concreteStep = SelectedStep as RegularStep;
-                Debug.Assert(concreteStep.Duration != null &&
-                             concreteStep.Duration.Type == IDuration.DurationType.Distance);
-                DistanceDuration concreteDuration = concreteStep.Duration as DistanceDuration;
-                double maxDistance;
-
-                if (Utils.IsStatute(concreteDuration.BaseUnit))
+                if (SelectedStep is RegularStep)
                 {
-                    maxDistance = Constants.MaxDistanceStatute;
+                    RegularStep concreteStep = SelectedStep as RegularStep;
+                    Debug.Assert(concreteStep.Duration != null &&
+                                 concreteStep.Duration.Type == IDuration.DurationType.Distance);
+                    DistanceDuration concreteDuration = concreteStep.Duration as DistanceDuration;
+                    double maxDistance;
+
+                    if (Utils.IsStatute(concreteDuration.BaseUnit))
+                    {
+                        maxDistance = Constants.MaxDistanceStatute;
+                    }
+                    else
+                    {
+                        maxDistance = Constants.MaxDistanceMetric;
+                    }
+
+                    e.Cancel = !Utils.IsTextFloatInRange(DistanceDurationText.Text, Constants.MinDistance, maxDistance);
+                    if (e.Cancel)
+                    {
+                        MessageBox.Show(String.Format(GarminFitnessView.GetLocalizedString("DoubleRangeValidationText"), Constants.MinDistance, maxDistance),
+                                        GarminFitnessView.GetLocalizedString("ValueValidationTitleText"), MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        System.Media.SystemSounds.Asterisk.Play();
+
+                        // Reset old valid value
+                        DistanceDurationText.Text = String.Format("{0:0.00}", concreteDuration.GetDistanceInBaseUnit());
+                    }
                 }
-                else
+                else if (SelectedStep is RepeatStep)
                 {
-                    maxDistance = Constants.MaxDistanceMetric;
-                }
+                    RepeatStep concreteStep = SelectedStep as RepeatStep;
+                    Debug.Assert(concreteStep.Duration != null &&
+                                 concreteStep.Duration.Type == IRepeatDuration.RepeatDurationType.RepeatUntilDistance);
+                    RepeatUntilDistanceDuration concreteDuration = concreteStep.Duration as RepeatUntilDistanceDuration;
+                    double maxDistance;
 
-                e.Cancel = !Utils.IsTextFloatInRange(DistanceDurationText.Text, Constants.MinDistance, maxDistance);
-                if (e.Cancel)
-                {
-                    MessageBox.Show(String.Format(GarminFitnessView.GetLocalizedString("DoubleRangeValidationText"), Constants.MinDistance, maxDistance),
-                                    GarminFitnessView.GetLocalizedString("ValueValidationTitleText"), MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                    System.Media.SystemSounds.Asterisk.Play();
+                    if (Utils.IsStatute(concreteDuration.BaseUnit))
+                    {
+                        maxDistance = Constants.MaxDistanceStatute;
+                    }
+                    else
+                    {
+                        maxDistance = Constants.MaxDistanceMetric;
+                    }
 
-                    // Reset old valid value
-                    DistanceDurationText.Text = String.Format("{0:0.00}", concreteDuration.GetDistanceInBaseUnit());
+                    e.Cancel = !Utils.IsTextFloatInRange(DistanceDurationText.Text, Constants.MinDistance, maxDistance);
+                    if (e.Cancel)
+                    {
+                        MessageBox.Show(String.Format(GarminFitnessView.GetLocalizedString("DoubleRangeValidationText"), Constants.MinDistance, maxDistance),
+                                        GarminFitnessView.GetLocalizedString("ValueValidationTitleText"), MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        System.Media.SystemSounds.Asterisk.Play();
+
+                        // Reset old valid value
+                        DistanceDurationText.Text = String.Format("{0:0.00}", concreteDuration.GetDistanceInBaseUnit());
+                    }
                 }
             }
-            else if (SelectedStep is RepeatStep)
+            else
             {
-                RepeatStep concreteStep = SelectedStep as RepeatStep;
-                Debug.Assert(concreteStep.Duration != null &&
-                             concreteStep.Duration.Type == IRepeatDuration.RepeatDurationType.RepeatUntilDistance);
-                RepeatUntilDistanceDuration concreteDuration = concreteStep.Duration as RepeatUntilDistanceDuration;
-                double maxDistance;
-
-                if (Utils.IsStatute(concreteDuration.BaseUnit))
-                {
-                    maxDistance = Constants.MaxDistanceStatute;
-                }
-                else
-                {
-                    maxDistance = Constants.MaxDistanceMetric;
-                }
-
-                e.Cancel = !Utils.IsTextFloatInRange(DistanceDurationText.Text, Constants.MinDistance, maxDistance);
-                if (e.Cancel)
-                {
-                    MessageBox.Show(String.Format(GarminFitnessView.GetLocalizedString("DoubleRangeValidationText"), Constants.MinDistance, maxDistance),
-                                    GarminFitnessView.GetLocalizedString("ValueValidationTitleText"), MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                    System.Media.SystemSounds.Asterisk.Play();
-
-                    // Reset old valid value
-                    DistanceDurationText.Text = String.Format("{0:0.00}", concreteDuration.GetDistanceInBaseUnit());
-                }
+                e.Cancel = true;
             }
         }
 
@@ -1133,43 +1148,48 @@ namespace GarminFitnessPlugin.View
 
         private void CaloriesDurationText_Validating(object sender, CancelEventArgs e)
         {
-            Debug.Assert(SelectedStep != null);
-
-            if (SelectedStep is RegularStep)
+            if (SelectedStep != null)
             {
-                RegularStep concreteStep = SelectedStep as RegularStep;
-                Debug.Assert(concreteStep.Duration != null &&
-                             concreteStep.Duration.Type == IDuration.DurationType.Calories);
-                CaloriesDuration concreteDuration = concreteStep.Duration as CaloriesDuration;
-
-                e.Cancel = !Utils.IsTextIntegerInRange(CaloriesDurationText.Text, Constants.MinCalories, Constants.MaxCalories);
-                if (e.Cancel)
+                if (SelectedStep is RegularStep)
                 {
-                    MessageBox.Show(String.Format(GarminFitnessView.GetLocalizedString("IntegerRangeValidationText"), Constants.MinCalories, Constants.MaxCalories),
-                                    GarminFitnessView.GetLocalizedString("ValueValidationTitleText"), MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                    System.Media.SystemSounds.Asterisk.Play();
+                    RegularStep concreteStep = SelectedStep as RegularStep;
+                    Debug.Assert(concreteStep.Duration != null &&
+                                 concreteStep.Duration.Type == IDuration.DurationType.Calories);
+                    CaloriesDuration concreteDuration = concreteStep.Duration as CaloriesDuration;
 
-                    // Reset old valid value
-                    CaloriesDurationText.Text = concreteDuration.CaloriesToSpend.ToString();
+                    e.Cancel = !Utils.IsTextIntegerInRange(CaloriesDurationText.Text, Constants.MinCalories, Constants.MaxCalories);
+                    if (e.Cancel)
+                    {
+                        MessageBox.Show(String.Format(GarminFitnessView.GetLocalizedString("IntegerRangeValidationText"), Constants.MinCalories, Constants.MaxCalories),
+                                        GarminFitnessView.GetLocalizedString("ValueValidationTitleText"), MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        System.Media.SystemSounds.Asterisk.Play();
+
+                        // Reset old valid value
+                        CaloriesDurationText.Text = concreteDuration.CaloriesToSpend.ToString();
+                    }
+                }
+                else if (SelectedStep is RepeatStep)
+                {
+                    RepeatStep concreteStep = SelectedStep as RepeatStep;
+                    Debug.Assert(concreteStep.Duration != null &&
+                                 concreteStep.Duration.Type == IRepeatDuration.RepeatDurationType.RepeatUntilCalories);
+                    RepeatUntilCaloriesDuration concreteDuration = concreteStep.Duration as RepeatUntilCaloriesDuration;
+
+                    e.Cancel = !Utils.IsTextIntegerInRange(CaloriesDurationText.Text, Constants.MinCalories, Constants.MaxCalories);
+                    if (e.Cancel)
+                    {
+                        MessageBox.Show(String.Format(GarminFitnessView.GetLocalizedString("IntegerRangeValidationText"), Constants.MinCalories, Constants.MaxCalories),
+                                        GarminFitnessView.GetLocalizedString("ValueValidationTitleText"), MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        System.Media.SystemSounds.Asterisk.Play();
+
+                        // Reset old valid value
+                        CaloriesDurationText.Text = concreteDuration.CaloriesToSpend.ToString();
+                    }
                 }
             }
-            else if(SelectedStep is RepeatStep)
+            else
             {
-                RepeatStep concreteStep = SelectedStep as RepeatStep;
-                Debug.Assert(concreteStep.Duration != null &&
-                             concreteStep.Duration.Type == IRepeatDuration.RepeatDurationType.RepeatUntilCalories);
-                RepeatUntilCaloriesDuration concreteDuration = concreteStep.Duration as RepeatUntilCaloriesDuration;
-
-                e.Cancel = !Utils.IsTextIntegerInRange(CaloriesDurationText.Text, Constants.MinCalories, Constants.MaxCalories);
-                if (e.Cancel)
-                {
-                    MessageBox.Show(String.Format(GarminFitnessView.GetLocalizedString("IntegerRangeValidationText"), Constants.MinCalories, Constants.MaxCalories),
-                                    GarminFitnessView.GetLocalizedString("ValueValidationTitleText"), MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                    System.Media.SystemSounds.Asterisk.Play();
-
-                    // Reset old valid value
-                    CaloriesDurationText.Text = concreteDuration.CaloriesToSpend.ToString();
-                }
+                e.Cancel = true;
             }
         }
 
@@ -1839,22 +1859,27 @@ namespace GarminFitnessPlugin.View
 
         private void RepetitionCountText_Validating(object sender, CancelEventArgs e)
         {
-            Debug.Assert(SelectedStep != null &
-                         SelectedStep.Type == IStep.StepType.Repeat);
-            RepeatStep concreteStep = (RepeatStep)SelectedStep;
-            Debug.Assert(concreteStep.Duration is RepeatCountDuration);
-            RepeatCountDuration duration = concreteStep.Duration as RepeatCountDuration;
-
-            e.Cancel = !Utils.IsTextIntegerInRange(RepetitionCountText.Text, Constants.MinRepeats, Constants.MaxRepeats);
-            if (e.Cancel)
+            if (SelectedStep != null && SelectedStep is RepeatStep)
             {
-                MessageBox.Show(String.Format(GarminFitnessView.GetLocalizedString("IntegerRangeValidationText"), Constants.MinRepeats, Constants.MaxRepeats),
-                                GarminFitnessView.GetLocalizedString("ValueValidationTitleText"),
-                                MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                System.Media.SystemSounds.Asterisk.Play();
+                RepeatStep concreteStep = (RepeatStep)SelectedStep;
+                Debug.Assert(concreteStep.Duration is RepeatCountDuration);
+                RepeatCountDuration duration = concreteStep.Duration as RepeatCountDuration;
 
-                // Reset old valid value
-                RepetitionCountText.Text = duration.RepetitionCount.ToString();
+                e.Cancel = !Utils.IsTextIntegerInRange(RepetitionCountText.Text, Constants.MinRepeats, Constants.MaxRepeats);
+                if (e.Cancel)
+                {
+                    MessageBox.Show(String.Format(GarminFitnessView.GetLocalizedString("IntegerRangeValidationText"), Constants.MinRepeats, Constants.MaxRepeats),
+                                    GarminFitnessView.GetLocalizedString("ValueValidationTitleText"),
+                                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    System.Media.SystemSounds.Asterisk.Play();
+
+                    // Reset old valid value
+                    RepetitionCountText.Text = duration.RepetitionCount.ToString();
+                }
+            }
+            else
+            {
+                e.Cancel = true;
             }
         }
 
@@ -1887,7 +1912,7 @@ namespace GarminFitnessPlugin.View
 
         private void WorkoutNameText_Validating(object sender, CancelEventArgs e)
         {
-            if (!(SelectedWorkout is WorkoutPart))
+            if (SelectedStep != null && !(SelectedWorkout is WorkoutPart))
             {
                 Workout workoutWithSameName = GarminWorkoutManager.Instance.GetWorkout(WorkoutNameText.Text);
 
@@ -1899,6 +1924,10 @@ namespace GarminFitnessPlugin.View
                                     GarminFitnessView.GetLocalizedString("ErrorText"),
                                     MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
+            }
+            else
+            {
+                e.Cancel = true;
             }
         }
 
