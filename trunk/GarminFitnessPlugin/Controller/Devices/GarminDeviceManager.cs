@@ -18,7 +18,7 @@ namespace GarminFitnessPlugin.Controller
                 Logger.Instance.LogText("Creating GarminDeviceManager");
 
                 m_TimeoutTimer.Tick += new EventHandler(OnTimeoutTimerTick);
-                m_TimeoutTimer.Interval = 45000;
+                m_TimeoutTimer.Interval = 30000;
 
                 Logger.Instance.LogText("Adding Communicator controller");
 
@@ -183,7 +183,6 @@ namespace GarminFitnessPlugin.Controller
                 Debug.Assert(IsInitialized);
 
                 m_TimeoutTimer.Start();
-                m_LastProgressValue = 0;
                 CurrentTask.ExecuteTask(OperatingDevice);
             }
             catch (NoDeviceSupportException e)
@@ -467,14 +466,9 @@ namespace GarminFitnessPlugin.Controller
 
         private void OnOperationProgressed(IGarminDevice device, DeviceOperations operation, int progress)
         {
-            if (progress > m_LastProgressValue)
-            {
-                // Restart timer
-                m_TimeoutTimer.Stop();
-                m_TimeoutTimer.Start();
-
-                m_LastProgressValue = progress;
-            }
+            // Restart timer
+            m_TimeoutTimer.Stop();
+            m_TimeoutTimer.Start();
         }
 
         private void OnTimeoutTimerTick(object sender, EventArgs e)
@@ -753,7 +747,6 @@ namespace GarminFitnessPlugin.Controller
         private Dictionary<String, IGarminDevice> m_Devices = new Dictionary<String, IGarminDevice>();
         private IGarminDevice m_OperatingDevice = null;
         private System.Windows.Forms.Timer m_TimeoutTimer = new System.Windows.Forms.Timer();
-        private int m_LastProgressValue = 0;
 
         private static GarminDeviceManager m_Instance = null;
     }

@@ -461,7 +461,7 @@
 
                 window.external.WriteLog("HTML: Reading FIT dir");
 
-                setTimeout(function () { this._progressReadFitDirectory() } .bind(this), 300);
+                setTimeout(function () { this._progressReadFitDirectory() } .bind(this), 500);
 
                 window.external.WriteLog("HTML: Async reading FIT dir called");
             }
@@ -491,7 +491,7 @@
                     cancelReadableFileListing = false;
                     garminPlugin.startReadableFileListing(garminController.getDeviceNumber(), dataType.getTypeName(), dataType.getIdentifier(), true);
 
-                    setTimeout(function () { this._progressReadDirectory() } .bind(this), 300);
+                    setTimeout(function () { this._progressReadDirectory() } .bind(this), 500);
 
                     window.external.WriteLog("HTML: Async reading workouts dir");
                 }
@@ -518,7 +518,9 @@
                     garminController._broadcaster.dispatch("onFinishReadDirectory", { success: !cancelReadFitDirectory });
                 }
                 else {
-                    setTimeout(function () { this._progressReadFitDirectory() } .bind(this), 300); //300		 
+                    setTimeout(function () { this._progressReadFitDirectory() } .bind(this), 500); //500		 
+
+                    window.external.OnProgressReadFromDevice("0");
 
                     window.external.WriteLog("HTML: Async reading FIT dir called");
                 }
@@ -542,7 +544,9 @@
                     garminController._broadcaster.dispatch("onFinishReadDirectory", { success: !cancelReadableFileListing });
                 }
                 else {
-                    setTimeout(function () { this._progressReadDirectory() } .bind(this), 300); //300		 
+                    setTimeout(function () { this._progressReadDirectory() } .bind(this), 500); //500		 
+
+                    window.external.OnProgressReadFromDevice("0");
                 }
 
                 window.external.WriteLog("HTML: Async reading dir called");
