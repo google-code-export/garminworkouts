@@ -61,29 +61,28 @@ namespace GarminFitnessPlugin.Controller
             try
             {
                 devicesDocument.LoadXml(e.DevicesString);
+
+                foreach (XmlNode currentDeviceNode in devicesDocument.FirstChild.ChildNodes)
+                {
+                    GarminFitnessCommunicatorDevice newDevice = new GarminFitnessCommunicatorDevice(this, currentDeviceNode);
+
+                    // Ignore & dispose invalid devices
+                    if (newDevice.SoftwareVersion.Equals("0") ||
+                        newDevice.DeviceId.Equals("4294967295"))    // 0xFFFFFFF
+                    {
+                        newDevice.Dispose();
+                    }
+                    else
+                    {
+                        m_Devices.Add(newDevice);
+                    }
+                }
             }
             catch
             {
                 if (FindDevicesCompleted != null)
                 {
                     FindDevicesCompleted(this, false);
-                }
-            }
-
-            foreach(XmlNode currentDeviceNode in devicesDocument.FirstChild.ChildNodes)
-            {
-                try
-                {
-                    GarminFitnessCommunicatorDevice newDevice = new GarminFitnessCommunicatorDevice(this, currentDeviceNode);
-
-                    m_Devices.Add(newDevice);
-                }
-                catch
-                {
-                    if (FindDevicesCompleted != null)
-                    {
-                        FindDevicesCompleted(this, false);
-                    }
                 }
             }
 

@@ -18,7 +18,7 @@ namespace GarminFitnessPlugin.Controller
                 Logger.Instance.LogText("Creating GarminDeviceManager");
 
                 m_TimeoutTimer.Tick += new EventHandler(OnTimeoutTimerTick);
-                m_TimeoutTimer.Interval = 30000;
+                m_TimeoutTimer.Interval = 45000;
 
                 Logger.Instance.LogText("Adding Communicator controller");
 
@@ -286,7 +286,8 @@ namespace GarminFitnessPlugin.Controller
                     Logger.Instance.LogText(String.Format("Device {0} found (id={1}, version={2})", currentDevice.DisplayName, currentDevice.DeviceId, currentDevice.SoftwareVersion));
 
                     // Don't add invalid devices or add them twice
-                    if (currentDevice.SoftwareVersion != "0")
+                    if (!currentDevice.SoftwareVersion.Equals("0") &&
+                        !currentDevice.DeviceId.Equals("4294967295"))    // 0xFFFFFFF
                     {
                         if (!m_Devices.ContainsKey(currentDevice.DeviceId))
                         {
@@ -361,7 +362,14 @@ namespace GarminFitnessPlugin.Controller
                  CurrentTask.Type == BasicTask.TaskTypes.RefreshDevices ||
                  CurrentTask.Type == BasicTask.TaskTypes.SetOperatingDevice))
             {
-                Logger.Instance.LogText(String.Format("Controller exception caught in manager : {0}", e.ExceptionText));
+                try
+                {
+                    throw new Exception(e.ExceptionText);
+                }
+                catch (Exception exception)
+                {
+                    Logger.Instance.LogText(String.Format("Controller exception caught in manager : {0}\nStack:{1}", exception.Message, exception.StackTrace));
+                }
 
                 m_TimeoutTimer.Stop();
                 CancelPendingTasks();
@@ -714,6 +722,8 @@ namespace GarminFitnessPlugin.Controller
                 {
                     if (OperatingDevice != null)
                     {
+                        OperatingDevice.Uninitialize();
+
                         OperatingDevice.ReadFromDeviceCompleted -= new DeviceOperationCompletedEventHandler(OnReadFromDeviceCompleted);
                         OperatingDevice.WriteToDeviceCompleted -= new DeviceOperationCompletedEventHandler(OnWriteToDeviceCompleted);
                         OperatingDevice.OperationWillComplete -= new DeviceOperationWillCompleteEventHandler(OnOperationToDeviceWillComplete);
@@ -724,6 +734,8 @@ namespace GarminFitnessPlugin.Controller
 
                     if (OperatingDevice != null)
                     {
+                        OperatingDevice.Initialize();
+
                         OperatingDevice.ReadFromDeviceCompleted += new DeviceOperationCompletedEventHandler(OnReadFromDeviceCompleted);
                         OperatingDevice.WriteToDeviceCompleted += new DeviceOperationCompletedEventHandler(OnWriteToDeviceCompleted);
                         OperatingDevice.OperationWillComplete += new DeviceOperationWillCompleteEventHandler(OnOperationToDeviceWillComplete);
