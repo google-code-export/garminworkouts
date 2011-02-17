@@ -115,27 +115,20 @@ namespace GarminFitnessPlugin.Controller
         {
             m_CancellationError = e.ExceptionText;
 
-            try
-            {
-                throw new Exception(e.ExceptionText);
-            }
-            catch (Exception exception)
-            {
-                Logger.Instance.LogText(String.Format("Bridge exception caught in device : {0}\nStack:{1}", exception.Message, exception.StackTrace));
-            }
+            Logger.Instance.LogText(String.Format("Bridge exception caught in device : {0}\nStack:{1}", m_CancellationError, new StackTrace(true).ToString()));
 
             switch(m_CurrentOperation)
             {
                 case DeviceOperations.ReadProfile:
                 case DeviceOperations.ReadWorkout:
                 {
-                    CancelRead();
+                    CancelRead(m_CancellationError);
                     break;
                 }
                 case DeviceOperations.WriteProfile:
                 case DeviceOperations.WriteWorkout:
                 {
-                    CancelWrite();
+                    CancelWrite(m_CancellationError);
                     break;
                 }
             }
@@ -188,7 +181,7 @@ namespace GarminFitnessPlugin.Controller
 
                         if (m_MassStorageFilesToDownload != null)
                         {
-                            //Debug.Assert(m_MassStorageFilesToDownload.Count > 0);
+                            Debug.Assert(m_MassStorageFilesToDownload.Count > 0);
                             Logger.Instance.LogText(String.Format("Mass storage files remaining = {0}", m_MassStorageFilesToDownload.Count));
 
                             if (m_MassStorageFilesToDownload.Count > 0)
@@ -328,6 +321,11 @@ namespace GarminFitnessPlugin.Controller
 
             if (e.Success)
             {
+                if (OperationProgressed != null)
+                {
+                    OperationProgressed(this, m_CurrentOperation, 0);
+                }
+
                 if (m_CurrentOperation == DeviceOperations.ReadMassStorageWorkouts)
                 {
                     m_MassStorageFilesToDownload = GetFilePaths(e.DataString);
@@ -406,16 +404,20 @@ namespace GarminFitnessPlugin.Controller
             Dispose();
         }
 
-        public void CancelWrite()
+        public void CancelWrite(String reason)
         {
             Debug.Assert(m_CurrentOperation != DeviceOperations.Idle);
+
+            m_CancellationError = reason;
 
             m_Controller.CommunicatorBridge.CancelWriteToDevice();
         }
 
-        public void CancelRead()
+        public void CancelRead(String reason)
         {
             Debug.Assert(m_CurrentOperation != DeviceOperations.Idle);
+
+            m_CancellationError = reason;
 
             if (m_IsReadingDirectory)
             {
@@ -459,8 +461,8 @@ namespace GarminFitnessPlugin.Controller
                 }
             }
 
-            m_Controller.CommunicatorBridge.SetDeviceNumber(m_DeviceNumber);
             m_CancellationError = "";
+            m_Controller.CommunicatorBridge.SetDeviceNumber(m_DeviceNumber);
 
             if (!exportToFIT && !SupportsFITWorkouts)
             {
