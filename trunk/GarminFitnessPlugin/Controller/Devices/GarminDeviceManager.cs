@@ -18,7 +18,7 @@ namespace GarminFitnessPlugin.Controller
                 Logger.Instance.LogText("Creating GarminDeviceManager");
 
                 m_TimeoutTimer.Tick += new EventHandler(OnTimeoutTimerTick);
-                m_TimeoutTimer.Interval = 30000;
+                m_TimeoutTimer.Interval = 15000;
 
                 Logger.Instance.LogText("Adding Communicator controller");
 
@@ -462,35 +462,63 @@ namespace GarminFitnessPlugin.Controller
         private void OnOperationToDeviceWillComplete(IGarminDevice device, DeviceOperations operation)
         {
             m_TimeoutTimer.Stop();
+
+            if (m_CancelDialog != null)
+            {
+                m_CancelDialog.Close();
+                m_CancelDialog.Dispose();
+                m_CancelDialog = null;
+            }
         }
 
         private void OnOperationProgressed(IGarminDevice device, DeviceOperations operation, int progress)
         {
-            // Restart timer
-            m_TimeoutTimer.Stop();
-            m_TimeoutTimer.Start();
         }
 
         private void OnTimeoutTimerTick(object sender, EventArgs e)
         {
             Logger.Instance.LogText("Operation timeout");
-
             m_TimeoutTimer.Stop();
 
-            if (CurrentTask.Type == BasicTask.TaskTypes.ExportWorkout ||
-                CurrentTask.Type == BasicTask.TaskTypes.ExportProfile)
+            // Display a cancel dialog to the user
+            if (m_CancelDialog == null)
             {
-                OperatingDevice.CancelWrite();
+                GarminFitnessView pluginView = PluginMain.GetApplication().ActiveView as GarminFitnessView;
+                GarminWorkoutControl workoutControl = pluginView.GetCurrentView() as GarminWorkoutControl;
+
+                m_CancelDialog = new CancelOperationDialog(new CancelOperationDelegate(CancelOperation));
+                m_CancelDialog.Show(workoutControl);
             }
-            else if (CurrentTask.Type == BasicTask.TaskTypes.ImportWorkouts ||
-                     CurrentTask.Type == BasicTask.TaskTypes.ImportProfile)
+        }
+
+        public delegate void CancelOperationDelegate();
+        private void CancelOperation()
+        {
+            if (CurrentTask != null)
             {
-                OperatingDevice.CancelRead();
-            }
-            else
-            {
-                CancelPendingTasks();
-                CompleteCurrentTask(false);
+                m_TimeoutTimer.Stop();
+                if (m_CancelDialog != null)
+                {
+                    m_CancelDialog.Close();
+                    m_CancelDialog.Dispose();
+                    m_CancelDialog = null;
+                }
+
+                if (CurrentTask.Type == BasicTask.TaskTypes.ExportWorkout ||
+                    CurrentTask.Type == BasicTask.TaskTypes.ExportProfile)
+                {
+                    OperatingDevice.CancelWrite("Operation cancelled");
+                }
+                else if (CurrentTask.Type == BasicTask.TaskTypes.ImportWorkouts ||
+                         CurrentTask.Type == BasicTask.TaskTypes.ImportProfile)
+                {
+                    OperatingDevice.CancelRead("Operation cancelled");
+                }
+                else
+                {
+                    CancelPendingTasks();
+                    CompleteCurrentTask(false);
+                }
             }
         }
 
@@ -747,6 +775,7 @@ namespace GarminFitnessPlugin.Controller
         private Dictionary<String, IGarminDevice> m_Devices = new Dictionary<String, IGarminDevice>();
         private IGarminDevice m_OperatingDevice = null;
         private System.Windows.Forms.Timer m_TimeoutTimer = new System.Windows.Forms.Timer();
+        private CancelOperationDialog m_CancelDialog = null;
 
         private static GarminDeviceManager m_Instance = null;
     }

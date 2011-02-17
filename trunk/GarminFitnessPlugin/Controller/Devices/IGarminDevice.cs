@@ -25,8 +25,8 @@ namespace GarminFitnessPlugin.Controller
         void Initialize();
         void Uninitialize();
 
-        void CancelWrite();
-        void CancelRead();
+        void CancelWrite(String reason);
+        void CancelRead(String reason);
 
         void WriteWorkouts(List<IWorkout> workouts);
         void ReadWorkouts();
