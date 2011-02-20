@@ -132,13 +132,7 @@ namespace GarminFitnessPlugin.View
                     Stream workoutStream = File.OpenRead(filename);
 
                     // Check if this is a FIT file or not
-                    workoutStream.Seek(8, SeekOrigin.Begin);
-                    Byte[] buffer = new Byte[4];
-                    workoutStream.Read(buffer, 0, 4);
-                    String FITMarker = Encoding.UTF8.GetString(buffer, 0, 4);
-                    workoutStream.Seek(0, SeekOrigin.Begin);
-
-                    if (FITMarker.Equals(FITConstants.FITFileDescriptor))
+                    if (WorkoutImporter.IsFITFileStream(workoutStream))
                     {
                         if (!WorkoutImporter.ImportWorkoutFromFIT(workoutStream))
                         {

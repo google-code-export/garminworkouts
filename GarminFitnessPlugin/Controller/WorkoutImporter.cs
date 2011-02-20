@@ -20,6 +20,17 @@ namespace GarminFitnessPlugin.Controller
             void OnProgressChanged(int progressPercent);
         }
 
+        public static bool IsFITFileStream(Stream fileStream)
+        {
+            fileStream.Seek(8, SeekOrigin.Begin);
+            Byte[] buffer = new Byte[4];
+            fileStream.Read(buffer, 0, 4);
+            String FITMarker = Encoding.UTF8.GetString(buffer, 0, 4);
+            fileStream.Seek(0, SeekOrigin.Begin);
+
+            return FITMarker.Equals(FITConstants.FITFileDescriptor);
+        }
+
         public static bool ImportWorkout(Stream importStream)
         {
             try
@@ -242,7 +253,8 @@ namespace GarminFitnessPlugin.Controller
             {
                 FileStream file = File.OpenRead(filePath);
 
-                if (filePath.EndsWith(FITConstants.FITFileDescriptor, StringComparison.OrdinalIgnoreCase))
+                // Check if this is a FIT file or not
+                if (WorkoutImporter.IsFITFileStream(file))
                 {
                     WorkoutImporter.ImportWorkoutFromFIT(file);
                 }
