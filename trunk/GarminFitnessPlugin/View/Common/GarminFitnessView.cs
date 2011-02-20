@@ -166,6 +166,34 @@ namespace GarminFitnessPlugin.View
 
         public override void ShowPage(string bookmark)
         {
+            if (bookmark.StartsWith(Constants.BookmarkHeader))
+            {
+                string workoutId = bookmark.Substring(Constants.BookmarkHeader.Length);
+
+                if (m_CurrentView != PluginViews.Workouts)
+                {
+                    SwapViews();
+                }
+
+                try
+                {
+                    Guid workoutGUID = new Guid(workoutId);
+                    Workout workout = GarminWorkoutManager.Instance.GetWorkout(workoutGUID);
+
+                    if (workout != null)
+                    {
+                        GarminWorkoutControl control = GetCurrentView() as GarminWorkoutControl;
+
+                        control.SelectWorkout(workout);
+                    }
+                }
+                catch
+                {
+                    // Caucht an exception, don't display a particular workout, it might have been
+                    //  deleted or it's a bad bookmark, etc.
+                }
+            }
+
             GetCurrentView().RefreshCalendar();
         }
 

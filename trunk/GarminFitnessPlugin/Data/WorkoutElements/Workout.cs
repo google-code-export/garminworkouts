@@ -8,12 +8,13 @@ using System.IO;
 using System.Text;
 using System.Xml;
 using ZoneFiveSoftware.Common.Data.Fitness;
+using GarminFitnessPublic;
 using GarminFitnessPlugin.Controller;
 using GarminFitnessPlugin.View;
 
 namespace GarminFitnessPlugin.Data
 {
-    class Workout : IWorkout, IDirty
+    class Workout : IWorkout, IPublicWorkout, IDirty
     {
         public Workout(Guid workoutId, string name, IActivityCategory category) :
             this(name, category)
@@ -57,6 +58,30 @@ namespace GarminFitnessPlugin.Data
 
             UpdateSplitsCache();
         }
+
+#region IPublicWorkout Members
+
+        public Guid PublicId
+        {
+            get { return Id; }
+        }
+
+        public string PublicName
+        {
+            get { return NameInternal; }
+        }
+
+        public IActivityCategory PublicCategory
+        {
+            get { return Category; }
+        }
+
+        public string PublicNotes
+        {
+            get { return NotesInternal; }
+        }
+
+#endregion
 
         void OnStepAdded(IStep addedStep)
         {

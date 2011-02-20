@@ -4447,6 +4447,11 @@ namespace GarminFitnessPlugin.View
             }
         }
 
+        public void SelectWorkout(Workout workout)
+        {
+            SelectedWorkout = workout;
+        }
+
         private IWorkout SelectedWorkout
         {
             get
