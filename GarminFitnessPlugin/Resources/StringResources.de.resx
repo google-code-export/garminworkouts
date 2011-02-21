@@ -166,7 +166,7 @@
     <value>Nachdem ich eine bestimmte Anzahl von Kalorien verbrannt habe ...</value>
   </data>
   <data name="CaloriesDurationDescriptionText" xml:space="preserve">
-    <value>Bis ich {0] Kalorien verbrannt habe ...</value>
+    <value>Bis ich {0} Kalorien verbrannt habe ...</value>
   </data>
   <data name="CaloriesDurationLabelText" xml:space="preserve">
     <value>Wieviel Kalorien?</value>
