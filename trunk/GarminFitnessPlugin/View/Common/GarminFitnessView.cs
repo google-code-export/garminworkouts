@@ -166,7 +166,8 @@ namespace GarminFitnessPlugin.View
 
         public override void ShowPage(string bookmark)
         {
-            if (bookmark.StartsWith(Constants.BookmarkHeader))
+            if (!String.IsNullOrEmpty(bookmark) &&
+                bookmark.StartsWith(Constants.BookmarkHeader))
             {
                 string workoutId = bookmark.Substring(Constants.BookmarkHeader.Length);
 
