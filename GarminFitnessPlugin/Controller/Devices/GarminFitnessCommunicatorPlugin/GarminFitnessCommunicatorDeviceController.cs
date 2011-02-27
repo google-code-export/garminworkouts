@@ -31,8 +31,12 @@ namespace GarminFitnessPlugin.Controller
 
         void OnCommunicatorBridgeControllerReady(object sender, EventArgs e)
         {
+            Logger.Instance.LogText("Bridge controller ready");
+
             if (m_CommunicatorBridge.IsControllerReady && m_PendingInitialize)
             {
+                Logger.Instance.LogText("Controller pending initialize start");
+
                 m_CommunicatorBridge.Initialize();
                 m_PendingInitialize = false;
             }
@@ -40,6 +44,8 @@ namespace GarminFitnessPlugin.Controller
 
         private void OnCommunicatorBridgeInitializeCompleted(object sender, GarminFitnessCommunicatorBridge.InitializeCompletedEventArgs e)
         {
+            Logger.Instance.LogText("Bridge initialization complete");
+
             m_Initialized = e.Success;
 
             if (InitializationCompleted != null)
@@ -108,10 +114,13 @@ namespace GarminFitnessPlugin.Controller
         {
             if (!m_CommunicatorBridge.IsControllerReady)
             {
+                Logger.Instance.LogText("Controller initialize queued");
                 m_PendingInitialize = true;
             }
             else
             {
+                Logger.Instance.LogText("Controller initialize start");
+
                 m_Initialized = false;
                 m_CommunicatorBridge.Initialize();
             }

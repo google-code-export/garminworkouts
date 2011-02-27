@@ -230,6 +230,8 @@ namespace GarminFitnessPlugin.Controller
 
         private void OnControllerInitializationCompleted(object sender, Boolean succeeded)
         {
+            Logger.Instance.LogText("Controller initialization complete");
+
             if (succeeded)
             {
                 IGarminDeviceController controller = sender as IGarminDeviceController;

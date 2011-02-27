@@ -304,34 +304,51 @@
                     pluginElement = $("GarminNetscapePlugin");
                 }
 
+                window.external.WriteLog("HTML: Initialize");
+
                 // make sure the plugin object exists on the page
                 if (pluginElement == null) {
+                    window.external.WriteLog("HTML: No plugin element");
+
                     var error = new Error(Garmin.DeviceControl.MESSAGES.missingPluginTag);
                     error.name = "HtmlTagNotFoundException";
                     throw error;
                 }
 
-                // instantiate a garmin plugin
+                window.external.WriteLog("HTML: Instantiating variables");
+
+                // Instantiate a garmin plugin
                 garminPlugin = new Garmin.DevicePlugin(pluginElement);
                 garminController = new Garmin.DeviceControl();
                 garminController.register(new listener());
 
+                window.external.WriteLog("HTML: Variables Instanciated");
+
                 if (garminController.isPluginInitialized()) {
+
+                    window.external.WriteLog("HTML: Plugin initialized");
+
                     if (garminController.unlock(["http://code.google.com/p/garminworkouts/", "da513ad4456128dda202f2225970cba7"])) {
+                        window.external.WriteLog("HTML: Plugin unlocked");
                         window.external.OnInitializeCompleted(true, "");
                     }
                     else {
                         garminController = null;
+
+                        window.external.WriteLog("HTML: Plugin unlock failed");
                         window.external.OnInitializeCompleted(false, "Garmin.DeviceControl.unlock() failed.");
                     }
                 }
                 else {
                     garminController = null;
+
+                    window.external.WriteLog("HTML: Initialization exception");
                     window.external.OnInitializeCompleted(false, "Garmin.DeviceControl.isPluginInitialized() failed.");
                 }
             }
             catch (e) {
                 garminController = null;
+                window.external.WriteLog("HTML: Plugin initialization failed");
                 window.external.OnInitializeCompleted(false, "Could not initialize Garmin.DeviceControl().\n" + e.message);
             }
         }
