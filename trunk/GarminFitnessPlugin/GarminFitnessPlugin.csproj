@@ -85,8 +85,8 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\References\GarXFaceNet.dll</HintPath>
     </Reference>
-    <Reference Include="SportTracksPluginFramework1.0.8">
-      <HintPath>..\References\SportTracksPluginFramework\SportTracksPluginFramework1.0.8.dll</HintPath>
+    <Reference Include="SportTracksPluginFramework1.0.9">
+      <HintPath>..\References\SportTracksPluginFramework\SportTracksPluginFramework1.0.9.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
@@ -96,6 +96,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Constants.cs" />
+    <Compile Include="Controller\PublicProfileManager.cs" />
     <Compile Include="Controller\Devices\GarminFitnessCommunicatorPlugin\GarminFitnessCommunicatorBridge.cs" />
     <Compile Include="Controller\Devices\GarminFitnessCommunicatorPlugin\GarminFitnessCommunicatorDevice.cs" />
     <Compile Include="Controller\Devices\GarminFitnessCommunicatorPlugin\GarminFitnessCommunicatorDeviceController.cs" />

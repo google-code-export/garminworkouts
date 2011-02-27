@@ -597,44 +597,11 @@ namespace GarminFitnessPlugin.Controller
                 {
                     Logger.Instance.LogText("Comm. : Writing FIT profile");
 
-                    List<String> filenames = new List<String>();
-                    string exportPath = String.Empty;
+                    IList<String> filenames;
 
                     ClearTempDirectory();
 
-                    // User profile
-                    String fileName = "Settings.fit";
-                    Stream settingsFile = File.Create(m_TempDirectoryLocation + fileName);
-
-                    if (settingsFile != null)
-                    {
-                        ProfileExporter.ExportProfileToFITSettings(GarminProfileManager.Instance.UserProfile, settingsFile);
-
-                        Logger.Instance.LogText(String.Format("Comm. : FIT user profile {0}", fileName));
-
-                        settingsFile.Close();
-                        filenames.Add(fileName);
-                    }
-
-                    // Sport profiles
-                    for (int i = 0; i < (int)GarminCategories.GarminCategoriesCount; ++i)
-                    {
-                        GarminCategories sportCategory = (GarminCategories)i;
-                        fileName = Utils.GetFITSportName(sportCategory) + ".fit";
-                        Stream sportFile = File.Create(m_TempDirectoryLocation + fileName);
-
-                        if (sportFile != null)
-                        {
-                            Logger.Instance.LogText(String.Format("Comm. : FIT sport profile {0}", fileName));
-
-                            ProfileExporter.ExportProfileToFITSport(GarminProfileManager.Instance.UserProfile,
-                                                                    sportCategory,
-                                                                    sportFile);
-
-                            sportFile.Close();
-                            filenames.Add(fileName);
-                        }
-                    }
+                    filenames = ProfileExporter.ExportProfileToFIT(m_TempDirectoryLocation);
 
                     Logger.Instance.LogText(String.Format("Comm. : {0} FIT profile files", filenames.Count));
 

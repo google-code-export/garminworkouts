@@ -45,6 +45,47 @@ namespace GarminFitnessPlugin.Controller
             document.Save(new StreamWriter(exportStream));
         }
 
+        public static IList<String> ExportProfileToFIT(String exportFolder)
+        {
+            List<String> filenames = new List<String>();
+
+            // User profile
+            String fileName = "Settings.fit";
+            Stream settingsFile = File.Create(exportFolder + "\\" + fileName);
+
+            if (settingsFile != null)
+            {
+                ProfileExporter.ExportProfileToFITSettings(GarminProfileManager.Instance.UserProfile, settingsFile);
+
+                Logger.Instance.LogText(String.Format("Comm. : FIT user profile {0}", fileName));
+
+                settingsFile.Close();
+                filenames.Add(fileName);
+            }
+
+            // Sport profiles
+            for (int i = 0; i < (int)GarminCategories.GarminCategoriesCount; ++i)
+            {
+                GarminCategories sportCategory = (GarminCategories)i;
+                fileName = Utils.GetFITSportName(sportCategory) + ".fit";
+                Stream sportFile = File.Create(exportFolder + "\\" + fileName);
+
+                if (sportFile != null)
+                {
+                    Logger.Instance.LogText(String.Format("Comm. : FIT sport profile {0}", fileName));
+
+                    ProfileExporter.ExportProfileToFITSport(GarminProfileManager.Instance.UserProfile,
+                                                            sportCategory,
+                                                            sportFile);
+
+                    sportFile.Close();
+                    filenames.Add(fileName);
+                }
+            }
+
+            return filenames;
+        }
+
         public static void ExportProfileToFITSettings(GarminProfile profile, Stream exportStream)
         {
             MemoryStream dataStream = new MemoryStream();
