@@ -107,7 +107,6 @@ namespace GarminFitnessPlugin.Controller
             fileIdMessage.Serialize(dataStream);
 
             // Write workout
-            Debug.Assert(!(workout is WorkoutPart));
             workout.LastExportDate = DateTime.Now;
             workout.SerializetoFIT(dataStream);
 

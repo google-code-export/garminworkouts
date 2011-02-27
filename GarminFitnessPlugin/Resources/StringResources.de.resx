@@ -301,7 +301,7 @@
     <value>Garmin</value>
   </data>
   <data name="GearWeightLabelText" xml:space="preserve">
-    <value>Gewicht des Zubehörs:</value>
+    <value>Gewicht der Ausrüstung:</value>
   </data>
   <data name="GenderLabelText" xml:space="preserve">
     <value>Geschlecht:</value>
@@ -376,7 +376,7 @@
     <value>Herzfrequenz-Einstellungen</value>
   </data>
   <data name="HRZonesGroupBoxText" xml:space="preserve">
-    <value>Herzfrequenzzonen</value>
+    <value>Herzfrequenz-Zonen</value>
   </data>
   <data name="ImportEditExplanationText" xml:space="preserve">
     <value>Damit in den Trainings die richtigen Zonen genutzt werden können, müssen diese eingestellt werden. Selbst wenn das Plugin im SportTracks-Modus konfiguriert wurde, werden die hier vorgenommenen Einstellungen für die Anzeige im Gerät genutzt (Geschwindigkeit vs. Tempo, HF vs. % max HF usw.). Das Profil kann vom Gerät importiert oder manuell editiert werden.</value>
@@ -496,7 +496,7 @@
     <value>Nutze diese Leistungszone für meine Aktivitäten:</value>
   </data>
   <data name="PowerZonesGroupBoxText" xml:space="preserve">
-    <value>Leistungszone</value>
+    <value>Leistungs-Zonen</value>
   </data>
   <data name="PowerZoneTargetDescriptionText" xml:space="preserve">
     <value>Versuche meine Leistung in Zone {0} zu halten.</value>
@@ -580,7 +580,7 @@
     <value>Versuche das Tempo in einer bestimmten Zone zu halten.</value>
   </data>
   <data name="SpeedZonesGroupBoxText" xml:space="preserve">
-    <value>Tempobereiche</value>
+    <value>Tempo-/Geschwindigkeitszonen</value>
   </data>
   <data name="SpeedZoneTargetDescriptionText" xml:space="preserve">
     <value>Ich möchte mein Tempo in Bereich {0} halten.</value>
