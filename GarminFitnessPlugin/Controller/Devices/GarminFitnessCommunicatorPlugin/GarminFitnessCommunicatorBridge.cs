@@ -342,7 +342,7 @@ namespace GarminFitnessPlugin.Controller
                                                      new object[] { tcxString, fileName });
         }
 
-        public void WriteFilesToDevice(List<string> files, string destinationPath)
+        public void WriteFilesToDevice(IList<string> files, string destinationPath)
         {
             try
             {
@@ -385,7 +385,7 @@ namespace GarminFitnessPlugin.Controller
             }
         }
 
-        private CommunicatorFileList GenerateCommunicatorFileExportList(List<string> files, string destinationPath)
+        private CommunicatorFileList GenerateCommunicatorFileExportList(IList<string> files, string destinationPath)
         {
             CommunicatorFileList result = new CommunicatorFileList();
 

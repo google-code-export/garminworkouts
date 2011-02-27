@@ -61,24 +61,27 @@ namespace GarminFitnessPlugin.Data
 
 #region IPublicWorkout Members
 
-        public Guid PublicId
+        Guid IPublicWorkout.Id
         {
-            get { return Id; }
+            get { return new Guid(Id.ToString()); }
         }
 
-        public string PublicName
+        string IPublicWorkout.Name
         {
-            get { return NameInternal; }
+            get
+            {
+                return new string(((string)NameInternal).ToCharArray());
+            }
         }
 
-        public IActivityCategory PublicCategory
+        IActivityCategory IPublicWorkout.Category
         {
             get { return Category; }
         }
 
-        public string PublicNotes
+        string IPublicWorkout.Notes
         {
-            get { return NotesInternal; }
+            get { return new string(((string)NotesInternal).ToCharArray()); }
         }
 
 #endregion

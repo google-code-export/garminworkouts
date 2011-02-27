@@ -6,7 +6,7 @@ namespace GarminFitnessPublic
 {
     public interface IPublicWorkoutManager
     {
-        IList<IPublicWorkout> PublicWorkouts { get; }
+        IList<IPublicWorkout> Workouts { get; }
 
         void ScheduleWorkout(IPublicWorkout workout, DateTime date);
 

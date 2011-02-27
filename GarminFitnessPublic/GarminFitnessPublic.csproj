@@ -39,7 +39,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="IWorkoutManagerPublic.cs" />
+    <Compile Include="IPublicProfileManager.cs" />
+    <Compile Include="IPublicWorkoutManager.cs" />
     <Compile Include="IWorkoutPublic.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

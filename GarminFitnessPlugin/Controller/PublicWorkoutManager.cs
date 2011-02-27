@@ -16,7 +16,7 @@ namespace GarminFitnessPlugin.Controller
         {
             get
             {
-                if (m_Instance != null)
+                if (m_Instance == null)
                 {
                     m_Instance = new PublicWorkoutManager();
                 }
@@ -27,7 +27,7 @@ namespace GarminFitnessPlugin.Controller
 
 #region IPublicWorkoutManager Members
 
-        public IList<IPublicWorkout> PublicWorkouts
+        IList<IPublicWorkout> IPublicWorkoutManager.Workouts
         {
             get
             {
@@ -42,14 +42,14 @@ namespace GarminFitnessPlugin.Controller
             }
         }
 
-        public void ScheduleWorkout(IPublicWorkout workout, DateTime date)
+        void IPublicWorkoutManager.ScheduleWorkout(IPublicWorkout workout, DateTime date)
         {
             Workout concreteWorkout = workout as Workout;
 
             concreteWorkout.ScheduleWorkout(date);
         }
 
-        public void SerializeWorkouts(IList<IPublicWorkout> workouts, String directory)
+        void IPublicWorkoutManager.SerializeWorkouts(IList<IPublicWorkout> workouts, String directory)
         {
             ushort workoutIndex = 0;
 
@@ -69,7 +69,7 @@ namespace GarminFitnessPlugin.Controller
             }
         }
 
-        public void DeserializeWorkout(Stream dataStream)
+        void IPublicWorkoutManager.DeserializeWorkout(Stream dataStream)
         {
             if (WorkoutImporter.IsFITFileStream(dataStream))
             {
@@ -81,9 +81,9 @@ namespace GarminFitnessPlugin.Controller
             }
         }
 
-        public void OpenWorkoutInView(IPublicWorkout workout)
+        void IPublicWorkoutManager.OpenWorkoutInView(IPublicWorkout workout)
         {
-            PluginMain.GetApplication().ShowView(GUIDs.GarminFitnessView, Constants.BookmarkHeader + workout.PublicId.ToString());
+            PluginMain.GetApplication().ShowView(GUIDs.GarminFitnessView, Constants.BookmarkHeader + workout.Id.ToString());
         }
 
 #endregion

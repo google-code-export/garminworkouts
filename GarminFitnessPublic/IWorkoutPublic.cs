@@ -5,9 +5,9 @@ namespace GarminFitnessPublic
 {
     public interface IPublicWorkout
     {
-        Guid PublicId { get; }
-        String PublicName { get; }
-        IActivityCategory PublicCategory { get; }
-        String PublicNotes { get; }
+        Guid Id { get; }
+        String Name { get; }
+        IActivityCategory Category { get; }
+        String Notes { get; }
     }
 }
