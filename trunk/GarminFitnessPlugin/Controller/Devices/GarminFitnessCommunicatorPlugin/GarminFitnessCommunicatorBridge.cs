@@ -194,9 +194,13 @@ namespace GarminFitnessPlugin.Controller
 
         private void OnWebBrowserDocumentCompleted(object sender, WebBrowserDocumentCompletedEventArgs e)
         {
+            Logger.Instance.LogText("Bridge web page loaded");
+
             if (e.Url.LocalPath.Equals(m_LocalWebPageLocation + "GarminFitness.html"))
             {
                 m_HiddenWebBrowser.DocumentCompleted -= new WebBrowserDocumentCompletedEventHandler(OnWebBrowserDocumentCompleted);
+
+                Logger.Instance.LogText("Bridge ready");
 
                 m_ControllerReady = true;
                 if (ControllerReady != null)
@@ -218,6 +222,8 @@ namespace GarminFitnessPlugin.Controller
 
         public void OnInitializeCompleted(bool success, string errorText)
         {
+            Logger.Instance.LogText("HTML initialization complete");
+
             if (InitializeCompleted != null)
             {
                 InitializeCompleted(this, new InitializeCompletedEventArgs(success, errorText));
@@ -288,6 +294,8 @@ namespace GarminFitnessPlugin.Controller
 
         public void Initialize()
         {
+            Logger.Instance.LogText("Initializing bridge");
+
             if (m_ControllerReady)
             {
                 m_HiddenWebBrowser.Document.InvokeScript("Initialize");
