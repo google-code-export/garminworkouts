@@ -540,7 +540,7 @@ namespace GarminFitnessPlugin.View
             this.PowerZonePanel.Controls.Add(this.LowPowerLabel);
             this.PowerZonePanel.Controls.Add(this.HighPowerTextBox);
             this.PowerZonePanel.Controls.Add(this.HighPowerLabel);
-            this.PowerZonePanel.Location = new System.Drawing.Point(329, 70);
+            this.PowerZonePanel.Location = new System.Drawing.Point(372, 70);
             this.PowerZonePanel.Name = "PowerZonePanel";
             this.PowerZonePanel.Size = new System.Drawing.Size(179, 57);
             this.PowerZonePanel.TabIndex = 10;
@@ -712,7 +712,7 @@ namespace GarminFitnessPlugin.View
             this.PowerZonesTreeList.RowSeparatorLines = true;
             this.PowerZonesTreeList.ShowLines = false;
             this.PowerZonesTreeList.ShowPlusMinus = false;
-            this.PowerZonesTreeList.Size = new System.Drawing.Size(298, 72);
+            this.PowerZonesTreeList.Size = new System.Drawing.Size(338, 72);
             this.PowerZonesTreeList.TabIndex = 1;
             this.PowerZonesTreeList.SelectedItemsChanged += new System.EventHandler(this.PowerZonesTreeList_SelectedItemsChanged);
             // 
@@ -739,7 +739,7 @@ namespace GarminFitnessPlugin.View
             this.SpeedZonePanel.Controls.Add(this.SpeedNameTextBox);
             this.SpeedZonePanel.Controls.Add(this.NameSpeedLabel);
             this.SpeedZonePanel.Controls.Add(this.HighSpeedTextBox);
-            this.SpeedZonePanel.Location = new System.Drawing.Point(326, 42);
+            this.SpeedZonePanel.Location = new System.Drawing.Point(369, 37);
             this.SpeedZonePanel.Name = "SpeedZonePanel";
             this.SpeedZonePanel.Size = new System.Drawing.Size(179, 77);
             this.SpeedZonePanel.TabIndex = 6;
@@ -887,7 +887,7 @@ namespace GarminFitnessPlugin.View
             this.SpeedZonesTreeList.RowSeparatorLines = true;
             this.SpeedZonesTreeList.ShowLines = false;
             this.SpeedZonesTreeList.ShowPlusMinus = false;
-            this.SpeedZonesTreeList.Size = new System.Drawing.Size(298, 72);
+            this.SpeedZonesTreeList.Size = new System.Drawing.Size(335, 72);
             this.SpeedZonesTreeList.TabIndex = 1;
             this.SpeedZonesTreeList.SelectedItemsChanged += new System.EventHandler(this.SpeedZonesTreeList_SelectedItemsChanged);
             // 
@@ -913,7 +913,7 @@ namespace GarminFitnessPlugin.View
             this.HRZonePanel.Controls.Add(this.HighHRLabel);
             this.HRZonePanel.Controls.Add(this.LowHRTextBox);
             this.HRZonePanel.Controls.Add(this.HighHRTextBox);
-            this.HRZonePanel.Location = new System.Drawing.Point(326, 42);
+            this.HRZonePanel.Location = new System.Drawing.Point(369, 42);
             this.HRZonePanel.Name = "HRZonePanel";
             this.HRZonePanel.Size = new System.Drawing.Size(179, 56);
             this.HRZonePanel.TabIndex = 6;
@@ -1042,7 +1042,7 @@ namespace GarminFitnessPlugin.View
             this.HRZonesTreeList.RowSeparatorLines = true;
             this.HRZonesTreeList.ShowLines = false;
             this.HRZonesTreeList.ShowPlusMinus = false;
-            this.HRZonesTreeList.Size = new System.Drawing.Size(298, 72);
+            this.HRZonesTreeList.Size = new System.Drawing.Size(335, 72);
             this.HRZonesTreeList.TabIndex = 1;
             this.HRZonesTreeList.SelectedItemsChanged += new System.EventHandler(this.HRZonesTreeList_SelectedItemsChanged);
             // 

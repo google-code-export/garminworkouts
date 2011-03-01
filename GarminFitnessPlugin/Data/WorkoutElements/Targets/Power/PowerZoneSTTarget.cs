@@ -73,7 +73,7 @@ namespace GarminFitnessPlugin.Data
 
             if (exportAsPercentFTP)
             {
-                float baseMultiplier = Constants.MaxPowerInPercentFTP / lastFTP;
+                float baseMultiplier = 100.0f / lastFTP;
 
                 minPower.SetUInt32((UInt32)Utils.Clamp(Math.Round(Zone.Low * baseMultiplier, 0, MidpointRounding.AwayFromZero), Constants.MinPowerInPercentFTP, Constants.MaxPowerInPercentFTP));
                 maxPower.SetUInt32((UInt32)Utils.Clamp(Math.Round(Zone.High * baseMultiplier, 0, MidpointRounding.AwayFromZero), Constants.MinPowerInPercentFTP, Constants.MaxPowerInPercentFTP));

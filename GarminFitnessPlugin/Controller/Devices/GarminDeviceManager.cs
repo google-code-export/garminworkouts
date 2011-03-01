@@ -486,33 +486,34 @@ namespace GarminFitnessPlugin.Controller
             if (m_CancelDialog == null)
             {
                 GarminFitnessView pluginView = PluginMain.GetApplication().ActiveView as GarminFitnessView;
-                GarminWorkoutControl workoutControl = pluginView.GetCurrentView() as GarminWorkoutControl;
 
                 m_CancelDialog = new CancelOperationDialog(new CancelOperationDelegate(CancelOperation));
-                m_CancelDialog.Show(workoutControl);
+                m_CancelDialog.Show();
             }
         }
 
         public delegate void CancelOperationDelegate();
         private void CancelOperation()
         {
+            Logger.Instance.LogText("Cancelling operation");
+
+            m_TimeoutTimer.Stop();
+            if (m_CancelDialog != null)
+            {
+                m_CancelDialog.Close();
+                m_CancelDialog.Dispose();
+                m_CancelDialog = null;
+            }
+
             if (CurrentTask != null)
             {
-                m_TimeoutTimer.Stop();
-                if (m_CancelDialog != null)
-                {
-                    m_CancelDialog.Close();
-                    m_CancelDialog.Dispose();
-                    m_CancelDialog = null;
-                }
-
                 if (CurrentTask.Type == BasicTask.TaskTypes.ExportWorkout ||
                     CurrentTask.Type == BasicTask.TaskTypes.ExportProfile)
                 {
                     OperatingDevice.CancelWrite("Operation cancelled");
                 }
                 else if (CurrentTask.Type == BasicTask.TaskTypes.ImportWorkouts ||
-                         CurrentTask.Type == BasicTask.TaskTypes.ImportProfile)
+                            CurrentTask.Type == BasicTask.TaskTypes.ImportProfile)
                 {
                     OperatingDevice.CancelRead("Operation cancelled");
                 }
