@@ -608,7 +608,8 @@ namespace GarminFitnessPlugin.View
         {
             if (e.KeyCode == Keys.Enter)
             {
-                bool success = SelectNextControl(sender as Control, true, true, true, true);
+                SelectNextControl(sender as Control, true, true, true, true);
+                e.Handled = true;
             }
         }
 

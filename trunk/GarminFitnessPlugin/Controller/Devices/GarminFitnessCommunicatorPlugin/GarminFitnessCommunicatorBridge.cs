@@ -189,6 +189,10 @@ namespace GarminFitnessPlugin.Controller
 
             m_HiddenWebBrowser.ObjectForScripting = this;
             m_HiddenWebBrowser.DocumentCompleted += new WebBrowserDocumentCompletedEventHandler(OnWebBrowserDocumentCompleted);
+        }
+
+        public void Start()
+        {
             m_HiddenWebBrowser.Navigate(m_LocalWebPageLocation + "GarminFitness.html");
         }
 

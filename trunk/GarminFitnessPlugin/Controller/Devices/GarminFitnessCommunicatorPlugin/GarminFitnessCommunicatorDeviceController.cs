@@ -19,6 +19,8 @@ namespace GarminFitnessPlugin.Controller
             m_CommunicatorBridge.InitializeCompleted += new EventHandler<GarminFitnessCommunicatorBridge.InitializeCompletedEventArgs>(OnCommunicatorBridgeInitializeCompleted);
             m_CommunicatorBridge.ExceptionTriggered += new EventHandler<GarminFitnessCommunicatorBridge.ExceptionEventArgs>(OnCommunicatorBridgeExceptionTriggered);
             m_CommunicatorBridge.FinishFindDevices += new EventHandler<GarminFitnessCommunicatorBridge.FinishFindDevicesEventArgs>(OnCommunicatorBridgeFinishFindDevices);
+
+            m_CommunicatorBridge.Start();
         }
 
         private void OnCommunicatorBridgeExceptionTriggered(object sender, GarminFitnessCommunicatorBridge.ExceptionEventArgs e)
