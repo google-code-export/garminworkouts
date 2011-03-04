@@ -51,9 +51,34 @@ namespace GarminFitnessPlugin.Controller
 
         void IPublicWorkoutManager.SerializeWorkouts(IList<IPublicWorkout> workouts, String directory)
         {
+            List<IWorkout> workoutsToExport = new List<IWorkout>();
             ushort workoutIndex = 0;
 
+            // Populate list of workouts to export
             foreach (IPublicWorkout currentWorkout in workouts)
+            {
+                Workout concreteWorkout = currentWorkout as Workout;
+
+                if (concreteWorkout != null)
+                {
+                    if (concreteWorkout.GetSplitPartsCount() > 1)
+                    {
+                        List<WorkoutPart> splitParts = concreteWorkout.SplitInSeperateParts();
+
+                        // Replace the workout by it's parts
+                        foreach (WorkoutPart currentPart in splitParts)
+                        {
+                            workoutsToExport.Add(currentPart);
+                        }
+                    }
+                    else
+                    {
+                        workoutsToExport.Add(concreteWorkout);
+                    }
+                }
+            }
+
+            foreach (IWorkout currentWorkout in workoutsToExport)
             {
                 Workout concreteWorkout = currentWorkout as Workout;
                 string fileName = Utils.GetWorkoutFilename(concreteWorkout, GarminWorkoutManager.FileFormats.FIT);
