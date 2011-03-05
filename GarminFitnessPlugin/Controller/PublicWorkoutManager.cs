@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.IO;
 using GarminFitnessPublic;
 using GarminFitnessPlugin.Data;
@@ -10,6 +11,60 @@ namespace GarminFitnessPlugin.Controller
     {
         private PublicWorkoutManager()
         {
+            GarminWorkoutManager.Instance.WorkoutListChanged += new GarminWorkoutManager.WorkoutListChangedEventHandler(OnManagerWorkoutListChanged);
+            GarminWorkoutManager.Instance.WorkoutChanged += new GarminWorkoutManager.WorkoutChangedEventHandler(OnManagerWorkoutChanged);
+            GarminWorkoutManager.Instance.WorkoutStepChanged += new GarminWorkoutManager.WorkoutStepChangedEventHandler(OnManagerWorkoutStepChanged);
+            GarminWorkoutManager.Instance.WorkoutStepDurationChanged += new GarminWorkoutManager.WorkoutStepDurationChangedEventHandler(OnManagerWorkoutStepDurationChanged);
+            GarminWorkoutManager.Instance.WorkoutStepRepeatDurationChanged += new GarminWorkoutManager.WorkoutStepRepeatDurationChangedEventHandler(OnManagerWorkoutStepRepeatDurationChanged);
+            GarminWorkoutManager.Instance.WorkoutStepTargetChanged += new GarminWorkoutManager.WorkoutStepTargetChangedEventHandler(OnManagerWorkoutStepTargetChanged);
+        }
+
+        private void OnManagerWorkoutListChanged()
+        {
+            if (PropertyChanged != null)
+            {
+                PropertyChanged(this, new PropertyChangedEventArgs("WorkoutList"));
+            }
+        }
+
+        private void OnManagerWorkoutChanged(IWorkout modifiedWorkout, PropertyChangedEventArgs changedProperty)
+        {
+            if (PropertyChanged != null)
+            {
+                PropertyChanged(modifiedWorkout.ConcreteWorkout as IPublicWorkout, new PropertyChangedEventArgs("Workout"));
+            }
+        }
+
+        void OnManagerWorkoutStepChanged(IWorkout modifiedWorkout, IStep modifiedStep, PropertyChangedEventArgs changedProperty)
+        {
+            if (PropertyChanged != null)
+            {
+                PropertyChanged(modifiedWorkout.ConcreteWorkout as IPublicWorkout, new PropertyChangedEventArgs("WorkoutStep"));
+            }
+        }
+
+        void OnManagerWorkoutStepDurationChanged(IWorkout modifiedWorkout, RegularStep modifiedStep, IDuration modifiedDuration, PropertyChangedEventArgs changedProperty)
+        {
+            if (PropertyChanged != null)
+            {
+                PropertyChanged(modifiedWorkout.ConcreteWorkout as IPublicWorkout, new PropertyChangedEventArgs("WorkoutStepDuration"));
+            }
+        }
+
+        void OnManagerWorkoutStepRepeatDurationChanged(IWorkout modifiedWorkout, RepeatStep modifiedStep, IRepeatDuration modifiedDuration, PropertyChangedEventArgs changedProperty)
+        {
+            if (PropertyChanged != null)
+            {
+                PropertyChanged(modifiedWorkout.ConcreteWorkout as IPublicWorkout, new PropertyChangedEventArgs("WorkoutStepRepeatDuration"));
+            }
+        }
+
+        void OnManagerWorkoutStepTargetChanged(IWorkout modifiedWorkout, RegularStep modifiedStep, ITarget modifiedDuration, PropertyChangedEventArgs changedProperty)
+        {
+            if (PropertyChanged != null)
+            {
+                PropertyChanged(modifiedWorkout.ConcreteWorkout as IPublicWorkout, new PropertyChangedEventArgs("WorkoutStepTarget"));
+            }
         }
 
         public static IPublicWorkoutManager Instance
@@ -27,7 +82,7 @@ namespace GarminFitnessPlugin.Controller
 
 #region IPublicWorkoutManager Members
 
-        IList<IPublicWorkout> IPublicWorkoutManager.Workouts
+        public IList<IPublicWorkout> Workouts
         {
             get
             {
@@ -42,14 +97,14 @@ namespace GarminFitnessPlugin.Controller
             }
         }
 
-        void IPublicWorkoutManager.ScheduleWorkout(IPublicWorkout workout, DateTime date)
+        public void ScheduleWorkout(IPublicWorkout workout, DateTime date)
         {
             Workout concreteWorkout = workout as Workout;
 
             concreteWorkout.ScheduleWorkout(date);
         }
 
-        void IPublicWorkoutManager.SerializeWorkouts(IList<IPublicWorkout> workouts, String directory)
+        public void SerializeWorkouts(IList<IPublicWorkout> workouts, String directory)
         {
             List<IWorkout> workoutsToExport = new List<IWorkout>();
             ushort workoutIndex = 0;
@@ -80,7 +135,7 @@ namespace GarminFitnessPlugin.Controller
 
             foreach (IWorkout currentWorkout in workoutsToExport)
             {
-                Workout concreteWorkout = currentWorkout as Workout;
+                IWorkout concreteWorkout = currentWorkout as IWorkout;
                 string fileName = Utils.GetWorkoutFilename(concreteWorkout, GarminWorkoutManager.FileFormats.FIT);
                 FileStream file = File.Create(directory + "\\" + fileName);
 
@@ -94,7 +149,7 @@ namespace GarminFitnessPlugin.Controller
             }
         }
 
-        void IPublicWorkoutManager.DeserializeWorkout(Stream dataStream)
+        public void DeserializeWorkout(Stream dataStream)
         {
             if (WorkoutImporter.IsFITFileStream(dataStream))
             {
@@ -106,10 +161,12 @@ namespace GarminFitnessPlugin.Controller
             }
         }
 
-        void IPublicWorkoutManager.OpenWorkoutInView(IPublicWorkout workout)
+        public void OpenWorkoutInView(IPublicWorkout workout)
         {
             PluginMain.GetApplication().ShowView(GUIDs.GarminFitnessView, Constants.BookmarkHeader + workout.Id.ToString());
         }
+
+        public event PropertyChangedEventHandler PropertyChanged;
 
 #endregion
 
