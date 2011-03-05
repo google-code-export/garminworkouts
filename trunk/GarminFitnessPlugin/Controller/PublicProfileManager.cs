@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.IO;
 using GarminFitnessPublic;
 using GarminFitnessPlugin.Data;
@@ -10,6 +11,24 @@ namespace GarminFitnessPlugin.Controller
     {
         private PublicProfileManager()
         {
+            GarminProfileManager.Instance.ProfileChanged += new GarminProfileManager.ProfileChangedEventHandler(OnManagerProfileChanged);
+            GarminProfileManager.Instance.ActivityProfileChanged += new GarminProfileManager.ActivityProfileChangedEventHandler(OnManagerActivityProfileChanged);
+        }
+
+        void OnManagerProfileChanged(object sender, System.ComponentModel.PropertyChangedEventArgs changedProperty)
+        {
+            if (ProfileChanged != null)
+            {
+                ProfileChanged(this, new PropertyChangedEventArgs("Profile"));
+            }
+        }
+
+        void OnManagerActivityProfileChanged(GarminActivityProfile profileChanged, System.ComponentModel.PropertyChangedEventArgs changedProperty)
+        {
+            if (ProfileChanged != null)
+            {
+                ProfileChanged(this, new PropertyChangedEventArgs("ActivityProfile"));
+            }
         }
 
         public static IPublicProfileManager Instance
@@ -27,10 +46,12 @@ namespace GarminFitnessPlugin.Controller
 
 #region IPublicProfileManager Members
 
-        void IPublicProfileManager.SerializeProfile(String directory)
+        public void SerializeProfile(String directory)
         {
             ProfileExporter.ExportProfileToFIT(directory);
         }
+
+        public event PropertyChangedEventHandler ProfileChanged;
 
 #endregion
 

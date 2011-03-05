@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel;
 using System.Collections.Generic;
 using System.IO;
 
@@ -14,5 +15,7 @@ namespace GarminFitnessPublic
         void DeserializeWorkout(Stream dataStream);
 
         void OpenWorkoutInView(IPublicWorkout workout);
+
+        event PropertyChangedEventHandler PropertyChanged;
     }
 }
