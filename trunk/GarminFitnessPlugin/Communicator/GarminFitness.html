@@ -128,6 +128,8 @@
             },
             onStartFindDevices: function (json) {
                 try {
+                    window.external.WriteLog("HTML: Start find devices callback");
+
                     window.external.OnStartFindDevices();
                 }
                 catch (e) {
@@ -136,6 +138,8 @@
             },
             onFinishFindDevices: function (json) {
                 try {
+                    window.external.WriteLog("HTML: Finish find devices callback");
+
                     window.external.OnFinishFindDevices(DevicesString(json.controller.getDevices()));
                 }
                 catch (e) {
@@ -145,6 +149,8 @@
             onProgressReadFromDevice: function (json) {
                 try {
                     var progress = json.progress.getPercentage();
+
+                    window.external.WriteLog("HTML: Progress read callback");
 
                     if (progress == null) {
                         progress = "0";
@@ -160,6 +166,8 @@
                 try {
                     var success = json.success;
                     var result = json.controller.gpsDataString;
+
+                    window.external.WriteLog("HTML: Finish read callback");
 
                     if (result == null) {
                         result = "";
@@ -179,6 +187,8 @@
                 try {
                     var success = json.success;
                     var directoryXml = null;
+
+                    window.external.WriteLog("HTML: Finish read directory callback");
 
                     if (success == null) {
                         success = false;
@@ -201,7 +211,9 @@
             },
             onCancelReadFromDevice: function (json) {
                 try {
-                    window.external.OnFinishReadFromDevice(false, "");
+                    window.external.WriteLog("HTML: Cancel read callback");
+
+                    //window.external.OnFinishReadFromDevice(false, "");
                 }
                 catch (e) {
                     window.external.OnExceptionTriggered(e.message);
@@ -210,6 +222,8 @@
             onProgressWriteToDevice: function (json) {
                 try {
                     var progress = json.progress.getPercentage();
+
+                    window.external.WriteLog("HTML: Progress write callback");
 
                     if (progress == null) {
                         progress = "0";
@@ -225,6 +239,8 @@
                 try {
                     var success = json.success;
                     var result = json.controller.gpsDataString;
+
+                    window.external.WriteLog("HTML: Finish write callback");
 
                     if (result == null) {
                         result = "";
@@ -242,7 +258,9 @@
             },
             onCancelWriteToDevice: function (json) {
                 try {
-                    window.external.OnFinishWriteToDevice(false, "");
+                    window.external.WriteLog("HTML: Cancel write callback");
+
+                    //window.external.OnFinishWriteToDevice(false, "");
                 }
                 catch (e) {
                     window.external.OnExceptionTriggered(e.message);
@@ -251,6 +269,8 @@
             onException: function (json) {
                 try {
                     var message = json.msg.message;
+
+                    window.external.WriteLog("HTML: Exception callback");
 
                     if (message == null) {
                         message = "";

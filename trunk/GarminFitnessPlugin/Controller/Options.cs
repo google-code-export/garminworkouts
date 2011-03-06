@@ -1024,6 +1024,7 @@ namespace GarminFitnessPlugin.Controller
             }
         }
 
+        // Use to enable/disable mass storage mode (FIT simulation on Edge 705)
         public bool EnableMassStorageMode
         {
             get { return false; }

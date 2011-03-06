@@ -113,22 +113,31 @@ namespace GarminFitnessPlugin.Controller
 
         void OnBridgeExceptionTriggered(object sender, GarminFitnessCommunicatorBridge.ExceptionEventArgs e)
         {
+            DeviceOperations lastOperation = m_CurrentOperation;
+
             m_CancellationError = e.ExceptionText;
+            m_CurrentOperation = DeviceOperations.Idle;
 
             Logger.Instance.LogText(String.Format("Bridge exception caught in device : {0}\nStack:{1}", m_CancellationError, new StackTrace(true).ToString()));
 
-            switch(m_CurrentOperation)
+            switch (lastOperation)
             {
                 case DeviceOperations.ReadProfile:
                 case DeviceOperations.ReadWorkout:
                 {
-                    CancelRead(m_CancellationError);
+                    if (ReadFromDeviceCompleted != null)
+                    {
+                        ReadFromDeviceCompleted(this, lastOperation, false, m_CancellationError);
+                    }
                     break;
                 }
                 case DeviceOperations.WriteProfile:
                 case DeviceOperations.WriteWorkout:
                 {
-                    CancelWrite(m_CancellationError);
+                    if (WriteToDeviceCompleted != null)
+                    {
+                        WriteToDeviceCompleted(this, lastOperation, false, m_CancellationError);
+                    }
                     break;
                 }
             }
@@ -284,6 +293,8 @@ namespace GarminFitnessPlugin.Controller
         {
             bool success = e.Success;
             DeviceOperations lastOperation = m_CurrentOperation;
+
+            TriggerOperationWillCompleteEvent();
 
             switch (m_CurrentOperation)
             {
@@ -464,7 +475,7 @@ namespace GarminFitnessPlugin.Controller
             m_CancellationError = "";
             m_Controller.CommunicatorBridge.SetDeviceNumber(m_DeviceNumber);
 
-            if (!exportToFIT && !SupportsFITWorkouts)
+            if (!exportToFIT && !SupportsFITWorkouts && !SupportsWorkoutMassStorageTransfer)
             {
                 // Basic TCX export
                 string fileName = "Default.tcx";
