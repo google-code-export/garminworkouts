@@ -443,6 +443,7 @@ namespace GarminFitnessPlugin.Controller
             fileName = fileName.Replace('>', '_');
             fileName = fileName.Replace('|', '_');
             fileName = fileName.Replace('.', '_');
+            fileName = fileName.Replace('&', '_');
 
             if (format == GarminWorkoutManager.FileFormats.TCX)
             {
