@@ -77,6 +77,12 @@ namespace GarminFitnessPlugin.Controller
 
         public static void ExportWorkoutToFIT(IWorkout workout, Stream exportStream, UInt16 fileIdNumber)
         {
+            ExportWorkoutToFIT(workout, exportStream, fileIdNumber, true);
+        }
+
+        public static void ExportWorkoutToFIT(IWorkout workout, Stream exportStream,
+                                              UInt16 fileIdNumber, bool updateExportDate)
+        {
             MemoryStream dataStream = new MemoryStream();
 
             // Reserve size for header
@@ -107,7 +113,6 @@ namespace GarminFitnessPlugin.Controller
             fileIdMessage.Serialize(dataStream);
 
             // Write workout
-            workout.LastExportDate = DateTime.Now;
             workout.SerializetoFIT(dataStream);
 
             // Write FIT header at the start of the stream
@@ -132,6 +137,11 @@ namespace GarminFitnessPlugin.Controller
 
             // Write all data to output stream
             exportStream.Write(dataStream.GetBuffer(), 0, (int)dataStream.Length);
+
+            if (updateExportDate)
+            {
+                workout.LastExportDate = DateTime.Now;
+            }
         }
     }
 }
