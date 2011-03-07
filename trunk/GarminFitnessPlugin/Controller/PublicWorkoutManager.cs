@@ -141,7 +141,7 @@ namespace GarminFitnessPlugin.Controller
 
                 if (file != null)
                 {
-                    WorkoutExporter.ExportWorkoutToFIT(concreteWorkout, file, workoutIndex);
+                    WorkoutExporter.ExportWorkoutToFIT(concreteWorkout, file, workoutIndex, false);
                     file.Close();
                 }
 
