@@ -559,6 +559,8 @@ namespace GarminFitnessPlugin.Data
         {
             if (stepsToMove != null && stepsToMove.Count > 0)
             {
+                UInt16 preMoveSplitCount = m_ParentWorkout.ConcreteWorkout.GetSplitPartsCount();
+
                 m_EventsActive = false;
                 {
                     // Mark the destination
@@ -580,6 +582,11 @@ namespace GarminFitnessPlugin.Data
                 }
 
                 TriggerListChanged("Steps");
+
+                if (preMoveSplitCount != m_ParentWorkout.ConcreteWorkout.GetSplitPartsCount())
+                {
+                    TriggerListChanged("PartsCount");
+                }
             }
         }
 
@@ -587,6 +594,8 @@ namespace GarminFitnessPlugin.Data
         {
             if (stepsToMove != null && stepsToMove.Count > 0)
             {
+                UInt16 preMoveSplitCount = m_ParentWorkout.ConcreteWorkout.GetSplitPartsCount();
+
                 m_EventsActive = false;
                 {
                     // Make a copy of the destination
@@ -609,6 +618,11 @@ namespace GarminFitnessPlugin.Data
 
                 // Trigger event
                 TriggerListChanged("Steps");
+
+                if (preMoveSplitCount != m_ParentWorkout.ConcreteWorkout.GetSplitPartsCount())
+                {
+                    TriggerListChanged("PartsCount");
+                }
             }
         }
 

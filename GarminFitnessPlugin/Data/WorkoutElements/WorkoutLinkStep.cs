@@ -265,6 +265,47 @@ namespace GarminFitnessPlugin.Data
             TriggerStepChanged(new PropertyChangedEventArgs("LinkSteps"));
         }
 
+        public WorkoutStepsList GetStepsForPart(int partNumber, ref WorkoutStepsList result,
+                                                ref UInt16 partNumberCounter, ref int stepCounter)
+        {
+            for (int i = 0; i < LinkedWorkoutSteps.Count; ++i)
+            {
+                IStep currentStep = LinkedWorkoutSteps[i];
+
+                if (currentStep is WorkoutLinkStep)
+                {
+                    WorkoutLinkStep linkStep = currentStep as WorkoutLinkStep;
+
+                    linkStep.GetStepsForPart(partNumber, ref result,
+                                             ref partNumberCounter, ref stepCounter);
+                }
+                else
+                {
+                    int previousCounter = stepCounter;
+
+                    stepCounter += currentStep.StepCount;
+
+                    if ((previousCounter != 0 || partNumberCounter != 0) && (currentStep.ForceSplitOnStep || stepCounter > Constants.MaxStepsPerWorkout))
+                    {
+                        partNumberCounter++;
+                        stepCounter = currentStep.StepCount;
+                    }
+
+                    if (partNumberCounter == partNumber)
+                    {
+                        // Add step to result, it's in the right part
+                        result.Add(currentStep);
+                    }
+                    else if (partNumberCounter > partNumber)
+                    {
+                        break;
+                    }
+                }
+            }
+
+            return result;
+        }
+
         public Workout LinkedWorkout
         {
             get { return m_LinkedWorkout; }
