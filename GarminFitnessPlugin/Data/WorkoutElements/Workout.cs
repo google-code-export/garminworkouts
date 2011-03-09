@@ -84,6 +84,11 @@ namespace GarminFitnessPlugin.Data
             get { return new string(((string)NotesInternal).ToCharArray()); }
         }
 
+        GarminSports IPublicWorkout.Sport
+        {
+            get { return (GarminSports)Options.Instance.GetGarminCategory(Category); }
+        }
+
 #endregion
 
         void OnStepAdded(IStep addedStep)
