@@ -29,6 +29,7 @@ namespace GarminFitnessPlugin.Data
         }
 
 #region IWorkout Members
+
         public override void Serialize(Stream stream)
         {
             throw new System.Exception("There is no need to serialize a WorkoutPart");
@@ -38,6 +39,27 @@ namespace GarminFitnessPlugin.Data
         {
             // Hard 20 step limit in the parts
             return StepCount + newStepCount <= Constants.MaxStepsPerWorkout;
+        }
+
+        public override IStep ParentStep
+        {
+            get
+            {
+                foreach (IStep currentStep in ConcreteWorkout.Steps)
+                {
+                    if (currentStep is WorkoutLinkStep)
+                    {
+                        WorkoutLinkStep linkStep = currentStep as WorkoutLinkStep;
+
+                        if(linkStep.LinkedWorkoutSteps.Contains(Steps[0]))
+                        {
+                            return linkStep;
+                        }
+                    }
+                }
+
+                return base.ParentStep;
+            }
         }
 
         public override Workout ConcreteWorkout
@@ -85,6 +107,7 @@ namespace GarminFitnessPlugin.Data
                 }
             }
         }
+
         public override DateTime LastExportDate
         {
             get { return ConcreteWorkout.LastExportDate; }
@@ -104,7 +127,12 @@ namespace GarminFitnessPlugin.Data
         public override bool AddToDailyViewOnSchedule
         {
             get { return m_FullWorkout.AddToDailyViewOnSchedule; }
-            set { throw new Exception("Cannot assign AddToDailyViewOnSchedule on a WorkoutPart");  }
+            set { throw new Exception("Cannot assign AddToDailyViewOnSchedule on a WorkoutPart"); }
+        }
+
+        public override UInt16 GetSplitPartsCount()
+        {
+            return 1;
         }
 
 #endregion

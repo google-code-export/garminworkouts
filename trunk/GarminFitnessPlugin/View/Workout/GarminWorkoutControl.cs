@@ -3663,7 +3663,8 @@ namespace GarminFitnessPlugin.View
 
         private StepWrapper GetStepWrapper(Workout baseWorkout, IStep step)
         {
-            if (m_StepWrapperMap.ContainsKey(baseWorkout) &&
+            if (step != null &&
+                m_StepWrapperMap.ContainsKey(baseWorkout) &&
                 m_StepWrapperMap[baseWorkout].ContainsKey(step))
             {
                 return m_StepWrapperMap[baseWorkout][step];
@@ -3688,9 +3689,10 @@ namespace GarminFitnessPlugin.View
             }
             else
             {
-                bool isWorkoutLinkChild = parent != null &&
-                                          (parent.IsWorkoutLinkChild ||
-                                            (parent.Element as IStep) is WorkoutLinkStep);
+                bool isWorkoutLinkChild = SelectedWorkout.ParentStep != null ||
+                                          (parent != null &&
+                                           (parent.IsWorkoutLinkChild ||
+                                             (parent.Element as IStep) is WorkoutLinkStep));
 
                 // Create a new wrapper
                 wrapper = new StepWrapper(parent, step, baseWorkout, isWorkoutLinkChild);
@@ -3848,7 +3850,10 @@ namespace GarminFitnessPlugin.View
             if (SelectedWorkout != null)
             {
                 List<TreeList.TreeListNode> stepsList = new List<TreeList.TreeListNode>();
-                AddStepsToList(stepsList, SelectedWorkout.Steps, null);
+
+                AddStepsToList(stepsList, SelectedWorkout.Steps,
+                               GetStepWrapper(SelectedWorkout.ConcreteWorkout,
+                                              null));
 
                 StepsList.RowData = stepsList;
 
