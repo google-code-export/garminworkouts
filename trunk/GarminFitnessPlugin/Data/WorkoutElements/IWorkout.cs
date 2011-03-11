@@ -257,7 +257,8 @@ namespace GarminFitnessPlugin.Data
 
         void OnStepChanged(IStep modifiedStep, PropertyChangedEventArgs changedProperty)
         {
-            if (changedProperty.PropertyName == "ForceSplitOnStep")
+            if (changedProperty.PropertyName == "ForceSplitOnStep" ||
+                changedProperty.PropertyName == "LinkSteps")
             {
                 TriggerWorkoutChangedEvent(new PropertyChangedEventArgs("PartsCount"));
             }
