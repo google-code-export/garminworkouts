@@ -1913,7 +1913,7 @@ namespace GarminFitnessPlugin.View
 
         private void WorkoutNameText_Validating(object sender, CancelEventArgs e)
         {
-            if (SelectedStep != null && !(SelectedWorkout is WorkoutPart))
+            if (SelectedWorkout != null && !(SelectedWorkout is WorkoutPart))
             {
                 Workout workoutWithSameName = GarminWorkoutManager.Instance.GetWorkout(WorkoutNameText.Text);
 
