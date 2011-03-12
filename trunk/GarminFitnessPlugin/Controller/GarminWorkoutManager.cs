@@ -30,7 +30,7 @@ namespace GarminFitnessPlugin.Controller
 
             for (int i = 0; i < m_Workouts.Count; ++i)
             {
-                if (m_Workouts[i].ValidateAfterZoneCategoryChanged(changedCategory))
+                m_Workouts[i].ValidateAfterZoneCategoryChanged(changedCategory);
                 {
                     valueChanged = true;
                 }
@@ -38,7 +38,7 @@ namespace GarminFitnessPlugin.Controller
 
             if (valueChanged)
             {
-                Utils.SaveWorkoutsToLogbook();
+                PluginMain.GetApplication().Logbook.Modified = true;
             }
         }
 
@@ -58,7 +58,7 @@ namespace GarminFitnessPlugin.Controller
 
             if (!m_IsDeserializing)
             {
-                Utils.SaveWorkoutsToLogbook();
+                PluginMain.GetApplication().Logbook.Modified = true;
             }
 
             if (m_EventTriggerActive && WorkoutChanged != null)
@@ -71,7 +71,7 @@ namespace GarminFitnessPlugin.Controller
         {
             if (!m_IsDeserializing)
             {
-                Utils.SaveWorkoutsToLogbook();
+                PluginMain.GetApplication().Logbook.Modified = true;
             }
 
             if (m_EventTriggerActive && WorkoutStepChanged != null)
@@ -84,7 +84,7 @@ namespace GarminFitnessPlugin.Controller
         {
             if (!m_IsDeserializing)
             {
-                Utils.SaveWorkoutsToLogbook();
+                PluginMain.GetApplication().Logbook.Modified = true;
             }
 
             if (m_EventTriggerActive && WorkoutStepDurationChanged != null)
@@ -97,7 +97,7 @@ namespace GarminFitnessPlugin.Controller
         {
             if (!m_IsDeserializing)
             {
-                Utils.SaveWorkoutsToLogbook();
+                PluginMain.GetApplication().Logbook.Modified = true;
             }
 
             if (m_EventTriggerActive && WorkoutStepRepeatDurationChanged != null)
@@ -110,7 +110,7 @@ namespace GarminFitnessPlugin.Controller
         {
             if (!m_IsDeserializing)
             {
-                Utils.SaveWorkoutsToLogbook();
+                PluginMain.GetApplication().Logbook.Modified = true;
             }
 
             if (m_EventTriggerActive && WorkoutStepTargetChanged != null)
@@ -241,12 +241,17 @@ namespace GarminFitnessPlugin.Controller
             return result;
         }
 
-        public Workout CreateWorkout(Stream stream, DataVersion version, IActivityCategory newCategory)
+        public Workout CreateWorkout(Stream stream, DataVersion version, IActivityCategory newCategory, Guid workoutId)
         {
             Workout result = new Workout(stream, version);
 
-            // We must update the name to avoid duplicates
+            // We must update the name & Id to avoid duplicates
             result.Name = GarminWorkoutManager.Instance.GetUniqueName(result.Name);
+
+            if (workoutId != null && workoutId != Guid.Empty)
+            {
+                result.Id = workoutId;
+            }
 
             if (newCategory != null)
             {
@@ -260,7 +265,7 @@ namespace GarminFitnessPlugin.Controller
 
         public Workout CreateWorkout(Stream stream, DataVersion version)
         {
-            return CreateWorkout(stream, version, null);
+            return CreateWorkout(stream, version, null, Guid.Empty);
         }
 
         public Workout CreateWorkout(XmlNode workoutNode, IActivityCategory category)
@@ -411,8 +416,10 @@ namespace GarminFitnessPlugin.Controller
             {
                 for (int i = 0; i < workoutCount; i++)
                 {
-                    Workout newWorkout = GarminWorkoutManager.Instance.CreateWorkout(stream, Constants.CurrentVersion, category);
-                    newWorkout.Id = Guid.NewGuid();
+                    Workout newWorkout = GarminWorkoutManager.Instance.CreateWorkout(stream,
+                                                                                     Constants.CurrentVersion,
+                                                                                     category,
+                                                                                     Guid.NewGuid());
 
                     deserializedWorkouts.Add(newWorkout);
                 }
@@ -443,9 +450,9 @@ namespace GarminFitnessPlugin.Controller
 
             UpdateReservedNamesForWorkout(workoutToRegister);
 
-            if (!IsDeserializing)
+            if (!m_IsDeserializing)
             {
-                Utils.SaveWorkoutsToLogbook();
+                PluginMain.GetApplication().Logbook.Modified = true;
             }
 
             // Trigger event
@@ -466,9 +473,9 @@ namespace GarminFitnessPlugin.Controller
 
             m_WorkoutReservedNames.Remove(workoutToUnregister);
 
-            if (!IsDeserializing)
+            if (!m_IsDeserializing)
             {
-                Utils.SaveWorkoutsToLogbook();
+                PluginMain.GetApplication().Logbook.Modified = true;
             }
         }
 

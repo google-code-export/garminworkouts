@@ -433,8 +433,10 @@ namespace GarminFitnessPlugin.Data
             // Put back at start but skip the first 4 bytes which are the step type
             stream.Seek(0, SeekOrigin.Begin);
 
-            result = GarminWorkoutManager.Instance.CreateWorkout(stream, Constants.CurrentVersion, newCategory);
-            result.m_Id.Value = Guid.NewGuid();
+            result = GarminWorkoutManager.Instance.CreateWorkout(stream,
+                                                                 Constants.CurrentVersion,
+                                                                 newCategory,
+                                                                 Guid.NewGuid());
 
             stream.Close();
 

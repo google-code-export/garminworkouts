@@ -494,7 +494,7 @@ namespace GarminFitnessPlugin.Data
         {
             if (!IsDeserializing)
             {
-                Utils.SaveWorkoutsToLogbook();
+                PluginMain.GetApplication().Logbook.Modified = true;
             }
 
             if (ProfileChanged != null)
@@ -507,7 +507,7 @@ namespace GarminFitnessPlugin.Data
         {
             if (!IsDeserializing)
             {
-                Utils.SaveWorkoutsToLogbook();
+                PluginMain.GetApplication().Logbook.Modified = true;
             }
 
             if (ActivityProfileChanged != null)
