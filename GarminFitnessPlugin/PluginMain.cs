@@ -27,7 +27,22 @@ namespace GarminFitnessPlugin
 
         private void OnLogbookChanged(object sender, ILogbook oldLogbook, ILogbook newLogbook)
         {
+            if (oldLogbook != null)
+            {
+                oldLogbook.BeforeSave -= new EventHandler(OnLogbookBeforeSave);
+            }
+
+            if (newLogbook != null)
+            {
+                newLogbook.BeforeSave += new EventHandler(OnLogbookBeforeSave);
+            }
+
             LoadWorkoutsFromLogbook(newLogbook);
+        }
+
+        void OnLogbookBeforeSave(object sender, EventArgs e)
+        {
+            Utils.SaveWorkoutsToLogbook();
         }
 
 #region STFrameworkEntryPoint Members

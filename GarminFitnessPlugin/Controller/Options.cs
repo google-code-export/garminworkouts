@@ -582,7 +582,7 @@ namespace GarminFitnessPlugin.Controller
         {
             if (!IsDeserializing)
             {
-                Utils.SaveWorkoutsToLogbook();
+                PluginMain.GetApplication().Logbook.Modified = true;
             }
 
             if (OptionsChanged != null)
