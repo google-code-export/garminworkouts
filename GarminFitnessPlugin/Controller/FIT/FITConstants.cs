@@ -33,6 +33,7 @@ namespace GarminFitnessPlugin.Controller
         Settings = 2,
         Sport = 3,
         Workout = 5,
+        Schedules = 7,
     }
 
     public enum FITGlobalMessageIds
@@ -46,6 +47,7 @@ namespace GarminFitnessPlugin.Controller
         Sport = 12,
         Workout = 26,
         WorkoutStep,
+        WorkoutSchedules,
         SpeedZones = 53,
     }
 
@@ -105,6 +107,17 @@ namespace GarminFitnessPlugin.Controller
         AutoWheelSetting = 12,
         SpeedCadenceSensorEnabled = 17,
         PowerSensorEnabled,
+    }
+
+    public enum FITScheduleFieldIds
+    {
+        Unknown1 = 0,
+        Unknown2,
+        Unknown3,
+        WorkoutId,
+        Unknown4,
+        Unknown5,
+        ScheduledDate,
     }
 
     public enum FITSportFieldIds
