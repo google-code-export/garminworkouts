@@ -505,6 +505,7 @@ namespace GarminFitnessPlugin.Controller
                     // FIT export
                     if (SupportsFITWorkouts)
                     {
+                        MemoryStream schedulesDataStream = new MemoryStream();
                         UInt16 fileIdNumber = 0;
 
                         foreach (IWorkout currentWorkout in concreteWorkouts)
@@ -512,7 +513,10 @@ namespace GarminFitnessPlugin.Controller
                             string fileName = Utils.GetWorkoutFilename(currentWorkout, GarminWorkoutManager.FileFormats.FIT);
                             FileStream fileStream = File.Create(m_TempDirectoryLocation + fileName);
 
+                            // Serialize workout & schedules
                             WorkoutExporter.ExportWorkoutToFIT(currentWorkout, fileStream, fileIdNumber);
+                            currentWorkout.SerializetoFITSchedule(schedulesDataStream);
+
                             fileStream.Close();
                             filenames.Add(fileName);
 
@@ -520,6 +524,12 @@ namespace GarminFitnessPlugin.Controller
 
                             ++fileIdNumber;
                         }
+
+                        FileStream schedulesFileStream = File.Create(m_TempDirectoryLocation + "\\" + "Schedules.fit");
+                        WorkoutExporter.ExportSchedulesFITFile(schedulesFileStream, schedulesDataStream, fileIdNumber);
+                        schedulesFileStream.Close();
+                        filenames.Add("Schedules.fit");
+                        Logger.Instance.LogText(String.Format("Export schedules"));
 
                         exportPath = m_FITWorkoutFileWritePath;
                     }

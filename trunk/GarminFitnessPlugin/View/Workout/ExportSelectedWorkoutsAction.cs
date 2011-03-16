@@ -175,6 +175,7 @@ namespace GarminFitnessPlugin.View
                 dlg = new ExportWorkoutsDialog(containsFITOnlyFeatures);
                 if (dlg.ShowDialog() == DialogResult.OK)
                 {
+                    MemoryStream schedulesDataStream = new MemoryStream();
                     UInt16 fileIdNumber = 0;
 
                     foreach (IWorkout currentWorkout in workoutsToExport)
@@ -187,6 +188,7 @@ namespace GarminFitnessPlugin.View
                             if (dlg.SelectedFormat == GarminWorkoutManager.FileFormats.FIT)
                             {
                                 WorkoutExporter.ExportWorkoutToFIT(currentWorkout, file, fileIdNumber);
+                                currentWorkout.SerializetoFITSchedule(schedulesDataStream);
                             }
                             else
                             {
@@ -201,6 +203,13 @@ namespace GarminFitnessPlugin.View
                         }
 
                         ++fileIdNumber;
+                    }
+
+                    if (dlg.SelectedFormat == GarminWorkoutManager.FileFormats.FIT)
+                    {
+                        FileStream schedulesFileStream = File.Create(dlg.SelectedPath + "\\" + "Schedules.fit");
+                        WorkoutExporter.ExportSchedulesFITFile(schedulesFileStream, schedulesDataStream, fileIdNumber);
+                        schedulesFileStream.Close();
                     }
 
                     MessageBox.Show(String.Format(GarminFitnessView.GetLocalizedString("ExportWorkoutsSuccessText"), dlg.SelectedPath),
