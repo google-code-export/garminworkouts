@@ -514,6 +514,32 @@ namespace GarminFitnessPlugin.Controller
             return null;
         }
 
+        public IWorkout GetWorkoutFromFITId(UInt32 FITId)
+        {
+            foreach (Workout workout in m_Workouts)
+            {
+                if (workout.GetSplitPartsCount() > 1)
+                {
+                    foreach (WorkoutPart part in workout.GetSplitParts())
+                    {
+                        if (part.FITExportId == FITId)
+                        {
+                            return part;
+                        }
+                    }
+                }
+                else
+                {
+                    if (workout.FITExportId == FITId)
+                    {
+                        return workout;
+                    }
+                }
+            }
+
+            return null;
+        }
+
         public bool IsWorkoutNameAvailable(string name)
         {
             bool temp;

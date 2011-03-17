@@ -10,6 +10,7 @@ using System.Text;
 using System.Windows.Forms;
 using ZoneFiveSoftware.Common.Visuals;
 using GarminFitnessPlugin.Controller;
+using GarminFitnessPlugin.Data;
 
 namespace GarminFitnessPlugin.View
 {
@@ -115,6 +116,7 @@ namespace GarminFitnessPlugin.View
             // Ask for file to import
             OpenFileDialog dlg = new OpenFileDialog();
             DialogResult result;
+            bool importError = false;
 
             dlg.Title = GarminFitnessView.GetLocalizedString("OpenFileText");
             dlg.Filter = GarminFitnessView.GetLocalizedString("FileDescriptionText") + " (*.tcx;*.wkt;*.fit)|*.tcx;*.wkt;*.fit";
@@ -124,6 +126,8 @@ namespace GarminFitnessPlugin.View
 
             if (result == DialogResult.OK)
             {
+                Dictionary<UInt32, Workout> workoutIdMap = new Dictionary<UInt32, Workout>();
+                String FITSchedulesFileName = String.Empty;
                 Options.Instance.LastImportCategory = null;
                 Options.Instance.UseLastCategoryForAllImportedWorkout = false;
 
@@ -134,23 +138,53 @@ namespace GarminFitnessPlugin.View
                     // Check if this is a FIT file or not
                     if (WorkoutImporter.IsFITFileStream(workoutStream))
                     {
-                        if (!WorkoutImporter.ImportWorkoutFromFIT(workoutStream))
+                        if (WorkoutImporter.PeekFITFileType(workoutStream) == FITFileTypes.Schedules)
                         {
-                            MessageBox.Show(GarminFitnessView.GetLocalizedString("ImportWorkoutsErrorText"),
-                                            GarminFitnessView.GetLocalizedString("ErrorText"),
-                                            MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            // Import schedules last since it refers data contained in the workouts.
+                            //  Keep the filename to delay the loading of this file
+                            FITSchedulesFileName = filename;
+                        }
+                        else
+                        {
+                            UInt32 workoutId;
+                            Workout resultWorkout = WorkoutImporter.ImportWorkoutFromFIT(workoutStream, out workoutId);
+
+                            if (resultWorkout == null)
+                            {
+                                importError = true;
+                            }
+                            else
+                            {
+                                workoutIdMap.Add(workoutId, resultWorkout);
+                            }
                         }
                     }
                     else
                     {
                         if (!WorkoutImporter.ImportWorkout(workoutStream))
                         {
-                            MessageBox.Show(GarminFitnessView.GetLocalizedString("ImportWorkoutsErrorText"),
-                                            GarminFitnessView.GetLocalizedString("ErrorText"),
-                                            MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            importError = true;
                         }
                     }
                     workoutStream.Close();
+                }
+
+                // Import schedules last since it refers data contained in the workouts
+                if (!String.IsNullOrEmpty(FITSchedulesFileName))
+                {
+                    Stream workoutStream = File.OpenRead(FITSchedulesFileName);
+
+                    if (!WorkoutImporter.ImportSchedulesFromFIT(workoutStream, workoutIdMap))
+                    {
+                        importError = true;
+                    }
+                }
+
+                if (importError)
+                {
+                    MessageBox.Show(GarminFitnessView.GetLocalizedString("ImportWorkoutsErrorText"),
+                                    GarminFitnessView.GetLocalizedString("ErrorText"),
+                                    MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
             }
         }

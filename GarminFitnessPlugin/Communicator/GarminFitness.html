@@ -87,6 +87,17 @@
                                     deviceXml += " FITWorkoutFileWriteTransferPath='" + dataTypes[j].getWriteFilePath() + "'";
                                 }
                             }
+                            else if (dataTypes[j].getTypeName() == "FIT_TYPE_7") {
+                                deviceXml += " SupportsFITWorkoutSchedules=" + booleanAttrVal(true);
+
+                                if (dataTypes[j].getReadFilePath() !== "") {
+                                    deviceXml += " FITWorkoutSchedulesFileReadTransferPath='" + dataTypes[j].getReadFilePath() + "'";
+                                }
+
+                                if (dataTypes[j].getWriteFilePath() !== "") {
+                                    deviceXml += " FITWorkoutSchedulesFileWriteTransferPath='" + dataTypes[j].getWriteFilePath() + "'";
+                                }
+                            }
                             else if (dataTypes[j].getTypeName() == "FIT_TYPE_2") {
                                 deviceXml += " SupportsFITSettings=" + booleanAttrVal(true);
 

@@ -161,7 +161,9 @@ namespace GarminFitnessPlugin.Controller
         {
             if (WorkoutImporter.IsFITFileStream(dataStream))
             {
-                WorkoutImporter.ImportWorkoutFromFIT(dataStream);
+                UInt32 workoutId;
+
+                WorkoutImporter.ImportWorkoutFromFIT(dataStream, out workoutId);
             }
             else
             {

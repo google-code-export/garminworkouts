@@ -753,7 +753,7 @@ namespace GarminFitnessPlugin.Data
 
         public void ScheduleWorkout(DateTime date)
         {
-            GarminFitnessDate temp = new GarminFitnessDate(date);
+            GarminFitnessDate temp = new GarminFitnessDate(date.Date);
 
             if (!ScheduledDates.Contains(temp) && date.Ticks >= DateTime.Today.Ticks)
             {
@@ -879,10 +879,13 @@ namespace GarminFitnessPlugin.Data
 
         public UInt32 FITExportId
         {
-            get { return (UInt32)Name.GetHashCode(); }
+            get
+            {
+                return (UInt32)Name.GetHashCode();
+            }
         }
 
-        // Abstract mthods
+        // Abstract methods
         public abstract bool CanAcceptNewStep(int newStepCount, IStep destinationStep);
         public abstract Workout ConcreteWorkout { get; }
         public abstract GarminFitnessString NameInternal { get; }
