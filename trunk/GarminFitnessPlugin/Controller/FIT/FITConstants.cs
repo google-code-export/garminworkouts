@@ -30,6 +30,7 @@ namespace GarminFitnessPlugin.Controller
 
     public enum FITFileTypes
     {
+        Invalid = -1,
         Settings = 2,
         Sport = 3,
         Workout = 5,

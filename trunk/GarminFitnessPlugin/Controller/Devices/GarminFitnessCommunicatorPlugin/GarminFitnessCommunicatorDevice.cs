@@ -63,6 +63,18 @@ namespace GarminFitnessPlugin.Controller
                 {
                     m_FITWorkoutFileReadPath = attribute.Value;
                 }
+                else if (attribute.Name.Equals("SupportsFITWorkoutSchedules"))
+                {
+                    m_SupportsFITWorkoutSchedules = Boolean.Parse(attribute.Value);
+                }
+                else if (attribute.Name.Equals("FITWorkoutSchedulesFileWriteTransferPath"))
+                {
+                    m_FITWorkoutSchedulesFileWritePath = attribute.Value;
+                }
+                else if (attribute.Name.Equals("FITWorkoutSchedulesFileReadTransferPath"))
+                {
+                    m_FITWorkoutSchedulesFileReadPath = attribute.Value;
+                }
                 else if (attribute.Name.Equals("SupportReadProfile"))
                 {
                     m_SupportsReadProfile = Boolean.Parse(attribute.Value);
@@ -351,7 +363,8 @@ namespace GarminFitnessPlugin.Controller
 
                     foreach (string fitFile in fitFilesOnDevice)
                     {
-                        if (fitFile.StartsWith(m_FITWorkoutFileReadPath))
+                        if (fitFile.StartsWith(m_FITWorkoutFileReadPath) ||
+                            fitFile.StartsWith(m_FITWorkoutSchedulesFileReadPath))
                         {
                             m_MassStorageFilesToDownload.Add(fitFile);
                         }
@@ -530,6 +543,8 @@ namespace GarminFitnessPlugin.Controller
                         schedulesFileStream.Close();
                         filenames.Add("Schedules.fit");
                         Logger.Instance.LogText(String.Format("Export schedules"));
+
+                        Debug.Assert(m_FITWorkoutFileWritePath.Equals(m_FITWorkoutSchedulesFileWritePath));
 
                         exportPath = m_FITWorkoutFileWritePath;
                     }
@@ -725,36 +740,6 @@ namespace GarminFitnessPlugin.Controller
             }
         }
 
-        private bool ImportFITWorkoutFileResult(String workoutData)
-        {
-            try
-            {
-                Byte[] decodedBytes = null;
-                bool result = false;
-
-                // UU encoduded base 64, decode first
-                if (workoutData.StartsWith("begin-base64"))
-                {
-                    decodedBytes = UUDecode(workoutData);
-                }
-                else
-                {
-                    decodedBytes = Encoding.UTF8.GetBytes(workoutData);
-                }
-
-                MemoryStream stream = new MemoryStream(decodedBytes);
-
-                result = WorkoutImporter.ImportWorkoutFromFIT(stream);
-                stream.Close();
-
-                return result;
-            }
-            catch
-            {
-                return false;
-            }
-        }
-
         private List<string> GetFilePaths(String directoryXml)
         {
             List<string> result = new List<string>();
@@ -825,6 +810,11 @@ namespace GarminFitnessPlugin.Controller
         public bool SupportsFITWorkouts
         {
             get { return m_SupportsFITWorkouts; }
+        }
+
+        public bool SupportsFITWorkoutSchedules
+        {
+            get { return m_SupportsFITWorkoutSchedules; }
         }
 
         public bool SupportsFITProfile
@@ -906,6 +896,8 @@ namespace GarminFitnessPlugin.Controller
         private string m_WorkoutFileTransferPath = String.Empty;
         private string m_FITWorkoutFileWritePath = String.Empty;
         private string m_FITWorkoutFileReadPath = String.Empty;
+        private string m_FITWorkoutSchedulesFileWritePath = String.Empty;
+        private string m_FITWorkoutSchedulesFileReadPath = String.Empty;
         private string m_FITSettingsFileWritePath = String.Empty;
         private string m_FITSettingsFileReadPath = String.Empty;
         private string m_FITSportFileWritePath = String.Empty;
@@ -917,6 +909,7 @@ namespace GarminFitnessPlugin.Controller
         private bool m_SupportsReadProfile = false;
         private bool m_SupportsWriteProfile = false;
         private bool m_SupportsFITWorkouts = false;
+        private bool m_SupportsFITWorkoutSchedules = false;
         private bool m_SupportsFITSettings = false;
         private bool m_SupportsFITSports = false;
         private bool m_IsReadingDirectory = false;
