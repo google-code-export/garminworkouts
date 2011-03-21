@@ -381,11 +381,15 @@ namespace GarminFitnessPlugin.Controller
                 stream.Read(boolBuffer, 0, sizeof(bool));
                 expanded = BitConverter.ToBoolean(boolBuffer, 0);
 
-                IActivityCategory stCategory = Utils.FindCategoryByIDSafe(Encoding.UTF8.GetString(stringBuffer));
-                m_STToGarminCategoryMap.Add(stCategory, new STCategoriesInfo(stCategory,
-                                                                             (GarminCategories)garminCategory,
-                                                                             expanded,
-                                                                             visible));
+                IActivityCategory stCategory = Utils.FindCategoryByID(Encoding.UTF8.GetString(stringBuffer));
+
+                if (stCategory != null)
+                {
+                    m_STToGarminCategoryMap.Add(stCategory, new STCategoriesInfo(stCategory,
+                                                                                 (GarminCategories)garminCategory,
+                                                                                 expanded,
+                                                                                 visible));
+                }
             }
 
             // HR as %max
