@@ -94,7 +94,7 @@ namespace GarminFitnessPlugin.View
 
 #endregion
 
-        #region INotifyPropertyChanged Members
+#region INotifyPropertyChanged Members
 
         public event System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
 
@@ -102,7 +102,7 @@ namespace GarminFitnessPlugin.View
         {
         }
 
-        #endregion
+#endregion
 
         public void ToDeviceEventHandler(object sender, EventArgs args)
         {
@@ -144,11 +144,12 @@ namespace GarminFitnessPlugin.View
         public void ToFileEventHandler(object sender, EventArgs args)
         {
             FileStream file = null;
+
             try
             {
                 GarminWorkoutControl viewControl = (GarminWorkoutControl)((GarminFitnessView)PluginMain.GetApplication().ActiveView).GetCurrentView();
                 List<IWorkout> workoutsToExport = new List<IWorkout>();
-                ExportWorkoutsDialog dlg;
+                ExportFilesDialog dlg;
                 bool containsFITOnlyFeatures = false;
 
                 // Populate list of workouts to export
@@ -172,7 +173,7 @@ namespace GarminFitnessPlugin.View
                     }
                 }
 
-                dlg = new ExportWorkoutsDialog(containsFITOnlyFeatures);
+                dlg = new ExportFilesDialog(containsFITOnlyFeatures);
                 if (dlg.ShowDialog() == DialogResult.OK)
                 {
                     MemoryStream schedulesDataStream = new MemoryStream();

@@ -11,9 +11,9 @@ using System.Diagnostics;
 
 namespace GarminFitnessPlugin.View
 {
-    partial class ExportWorkoutsDialog : Form
+    partial class ExportFilesDialog : Form
     {
-        public ExportWorkoutsDialog(bool FITFormatOnly)
+        public ExportFilesDialog(bool FITFormatOnly)
         {
             InitializeComponent();
 

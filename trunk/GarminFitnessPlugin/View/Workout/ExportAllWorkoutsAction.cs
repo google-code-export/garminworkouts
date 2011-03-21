@@ -129,7 +129,7 @@ namespace GarminFitnessPlugin.View
         {
             FileStream file = null;
             List<IWorkout> workoutsToExport = new List<IWorkout>();
-            ExportWorkoutsDialog dlg;
+            ExportFilesDialog dlg;
             bool containsFITOnlyFeatures = false;
 
             // Populate list of workouts to export
@@ -153,7 +153,7 @@ namespace GarminFitnessPlugin.View
                 }
             }
 
-            dlg = new ExportWorkoutsDialog(containsFITOnlyFeatures);
+            dlg = new ExportFilesDialog(containsFITOnlyFeatures);
             if (dlg.ShowDialog() == DialogResult.OK)
             {
                 try
