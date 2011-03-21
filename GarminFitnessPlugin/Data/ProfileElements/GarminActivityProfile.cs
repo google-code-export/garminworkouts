@@ -343,11 +343,14 @@ namespace GarminFitnessPlugin.Data
             FITMessageField zoneIndex = HRZonesMessage.GetField((Byte)FITHRZonesFieldIds.MessageIndex);
             FITMessageField zoneUpperValue = HRZonesMessage.GetField((Byte)FITHRZonesFieldIds.HighBPM);
 
-            if (zoneIndex != null &&
-                zoneUpperValue != null)
+            if (zoneIndex != null && zoneUpperValue != null)
             {
+                HRReferential currentReferential = HRZonesReferential;
                 UInt16 index = zoneIndex.GetUInt16();
 
+                // Always deserialize in BPM
+                HRZonesReferential = HRReferential.HRReferential_BPM;
+            
                 if (index > Constants.GarminHRZoneCount)
                 {
                     throw new FITParserException("Invalid index for HR zone");
@@ -366,6 +369,8 @@ namespace GarminFitnessPlugin.Data
                         SetHeartRateLowLimit(index, zoneUpperValue.GetUInt8());
                     }
                 }
+
+                HRZonesReferential = currentReferential;
             }
             else
             {
