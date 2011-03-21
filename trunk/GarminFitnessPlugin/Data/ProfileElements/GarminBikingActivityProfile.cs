@@ -450,10 +450,12 @@ namespace GarminFitnessPlugin.Data
             FITMessageField zoneIndex = powerZonesMessage.GetField((Byte)FITPowerZonesFieldIds.MessageIndex);
             FITMessageField zoneUpperValue = powerZonesMessage.GetField((Byte)FITPowerZonesFieldIds.HighWatts);
 
-            if (zoneIndex != null &&
-                zoneUpperValue != null)
+            if (zoneIndex != null && zoneUpperValue != null)
             {
+                bool currentPercentFTP = PowerZonesInPercentFTP;
                 UInt16 index = zoneIndex.GetUInt16();
+
+                PowerZonesInPercentFTP = false;
 
                 if (index > Constants.GarminPowerZoneCount)
                 {
@@ -473,6 +475,8 @@ namespace GarminFitnessPlugin.Data
                         SetPowerLowLimit(index, zoneUpperValue.GetUInt16());
                     }
                 }
+
+                PowerZonesInPercentFTP = currentPercentFTP;
             }
             else
             {
