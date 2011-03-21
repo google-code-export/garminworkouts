@@ -32,7 +32,7 @@ namespace GarminFitnessPlugin.View
 
         public bool HasMenuArrow
         {
-            get { return false; }
+            get { return true; }
         }
 
         public System.Drawing.Image Image
@@ -59,21 +59,21 @@ namespace GarminFitnessPlugin.View
 
         public void Run(System.Drawing.Rectangle rectButton)
         {
-            try
+            if ((!GarminDeviceManager.Instance.IsInitialized && GarminDeviceManager.Instance.PendingTaskCount == 1) ||
+                GarminDeviceManager.Instance.AreAllTasksFinished)
             {
-                GarminDeviceManager.Instance.TaskCompleted += new GarminDeviceManager.TaskCompletedEventHandler(OnDeviceManagerTaskCompleted);
+                Control control = PluginMain.GetApplication().ActiveView.CreatePageControl();
+                ContextMenu menu = new ContextMenu();
+                MenuItem menuItem;
 
-                Utils.HijackMainWindow();
+                menuItem = new MenuItem(GarminFitnessView.GetLocalizedString("FromDeviceText"),
+                                        new EventHandler(FromDeviceEventHandler));
+                menu.MenuItems.Add(menuItem);
+                menuItem = new MenuItem(GarminFitnessView.GetLocalizedString("FromFileText"),
+                                        new EventHandler(FromFileEventHandler));
+                menu.MenuItems.Add(menuItem);
 
-                // Import using Communicator Plugin
-                GarminDeviceManager.Instance.SetOperatingDevice();
-                GarminDeviceManager.Instance.ImportProfile();
-            }
-            catch (FileNotFoundException)
-            {
-                MessageBox.Show(GarminFitnessView.GetLocalizedString("DeviceCommunicationErrorText"),
-                                GarminFitnessView.GetLocalizedString("ErrorText"),
-                                MessageBoxButtons.OK, MessageBoxIcon.Error);
+                menu.Show(control, control.PointToClient(new Point(rectButton.Right, rectButton.Top)));
             }
         }
 
@@ -110,6 +110,73 @@ namespace GarminFitnessPlugin.View
                 Utils.ReleaseMainWindow();
 
                 manager.TaskCompleted -= new GarminDeviceManager.TaskCompletedEventHandler(OnDeviceManagerTaskCompleted);
+            }
+        }
+
+        
+        public void FromDeviceEventHandler(object sender, EventArgs args)
+        {
+            try
+            {
+                GarminDeviceManager.Instance.TaskCompleted += new GarminDeviceManager.TaskCompletedEventHandler(OnDeviceManagerTaskCompleted);
+
+                Utils.HijackMainWindow();
+
+                // Import using Communicator Plugin
+                GarminDeviceManager.Instance.SetOperatingDevice();
+                GarminDeviceManager.Instance.ImportProfile();
+            }
+            catch (FileNotFoundException)
+            {
+                MessageBox.Show(GarminFitnessView.GetLocalizedString("DeviceCommunicationErrorText"),
+                                GarminFitnessView.GetLocalizedString("ErrorText"),
+                                MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        public void FromFileEventHandler(object sender, EventArgs args)
+        {
+            // Ask for file to import
+            OpenFileDialog dlg = new OpenFileDialog();
+            DialogResult result;
+            bool importError = false;
+
+            dlg.Title = GarminFitnessView.GetLocalizedString("OpenFileText");
+            dlg.Filter = GarminFitnessView.GetLocalizedString("FileDescriptionText") + " (*.tcx;*.wkt;*.fit)|*.tcx;*.wkt;*.fit";
+            dlg.Multiselect = true;
+            dlg.CheckFileExists = true;
+            result = dlg.ShowDialog();
+
+            if (result == DialogResult.OK)
+            {
+                foreach (String filename in dlg.FileNames)
+                {
+                    Stream profileStream = File.OpenRead(filename);
+
+                    // Check if this is a FIT file or not
+                    if (WorkoutImporter.IsFITFileStream(profileStream))
+                    {
+                        if(!ProfileImporter.ImportProfileFromFIT(profileStream))
+                        {
+                            importError = true;
+                        }
+                    }
+                    else
+                    {
+                        if (!ProfileImporter.ImportProfile(profileStream))
+                        {
+                            importError = true;
+                        }
+                    }
+                    profileStream.Close();
+                }
+
+                if (importError)
+                {
+                    MessageBox.Show(GarminFitnessView.GetLocalizedString("ImportProfileErrorText"),
+                                    GarminFitnessView.GetLocalizedString("ErrorText"),
+                                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
             }
         }
 

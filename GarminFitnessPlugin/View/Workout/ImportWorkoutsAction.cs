@@ -88,7 +88,6 @@ namespace GarminFitnessPlugin.View
 
 #endregion
 
-
         public void FromDeviceEventHandler(object sender, EventArgs args)
         {
             try

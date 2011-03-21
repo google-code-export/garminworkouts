@@ -1,6 +1,6 @@
 ﻿namespace GarminFitnessPlugin.View
 {
-    partial class ExportWorkoutsDialog
+    partial class ExportFilesDialog
     {
         /// <summary>
         /// Required designer variable.

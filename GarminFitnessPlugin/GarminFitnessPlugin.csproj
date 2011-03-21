@@ -339,11 +339,11 @@
       <DependentUpon>PrintOptionsDialog.cs</DependentUpon>
     </Compile>
     <Compile Include="View\Workout\PrintWorkoutsAction.cs" />
-    <Compile Include="View\Workout\ExportWorkoutsDialog.cs">
+    <Compile Include="View\Workout\ExportFilesDialog.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="View\Workout\ExportWorkoutsDialog.Designer.cs">
-      <DependentUpon>ExportWorkoutsDialog.cs</DependentUpon>
+    <Compile Include="View\Workout\ExportFilesDialog.Designer.cs">
+      <DependentUpon>ExportFilesDialog.cs</DependentUpon>
     </Compile>
     <Compile Include="View\Workout\WorkoutLinkSelectionDialog.cs">
       <SubType>Form</SubType>
@@ -566,8 +566,8 @@
       <SubType>Designer</SubType>
       <DependentUpon>SetupWizardWelcomeControl.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="View\Workout\ExportWorkoutsDialog.resx">
-      <DependentUpon>ExportWorkoutsDialog.cs</DependentUpon>
+    <EmbeddedResource Include="View\Workout\ExportFilesDialog.resx">
+      <DependentUpon>ExportFilesDialog.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="View\Workout\GarminWorkoutControl.resx">
       <SubType>Designer</SubType>

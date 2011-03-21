@@ -32,7 +32,7 @@ namespace GarminFitnessPlugin.View
 
         public bool HasMenuArrow
         {
-            get { return false; }
+            get { return true; }
         }
 
         public System.Drawing.Image Image
@@ -59,29 +59,22 @@ namespace GarminFitnessPlugin.View
 
         public void Run(System.Drawing.Rectangle rectButton)
         {
-            try
+            if ((!GarminDeviceManager.Instance.IsInitialized && GarminDeviceManager.Instance.PendingTaskCount == 1) ||
+                GarminDeviceManager.Instance.AreAllTasksFinished)
             {
-                GarminDeviceManager.Instance.TaskCompleted += new GarminDeviceManager.TaskCompletedEventHandler(OnDeviceManagerTaskCompleted);
+                GarminFitnessView currentView = (GarminFitnessView)PluginMain.GetApplication().ActiveView;
+                Control control = currentView.CreatePageControl();
+                ContextMenu menu = new ContextMenu();
+                MenuItem menuItem;
 
-                Utils.HijackMainWindow();
+                menuItem = new MenuItem(GarminFitnessView.GetLocalizedString("ToDeviceText"),
+                                        new EventHandler(ToDeviceEventHandler));
+                menu.MenuItems.Add(menuItem);
+                menuItem = new MenuItem(GarminFitnessView.GetLocalizedString("ToFileText"),
+                                        new EventHandler(ToFileEventHandler));
+                menu.MenuItems.Add(menuItem);
 
-                // Export using Communicator Plugin
-                GarminDeviceManager.Instance.SetOperatingDevice();
-                GarminDeviceManager.Instance.ExportProfile();
-            }
-            catch (FileNotFoundException)
-            {
-                MessageBox.Show(GarminFitnessView.GetLocalizedString("DeviceCommunicationErrorText"),
-                                GarminFitnessView.GetLocalizedString("ErrorText"),
-                                MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-            catch (Exception e)
-            {
-                MessageBox.Show(GarminFitnessView.GetLocalizedString("ExportWorkoutsFailedText"),
-                                GarminFitnessView.GetLocalizedString("ErrorText"),
-                                MessageBoxButtons.OK, MessageBoxIcon.Information);
-
-                throw e;
+                menu.Show(control, control.PointToClient(new Point(rectButton.Right, rectButton.Top)));
             }
         }
 
@@ -140,6 +133,80 @@ namespace GarminFitnessPlugin.View
                     MessageBox.Show(GarminFitnessView.GetLocalizedString("ExportProfileSuccessText"),
                                     GarminFitnessView.GetLocalizedString("SuccessText"),
                                     MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+            }
+        }
+
+        
+        public void ToDeviceEventHandler(object sender, EventArgs args)
+        {
+            GarminFitnessView currentView = (GarminFitnessView)PluginMain.GetApplication().ActiveView;
+
+            try
+            {
+                GarminDeviceManager.Instance.TaskCompleted += new GarminDeviceManager.TaskCompletedEventHandler(OnDeviceManagerTaskCompleted);
+
+                Utils.HijackMainWindow();
+
+                // Export using Communicator Plugin
+                GarminDeviceManager.Instance.SetOperatingDevice();
+                GarminDeviceManager.Instance.ExportProfile();
+            }
+            catch (FileNotFoundException)
+            {
+                MessageBox.Show(GarminFitnessView.GetLocalizedString("DeviceCommunicationErrorText"),
+                                GarminFitnessView.GetLocalizedString("ErrorText"),
+                                MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show(GarminFitnessView.GetLocalizedString("ExportProfileFailedText"),
+                                GarminFitnessView.GetLocalizedString("ErrorText"),
+                                MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+                throw e;
+            }
+        }
+
+        public void ToFileEventHandler(object sender, EventArgs args)
+        {
+            FileStream file = null;
+
+            try
+            {
+                ExportFilesDialog dlg = new ExportFilesDialog(false);
+
+                if (dlg.ShowDialog() == DialogResult.OK)
+                {
+                    MemoryStream schedulesDataStream = new MemoryStream();
+
+                    if (dlg.SelectedFormat == GarminWorkoutManager.FileFormats.FIT)
+                    {
+                        ProfileExporter.ExportProfileToFIT(dlg.SelectedPath);
+                    }
+                    else
+                    {
+                        file = File.Create(dlg.SelectedPath + "\\Profile.tcx");
+
+                        ProfileExporter.ExportProfile(GarminProfileManager.Instance.UserProfile, file);
+                        file.Close();
+                    }
+
+                    MessageBox.Show(String.Format(GarminFitnessView.GetLocalizedString("ExportProfileSuccessText"), dlg.SelectedPath),
+                                    GarminFitnessView.GetLocalizedString("SuccessText"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+            }
+            catch
+            {
+                MessageBox.Show(GarminFitnessView.GetLocalizedString("ExportProfileFailedText"),
+                                GarminFitnessView.GetLocalizedString("ErrorText"),
+                                MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+            finally
+            {
+                if (file != null)
+                {
+                    file.Close();
                 }
             }
         }
