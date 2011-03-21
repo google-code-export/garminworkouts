@@ -154,91 +154,71 @@ namespace GarminFitnessPlugin.Data
 
         public virtual void SerializetoFIT(Stream stream)
         {
-            if (GetSplitPartsCount() > 1)
-            {
-                List<WorkoutPart> splitParts = ConcreteWorkout.SplitInSeperateParts();
+            Debug.Assert(GetSplitPartsCount() == 1);
 
-                foreach (WorkoutPart part in splitParts)
-                {
-                    part.SerializetoFIT(stream);
-                }
+            FITMessage workoutMessage = new FITMessage(FITGlobalMessageIds.Workout);
+            FITMessageField sportType = new FITMessageField((Byte)FITWorkoutFieldIds.SportType);
+            FITMessageField numValidSteps = new FITMessageField((Byte)FITWorkoutFieldIds.NumSteps);
+            FITMessageField workoutName = new FITMessageField((Byte)FITWorkoutFieldIds.WorkoutName);
+
+            // Sport type must ALWAYS be cycling on Edge 500 & 800.  Since no other device
+            //  use the FIT format, force the sport.
+            //sportType.SetEnum((Byte)Options.Instance.GetFITSport(Category));
+            sportType.SetEnum((Byte)FITSports.Cycling);
+            workoutMessage.AddField(sportType);
+            numValidSteps.SetUInt16(StepCount);
+            workoutMessage.AddField(numValidSteps);
+
+            if (!String.IsNullOrEmpty(Name))
+            {
+                workoutName.SetString(Name, (Byte)(Constants.MaxNameLength + 1));
+                workoutMessage.AddField(workoutName);
             }
-            else
+
+            workoutMessage.Serialize(stream);
+
+            foreach (IStep step in Steps)
             {
-                FITMessage workoutMessage = new FITMessage(FITGlobalMessageIds.Workout);
-                FITMessageField sportType = new FITMessageField((Byte)FITWorkoutFieldIds.SportType);
-                FITMessageField numValidSteps = new FITMessageField((Byte)FITWorkoutFieldIds.NumSteps);
-                FITMessageField workoutName = new FITMessageField((Byte)FITWorkoutFieldIds.WorkoutName);
-
-                // Sport type must ALWAYS be cycling on Edge 500 & 800.  Since no other device
-                //  use the FIT format, force the sport.
-                //sportType.SetEnum((Byte)Options.Instance.GetFITSport(Category));
-                sportType.SetEnum((Byte)FITSports.Cycling);
-                workoutMessage.AddField(sportType);
-                numValidSteps.SetUInt16(StepCount);
-                workoutMessage.AddField(numValidSteps);
-
-                if (!String.IsNullOrEmpty(Name))
-                {
-                    workoutName.SetString(Name, (Byte)(Constants.MaxNameLength + 1));
-                    workoutMessage.AddField(workoutName);
-                }
-
-                workoutMessage.Serialize(stream);
-
-                foreach (IStep step in Steps)
-                {
-                    step.SerializetoFIT(stream);
-                }
+                step.SerializetoFIT(stream);
             }
         }
 
         public virtual void SerializetoFITSchedule(Stream stream)
         {
-            if (GetSplitPartsCount() > 1)
+            Debug.Assert(GetSplitPartsCount() == 1);
+
+            foreach (DateTime currentDate in ScheduledDates)
             {
-                List<WorkoutPart> splitParts = ConcreteWorkout.SplitInSeperateParts();
+                FITMessage scheduleMessage = new FITMessage(FITGlobalMessageIds.WorkoutSchedules);
+                FITMessageField unknown1 = new FITMessageField((Byte)FITScheduleFieldIds.Unknown1);
+                FITMessageField unknown2 = new FITMessageField((Byte)FITScheduleFieldIds.Unknown2);
+                FITMessageField unknown3 = new FITMessageField((Byte)FITScheduleFieldIds.Unknown3);
+                FITMessageField unknown4 = new FITMessageField((Byte)FITScheduleFieldIds.Unknown4);
+                FITMessageField unknown5 = new FITMessageField((Byte)FITScheduleFieldIds.Unknown5);
+                FITMessageField workoutId = new FITMessageField((Byte)FITScheduleFieldIds.WorkoutId);
+                FITMessageField scheduledDate = new FITMessageField((Byte)FITScheduleFieldIds.ScheduledDate);
+                TimeSpan timeSinceReference = (DateTime)currentDate - new DateTime(1989, 12, 31);
 
-                foreach (WorkoutPart part in splitParts)
-                {
-                    part.SerializetoFITSchedule(stream);
-                }
-            }
-            else
-            {
-                foreach (DateTime currentDate in ScheduledDates)
-                {
-                    FITMessage scheduleMessage = new FITMessage(FITGlobalMessageIds.WorkoutSchedules);
-                    FITMessageField unknown1 = new FITMessageField((Byte)FITScheduleFieldIds.Unknown1);
-                    FITMessageField unknown2 = new FITMessageField((Byte)FITScheduleFieldIds.Unknown2);
-                    FITMessageField unknown3 = new FITMessageField((Byte)FITScheduleFieldIds.Unknown3);
-                    FITMessageField unknown4 = new FITMessageField((Byte)FITScheduleFieldIds.Unknown4);
-                    FITMessageField unknown5 = new FITMessageField((Byte)FITScheduleFieldIds.Unknown5);
-                    FITMessageField workoutId = new FITMessageField((Byte)FITScheduleFieldIds.WorkoutId);
-                    FITMessageField scheduledDate = new FITMessageField((Byte)FITScheduleFieldIds.ScheduledDate);
-                    TimeSpan timeSinceReference = (DateTime)currentDate - new DateTime(1989, 12, 31);
+                // Unknown fields, seem to always be the same
+                unknown1.SetUInt16(1);              // Always 1
+                unknown2.SetUInt16(20119);          // Always 20119
+                unknown3.SetUInt32z(0);             // Always 0
+                unknown4.SetEnum(0xFF);             // Always invalid
+                unknown5.SetEnum(0);                // Always 0
 
-                    // Unknown fields, seem to always be the same
-                    unknown1.SetUInt16(1);              // Always 1
-                    unknown2.SetUInt16(20119);          // Always 20119
-                    unknown3.SetUInt32z(0);             // Always 0
-                    unknown4.SetEnum(0xFF);             // Always invalid
-                    unknown5.SetEnum(0);                // Always 0
+                // Real data
+                workoutId.SetUInt32(FITExportId);
+                scheduledDate.SetUInt32((UInt32)timeSinceReference.TotalSeconds + 43200); // 43200 seconds = 12 hours to set schedule at midday;
 
-                    // Real data
-                    workoutId.SetUInt32(FITExportId);
-                    scheduledDate.SetUInt32((UInt32)timeSinceReference.TotalSeconds + 43200); // 43200 seconds = 12 hours to set schedule at midday;
+                scheduleMessage.AddField(unknown1);
+                scheduleMessage.AddField(unknown2);
+                scheduleMessage.AddField(unknown3);
+                scheduleMessage.AddField(unknown4);
+                scheduleMessage.AddField(unknown5);
+                scheduleMessage.AddField(workoutId);
+                scheduleMessage.AddField(scheduledDate);
 
-                    scheduleMessage.AddField(unknown1);
-                    scheduleMessage.AddField(unknown2);
-                    scheduleMessage.AddField(unknown3);
-                    scheduleMessage.AddField(unknown4);
-                    scheduleMessage.AddField(unknown5);
-                    scheduleMessage.AddField(workoutId);
-                    scheduleMessage.AddField(scheduledDate);
-
-                    scheduleMessage.Serialize(stream);
-                }
+                scheduleMessage.Serialize(stream);
             }
         }
 

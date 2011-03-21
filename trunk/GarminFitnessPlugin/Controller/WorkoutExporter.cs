@@ -107,7 +107,7 @@ namespace GarminFitnessPlugin.Controller
             fileIdMessage.AddField(serialNumber);
             exportDate.SetUInt32(workout.FITExportId);
             fileIdMessage.AddField(exportDate);
-            number.SetUInt16(fileIdNumber);
+            number.SetUInt16(0);
             fileIdMessage.AddField(number);
 
             fileIdMessage.Serialize(dataStream);
