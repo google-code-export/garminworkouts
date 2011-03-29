@@ -152,9 +152,9 @@ namespace GarminFitnessPlugin.Controller
                 ++workoutIndex;
             }
 
-            FileStream schedulesFileStream = File.Create(directory + "\\" + "Schedules.fit");
+/*            FileStream schedulesFileStream = File.Create(directory + "\\" + "Schedules.fit");
             WorkoutExporter.ExportSchedulesFITFile(schedulesFileStream, schedulesDataStream, workoutIndex);
-            schedulesFileStream.Close();
+            schedulesFileStream.Close();*/
         }
 
         public void DeserializeWorkout(Stream dataStream)

@@ -164,7 +164,7 @@ namespace GarminFitnessPlugin.Controller
             fileIdMessage.AddField(fileType);
             manufacturerId.SetUInt16(1);
             fileIdMessage.AddField(manufacturerId);
-            productId.SetUInt16(20119);
+            productId.SetUInt16(1169);
             fileIdMessage.AddField(productId);
             serialNumber.SetUInt32z(0);
             fileIdMessage.AddField(serialNumber);

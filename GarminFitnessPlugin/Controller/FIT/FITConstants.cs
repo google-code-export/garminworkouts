@@ -113,7 +113,7 @@ namespace GarminFitnessPlugin.Controller
     public enum FITScheduleFieldIds
     {
         Unknown1 = 0,
-        Unknown2,
+        GarminProduct,
         Unknown3,
         WorkoutId,
         Unknown4,
