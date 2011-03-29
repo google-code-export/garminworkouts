@@ -191,7 +191,7 @@ namespace GarminFitnessPlugin.Data
             {
                 FITMessage scheduleMessage = new FITMessage(FITGlobalMessageIds.WorkoutSchedules);
                 FITMessageField unknown1 = new FITMessageField((Byte)FITScheduleFieldIds.Unknown1);
-                FITMessageField unknown2 = new FITMessageField((Byte)FITScheduleFieldIds.Unknown2);
+                FITMessageField garminProduct = new FITMessageField((Byte)FITScheduleFieldIds.GarminProduct);
                 FITMessageField unknown3 = new FITMessageField((Byte)FITScheduleFieldIds.Unknown3);
                 FITMessageField unknown4 = new FITMessageField((Byte)FITScheduleFieldIds.Unknown4);
                 FITMessageField unknown5 = new FITMessageField((Byte)FITScheduleFieldIds.Unknown5);
@@ -201,7 +201,7 @@ namespace GarminFitnessPlugin.Data
 
                 // Unknown fields, seem to always be the same
                 unknown1.SetUInt16(1);              // Always 1
-                unknown2.SetUInt16(20119);          // Always 20119
+                garminProduct.SetUInt16(20119);     // Always 20119
                 unknown3.SetUInt32z(0);             // Always 0
                 unknown4.SetEnum(0xFF);             // Always invalid
                 unknown5.SetEnum(0);                // Always 0
@@ -211,7 +211,7 @@ namespace GarminFitnessPlugin.Data
                 scheduledDate.SetUInt32((UInt32)timeSinceReference.TotalSeconds + 43200); // 43200 seconds = 12 hours to set schedule at midday;
 
                 scheduleMessage.AddField(unknown1);
-                scheduleMessage.AddField(unknown2);
+                scheduleMessage.AddField(garminProduct);
                 scheduleMessage.AddField(unknown3);
                 scheduleMessage.AddField(unknown4);
                 scheduleMessage.AddField(unknown5);
@@ -861,7 +861,7 @@ namespace GarminFitnessPlugin.Data
         {
             get
             {
-                return (UInt32)Name.GetHashCode();
+                return (UInt32)(Name.GetHashCode() & 0x0000FFFF);
             }
         }
 
