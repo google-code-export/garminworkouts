@@ -538,13 +538,13 @@ namespace GarminFitnessPlugin.Controller
                             ++fileIdNumber;
                         }
 
-                        FileStream schedulesFileStream = File.Create(m_TempDirectoryLocation + "\\" + "Schedules.fit");
+/*                        FileStream schedulesFileStream = File.Create(m_TempDirectoryLocation + "\\" + "Schedules.fit");
                         WorkoutExporter.ExportSchedulesFITFile(schedulesFileStream, schedulesDataStream, fileIdNumber);
                         schedulesFileStream.Close();
                         filenames.Add("Schedules.fit");
-                        Logger.Instance.LogText(String.Format("Export schedules"));
+                        Logger.Instance.LogText("Export schedules");
 
-                        Debug.Assert(m_FITWorkoutFileWritePath.Equals(m_FITWorkoutSchedulesFileWritePath));
+                        Debug.Assert(m_FITWorkoutFileWritePath.Equals(m_FITWorkoutSchedulesFileWritePath));*/
 
                         exportPath = m_FITWorkoutFileWritePath;
                     }
