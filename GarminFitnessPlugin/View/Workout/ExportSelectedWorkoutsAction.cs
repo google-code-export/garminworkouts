@@ -206,12 +206,12 @@ namespace GarminFitnessPlugin.View
                         ++fileIdNumber;
                     }
 
-/*                    if (dlg.SelectedFormat == GarminWorkoutManager.FileFormats.FIT)
+                    if (dlg.SelectedFormat == GarminWorkoutManager.FileFormats.FIT)
                     {
                         FileStream schedulesFileStream = File.Create(dlg.SelectedPath + "\\" + "Schedules.fit");
                         WorkoutExporter.ExportSchedulesFITFile(schedulesFileStream, schedulesDataStream, fileIdNumber);
                         schedulesFileStream.Close();
-                    }*/
+                    }
 
                     MessageBox.Show(String.Format(GarminFitnessView.GetLocalizedString("ExportWorkoutsSuccessText"), dlg.SelectedPath),
                                     GarminFitnessView.GetLocalizedString("SuccessText"), MessageBoxButtons.OK, MessageBoxIcon.Information);
