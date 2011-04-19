@@ -186,7 +186,7 @@ namespace GarminFitnessPlugin.View
                     }
                     else
                     {
-                        file = File.Create(dlg.SelectedPath + "\\Profile.tcx");
+                        file = File.Create(dlg.SelectedPath + "\\UserProfile.tcx");
 
                         ProfileExporter.ExportProfile(GarminProfileManager.Instance.UserProfile, file);
                         file.Close();
