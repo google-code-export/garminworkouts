@@ -1040,6 +1040,12 @@ namespace GarminFitnessPlugin.Controller
             get { return true; }
         }
 
+        // Use to enable/disable FIT workout scheduling
+        public bool EnableFITScheduling
+        {
+            get { return false; }
+        }
+
         public IActivityCategory LastImportCategory
         {
             get { return m_LastImportCategory; }
