@@ -306,6 +306,7 @@ namespace GarminFitnessPlugin.Data
             {
                 UInt16 numSteps = numStepsField.GetUInt16();
 
+                FITParser.Instance.RestartParsing();
                 m_Steps.Clear();
 
                 do
@@ -317,57 +318,57 @@ namespace GarminFitnessPlugin.Data
                         switch (stepMessage.GlobalMessageType)
                         {
                             case FITGlobalMessageIds.WorkoutStep:
+                            {
+                                FITMessageField stepTypeField = stepMessage.GetField((Byte)FITWorkoutStepFieldIds.DurationType);
+
+                                if (stepTypeField != null)
                                 {
-                                    FITMessageField stepTypeField = stepMessage.GetField((Byte)FITWorkoutStepFieldIds.DurationType);
+                                    FITWorkoutStepDurationTypes durationType = (FITWorkoutStepDurationTypes)stepTypeField.GetEnum();
+                                    IStep newStep = null;
 
-                                    if (stepTypeField != null)
+                                    switch (durationType)
                                     {
-                                        FITWorkoutStepDurationTypes durationType = (FITWorkoutStepDurationTypes)stepTypeField.GetEnum();
-                                        IStep newStep = null;
-
-                                        switch (durationType)
-                                        {
-                                            case FITWorkoutStepDurationTypes.Calories:
-                                            case FITWorkoutStepDurationTypes.Distance:
-                                            case FITWorkoutStepDurationTypes.HeartRateGreaterThan:
-                                            case FITWorkoutStepDurationTypes.HeartRateLessThan:
-                                            case FITWorkoutStepDurationTypes.Open:
-                                            case FITWorkoutStepDurationTypes.Time:
-                                            case FITWorkoutStepDurationTypes.PowerGreaterThan:
-                                            case FITWorkoutStepDurationTypes.PowerLessThan:
-                                                {
-                                                    newStep = new RegularStep(this);
-                                                    break;
-                                                }
-                                            case FITWorkoutStepDurationTypes.RepeatCount:
-                                            case FITWorkoutStepDurationTypes.RepeatUntilCalories:
-                                            case FITWorkoutStepDurationTypes.RepeatUntilDistance:
-                                            case FITWorkoutStepDurationTypes.RepeatUntilHeartRateGreaterThan:
-                                            case FITWorkoutStepDurationTypes.RepeatUntilHeartRateLessThan:
-                                            case FITWorkoutStepDurationTypes.RepeatUntilPowerGreaterThan:
-                                            case FITWorkoutStepDurationTypes.RepeatUntilPowerLessThan:
-                                            case FITWorkoutStepDurationTypes.RepeatUntilTime:
-                                                {
-                                                    newStep = new RepeatStep(this);
-                                                    break;
-                                                }
-                                        }
-
-                                        newStep.DeserializeFromFIT(stepMessage);
-                                        m_Steps.AddStepToRoot(newStep);
-                                    }
-                                    else
-                                    {
-                                        throw new FITParserException("Missing duration type field");
+                                        case FITWorkoutStepDurationTypes.Calories:
+                                        case FITWorkoutStepDurationTypes.Distance:
+                                        case FITWorkoutStepDurationTypes.HeartRateGreaterThan:
+                                        case FITWorkoutStepDurationTypes.HeartRateLessThan:
+                                        case FITWorkoutStepDurationTypes.Open:
+                                        case FITWorkoutStepDurationTypes.Time:
+                                        case FITWorkoutStepDurationTypes.PowerGreaterThan:
+                                        case FITWorkoutStepDurationTypes.PowerLessThan:
+                                            {
+                                                newStep = new RegularStep(this);
+                                                break;
+                                            }
+                                        case FITWorkoutStepDurationTypes.RepeatCount:
+                                        case FITWorkoutStepDurationTypes.RepeatUntilCalories:
+                                        case FITWorkoutStepDurationTypes.RepeatUntilDistance:
+                                        case FITWorkoutStepDurationTypes.RepeatUntilHeartRateGreaterThan:
+                                        case FITWorkoutStepDurationTypes.RepeatUntilHeartRateLessThan:
+                                        case FITWorkoutStepDurationTypes.RepeatUntilPowerGreaterThan:
+                                        case FITWorkoutStepDurationTypes.RepeatUntilPowerLessThan:
+                                        case FITWorkoutStepDurationTypes.RepeatUntilTime:
+                                            {
+                                                newStep = new RepeatStep(this);
+                                                break;
+                                            }
                                     }
 
-                                    break;
+                                    newStep.DeserializeFromFIT(stepMessage);
+                                    m_Steps.AddStepToRoot(newStep);
                                 }
+                                else
+                                {
+                                    throw new FITParserException("Missing duration type field");
+                                }
+
+                                break;
+                            }
                             default:
-                                {
-                                    // Nothing to do
-                                    break;
-                                }
+                            {
+                                // Nothing to do
+                                break;
+                            }
                         }
                     }
                 }
