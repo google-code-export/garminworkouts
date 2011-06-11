@@ -30,7 +30,7 @@ namespace GarminFitnessPlugin.Controller
             // Don't copy CRC
             m_DataStream.Write(streamData, 0, (int)stream.Length - 2);
 
-            // Validate crc against the on we can compute
+            // Validate crc against the one we can compute
             Byte[] crcData = new Byte[sizeof(UInt16)];
             stream.Read(crcData, 0, 2);
             UInt16 crc = BitConverter.ToUInt16(crcData, 0);
@@ -59,6 +59,14 @@ namespace GarminFitnessPlugin.Controller
         public void Close()
         {
             m_DataStream = null;
+        }
+
+        public void RestartParsing()
+        {
+            m_DataStream.Seek(12, SeekOrigin.Begin);
+
+            // Empty definitions dictionary
+            m_MessageDefinitions = new Dictionary<Byte, FITMessage>();
         }
 
         public FITMessage ReadNextMessage()
@@ -239,7 +247,7 @@ namespace GarminFitnessPlugin.Controller
                 return false;
             }
 
-            // Skip porfile version
+            // Skip profile version
             m_DataStream.Seek(2, SeekOrigin.Current);
 
             // Check data size
