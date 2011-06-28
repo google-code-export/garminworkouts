@@ -26,7 +26,6 @@ namespace GarminFitnessPlugin.Controller
             XmlDocument document = new XmlDocument();
             XmlNode database;
             XmlAttribute attribute;
-            List<IWorkout> concreteWorkouts = new List<IWorkout>();
 
             document.AppendChild(document.CreateXmlDeclaration("1.0", "UTF-8", "no"));
             database = document.CreateNode(XmlNodeType.Element, "TrainingCenterDatabase", null);
@@ -66,10 +65,6 @@ namespace GarminFitnessPlugin.Controller
                         part.Serialize(workoutsNode, "Workout", document);
                     }
                 }
-            }
-
-            foreach (IWorkout concreteWorkout in concreteWorkouts)
-            {
             }
 
             document.Save(new StreamWriter(exportStream));
