@@ -58,6 +58,39 @@ namespace GarminFitnessPlugin.Data
                     NotesInternal.Serialize(workoutNode, "Notes", document);
                 }
 
+                // Creator tag (required by 610XT)
+                XmlNode creatorNode = document.CreateElement("Creator");
+                XmlAttribute attributeNode = document.CreateAttribute(Constants.XsiTypeTCXString, Constants.xsins);
+
+                attributeNode.Value = "Device_t";
+                creatorNode.Attributes.Append(attributeNode);
+                workoutNode.AppendChild(creatorNode);
+                creatorNode.AppendChild(document.CreateElement("Name"));
+
+                XmlNode unitIdNode = document.CreateElement("UnitId");
+                unitIdNode.AppendChild(document.CreateTextNode("1234567890"));
+                creatorNode.AppendChild(unitIdNode);
+
+                XmlNode productIdNode = document.CreateElement("ProductID");
+                productIdNode.AppendChild(document.CreateTextNode("0"));
+                creatorNode.AppendChild(productIdNode);
+
+                XmlNode versionNode = document.CreateElement("Version");
+                creatorNode.AppendChild(versionNode);
+
+                XmlNode versionMajorNode = document.CreateElement("VersionMajor");
+                versionMajorNode.AppendChild(document.CreateTextNode("0"));
+                versionNode.AppendChild(versionMajorNode);
+                XmlNode versionMinorNode = document.CreateElement("VersionMinor");
+                versionMinorNode.AppendChild(document.CreateTextNode("0"));
+                versionNode.AppendChild(versionMinorNode);
+                XmlNode buildMajorNode = document.CreateElement("BuildMajor");
+                buildMajorNode.AppendChild(document.CreateTextNode("0"));
+                versionNode.AppendChild(buildMajorNode);
+                XmlNode buildMinorNode = document.CreateElement("BuildMinor");
+                buildMinorNode.AppendChild(document.CreateTextNode("0"));
+                versionNode.AppendChild(buildMinorNode);
+
                 // Extensions
                 childNode = document.CreateElement(Constants.ExtensionsTCXString);
                 workoutNode.AppendChild(childNode);
