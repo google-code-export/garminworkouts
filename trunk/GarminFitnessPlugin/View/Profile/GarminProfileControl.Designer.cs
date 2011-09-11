@@ -1,3 +1,4 @@
+using System.Windows.Forms;
 namespace GarminFitnessPlugin.View
 {
     partial class GarminProfileControl
@@ -108,7 +109,7 @@ namespace GarminFitnessPlugin.View
             this.RestHRTextBox = new GarminFitnessPlugin.View.ExtendedTextBox();
             this.RestBPMLabel = new System.Windows.Forms.Label();
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
-            this.flowLayoutPanel7 = new System.Windows.Forms.FlowLayoutPanel();
+            this.panel7 = new System.Windows.Forms.Panel();
             this.panel2 = new System.Windows.Forms.Panel();
             this.ActivityPanel.SuspendLayout();
             this.flowLayoutPanel5.SuspendLayout();
@@ -128,22 +129,24 @@ namespace GarminFitnessPlugin.View
             this.flowLayoutPanel3.SuspendLayout();
             this.flowLayoutPanel1.SuspendLayout();
             this.tableLayoutPanel1.SuspendLayout();
-            this.flowLayoutPanel7.SuspendLayout();
+            this.panel7.SuspendLayout();
             this.panel2.SuspendLayout();
             this.SuspendLayout();
             // 
             // ActivityPanel
             // 
-            this.ActivityPanel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.ActivityPanel.AutoScroll = true;
+            this.ActivityPanel.AutoSize = true;
+            this.ActivityPanel.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.ActivityPanel.Controls.Add(this.flowLayoutPanel5);
             this.ActivityPanel.Controls.Add(this.flowLayoutPanel4);
             this.ActivityPanel.Controls.Add(this.BikingProfilePanel);
             this.ActivityPanel.Controls.Add(this.SpeedZonesGroupBox);
             this.ActivityPanel.Controls.Add(this.HRZonesGroupBox);
+            this.ActivityPanel.Dock = System.Windows.Forms.DockStyle.Fill;
             this.ActivityPanel.Location = new System.Drawing.Point(0, 31);
             this.ActivityPanel.Name = "ActivityPanel";
-            this.ActivityPanel.Size = new System.Drawing.Size(593, 566);
+            this.ActivityPanel.Size = new System.Drawing.Size(611, 592);
             this.ActivityPanel.TabIndex = 1;
             // 
             // flowLayoutPanel5
@@ -203,14 +206,12 @@ namespace GarminFitnessPlugin.View
             // 
             // flowLayoutPanel4
             // 
-            this.flowLayoutPanel4.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
             this.flowLayoutPanel4.Controls.Add(this.GearWeightLabel);
             this.flowLayoutPanel4.Controls.Add(this.GearWeightTextBox);
             this.flowLayoutPanel4.Controls.Add(this.GearWeightUnitLabel);
             this.flowLayoutPanel4.Location = new System.Drawing.Point(275, 7);
             this.flowLayoutPanel4.Name = "flowLayoutPanel4";
-            this.flowLayoutPanel4.Size = new System.Drawing.Size(315, 26);
+            this.flowLayoutPanel4.Size = new System.Drawing.Size(306, 26);
             this.flowLayoutPanel4.TabIndex = 7;
             // 
             // GearWeightLabel
@@ -260,19 +261,15 @@ namespace GarminFitnessPlugin.View
             // 
             // BikingProfilePanel
             // 
-            this.BikingProfilePanel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
             this.BikingProfilePanel.Controls.Add(this.panel1);
             this.BikingProfilePanel.Controls.Add(this.PowerZonesGroupBox);
             this.BikingProfilePanel.Location = new System.Drawing.Point(3, 285);
             this.BikingProfilePanel.Name = "BikingProfilePanel";
-            this.BikingProfilePanel.Size = new System.Drawing.Size(587, 281);
+            this.BikingProfilePanel.Size = new System.Drawing.Size(578, 281);
             this.BikingProfilePanel.TabIndex = 6;
             // 
             // panel1
             // 
-            this.panel1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
             this.panel1.Controls.Add(this.BikeProfileActionBanner);
             this.panel1.Controls.Add(this.WheelSizeGroupBox);
             this.panel1.Controls.Add(this.BikeNameLabel);
@@ -287,7 +284,7 @@ namespace GarminFitnessPlugin.View
             this.panel1.Controls.Add(this.OdometerLabel);
             this.panel1.Location = new System.Drawing.Point(6, 157);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(581, 120);
+            this.panel1.Size = new System.Drawing.Size(572, 120);
             this.panel1.TabIndex = 6;
             // 
             // BikeProfileActionBanner
@@ -298,7 +295,7 @@ namespace GarminFitnessPlugin.View
             this.BikeProfileActionBanner.Location = new System.Drawing.Point(0, 0);
             this.BikeProfileActionBanner.Name = "BikeProfileActionBanner";
             this.BikeProfileActionBanner.RightToLeft = System.Windows.Forms.RightToLeft.No;
-            this.BikeProfileActionBanner.Size = new System.Drawing.Size(581, 31);
+            this.BikeProfileActionBanner.Size = new System.Drawing.Size(572, 31);
             this.BikeProfileActionBanner.Style = ZoneFiveSoftware.Common.Visuals.ActionBanner.BannerStyle.Header1;
             this.BikeProfileActionBanner.TabIndex = 5;
             this.BikeProfileActionBanner.Text = "Bike 1 (Name)";
@@ -520,8 +517,6 @@ namespace GarminFitnessPlugin.View
             // 
             // PowerZonesGroupBox
             // 
-            this.PowerZonesGroupBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
             this.PowerZonesGroupBox.Controls.Add(this.PowerZonePanel);
             this.PowerZonesGroupBox.Controls.Add(this.PercentFTPRadioButton);
             this.PowerZonesGroupBox.Controls.Add(this.WattsRadioButton);
@@ -529,7 +524,7 @@ namespace GarminFitnessPlugin.View
             this.PowerZonesGroupBox.Controls.Add(this.PowerZonesTreeList);
             this.PowerZonesGroupBox.Location = new System.Drawing.Point(4, 3);
             this.PowerZonesGroupBox.Name = "PowerZonesGroupBox";
-            this.PowerZonesGroupBox.Size = new System.Drawing.Size(583, 148);
+            this.PowerZonesGroupBox.Size = new System.Drawing.Size(574, 148);
             this.PowerZonesGroupBox.TabIndex = 4;
             this.PowerZonesGroupBox.TabStop = false;
             this.PowerZonesGroupBox.Text = "Power Zones";
@@ -718,15 +713,13 @@ namespace GarminFitnessPlugin.View
             // 
             // SpeedZonesGroupBox
             // 
-            this.SpeedZonesGroupBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
             this.SpeedZonesGroupBox.Controls.Add(this.SpeedZonePanel);
             this.SpeedZonesGroupBox.Controls.Add(this.PaceRadioButton);
             this.SpeedZonesGroupBox.Controls.Add(this.SpeedRadioButton);
             this.SpeedZonesGroupBox.Controls.Add(this.SpeedZonesTreeList);
             this.SpeedZonesGroupBox.Location = new System.Drawing.Point(10, 162);
             this.SpeedZonesGroupBox.Name = "SpeedZonesGroupBox";
-            this.SpeedZonesGroupBox.Size = new System.Drawing.Size(580, 120);
+            this.SpeedZonesGroupBox.Size = new System.Drawing.Size(571, 120);
             this.SpeedZonesGroupBox.TabIndex = 3;
             this.SpeedZonesGroupBox.TabStop = false;
             this.SpeedZonesGroupBox.Text = "Speed Zones";
@@ -893,8 +886,6 @@ namespace GarminFitnessPlugin.View
             // 
             // HRZonesGroupBox
             // 
-            this.HRZonesGroupBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
             this.HRZonesGroupBox.Controls.Add(this.HRZonePanel);
             this.HRZonesGroupBox.Controls.Add(this.PercentHRRRadioButton);
             this.HRZonesGroupBox.Controls.Add(this.PercentMaxRadioButton);
@@ -902,7 +893,7 @@ namespace GarminFitnessPlugin.View
             this.HRZonesGroupBox.Controls.Add(this.HRZonesTreeList);
             this.HRZonesGroupBox.Location = new System.Drawing.Point(10, 39);
             this.HRZonesGroupBox.Name = "HRZonesGroupBox";
-            this.HRZonesGroupBox.Size = new System.Drawing.Size(580, 119);
+            this.HRZonesGroupBox.Size = new System.Drawing.Size(571, 119);
             this.HRZonesGroupBox.TabIndex = 2;
             this.HRZonesGroupBox.TabStop = false;
             this.HRZonesGroupBox.Text = "Heart Rate Zones";
@@ -1054,7 +1045,7 @@ namespace GarminFitnessPlugin.View
             this.GarminActivityBanner.Location = new System.Drawing.Point(0, 0);
             this.GarminActivityBanner.Name = "GarminActivityBanner";
             this.GarminActivityBanner.RightToLeft = System.Windows.Forms.RightToLeft.No;
-            this.GarminActivityBanner.Size = new System.Drawing.Size(593, 31);
+            this.GarminActivityBanner.Size = new System.Drawing.Size(611, 31);
             this.GarminActivityBanner.Style = ZoneFiveSoftware.Common.Visuals.ActionBanner.BannerStyle.Header1;
             this.GarminActivityBanner.TabIndex = 0;
             this.GarminActivityBanner.Text = "Running";
@@ -1070,7 +1061,7 @@ namespace GarminFitnessPlugin.View
             this.flowLayoutPanel2.Controls.Add(this.NameTextBox);
             this.flowLayoutPanel2.Location = new System.Drawing.Point(3, 3);
             this.flowLayoutPanel2.Name = "flowLayoutPanel2";
-            this.flowLayoutPanel2.Size = new System.Drawing.Size(590, 27);
+            this.flowLayoutPanel2.Size = new System.Drawing.Size(605, 27);
             this.flowLayoutPanel2.TabIndex = 9;
             // 
             // ProfileNameLabel
@@ -1207,7 +1198,7 @@ namespace GarminFitnessPlugin.View
             this.flowLayoutPanel1.Controls.Add(this.RestingHeartRateLabel);
             this.flowLayoutPanel1.Controls.Add(this.RestHRTextBox);
             this.flowLayoutPanel1.Controls.Add(this.RestBPMLabel);
-            this.flowLayoutPanel1.Location = new System.Drawing.Point(301, 36);
+            this.flowLayoutPanel1.Location = new System.Drawing.Point(308, 36);
             this.flowLayoutPanel1.Name = "flowLayoutPanel1";
             this.flowLayoutPanel1.Size = new System.Drawing.Size(292, 52);
             this.flowLayoutPanel1.TabIndex = 6;
@@ -1281,56 +1272,55 @@ namespace GarminFitnessPlugin.View
             // 
             // tableLayoutPanel1
             // 
-            this.tableLayoutPanel1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
             this.tableLayoutPanel1.ColumnCount = 2;
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
             this.tableLayoutPanel1.Controls.Add(this.flowLayoutPanel1, 1, 1);
             this.tableLayoutPanel1.Controls.Add(this.flowLayoutPanel3, 0, 1);
             this.tableLayoutPanel1.Controls.Add(this.flowLayoutPanel2, 0, 0);
-            this.tableLayoutPanel1.Location = new System.Drawing.Point(2, 2);
+            this.tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Top;
+            this.tableLayoutPanel1.Location = new System.Drawing.Point(0, 0);
             this.tableLayoutPanel1.Margin = new System.Windows.Forms.Padding(2);
             this.tableLayoutPanel1.Name = "tableLayoutPanel1";
             this.tableLayoutPanel1.RowCount = 2;
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tableLayoutPanel1.Size = new System.Drawing.Size(596, 93);
+            this.tableLayoutPanel1.Size = new System.Drawing.Size(611, 93);
             this.tableLayoutPanel1.TabIndex = 7;
             // 
-            // flowLayoutPanel7
+            // panel7
             // 
-            this.flowLayoutPanel7.Controls.Add(this.tableLayoutPanel1);
-            this.flowLayoutPanel7.Controls.Add(this.panel2);
-            this.flowLayoutPanel7.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.flowLayoutPanel7.Location = new System.Drawing.Point(0, 0);
-            this.flowLayoutPanel7.Margin = new System.Windows.Forms.Padding(2);
-            this.flowLayoutPanel7.Name = "flowLayoutPanel7";
-            this.flowLayoutPanel7.Size = new System.Drawing.Size(600, 699);
-            this.flowLayoutPanel7.TabIndex = 8;
+            this.panel7.Controls.Add(this.panel2);
+            this.panel7.Controls.Add(this.tableLayoutPanel1);
+            this.panel7.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.panel7.Location = new System.Drawing.Point(0, 0);
+            this.panel7.Margin = new System.Windows.Forms.Padding(2);
+            this.panel7.Name = "panel7";
+            this.panel7.Size = new System.Drawing.Size(611, 716);
+            this.panel7.TabIndex = 8;
             // 
             // panel2
             // 
-            this.panel2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.panel2.AutoSize = true;
+            this.panel2.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.panel2.Controls.Add(this.ActivityPanel);
             this.panel2.Controls.Add(this.GarminActivityBanner);
-            this.flowLayoutPanel7.SetFlowBreak(this.panel2, true);
-            this.panel2.Location = new System.Drawing.Point(2, 99);
+            this.panel2.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.panel2.Location = new System.Drawing.Point(0, 93);
             this.panel2.Margin = new System.Windows.Forms.Padding(2);
             this.panel2.Name = "panel2";
-            this.panel2.Size = new System.Drawing.Size(593, 598);
+            this.panel2.Size = new System.Drawing.Size(611, 623);
             this.panel2.TabIndex = 8;
             // 
             // GarminProfileControl
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.Controls.Add(this.flowLayoutPanel7);
+            this.Controls.Add(this.panel7);
             this.DoubleBuffered = true;
-            this.MaximumSize = new System.Drawing.Size(600, 730);
+            this.MaximumSize = new System.Drawing.Size(620, 730);
             this.Name = "GarminProfileControl";
-            this.Size = new System.Drawing.Size(600, 699);
+            this.Size = new System.Drawing.Size(611, 716);
             this.ActivityPanel.ResumeLayout(false);
             this.flowLayoutPanel5.ResumeLayout(false);
             this.flowLayoutPanel5.PerformLayout();
@@ -1364,8 +1354,10 @@ namespace GarminFitnessPlugin.View
             this.flowLayoutPanel1.ResumeLayout(false);
             this.flowLayoutPanel1.PerformLayout();
             this.tableLayoutPanel1.ResumeLayout(false);
-            this.flowLayoutPanel7.ResumeLayout(false);
+            this.panel7.ResumeLayout(false);
+            this.panel7.PerformLayout();
             this.panel2.ResumeLayout(false);
+            this.panel2.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -1452,7 +1444,7 @@ namespace GarminFitnessPlugin.View
         private System.Windows.Forms.RadioButton PercentFTPRadioButton;
         private System.Windows.Forms.RadioButton WattsRadioButton;
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
-        private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel7;
+        private System.Windows.Forms.Panel panel7;
         private System.Windows.Forms.Panel panel2;
 
 
