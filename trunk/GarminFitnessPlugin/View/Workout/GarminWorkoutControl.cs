@@ -3468,11 +3468,14 @@ namespace GarminFitnessPlugin.View
         {
             List<TreeList.TreeListNode> selection = new List<TreeList.TreeListNode>();
 
-            for (int i = 0; i < SelectedSteps.Count; ++i)
+            if (SelectedWorkout != null)
             {
-                IStep currentStep = SelectedSteps[i];
+                for (int i = 0; i < SelectedSteps.Count; ++i)
+                {
+                    IStep currentStep = SelectedSteps[i];
 
-                selection.Add(GetStepWrapper(SelectedWorkout.ConcreteWorkout, currentStep, null));
+                    selection.Add(GetStepWrapper(SelectedWorkout.ConcreteWorkout, currentStep, null));
+                }
             }
 
             StepsList.Selected = selection;
@@ -3499,7 +3502,6 @@ namespace GarminFitnessPlugin.View
                 MoveUpButton.Enabled = false;
                 MoveDownButton.Enabled = false;
             }
-
         }
 
         private void RefreshWorkoutCalendar()
