@@ -450,19 +450,12 @@ namespace GarminFitnessPlugin.Data
 
         public virtual UInt16 GetSplitPartsCount()
         {
-            UInt16 partCount = 0;
-
             if (Steps.Count > 0)
             {
-                partCount = GetStepSplitPart(Steps[Steps.Count - 1]);
-
-                if (partCount <= 1)
-                {
-                    partCount = 0;
-                }
+                return GetStepSplitPart(Steps[Steps.Count - 1]);
             }
 
-            return partCount;
+            return 0;
         }
 
         public UInt16 GetStepSplitPart(IStep step)

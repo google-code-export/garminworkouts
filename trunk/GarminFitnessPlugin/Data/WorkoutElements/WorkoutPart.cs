@@ -24,8 +24,9 @@ namespace GarminFitnessPlugin.Data
         public bool IsValid()
         {
             Workout parent = GarminWorkoutManager.Instance.GetWorkout(ConcreteWorkout.Name);
+            UInt16 parentsPartsCount = parent.GetSplitPartsCount();
 
-            return parent != null && m_PartNumber < parent.GetSplitPartsCount();
+            return parent != null && parentsPartsCount > 1 && m_PartNumber < parentsPartsCount;
         }
 
 #region IWorkout Members
