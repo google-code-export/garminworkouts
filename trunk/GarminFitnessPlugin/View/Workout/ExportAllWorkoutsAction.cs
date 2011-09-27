@@ -161,7 +161,7 @@ namespace GarminFitnessPlugin.View
                     MemoryStream schedulesDataStream = new MemoryStream();
                     UInt16 fileIdNumber = 0;
 
-                    foreach (Workout currentWorkout in workoutsToExport)
+                    foreach (IWorkout currentWorkout in workoutsToExport)
                     {
                         string fileName = Utils.GetWorkoutFilename(currentWorkout, dlg.SelectedFormat);
 
