@@ -230,6 +230,7 @@ namespace GarminFitnessPlugin.View
                             titleSize = graphics.MeasureString(titleText, m_StepHeaderFont, (int)stepArea.Width);
 
                             detailsText = StepDescriptionStringFormatter.FormatDurationDescription(regularStep.Duration) +
+                                       ". " + 
                                        StepDescriptionStringFormatter.FormatTargetDescription(regularStep.Target) +
                                        "\n" +
                                        regularStep.Notes.Trim();
