@@ -42,7 +42,7 @@ namespace GarminFitnessPlugin
 
         void OnLogbookBeforeSave(object sender, EventArgs e)
         {
-            Utils.SaveWorkoutsToLogbook();
+            Utils.SaveDataToLogbook();
         }
 
 #region STFrameworkEntryPoint Members
