@@ -172,7 +172,7 @@ namespace GarminFitnessPlugin.Controller
             return PluginMain.GetApplication().Logbook.ActivityCategories[0];
         }
 
-        public static void SaveWorkoutsToLogbook()
+        public static void SaveDataToLogbook()
         {
             // Save Workouts to logbook
             MemoryStream stream = new MemoryStream();

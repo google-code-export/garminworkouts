@@ -1,6 +1,7 @@
 using System;
 using System.ComponentModel;
 using ZoneFiveSoftware.Common.Visuals;
+using GarminFitnessPlugin.Controller;
 
 namespace GarminFitnessPlugin.View
 {
@@ -16,6 +17,7 @@ namespace GarminFitnessPlugin.View
 
         public override void FinishClicked(CancelEventArgs e)
         {
+            Utils.SaveDataToLogbook();
         }
 
         public override void NextClicked(CancelEventArgs e)
