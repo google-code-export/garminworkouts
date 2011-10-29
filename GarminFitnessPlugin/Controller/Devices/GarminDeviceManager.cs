@@ -27,8 +27,6 @@ namespace GarminFitnessPlugin.Controller
                 newController.FindDevicesCompleted += new DeviceControllerOperationCompletedEventHandler(OnControllerFindDevicesCompleted);
                 newController.ExceptionTriggered += new EventHandler<GarminFitnessCommunicatorBridge.ExceptionEventArgs>(OnControllerExceptionTriggered);
                 m_Controllers.Add(newController);
-
-                Initialize();
             }
             catch (Exception e)
             {
@@ -52,9 +50,10 @@ namespace GarminFitnessPlugin.Controller
             m_Controllers.Clear();
         }
 
-        private void Initialize()
+        public void Initialize()
         {
             Logger.Instance.LogText("Initializing first controller");
+            m_IsInitializing = true;
             m_Controllers[0].Initialize();
         }
 
@@ -63,6 +62,11 @@ namespace GarminFitnessPlugin.Controller
             if (m_Controllers.Count > 0)
             {
                 Logger.Instance.LogText("Refreshing devices");
+
+                if (!m_IsInitializing && !IsInitialized)
+                {
+                    Initialize();
+                }
 
                 m_Devices.Clear();
 
@@ -164,6 +168,11 @@ namespace GarminFitnessPlugin.Controller
         {
             Logger.Instance.LogText(String.Format("Adding task {0}", task.Type.ToString()));
 
+            if (!m_IsInitializing && !IsInitialized)
+            {
+                Initialize();
+            }
+
             m_TaskQueue.Add(task);
 
             if (IsInitialized && m_TaskQueue.Count == 1)
@@ -228,7 +237,7 @@ namespace GarminFitnessPlugin.Controller
             CompleteCurrentTask(success, String.Empty);
         }
 
-        private void OnControllerInitializationCompleted(object sender, Boolean succeeded)
+        private void OnControllerInitializationCompleted(object sender, Boolean succeeded, string error)
         {
             Logger.Instance.LogText("Controller initialization complete");
 
@@ -250,6 +259,8 @@ namespace GarminFitnessPlugin.Controller
                 {
                     Logger.Instance.LogText("All initializations completed");
 
+                    m_IsInitializing = false;
+
                     if (PendingTaskCount > 0)
                     {
                         StartNextTask();
@@ -258,18 +269,18 @@ namespace GarminFitnessPlugin.Controller
             }
             else
             {
-                Logger.Instance.LogText("Controller initialization failed");
+                Logger.Instance.LogText("Controller initialization failed. " + error);
 
                 if (TaskCompleted != null)
                 {
-                    TaskCompleted(this, new BasicTask(BasicTask.TaskTypes.Initialize), false, String.Empty);
+                    TaskCompleted(this, new BasicTask(BasicTask.TaskTypes.Initialize), false, error);
                 }
 
                 CancelAllTasks();
             }
         }
 
-        private void OnControllerFindDevicesCompleted(object sender, Boolean succeeded)
+        private void OnControllerFindDevicesCompleted(object sender, Boolean succeeded, string error)
         {
             bool setDeviceSucceeded = succeeded;
 
@@ -352,7 +363,7 @@ namespace GarminFitnessPlugin.Controller
             }
             else
             {
-                CompleteCurrentTask(setDeviceSucceeded);
+                CompleteCurrentTask(setDeviceSucceeded, error);
             }
         }
 
@@ -779,6 +790,7 @@ namespace GarminFitnessPlugin.Controller
         private IGarminDevice m_OperatingDevice = null;
         private System.Windows.Forms.Timer m_TimeoutTimer = new System.Windows.Forms.Timer();
         private CancelOperationDialog m_CancelDialog = null;
+        private bool m_IsInitializing = false;
 
         private static GarminDeviceManager m_Instance = null;
     }

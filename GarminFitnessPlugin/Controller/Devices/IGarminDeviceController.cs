@@ -5,7 +5,7 @@ using GarminFitnessPlugin.Data;
 
 namespace GarminFitnessPlugin.Controller
 {
-    delegate void DeviceControllerOperationCompletedEventHandler(IGarminDeviceController controller, Boolean succeeded);
+    delegate void DeviceControllerOperationCompletedEventHandler(IGarminDeviceController controller, Boolean succeeded, string error);
 
     interface IGarminDeviceController
     {
