@@ -52,7 +52,7 @@ namespace GarminFitnessPlugin.Controller
 
             if (InitializationCompleted != null)
             {
-                InitializationCompleted(this, IsInitialized);
+                InitializationCompleted(this, IsInitialized, e.ErrorText);
             }
         }
 
@@ -90,13 +90,13 @@ namespace GarminFitnessPlugin.Controller
             {
                 if (FindDevicesCompleted != null)
                 {
-                    FindDevicesCompleted(this, false);
+                    FindDevicesCompleted(this, false, String.Empty);
                 }
             }
 
             if (FindDevicesCompleted != null)
             {
-                FindDevicesCompleted(this, true);
+                FindDevicesCompleted(this, true, String.Empty);
             }
         }
 

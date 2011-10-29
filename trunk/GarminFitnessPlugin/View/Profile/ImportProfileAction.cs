@@ -91,15 +91,15 @@ namespace GarminFitnessPlugin.View
         {
             if (!succeeded)
             {
-                if (task.Type == GarminDeviceManager.BasicTask.TaskTypes.Initialize)
+                if (!String.IsNullOrEmpty(errorText))
                 {
-                    MessageBox.Show(GarminFitnessView.GetLocalizedString("DeviceCommunicationErrorText"),
+                    MessageBox.Show(errorText,
                                     GarminFitnessView.GetLocalizedString("ErrorText"),
                                     MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
-                else if (!String.IsNullOrEmpty(errorText))
+                else if (task.Type == GarminDeviceManager.BasicTask.TaskTypes.Initialize)
                 {
-                    MessageBox.Show(errorText,
+                    MessageBox.Show(GarminFitnessView.GetLocalizedString("DeviceCommunicationErrorText"),
                                     GarminFitnessView.GetLocalizedString("ErrorText"),
                                     MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }

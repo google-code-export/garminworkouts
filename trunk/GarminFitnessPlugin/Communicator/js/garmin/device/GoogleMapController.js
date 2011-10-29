@@ -1,5 +1,5 @@
 if (Garmin == undefined) var Garmin = {};
-/** Copyright © 2007 Garmin Ltd. or its subsidiaries.
+/** Copyright &copy; 2007-2010 Garmin Ltd. or its subsidiaries.
  *
  * Licensed under the Apache License, Version 2.0 (the 'License')
  * you may not use this file except in compliance with the License.
@@ -14,10 +14,7 @@ if (Garmin == undefined) var Garmin = {};
  * limitations under the License.
  * 
  * @fileoverview Garmin.MapController Overlays tracks and waypoint data on Google maps.
- * 
- * @author Jason Holmes jason.holmes.at.garmin.com
- * @author Bobby Yang bobby.yang.at.garmin.com
- * @version 1.0
+ * @version 1.9
  */
 /**
  * Accepts Garmin.Series objects and draws them on a Google Map.
@@ -46,7 +43,7 @@ Garmin.MapController.prototype = {
 			this.map.addControl(new GMapTypeControl());
         	new GKeyboardHandler(this.map);
         } catch (e) {
-        	alert("WARNING: application will not function properly with missing Google script element or invalid Google map key.  Error: " + e.message);
+        	alert("WARNING: application will not function properly with missing Google script element or invalid Google map key.  Error: "+e);
         }
         window.onUnload = "GUnload()";
     },
@@ -95,7 +92,7 @@ Garmin.MapController.prototype = {
 		        this.addStartFinishMarkers(series);
 		        this.bounds = this.findAZoomLevel(drawnPoints);
 		        this.setOnBounds( this.bounds );
-			} catch(e){ alert("GoogleMapControl.drawTrack, IE error on map.addOverlay("+polyline+") err: " + e.message); }
+			} catch(e){ alert("GoogleMapControl.drawTrack, IE error on map.addOverlay("+polyline+") err: "+e); }
         }
     },
 
@@ -200,30 +197,19 @@ Garmin.MapIcons = function(){}; //just here for jsdoc
 Garmin.MapIcons = {
     getRedIcon: function() {
         var icon = new GIcon();
-        icon.image = "http://trail.motionbased.com/trail/site/images/marker_red.png";
+        icon.image = "http://developer.garmin.com/img/marker_red.png";
         return Garmin.MapIcons._applyShadowAndStuff(icon);
     },
     
     getGreenIcon: function() {
         var icon = new GIcon();
-        icon.image = "http://trail.motionbased.com/trail/site/images/marker_green.png";
+        icon.image = "http://developer.garmin.com/img/marker_green.png";
         return Garmin.MapIcons._applyShadowAndStuff(icon);
-    },
-    
-    getBaseIcon: function() {
-    	var baseIcon = new GIcon();
-		baseIcon.shadow = "http://www.google.com/mapfiles/shadow50.png";
-		baseIcon.iconSize = new GSize(20, 34);
-		baseIcon.shadowSize = new GSize(37, 34);
-		baseIcon.iconAnchor = new GPoint(9, 34);
-		baseIcon.infoWindowAnchor = new GPoint(9, 2);
-		baseIcon.infoShadowAnchor = new GPoint(18, 25);
-        return baseIcon;
     },
     
     _applyShadowAndStuff: function(icon) {
         icon.iconSize = new GSize(12, 20);
-        icon.shadow = "http://trail.motionbased.com/trail/site/images/marker_shadow.png";
+        icon.shadow = "http://developer.garmin.com/img/marker_shadow.png";
         icon.shadowSize = new GSize(22, 20);
         icon.iconAnchor = new GPoint(6, 20);
         icon.infoWindowAnchor = new GPoint(5, 1);
