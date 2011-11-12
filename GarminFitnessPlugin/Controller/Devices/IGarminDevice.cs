@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using GarminFitnessPlugin.Data;
 
 namespace GarminFitnessPlugin.Controller
@@ -30,6 +31,7 @@ namespace GarminFitnessPlugin.Controller
 
         void WriteWorkouts(List<IWorkout> workouts);
         void ReadWorkouts();
+        void WriteProfile(string profileXml);
         void WriteProfile(GarminProfile profile);
         void ReadProfile(GarminProfile profile);
 

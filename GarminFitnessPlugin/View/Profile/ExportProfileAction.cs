@@ -10,6 +10,7 @@ using System.Windows.Forms;
 using ZoneFiveSoftware.Common.Visuals;
 using GarminFitnessPlugin.Data;
 using GarminFitnessPlugin.Controller;
+using System.Text;
 
 namespace GarminFitnessPlugin.View
 {
@@ -72,6 +73,9 @@ namespace GarminFitnessPlugin.View
                 menu.MenuItems.Add(menuItem);
                 menuItem = new MenuItem(GarminFitnessView.GetLocalizedString("ToFileText"),
                                         new EventHandler(ToFileEventHandler));
+                menu.MenuItems.Add(menuItem);
+                menuItem = new MenuItem("From File",
+                                        new EventHandler(FromFileEventHandler));
                 menu.MenuItems.Add(menuItem);
 
                 menu.Show(control, control.PointToClient(new Point(rectButton.Right, rectButton.Top)));
@@ -192,6 +196,44 @@ namespace GarminFitnessPlugin.View
 
                     MessageBox.Show(String.Format(GarminFitnessView.GetLocalizedString("ExportProfileSuccessText"), dlg.SelectedPath),
                                     GarminFitnessView.GetLocalizedString("SuccessText"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+            }
+            catch
+            {
+                MessageBox.Show(GarminFitnessView.GetLocalizedString("ExportProfileFailedText"),
+                                GarminFitnessView.GetLocalizedString("ErrorText"),
+                                MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+            finally
+            {
+                if (file != null)
+                {
+                    file.Close();
+                }
+            }
+        }
+
+        public void FromFileEventHandler(object sender, EventArgs args)
+        {
+            Stream file = null;
+
+            try
+            {
+                OpenFileDialog dlg = new OpenFileDialog();
+
+                if (dlg.ShowDialog() == DialogResult.OK)
+                {
+                    file = dlg.OpenFile();
+
+                    byte[] streamData = new byte[file.Length];
+                    string xmlCode;
+
+                    int bytesRead = file.Read(streamData, 0, (int)file.Length);
+                    xmlCode = Encoding.UTF8.GetString(streamData);
+                    file.Close();
+
+                    GarminDeviceManager.Instance.SetOperatingDevice();
+                    GarminDeviceManager.Instance.ExportProfile(xmlCode);
                 }
             }
             catch
