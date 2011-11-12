@@ -144,7 +144,14 @@ namespace GarminFitnessPlugin.Controller
         {
             Logger.Instance.LogText("Exporting profile");
 
-            AddTask(new ExportProfileTask());
+            AddTask(new ExportProfileTask(null));
+        }
+
+        public void ExportProfile(string profileXml)
+        {
+            Logger.Instance.LogText("Exporting profile");
+
+            AddTask(new ExportProfileTask(profileXml));
         }
 
         public void CancelAllTasks()
@@ -620,9 +627,10 @@ namespace GarminFitnessPlugin.Controller
 
         public class ExportProfileTask : BasicTask
         {
-            public ExportProfileTask() :
+            public ExportProfileTask(string profileXml) :
                 base(TaskTypes.ExportProfile)
             {
+                m_ProfileXml = profileXml;
             }
 
             public override void ExecuteTask(IGarminDevice device)
@@ -634,9 +642,18 @@ namespace GarminFitnessPlugin.Controller
                 }
                 else
                 {
-                    device.WriteProfile(GarminProfileManager.Instance.UserProfile);
+                    if (m_ProfileXml != null)
+                    {
+                        device.WriteProfile(m_ProfileXml);
+                    }
+                    else
+                    {
+                        device.WriteProfile(GarminProfileManager.Instance.UserProfile);
+                    }
                 }
             }
+
+            private string m_ProfileXml;
         }
 
         public class ImportWorkoutsTask : BasicTask

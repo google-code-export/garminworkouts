@@ -621,6 +621,22 @@ namespace GarminFitnessPlugin.Controller
             }
         }
 
+        public void WriteProfile(string profileXml)
+        {
+            Logger.Instance.LogText("Comm. : Writing string profile");
+
+            Debug.Assert(m_CurrentOperation == DeviceOperations.Idle);
+
+            string fileName = "UserProfile.tcx";
+
+            m_CancellationError = "";
+            m_Controller.CommunicatorBridge.SetDeviceNumber(m_DeviceNumber);
+
+            m_CurrentOperation = DeviceOperations.WriteProfile;
+
+            m_Controller.CommunicatorBridge.WriteProfileToFitnessDevice(profileXml, fileName);
+        }
+
         public void WriteProfile(GarminFitnessPlugin.Data.GarminProfile profile)
         {
             Logger.Instance.LogText("Comm. : Writing profile");
