@@ -301,7 +301,17 @@ namespace GarminFitnessPlugin.Data
                 powerZonesChild.AppendChild(currentZoneNode);
             }
 
+            // Power extension
+            XmlNode powerExtensionChild = document.CreateElement(Constants.PowerExtensionTCXString);
+            attributeNode = document.CreateAttribute("xmlns");
+            attributeNode.Value = "http://www.garmin.com/xmlschemas/ProfileExtension/v2";
+            powerExtensionChild.Attributes.Append(attributeNode);
+
+            GarminFitnessString wattsType = new GarminFitnessString("Watts");
+            wattsType.Serialize(powerExtensionChild, "Type", document);
+
             currentChild.AppendChild(powerZonesChild);
+            currentChild.AppendChild(powerExtensionChild);
             parentNode.AppendChild(currentChild);
 
             // Bike profiles
