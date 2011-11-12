@@ -183,6 +183,7 @@ namespace GarminFitnessPlugin
         public static readonly string BPMTCXString = "Beats Per Minute";
 
         public static readonly string PowerZonesTCXString = "PowerZones";
+        public static readonly string PowerExtensionTCXString = "PowerExtension";
         public static readonly string PowerZoneTCXString = "PowerZone";
         public static readonly string FTPTCXString = "FTP";
 

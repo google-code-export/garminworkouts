@@ -34,7 +34,7 @@ namespace GarminFitnessPlugin.Controller
 
             // xsi:schemaLocation namespace attribute
             attribute = document.CreateAttribute("xsi", "schemaLocation", Constants.xsins);
-            attribute.Value = "http://www.garmin.com/xmlschemas/ProfileExtension/v1 http://www.garmin.com/xmlschemas/UserProfilePowerExtensionv1.xsd http://www.garmin.com/xmlschemas/TrainingCenterDatabase/v2 http://www.garmin.com/xmlschemas/TrainingCenterDatabasev2.xsd http://www.garmin.com/xmlschemas/UserProfile/v2 http://www.garmin.com/xmlschemas/UserProfileExtensionv2.xsd";
+            attribute.Value = "http://www.garmin.com/xmlschemas/ProfileExtension/v1 http://www.garmin.com/xmlschemas/UserProfilePowerExtensionv1.xsd http://www.garmin.com/xmlschemas/ProfileExtension/v2 http://www.garmin.com/xmlschemas/UserProfilePowerExtensionv2.xsd http://www.garmin.com/xmlschemas/TrainingCenterDatabase/v2 http://www.garmin.com/xmlschemas/TrainingCenterDatabasev2.xsd http://www.garmin.com/xmlschemas/UserProfile/v2 http://www.garmin.com/xmlschemas/UserProfileExtensionv2.xsd";
             database.Attributes.Append(attribute);
 
             XmlNode extensionsNode = document.CreateElement(Constants.ExtensionsTCXString, null);
