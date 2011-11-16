@@ -19,11 +19,6 @@ namespace GarminFitnessPlugin.Data
             get { return m_MinValue; }
             set
             {
-                if (value.CompareTo(m_MaxValue) > 0)
-                {
-                    m_MinValue.Value = value;
-                    m_MaxValue.Value = value;
-                }
                 if (Low != value)
                 {
                     m_MinValue.Value = value;
@@ -36,11 +31,6 @@ namespace GarminFitnessPlugin.Data
             get { return m_MaxValue; }
             set
             {
-                if (value.CompareTo(m_MinValue) < 0)
-                {
-                    m_MinValue.Value = value;
-                    m_MaxValue.Value = value;
-                }
                 if (High != value)
                 {
                     m_MaxValue.Value = value;

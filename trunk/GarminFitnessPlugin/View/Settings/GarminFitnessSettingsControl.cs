@@ -177,6 +177,11 @@ namespace GarminFitnessPlugin.View
             }
         }
 
+        private void ForceConsecutiveSpeedZonesCheckBox_CheckedChanged(object sender, EventArgs e)
+        {
+            Options.Instance.ForceConsecutiveProfileSpeedZones = ForceConsecutiveSpeedZonesCheckBox.Checked;
+        }
+
         private void OtherRadioButton_CheckedChanged(object sender, System.EventArgs e)
         {
             IActivityCategory selectedCategory = (IActivityCategory)((STToGarminActivityCategoryWrapper)ActivityCategoryList.Selected[0]).Element;
@@ -319,6 +324,7 @@ namespace GarminFitnessPlugin.View
             BPMRadioButton.Text = CommonResources.Text.LabelBPM;
 
             // Speed settings
+            ForceConsecutiveSpeedZonesCheckBox.Text = GarminFitnessView.GetLocalizedString("ForceConsecutiveSpeedZonesText");
             SpeedSettingsGroupBox.Text = GarminFitnessView.GetLocalizedString("SpeedSettingsGroupBoxText");
             DefaultSpeedZoneLabel.Text = GarminFitnessView.GetLocalizedString("DefaultSpeedZoneLabelText");
             SpeedGarminRadioButton.Text = GarminFitnessView.GetLocalizedString("GarminText");
@@ -434,6 +440,7 @@ namespace GarminFitnessPlugin.View
             BPMRadioButton.Checked = !Options.Instance.ExportSportTracksHeartRateAsPercentMax;
 
             // Speed
+            ForceConsecutiveSpeedZonesCheckBox.Checked = Options.Instance.ForceConsecutiveProfileSpeedZones;
             SpeedGarminRadioButton.Checked = !Options.Instance.UseSportTracksSpeedZones;
             SpeedSportTracksRadioButton.Checked = Options.Instance.UseSportTracksSpeedZones;
 

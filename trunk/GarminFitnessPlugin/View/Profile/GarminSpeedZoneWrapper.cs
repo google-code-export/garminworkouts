@@ -33,20 +33,18 @@ namespace GarminFitnessPlugin.View
         {
             get
             {
+                double value = m_Profile.GetSpeedLowLimit(m_ZoneIndex);
                 string result;
 
                 if (m_Profile.SpeedIsInPace)
                 {
-                    double value = m_Profile.GetSpeedHighLimit(m_ZoneIndex);
                     UInt16 min, sec;
 
                     Utils.DoubleToTime(value, out min, out sec);
-
                     result = String.Format("{0:00}:{1:00}", min, sec);
                 }
                 else
                 {
-                    double value = m_Profile.GetSpeedLowLimit(m_ZoneIndex);
                     result = value.ToString("0.0");
                 }
 
@@ -58,20 +56,18 @@ namespace GarminFitnessPlugin.View
         {
             get
             {
+                double value = m_Profile.GetSpeedHighLimit(m_ZoneIndex);
                 string result;
 
                 if (m_Profile.SpeedIsInPace)
                 {
-                    double value = m_Profile.GetSpeedLowLimit(m_ZoneIndex);
                     UInt16 min, sec;
 
                     Utils.DoubleToTime(value, out min, out sec);
-
                     result = String.Format("{0:00}:{1:00}", min, sec);
                 }
                 else
                 {
-                    double value = m_Profile.GetSpeedHighLimit(m_ZoneIndex);
                     result = value.ToString("0.0");
                 }
 

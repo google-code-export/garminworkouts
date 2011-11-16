@@ -478,14 +478,18 @@ namespace GarminFitnessPlugin.View
 
         private void LowSpeedTextBox_Validated(object sender, EventArgs e)
         {
+            double value;
+
             if (m_CurrentProfile.SpeedIsInPace)
             {
-                m_CurrentProfile.SetSpeedHighLimit(m_SelectedSpeedZone.Index, Utils.TimeToFloat(LowSpeedTextBox.Text));
+                value = Utils.TimeToFloat(LowSpeedTextBox.Text);
             }
             else
             {
-                m_CurrentProfile.SetSpeedLowLimit(m_SelectedSpeedZone.Index, double.Parse(LowSpeedTextBox.Text));
+                value = double.Parse(LowSpeedTextBox.Text);
             }
+
+            m_CurrentProfile.SetSpeedLowLimit(m_SelectedSpeedZone.Index, value);
         }
 
         private void HighSpeedTextBox_Validating(object sender, System.ComponentModel.CancelEventArgs e)
@@ -553,14 +557,18 @@ namespace GarminFitnessPlugin.View
 
         private void HighSpeedTextBox_Validated(object sender, EventArgs e)
         {
+            double value;
+
             if (m_CurrentProfile.SpeedIsInPace)
             {
-                m_CurrentProfile.SetSpeedLowLimit(m_SelectedSpeedZone.Index, Utils.TimeToFloat(HighSpeedTextBox.Text));
+                value = Utils.TimeToFloat(HighSpeedTextBox.Text);
             }
             else
             {
-                m_CurrentProfile.SetSpeedHighLimit(m_SelectedSpeedZone.Index, double.Parse(HighSpeedTextBox.Text));
+                value = double.Parse(HighSpeedTextBox.Text);
             }
+
+            m_CurrentProfile.SetSpeedHighLimit(m_SelectedSpeedZone.Index, value);
         }
 
         private void SpeedNameTextBox_Validated(object sender, EventArgs e)

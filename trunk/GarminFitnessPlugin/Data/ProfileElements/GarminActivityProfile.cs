@@ -954,8 +954,18 @@ namespace GarminFitnessPlugin.Data
                 m_SpeedZones[index].Low = value;
 
                 TriggerChangedEvent(new PropertyChangedEventArgs("SpeedZoneLimit"));
-            }
 
+                if (value.CompareTo(m_SpeedZones[index].High) > 0)
+                {
+                    SetSpeedHighLimitInMetersPerSecond(index, value);
+                }
+
+                if (Options.Instance.ForceConsecutiveProfileSpeedZones &&
+                    index > 0)
+                {
+                    SetSpeedHighLimitInMetersPerSecond(index - 1, value);
+                }
+            }
         }
 
         public void SetSpeedLowLimit(int index, double value)
@@ -980,8 +990,18 @@ namespace GarminFitnessPlugin.Data
                 m_SpeedZones[index].High = value;
 
                 TriggerChangedEvent(new PropertyChangedEventArgs("SpeedZoneLimit"));
-            }
 
+                if (value.CompareTo(m_SpeedZones[index].Low) < 0)
+                {
+                    SetSpeedLowLimitInMetersPerSecond(index, value);
+                }
+
+                if (Options.Instance.ForceConsecutiveProfileSpeedZones &&
+                    index < Constants.GarminSpeedZoneCount)
+                {
+                    SetSpeedLowLimitInMetersPerSecond(index + 1, value);
+                }
+            }
         }
 
         public void SetSpeedHighLimit(int index, double value)

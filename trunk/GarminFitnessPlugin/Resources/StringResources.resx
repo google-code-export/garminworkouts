@@ -837,4 +837,7 @@
   <data name="GoToWorkoutsText" xml:space="preserve">
     <value>Go to workouts</value>
   </data>
+  <data name="ForceConsecutiveSpeedZonesText" xml:space="preserve">
+    <value>Force consecutive speed zones in profile</value>
+  </data>
 </root>

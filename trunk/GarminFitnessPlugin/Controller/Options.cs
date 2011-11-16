@@ -70,6 +70,9 @@ namespace GarminFitnessPlugin.Controller
             // Use ST speed zones
             stream.Write(BitConverter.GetBytes(UseSportTracksSpeedZones), 0, sizeof(bool));
 
+            // Force consecutive profile speed zones
+            stream.Write(BitConverter.GetBytes(ForceConsecutiveProfileSpeedZones), 0, sizeof(bool));
+
             // Cadence
             stream.Write(BitConverter.GetBytes(Encoding.UTF8.GetByteCount(Options.Instance.CadenceZoneCategory.ReferenceId)), 0, sizeof(int));
             stream.Write(Encoding.UTF8.GetBytes(CadenceZoneCategory.ReferenceId), 0, Encoding.UTF8.GetByteCount(Options.Instance.CadenceZoneCategory.ReferenceId));
@@ -410,6 +413,16 @@ namespace GarminFitnessPlugin.Controller
 
             // TCX cooldown export
             m_TCXExportCooldownAs = (RegularStep.StepIntensity)stream.ReadByte();
+        }
+
+        public void Deserialize_V26(Stream stream, DataVersion version)
+        {
+            byte[] boolBuffer = new byte[sizeof(bool)];
+
+            Deserialize_V24(stream, version);
+
+            stream.Read(boolBuffer, 0, sizeof(bool));
+            ForceConsecutiveProfileSpeedZones = BitConverter.ToBoolean(boolBuffer, 0);
         }
 
         public void Serialize(System.Xml.XmlNode parentNode, String nodeName, System.Xml.XmlDocument document)
@@ -908,6 +921,20 @@ namespace GarminFitnessPlugin.Controller
             }
         }
 
+        public bool ForceConsecutiveProfileSpeedZones
+        {
+            get { return m_ForceConsecutiveProfileSpeedZones; }
+            set
+            {
+                if (m_ForceConsecutiveProfileSpeedZones != value)
+                {
+                    m_ForceConsecutiveProfileSpeedZones = value;
+
+                    TriggerOptionsChangedEvent("ForceConsecutiveProfileSpeedZones");
+                }
+            }
+        }
+
         public bool UseSportTracksPowerZones
         {
             get { return m_UseSportTracksPowerZones; }
@@ -1128,6 +1155,7 @@ namespace GarminFitnessPlugin.Controller
         private bool m_UseSportTracksHeartRateZones;
         private bool m_ExportSportTracksHeartRateAsPercentMax = true;
         private bool m_UseSportTracksSpeedZones;
+        private bool m_ForceConsecutiveProfileSpeedZones = true;
         private bool m_UseSportTracksPowerZones;
         private bool m_ExportSportTracksPowerAsPercentFTP = false;
         private IZoneCategory m_CadenceZoneCategory;
