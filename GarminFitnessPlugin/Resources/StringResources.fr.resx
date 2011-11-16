@@ -840,4 +840,7 @@
   <data name="ExportSTPowerZonesAsLabelText" xml:space="preserve">
     <value>Exporter les zones de puissance de ST en tant que:</value>
   </data>
+  <data name="ForceConsecutiveSpeedZonesText" xml:space="preserve">
+    <value>Forcer des zones de vitesse consécutives dans le profil</value>
+  </data>
 </root>

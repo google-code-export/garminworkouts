@@ -43,6 +43,7 @@ namespace GarminFitnessPlugin.View
             this.BPMRadioButton = new System.Windows.Forms.RadioButton();
             this.ExportSTHRZonesAsLabel = new System.Windows.Forms.Label();
             this.SpeedSettingsGroupBox = new System.Windows.Forms.GroupBox();
+            this.ForceConsecutiveSpeedZonesCheckBox = new System.Windows.Forms.CheckBox();
             this.CadenceSettingsGroupBox = new System.Windows.Forms.GroupBox();
             this.CadenceZoneComboBox = new System.Windows.Forms.ComboBox();
             this.CadenceZoneSelectionLabel = new System.Windows.Forms.Label();
@@ -261,15 +262,27 @@ namespace GarminFitnessPlugin.View
             // 
             this.SpeedSettingsGroupBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
+            this.SpeedSettingsGroupBox.Controls.Add(this.ForceConsecutiveSpeedZonesCheckBox);
             this.SpeedSettingsGroupBox.Controls.Add(this.SpeedSportTracksRadioButton);
             this.SpeedSettingsGroupBox.Controls.Add(this.DefaultSpeedZoneLabel);
             this.SpeedSettingsGroupBox.Controls.Add(this.SpeedGarminRadioButton);
             this.SpeedSettingsGroupBox.Location = new System.Drawing.Point(6, 71);
             this.SpeedSettingsGroupBox.Name = "SpeedSettingsGroupBox";
-            this.SpeedSettingsGroupBox.Size = new System.Drawing.Size(541, 37);
+            this.SpeedSettingsGroupBox.Size = new System.Drawing.Size(541, 61);
             this.SpeedSettingsGroupBox.TabIndex = 3;
             this.SpeedSettingsGroupBox.TabStop = false;
             this.SpeedSettingsGroupBox.Text = "Speed Settings";
+            // 
+            // ForceConsecutiveSpeedZonesCheckBox
+            // 
+            this.ForceConsecutiveSpeedZonesCheckBox.AutoSize = true;
+            this.ForceConsecutiveSpeedZonesCheckBox.Location = new System.Drawing.Point(9, 38);
+            this.ForceConsecutiveSpeedZonesCheckBox.Name = "ForceConsecutiveSpeedZonesCheckBox";
+            this.ForceConsecutiveSpeedZonesCheckBox.Size = new System.Drawing.Size(219, 17);
+            this.ForceConsecutiveSpeedZonesCheckBox.TabIndex = 2;
+            this.ForceConsecutiveSpeedZonesCheckBox.Text = "Force consecutive speed zones in profile";
+            this.ForceConsecutiveSpeedZonesCheckBox.UseVisualStyleBackColor = true;
+            this.ForceConsecutiveSpeedZonesCheckBox.CheckedChanged += new System.EventHandler(this.ForceConsecutiveSpeedZonesCheckBox_CheckedChanged);
             // 
             // CadenceSettingsGroupBox
             // 
@@ -277,7 +290,7 @@ namespace GarminFitnessPlugin.View
                         | System.Windows.Forms.AnchorStyles.Right)));
             this.CadenceSettingsGroupBox.Controls.Add(this.CadenceZoneComboBox);
             this.CadenceSettingsGroupBox.Controls.Add(this.CadenceZoneSelectionLabel);
-            this.CadenceSettingsGroupBox.Location = new System.Drawing.Point(6, 115);
+            this.CadenceSettingsGroupBox.Location = new System.Drawing.Point(6, 138);
             this.CadenceSettingsGroupBox.Name = "CadenceSettingsGroupBox";
             this.CadenceSettingsGroupBox.Size = new System.Drawing.Size(541, 37);
             this.CadenceSettingsGroupBox.TabIndex = 4;
@@ -315,7 +328,7 @@ namespace GarminFitnessPlugin.View
             this.PowerSettingsGroupBox.Controls.Add(this.PowerZoneSelectionLabel);
             this.PowerSettingsGroupBox.Controls.Add(this.PowerGarminRadioButton);
             this.PowerSettingsGroupBox.Controls.Add(this.PowerSportTracksRadioButton);
-            this.PowerSettingsGroupBox.Location = new System.Drawing.Point(6, 158);
+            this.PowerSettingsGroupBox.Location = new System.Drawing.Point(6, 181);
             this.PowerSettingsGroupBox.Name = "PowerSettingsGroupBox";
             this.PowerSettingsGroupBox.Size = new System.Drawing.Size(541, 91);
             this.PowerSettingsGroupBox.TabIndex = 5;
@@ -422,7 +435,7 @@ namespace GarminFitnessPlugin.View
             this.CategoriesGroupBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
             this.CategoriesGroupBox.Controls.Add(this.splitContainer1);
-            this.CategoriesGroupBox.Location = new System.Drawing.Point(6, 283);
+            this.CategoriesGroupBox.Location = new System.Drawing.Point(6, 306);
             this.CategoriesGroupBox.Name = "CategoriesGroupBox";
             this.CategoriesGroupBox.Size = new System.Drawing.Size(541, 166);
             this.CategoriesGroupBox.TabIndex = 7;
@@ -577,7 +590,7 @@ namespace GarminFitnessPlugin.View
             // 
             this.RunWizardLinkLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.RunWizardLinkLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F);
-            this.RunWizardLinkLabel.Location = new System.Drawing.Point(-1, 595);
+            this.RunWizardLinkLabel.Location = new System.Drawing.Point(-1, 609);
             this.RunWizardLinkLabel.Name = "RunWizardLinkLabel";
             this.RunWizardLinkLabel.Size = new System.Drawing.Size(500, 23);
             this.RunWizardLinkLabel.TabIndex = 8;
@@ -590,7 +603,7 @@ namespace GarminFitnessPlugin.View
             this.DonateLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.DonateLabel.AutoSize = true;
             this.DonateLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F);
-            this.DonateLabel.Location = new System.Drawing.Point(6, 619);
+            this.DonateLabel.Location = new System.Drawing.Point(6, 633);
             this.DonateLabel.Name = "DonateLabel";
             this.DonateLabel.Size = new System.Drawing.Size(292, 20);
             this.DonateLabel.TabIndex = 9;
@@ -601,7 +614,7 @@ namespace GarminFitnessPlugin.View
             this.DonateImageLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.DonateImageLabel.Cursor = System.Windows.Forms.Cursors.Hand;
             this.DonateImageLabel.Image = global::GarminFitnessPlugin.Resources.Resources.DonateImage;
-            this.DonateImageLabel.Location = new System.Drawing.Point(304, 617);
+            this.DonateImageLabel.Location = new System.Drawing.Point(304, 631);
             this.DonateImageLabel.Name = "DonateImageLabel";
             this.DonateImageLabel.Size = new System.Drawing.Size(100, 23);
             this.DonateImageLabel.TabIndex = 10;
@@ -610,7 +623,7 @@ namespace GarminFitnessPlugin.View
             // AutoSplitCheckBox
             // 
             this.AutoSplitCheckBox.AutoSize = true;
-            this.AutoSplitCheckBox.Location = new System.Drawing.Point(15, 258);
+            this.AutoSplitCheckBox.Location = new System.Drawing.Point(15, 281);
             this.AutoSplitCheckBox.Name = "AutoSplitCheckBox";
             this.AutoSplitCheckBox.Size = new System.Drawing.Size(201, 17);
             this.AutoSplitCheckBox.TabIndex = 11;
@@ -626,7 +639,7 @@ namespace GarminFitnessPlugin.View
             this.DeviceCommGroupBox.Controls.Add(this.DefaultExportDirectoryLabel);
             this.DeviceCommGroupBox.Controls.Add(this.BrowseButton);
             this.DeviceCommGroupBox.Controls.Add(this.ExportDirectoryTextBox);
-            this.DeviceCommGroupBox.Location = new System.Drawing.Point(6, 455);
+            this.DeviceCommGroupBox.Location = new System.Drawing.Point(6, 478);
             this.DeviceCommGroupBox.Name = "DeviceCommGroupBox";
             this.DeviceCommGroupBox.Size = new System.Drawing.Size(541, 130);
             this.DeviceCommGroupBox.TabIndex = 12;
@@ -710,7 +723,7 @@ namespace GarminFitnessPlugin.View
             this.Controls.Add(this.PowerSettingsGroupBox);
             this.MaximumSize = new System.Drawing.Size(550, 700);
             this.Name = "GarminFitnessSettingsControl";
-            this.Size = new System.Drawing.Size(550, 645);
+            this.Size = new System.Drawing.Size(550, 659);
             this.HRSettingsGroupBox.ResumeLayout(false);
             this.HRSettingsGroupBox.PerformLayout();
             this.ExportHRAsPanel.ResumeLayout(false);
@@ -791,5 +804,6 @@ namespace GarminFitnessPlugin.View
         private System.Windows.Forms.ComboBox ExportWarmupAsComboBox;
         private System.Windows.Forms.Label TCXExportCooldownAsLabel;
         private System.Windows.Forms.ComboBox ExportCooldownAsComboBox;
+        private System.Windows.Forms.CheckBox ForceConsecutiveSpeedZonesCheckBox;
     }
 }
