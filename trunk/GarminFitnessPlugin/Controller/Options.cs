@@ -70,9 +70,6 @@ namespace GarminFitnessPlugin.Controller
             // Use ST speed zones
             stream.Write(BitConverter.GetBytes(UseSportTracksSpeedZones), 0, sizeof(bool));
 
-            // Force consecutive profile speed zones
-            stream.Write(BitConverter.GetBytes(ForceConsecutiveProfileSpeedZones), 0, sizeof(bool));
-
             // Cadence
             stream.Write(BitConverter.GetBytes(Encoding.UTF8.GetByteCount(Options.Instance.CadenceZoneCategory.ReferenceId)), 0, sizeof(int));
             stream.Write(Encoding.UTF8.GetBytes(CadenceZoneCategory.ReferenceId), 0, Encoding.UTF8.GetByteCount(Options.Instance.CadenceZoneCategory.ReferenceId));
@@ -119,6 +116,9 @@ namespace GarminFitnessPlugin.Controller
 
             // TCX cooldown export
             stream.WriteByte((Byte)m_TCXExportCooldownAs);
+
+            // Force consecutive profile speed zones
+            stream.Write(BitConverter.GetBytes(ForceConsecutiveProfileSpeedZones), 0, sizeof(bool));
         }
 
         public new void Deserialize(Stream stream, DataVersion version)
