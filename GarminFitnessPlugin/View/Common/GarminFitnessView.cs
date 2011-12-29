@@ -129,23 +129,6 @@ namespace GarminFitnessPlugin.View
                     GetCurrentView().RefreshUIFromLogbook();
                 }
 
-                if (PluginMain.GetApplication().Logbook != null)
-                {
-                    byte[] extensionData = PluginMain.GetApplication().Logbook.GetExtensionData(GUIDs.PluginMain);
-
-                    if (extensionData == null || extensionData.Length == 0)
-                    {
-                        GarminWorkoutManager.Instance.RemoveAllWorkouts();
-                        GarminProfileManager.Instance.UserProfile.Cleanup();
-                        Options.Instance.ResetLogbookSettings();
-
-                        // Show the wizard on first run
-                        GarminFitnessSetupWizard wizard = new GarminFitnessSetupWizard();
-
-                        wizard.ShowDialog();
-                    }
-                }
-
                 return m_MainControl;
             }
         }
@@ -195,6 +178,8 @@ namespace GarminFitnessPlugin.View
                 }
             }
 
+            RunSetupWizard();
+
             GetCurrentView().RefreshCalendar();
         }
 
@@ -233,6 +218,8 @@ namespace GarminFitnessPlugin.View
             {
                 GetCurrentView().RefreshUIFromLogbook();
             }
+
+            RunSetupWizard();
         }
 
         void OnOptionsChanged(PropertyChangedEventArgs changedProperty)
@@ -365,6 +352,28 @@ namespace GarminFitnessPlugin.View
             }
 
             currentControl.Visible = true;
+        }
+
+        private void RunSetupWizard()
+        {
+            if (PluginMain.GetApplication().Logbook != null &&
+                PluginMain.GetApplication().ActiveView == this)
+            {
+                byte[] extensionData = PluginMain.GetApplication().Logbook.GetExtensionData(GUIDs.PluginMain);
+
+                if (extensionData == null || extensionData.Length == 0)
+                {
+                    GarminWorkoutManager.Instance.RemoveAllWorkouts();
+                    GarminProfileManager.Instance.UserProfile.Cleanup();
+                    Options.Instance.ResetLogbookSettings();
+                    Utils.SaveDataToLogbook();
+
+                    // Show the wizard on first run
+                    GarminFitnessSetupWizard wizard = new GarminFitnessSetupWizard();
+
+                    wizard.ShowDialog();
+                }
+            }
         }
 
         public static string GetLocalizedString(string name)

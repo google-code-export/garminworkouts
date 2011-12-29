@@ -4,9 +4,11 @@ using System.Windows.Forms;
 using System.Globalization;
 using System.Reflection;
 using System.Resources;
+using ZoneFiveSoftware.Common.Data.Fitness;
 using ZoneFiveSoftware.Common.Visuals;
 using ZoneFiveSoftware.Common.Visuals.Fitness;
 using SportTracksPluginFramework;
+using GarminFitnessPlugin.Controller;
 
 namespace GarminFitnessPlugin.View
 {
@@ -23,7 +25,6 @@ namespace GarminFitnessPlugin.View
         {
             get { return null; }
         }
-
 
         public override Control SettingsPageControl
         {
@@ -51,6 +52,8 @@ namespace GarminFitnessPlugin.View
         public override void ShowPage(string bookmark)
         {
             m_SettingsControl.UICultureChanged(GarminFitnessView.UICulture);
+
+            RunSetupWizard();
         }
 
         public override IPageStatus Status
@@ -85,10 +88,37 @@ namespace GarminFitnessPlugin.View
         public GarminFitnessSettings()
         {
             PropertyChanged = new PropertyChangedEventHandler(OnPropertyChanged);
+
+            PluginMain.LogbookChanged += new PluginMain.LogbookChangedEventHandler(OnLogbookChanged);
         }
 
         private void OnPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
+        }
+
+        private void OnLogbookChanged(object sender, ILogbook oldLogbook, ILogbook newLogbook)
+        {
+            RunSetupWizard();
+        }
+
+        private void RunSetupWizard()
+        {
+            if (PluginMain.GetApplication().Logbook != null &&
+                PluginMain.GetApplication().ActiveView.Id == GUIDs.SettingsView &&
+                PluginMain.GetApplication().ActiveView.SubTitle == this.Title)
+            {
+                byte[] extensionData = PluginMain.GetApplication().Logbook.GetExtensionData(GUIDs.PluginMain);
+
+                if (extensionData == null || extensionData.Length == 0)
+                {
+                    Utils.SaveDataToLogbook();
+
+                    // Show the wizard on first run
+                    GarminFitnessSetupWizard wizard = new GarminFitnessSetupWizard();
+
+                    wizard.ShowDialog();
+                }
+            }
         }
 
         private GarminFitnessSettingsControl m_SettingsControl = null;
