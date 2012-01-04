@@ -145,25 +145,11 @@ namespace GarminFitnessPlugin.Data
             viewAs.Serialize(parentNode, Constants.ViewAsTCXString, document);
 
             // Low
-            GarminFitnessDoubleRange lowInMetersPerSecond;
+            GarminFitnessDoubleRange lowInMetersPerSecond = new GarminFitnessDoubleRange(Utils.Clamp(Zone.Low, Constants.MinSpeedMetersPerSecond, Constants.MaxSpeedMetersPerSecond));
+            lowInMetersPerSecond.Serialize(parentNode, Constants.LowInMeterPerSecTCXString, document);
 
             // High
-            GarminFitnessDoubleRange highInMetersPerSecond;
-
-            // Low & High
-            if (ViewAsPace)
-            {
-                // Values are inverted for FR610XT (ANT Agent devices?) or export fails
-                lowInMetersPerSecond = new GarminFitnessDoubleRange(Utils.Clamp(Zone.High, Constants.MinSpeedMetersPerSecond, Constants.MaxSpeedMetersPerSecond));
-                highInMetersPerSecond = new GarminFitnessDoubleRange(Utils.Clamp(Zone.Low, Constants.MinSpeedMetersPerSecond, Constants.MaxSpeedMetersPerSecond));
-            }
-            else
-            {
-                lowInMetersPerSecond = new GarminFitnessDoubleRange(Utils.Clamp(Zone.Low, Constants.MinSpeedMetersPerSecond, Constants.MaxSpeedMetersPerSecond));
-                highInMetersPerSecond = new GarminFitnessDoubleRange(Utils.Clamp(Zone.High, Constants.MinSpeedMetersPerSecond, Constants.MaxSpeedMetersPerSecond));
-            }
-
-            lowInMetersPerSecond.Serialize(parentNode, Constants.LowInMeterPerSecTCXString, document);
+            GarminFitnessDoubleRange highInMetersPerSecond = new GarminFitnessDoubleRange(Utils.Clamp(Zone.High, Constants.MinSpeedMetersPerSecond, Constants.MaxSpeedMetersPerSecond));
             highInMetersPerSecond.Serialize(parentNode, Constants.HighInMeterPerSecTCXString, document);
 
             // Extension
