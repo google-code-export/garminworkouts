@@ -197,10 +197,7 @@ namespace GarminFitnessPlugin.Data
             FITMessageField numValidSteps = new FITMessageField((Byte)FITWorkoutFieldIds.NumSteps);
             FITMessageField workoutName = new FITMessageField((Byte)FITWorkoutFieldIds.WorkoutName);
 
-            // Sport type must ALWAYS be cycling on Edge 500 & 800.  Since no other device
-            //  use the FIT format, force the sport.
-            //sportType.SetEnum((Byte)Options.Instance.GetFITSport(Category));
-            sportType.SetEnum((Byte)FITSports.Cycling);
+            sportType.SetEnum((Byte)Options.Instance.GetFITSport(Category));
             workoutMessage.AddField(sportType);
             numValidSteps.SetUInt16(StepCount);
             workoutMessage.AddField(numValidSteps);
