@@ -153,9 +153,17 @@ namespace GarminFitnessPlugin.Data
             valueNode.AppendChild(document.CreateTextNode(Constants.SpeedOrPaceTCXString[ViewAsPace ? 0 : 1]));
             parentNode.AppendChild(valueNode);
 
-            m_MinMetersPerSecond.Serialize(parentNode, Constants.LowInMeterPerSecTCXString, document);
-
-            m_MaxMetersPerSecond.Serialize(parentNode, Constants.HighInMeterPerSecTCXString, document);
+            if (ViewAsPace)
+            {
+                // Values are inverted for FR610XT (ANT Agent devices?) or export fails
+                m_MaxMetersPerSecond.Serialize(parentNode, Constants.LowInMeterPerSecTCXString, document);
+                m_MinMetersPerSecond.Serialize(parentNode, Constants.HighInMeterPerSecTCXString, document);
+            }
+            else
+            {
+                m_MinMetersPerSecond.Serialize(parentNode, Constants.LowInMeterPerSecTCXString, document);
+                m_MaxMetersPerSecond.Serialize(parentNode, Constants.HighInMeterPerSecTCXString, document);
+            }
         }
 
         public override void Deserialize(XmlNode parentNode)
