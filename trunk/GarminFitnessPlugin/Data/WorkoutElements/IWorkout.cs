@@ -47,11 +47,9 @@ namespace GarminFitnessPlugin.Data
                 Steps.Serialize(workoutNode, "", document);
 
                 // Scheduled dates
-                for (int i = 0; i < ScheduledDates.Count; ++i)
+                foreach (DateTime scheduledDate in ScheduledDates)
                 {
-                    GarminFitnessDate currentSchedule = ScheduledDates[i];
-
-                    currentSchedule = new GarminFitnessDate(((DateTime)currentSchedule).ToUniversalTime());
+                    GarminFitnessDate currentSchedule = new GarminFitnessDate(scheduledDate.AddHours(12).ToUniversalTime());
                     currentSchedule.Serialize(workoutNode, "ScheduledOn", document);
                 }
 
@@ -176,10 +174,10 @@ namespace GarminFitnessPlugin.Data
 
         public void SerializeOccurances(GarXFaceNet._WorkoutOccuranceList occuranceList)
         {
-            foreach (GarminFitnessDate scheduledDate in ScheduledDates)
+            foreach (DateTime scheduledDate in ScheduledDates)
             {
                 GarXFaceNet._WorkoutOccurance newOccurance = new GarXFaceNet._WorkoutOccurance();
-                TimeSpan timeSinceReference = (DateTime)scheduledDate - new DateTime(1989, 12, 31);
+                TimeSpan timeSinceReference = scheduledDate.AddHours(12).ToUniversalTime() - new DateTime(1989, 12, 31);
 
                 newOccurance.SetWorkoutName(Name);
                 newOccurance.SetDay((UInt32)(timeSinceReference.TotalSeconds));
@@ -220,7 +218,7 @@ namespace GarminFitnessPlugin.Data
         {
             Debug.Assert(GetSplitPartsCount() == 1);
 
-            foreach (DateTime currentDate in ScheduledDates)
+            foreach (DateTime scheduledDate in ScheduledDates)
             {
                 FITMessage scheduleMessage = new FITMessage(FITGlobalMessageIds.WorkoutSchedules);
                 FITMessageField unknown1 = new FITMessageField((Byte)FITScheduleFieldIds.Unknown1);
@@ -229,8 +227,8 @@ namespace GarminFitnessPlugin.Data
                 FITMessageField unknown4 = new FITMessageField((Byte)FITScheduleFieldIds.Unknown4);
                 FITMessageField unknown5 = new FITMessageField((Byte)FITScheduleFieldIds.Unknown5);
                 FITMessageField workoutId = new FITMessageField((Byte)FITScheduleFieldIds.WorkoutId);
-                FITMessageField scheduledDate = new FITMessageField((Byte)FITScheduleFieldIds.ScheduledDate);
-                TimeSpan timeSinceReference = ((DateTime)currentDate).ToUniversalTime() - new DateTime(1989, 12, 31);
+                FITMessageField scheduledField = new FITMessageField((Byte)FITScheduleFieldIds.ScheduledDate);
+                TimeSpan timeSinceReference = scheduledDate.AddHours(12).ToUniversalTime() - new DateTime(1989, 12, 31);
 
                 // Unknown fields, seem to always be the same
                 unknown1.SetUInt16(1);              // Always 1
@@ -241,7 +239,7 @@ namespace GarminFitnessPlugin.Data
 
                 // Real data
                 workoutId.SetUInt32(FITExportId);
-                scheduledDate.SetUInt32((UInt32)timeSinceReference.TotalSeconds + 43200); // 43200 seconds = 12 hours to set schedule at midday;
+                scheduledField.SetUInt32((UInt32)timeSinceReference.TotalSeconds);
 
                 scheduleMessage.AddField(unknown1);
                 scheduleMessage.AddField(garminProduct);
@@ -249,7 +247,7 @@ namespace GarminFitnessPlugin.Data
                 scheduleMessage.AddField(unknown4);
                 scheduleMessage.AddField(unknown5);
                 scheduleMessage.AddField(workoutId);
-                scheduleMessage.AddField(scheduledDate);
+                scheduleMessage.AddField(scheduledField);
 
                 scheduleMessage.Serialize(stream);
             }
