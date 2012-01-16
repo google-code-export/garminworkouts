@@ -45,6 +45,7 @@ namespace GarminFitnessPlugin.View
             this.HoursText.BorderColor = System.Drawing.Color.White;
             this.HoursText.ButtonImage = null;
             this.HoursText.Location = new System.Drawing.Point(0, 2);
+            this.HoursText.MaxLength = 2;
             this.HoursText.Multiline = false;
             this.HoursText.Name = "HoursText";
             this.HoursText.ReadOnly = false;
@@ -54,8 +55,9 @@ namespace GarminFitnessPlugin.View
             this.HoursText.Size = new System.Drawing.Size(19, 19);
             this.HoursText.TabIndex = 0;
             this.HoursText.TextAlign = System.Windows.Forms.HorizontalAlignment.Left;
-            this.HoursText.Validating += new System.ComponentModel.CancelEventHandler(this.HoursText_Validating);
             this.HoursText.Enter += new System.EventHandler(this.HoursText_Enter);
+            this.HoursText.Leave += new System.EventHandler(this.Control_Leave);
+            this.HoursText.Validating += new System.ComponentModel.CancelEventHandler(this.HoursText_Validating);
             // 
             // SecondsText
             // 
@@ -65,6 +67,7 @@ namespace GarminFitnessPlugin.View
             this.SecondsText.BorderColor = System.Drawing.Color.White;
             this.SecondsText.ButtonImage = null;
             this.SecondsText.Location = new System.Drawing.Point(42, 2);
+            this.SecondsText.MaxLength = 2;
             this.SecondsText.Multiline = false;
             this.SecondsText.Name = "SecondsText";
             this.SecondsText.ReadOnly = false;
@@ -74,8 +77,9 @@ namespace GarminFitnessPlugin.View
             this.SecondsText.Size = new System.Drawing.Size(19, 19);
             this.SecondsText.TabIndex = 2;
             this.SecondsText.TextAlign = System.Windows.Forms.HorizontalAlignment.Left;
-            this.SecondsText.Validating += new System.ComponentModel.CancelEventHandler(this.SecondsText_Validating);
             this.SecondsText.Enter += new System.EventHandler(this.SecondsText_Enter);
+            this.SecondsText.Leave += new System.EventHandler(this.Control_Leave);
+            this.SecondsText.Validating += new System.ComponentModel.CancelEventHandler(this.SecondsText_Validating);
             // 
             // MinutesText
             // 
@@ -85,6 +89,7 @@ namespace GarminFitnessPlugin.View
             this.MinutesText.BorderColor = System.Drawing.Color.White;
             this.MinutesText.ButtonImage = null;
             this.MinutesText.Location = new System.Drawing.Point(21, 2);
+            this.MinutesText.MaxLength = 2;
             this.MinutesText.Multiline = false;
             this.MinutesText.Name = "MinutesText";
             this.MinutesText.ReadOnly = false;
@@ -94,8 +99,9 @@ namespace GarminFitnessPlugin.View
             this.MinutesText.Size = new System.Drawing.Size(19, 19);
             this.MinutesText.TabIndex = 1;
             this.MinutesText.TextAlign = System.Windows.Forms.HorizontalAlignment.Left;
-            this.MinutesText.Validating += new System.ComponentModel.CancelEventHandler(this.MinutesText_Validating);
             this.MinutesText.Enter += new System.EventHandler(this.MinutesText_Enter);
+            this.MinutesText.Leave += new System.EventHandler(this.Control_Leave);
+            this.MinutesText.Validating += new System.ComponentModel.CancelEventHandler(this.MinutesText_Validating);
             // 
             // HourMinSeparatorLabel
             // 
@@ -122,7 +128,9 @@ namespace GarminFitnessPlugin.View
             this.UpDownArrows.Name = "UpDownArrows";
             this.UpDownArrows.Size = new System.Drawing.Size(18, 20);
             this.UpDownArrows.TabIndex = 3;
+            this.UpDownArrows.TabStop = false;
             this.UpDownArrows.ValueChanged += new System.EventHandler(this.UpDownArrows_ValueChanged);
+            this.UpDownArrows.Leave += new System.EventHandler(this.Control_Leave);
             // 
             // TimeDurationUpDown
             // 

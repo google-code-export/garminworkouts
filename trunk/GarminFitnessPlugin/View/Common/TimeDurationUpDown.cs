@@ -22,54 +22,78 @@ namespace GarminFitnessPlugin.View
 
         public UInt16 Hours
         {
-            get { return (UInt16)(Duration / Constants.SecondsPerHour); }
-            set { Duration = (UInt16)(Duration + (value - Hours) * Constants.SecondsPerHour); }
+            get { return (UInt16)m_Duration.Hours; }
+            set { m_Duration = m_Duration.Add(new TimeSpan(value - Hours, 0, 0)); }
         }
 
         public UInt16 Minutes
         {
-            get { return (UInt16)((Duration / Constants.SecondsPerMinute) % Constants.MinutesPerHour); }
-            set { Duration = (UInt16)(Duration + (value - Minutes) * Constants.SecondsPerMinute); }
+            get { return (UInt16)m_Duration.Minutes; }
+            set { m_Duration = m_Duration.Add(new TimeSpan(0, value - Minutes, 0)); }
         }
 
         public UInt16 Seconds
         {
-            get { return (UInt16)(Duration % Constants.SecondsPerMinute); }
-            set { Duration = (UInt16)(Duration - Seconds + value); }
+            get { return (UInt16)m_Duration.Seconds; }
+            set { m_Duration = m_Duration.Add(new TimeSpan(0, 0, value - Seconds)); }
         }
 
-        public UInt16 Duration
+        public UInt16 SecondsDuration
         {
-            get { return m_Duration; }
+            get { return (UInt16)m_Duration.TotalSeconds; }
             set
-            { 
-                m_Duration = value;
+            {
+                m_Duration = new TimeSpan(0, 0, value);
+                m_SelectedElement = SelectableElements.None;
                 UpdateTextBoxes();
             }
         }
 
         private void HoursText_Enter(object sender, EventArgs e)
         {
+            // Save the current value as setting the max on the arrows below can trigger
+            //  a value change that will update the value
+            UInt16 hours = Hours;
+
             m_SelectedElement = SelectableElements.Hours;
+            UpDownArrows.Enabled = true;
 
             UpDownArrows.Maximum = 17;
-            UpDownArrows.Value = Hours;
+            UpDownArrows.Value = hours;
         }
 
         private void MinutesText_Enter(object sender, EventArgs e)
         {
+            // Save the current value as setting the max on the arrows below can trigger
+            //  a value change that will update the value
+            UInt16 minutes = Minutes;
+
             m_SelectedElement = SelectableElements.Minutes;
+            UpDownArrows.Enabled = true;
 
             UpDownArrows.Maximum = Constants.MinutesPerHour - 1;
-            UpDownArrows.Value = Minutes;
+            UpDownArrows.Value = minutes;
         }
 
         private void SecondsText_Enter(object sender, EventArgs e)
         {
+            // Save the current value as setting the max on the arrows below can trigger
+            //  a value change that will update the value
+            UInt16 seconds = Seconds;
+
             m_SelectedElement = SelectableElements.Seconds;
+            UpDownArrows.Enabled = true;
 
             UpDownArrows.Maximum = Constants.SecondsPerMinute - 1;
-            UpDownArrows.Value = Seconds;
+            UpDownArrows.Value = seconds;
+        }
+
+        private void Control_Leave(object sender, EventArgs e)
+        {
+            if (!ContainsFocus)
+            {
+                UpDownArrows.Enabled = false;
+            }
         }
 
         private void UpDownArrows_ValueChanged(object sender, EventArgs e)
@@ -164,6 +188,6 @@ namespace GarminFitnessPlugin.View
         };
 
         private SelectableElements m_SelectedElement = SelectableElements.None;
-        private UInt16 m_Duration = 300;
+        private TimeSpan m_Duration = new TimeSpan(0, 5, 0);
     }
 }
