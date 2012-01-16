@@ -1133,7 +1133,7 @@ namespace GarminFitnessPlugin.View
                              concreteStep.Duration.Type == IDuration.DurationType.Time);
                 TimeDuration concreteDuration = concreteStep.Duration as TimeDuration;
 
-                concreteDuration.TimeInSeconds = TimeDurationUpDown.Duration;
+                concreteDuration.TimeInSeconds = TimeDurationUpDown.SecondsDuration;
             }
             else if (SelectedStep is RepeatStep)
             {
@@ -1142,9 +1142,8 @@ namespace GarminFitnessPlugin.View
                              concreteStep.Duration.Type == IRepeatDuration.RepeatDurationType.RepeatUntilTime);
                 RepeatUntilTimeDuration concreteDuration = concreteStep.Duration as RepeatUntilTimeDuration;
 
-                concreteDuration.TimeInSeconds = TimeDurationUpDown.Duration;
+                concreteDuration.TimeInSeconds = TimeDurationUpDown.SecondsDuration;
             }
-
         }
 
         private void CaloriesDurationText_Validating(object sender, CancelEventArgs e)
@@ -3006,7 +3005,7 @@ namespace GarminFitnessPlugin.View
                     case IDuration.DurationType.Time:
                         {
                             TimeDuration concreteDuration = concreteStep.Duration as TimeDuration;
-                            TimeDurationUpDown.Duration = concreteDuration.TimeInSeconds;
+                            TimeDurationUpDown.SecondsDuration = concreteDuration.TimeInSeconds;
                             break;
                         }
                     case IDuration.DurationType.HeartRateAbove:
@@ -3074,7 +3073,7 @@ namespace GarminFitnessPlugin.View
                     case IRepeatDuration.RepeatDurationType.RepeatUntilTime:
                         {
                             RepeatUntilTimeDuration concreteDuration = concreteStep.Duration as RepeatUntilTimeDuration;
-                            TimeDurationUpDown.Duration = concreteDuration.TimeInSeconds;
+                            TimeDurationUpDown.SecondsDuration = concreteDuration.TimeInSeconds;
                             break;
                         }
                     case IRepeatDuration.RepeatDurationType.RepeatUntilHeartRateAbove:
@@ -3117,8 +3116,6 @@ namespace GarminFitnessPlugin.View
                             break;
                         }
                 }
-
-
             }
         }
 
