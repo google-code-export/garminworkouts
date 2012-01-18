@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
@@ -14,9 +15,9 @@ using ZoneFiveSoftware.Common.Data.Fitness;
 using ZoneFiveSoftware.Common.Data.Measurement;
 using ZoneFiveSoftware.Common.Visuals;
 using ZoneFiveSoftware.Common.Visuals.Fitness;
+using STCommon.Resources;
 using GarminFitnessPlugin.Data;
 using GarminFitnessPlugin.Controller;
-using System.Collections;
 
 namespace GarminFitnessPlugin.View
 {
@@ -726,8 +727,8 @@ namespace GarminFitnessPlugin.View
                     e.Cancel = !Utils.IsTextIntegerInRange(HeartRateDurationText.Text, minRange, maxRange);
                     if (e.Cancel)
                     {
-                        MessageBox.Show(String.Format(GarminFitnessView.GetLocalizedString("IntegerRangeValidationText"), minRange, maxRange),
-                                        GarminFitnessView.GetLocalizedString("ValueValidationTitleText"), MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        MessageBox.Show(String.Format(TextResourceManager.IntegerRangeValidationText, minRange, maxRange),
+                                        TextResourceManager.ValueValidationTitleText, MessageBoxButtons.OK, MessageBoxIcon.Warning);
                         System.Media.SystemSounds.Asterisk.Play();
 
                         // Reset old valid value
@@ -772,8 +773,8 @@ namespace GarminFitnessPlugin.View
                     e.Cancel = !Utils.IsTextIntegerInRange(HeartRateDurationText.Text, minRange, maxRange);
                     if (e.Cancel)
                     {
-                        MessageBox.Show(String.Format(GarminFitnessView.GetLocalizedString("IntegerRangeValidationText"), minRange, maxRange),
-                                        GarminFitnessView.GetLocalizedString("ValueValidationTitleText"), MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        MessageBox.Show(String.Format(TextResourceManager.IntegerRangeValidationText, minRange, maxRange),
+                                        TextResourceManager.ValueValidationTitleText, MessageBoxButtons.OK, MessageBoxIcon.Warning);
                         System.Media.SystemSounds.Asterisk.Play();
 
                         // Reset old valid value
@@ -923,8 +924,8 @@ namespace GarminFitnessPlugin.View
                     e.Cancel = !Utils.IsTextIntegerInRange(PowerDurationText.Text, minRange, maxRange);
                     if (e.Cancel)
                     {
-                        MessageBox.Show(String.Format(GarminFitnessView.GetLocalizedString("IntegerRangeValidationText"), minRange, maxRange),
-                                        GarminFitnessView.GetLocalizedString("ValueValidationTitleText"), MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        MessageBox.Show(String.Format(TextResourceManager.IntegerRangeValidationText, minRange, maxRange),
+                                        TextResourceManager.ValueValidationTitleText, MessageBoxButtons.OK, MessageBoxIcon.Warning);
                         System.Media.SystemSounds.Asterisk.Play();
 
                         // Reset old valid value
@@ -969,8 +970,8 @@ namespace GarminFitnessPlugin.View
                     e.Cancel = !Utils.IsTextIntegerInRange(PowerDurationText.Text, minRange, maxRange);
                     if (e.Cancel)
                     {
-                        MessageBox.Show(String.Format(GarminFitnessView.GetLocalizedString("IntegerRangeValidationText"), minRange, maxRange),
-                                        GarminFitnessView.GetLocalizedString("ValueValidationTitleText"), MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        MessageBox.Show(String.Format(TextResourceManager.IntegerRangeValidationText, minRange, maxRange),
+                                        TextResourceManager.ValueValidationTitleText, MessageBoxButtons.OK, MessageBoxIcon.Warning);
                         System.Media.SystemSounds.Asterisk.Play();
 
                         // Reset old valid value
@@ -1055,8 +1056,8 @@ namespace GarminFitnessPlugin.View
                     e.Cancel = !Utils.IsTextFloatInRange(DistanceDurationText.Text, Constants.MinDistance, maxDistance);
                     if (e.Cancel)
                     {
-                        MessageBox.Show(String.Format(GarminFitnessView.GetLocalizedString("DoubleRangeValidationText"), Constants.MinDistance, maxDistance),
-                                        GarminFitnessView.GetLocalizedString("ValueValidationTitleText"), MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        MessageBox.Show(String.Format(TextResourceManager.DoubleRangeValidationText, Constants.MinDistance, maxDistance),
+                                        TextResourceManager.ValueValidationTitleText, MessageBoxButtons.OK, MessageBoxIcon.Warning);
                         System.Media.SystemSounds.Asterisk.Play();
 
                         // Reset old valid value
@@ -1083,8 +1084,8 @@ namespace GarminFitnessPlugin.View
                     e.Cancel = !Utils.IsTextFloatInRange(DistanceDurationText.Text, Constants.MinDistance, maxDistance);
                     if (e.Cancel)
                     {
-                        MessageBox.Show(String.Format(GarminFitnessView.GetLocalizedString("DoubleRangeValidationText"), Constants.MinDistance, maxDistance),
-                                        GarminFitnessView.GetLocalizedString("ValueValidationTitleText"), MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        MessageBox.Show(String.Format(TextResourceManager.DoubleRangeValidationText, Constants.MinDistance, maxDistance),
+                                        TextResourceManager.ValueValidationTitleText, MessageBoxButtons.OK, MessageBoxIcon.Warning);
                         System.Media.SystemSounds.Asterisk.Play();
 
                         // Reset old valid value
@@ -1160,8 +1161,8 @@ namespace GarminFitnessPlugin.View
                     e.Cancel = !Utils.IsTextIntegerInRange(CaloriesDurationText.Text, Constants.MinCalories, Constants.MaxCalories);
                     if (e.Cancel)
                     {
-                        MessageBox.Show(String.Format(GarminFitnessView.GetLocalizedString("IntegerRangeValidationText"), Constants.MinCalories, Constants.MaxCalories),
-                                        GarminFitnessView.GetLocalizedString("ValueValidationTitleText"), MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        MessageBox.Show(String.Format(TextResourceManager.IntegerRangeValidationText, Constants.MinCalories, Constants.MaxCalories),
+                                        TextResourceManager.ValueValidationTitleText, MessageBoxButtons.OK, MessageBoxIcon.Warning);
                         System.Media.SystemSounds.Asterisk.Play();
 
                         // Reset old valid value
@@ -1178,8 +1179,8 @@ namespace GarminFitnessPlugin.View
                     e.Cancel = !Utils.IsTextIntegerInRange(CaloriesDurationText.Text, Constants.MinCalories, Constants.MaxCalories);
                     if (e.Cancel)
                     {
-                        MessageBox.Show(String.Format(GarminFitnessView.GetLocalizedString("IntegerRangeValidationText"), Constants.MinCalories, Constants.MaxCalories),
-                                        GarminFitnessView.GetLocalizedString("ValueValidationTitleText"), MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        MessageBox.Show(String.Format(TextResourceManager.IntegerRangeValidationText, Constants.MinCalories, Constants.MaxCalories),
+                                        TextResourceManager.ValueValidationTitleText, MessageBoxButtons.OK, MessageBoxIcon.Warning);
                         System.Media.SystemSounds.Asterisk.Play();
 
                         // Reset old valid value
@@ -1387,8 +1388,8 @@ namespace GarminFitnessPlugin.View
                                 e.Cancel = !Utils.IsTextIntegerInRange(LowRangeTargetText.Text, intMin, intMax);
                                 if (e.Cancel)
                                 {
-                                    MessageBox.Show(String.Format(GarminFitnessView.GetLocalizedString("IntegerRangeValidationText"), intMin, intMax),
-                                                    GarminFitnessView.GetLocalizedString("ValueValidationTitleText"), MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                                    MessageBox.Show(String.Format(TextResourceManager.IntegerRangeValidationText, intMin, intMax),
+                                                    TextResourceManager.ValueValidationTitleText, MessageBoxButtons.OK, MessageBoxIcon.Warning);
                                     System.Media.SystemSounds.Asterisk.Play();
 
                                     // Reset old valid value
@@ -1401,8 +1402,8 @@ namespace GarminFitnessPlugin.View
                                 e.Cancel = !Utils.IsTextFloatInRange(LowRangeTargetText.Text, doubleMin, doubleMax);
                                 if (e.Cancel)
                                 {
-                                    MessageBox.Show(String.Format(GarminFitnessView.GetLocalizedString("DoubleRangeValidationText"), doubleMin, doubleMax),
-                                                    GarminFitnessView.GetLocalizedString("ValueValidationTitleText"), MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                                    MessageBox.Show(String.Format(TextResourceManager.DoubleRangeValidationText, doubleMin, doubleMax),
+                                                    TextResourceManager.ValueValidationTitleText, MessageBoxButtons.OK, MessageBoxIcon.Warning);
                                     System.Media.SystemSounds.Asterisk.Play();
 
                                     // Reset old valid value
@@ -1420,10 +1421,10 @@ namespace GarminFitnessPlugin.View
 
                                     Utils.DoubleToTime(doubleMin, out minMinutes, out minSeconds);
                                     Utils.DoubleToTime(doubleMax, out maxMinutes, out maxSeconds);
-                                    MessageBox.Show(String.Format(GarminFitnessView.GetLocalizedString("TimeRangeValidationText"),
+                                    MessageBox.Show(String.Format(TextResourceManager.TimeRangeValidationText,
                                                                   minMinutes, minSeconds,
                                                                   maxMinutes, maxSeconds),
-                                                    GarminFitnessView.GetLocalizedString("ValueValidationTitleText"), MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                                                    TextResourceManager.ValueValidationTitleText, MessageBoxButtons.OK, MessageBoxIcon.Warning);
                                     System.Media.SystemSounds.Asterisk.Play();
 
                                     // Reset old valid value
@@ -1688,8 +1689,8 @@ namespace GarminFitnessPlugin.View
                                 e.Cancel = !Utils.IsTextIntegerInRange(HighRangeTargetText.Text, intMin, intMax);
                                 if (e.Cancel)
                                 {
-                                    MessageBox.Show(String.Format(GarminFitnessView.GetLocalizedString("IntegerRangeValidationText"), intMin, intMax),
-                                                    GarminFitnessView.GetLocalizedString("ValueValidationTitleText"), MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                                    MessageBox.Show(String.Format(TextResourceManager.IntegerRangeValidationText, intMin, intMax),
+                                                    TextResourceManager.ValueValidationTitleText, MessageBoxButtons.OK, MessageBoxIcon.Warning);
                                     System.Media.SystemSounds.Asterisk.Play();
 
                                     // Reset old valid value
@@ -1702,8 +1703,8 @@ namespace GarminFitnessPlugin.View
                                 e.Cancel = !Utils.IsTextFloatInRange(HighRangeTargetText.Text, doubleMin, doubleMax);
                                 if (e.Cancel)
                                 {
-                                    MessageBox.Show(String.Format(GarminFitnessView.GetLocalizedString("DoubleRangeValidationText"), doubleMin, doubleMax),
-                                                    GarminFitnessView.GetLocalizedString("ValueValidationTitleText"), MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                                    MessageBox.Show(String.Format(TextResourceManager.DoubleRangeValidationText, doubleMin, doubleMax),
+                                                    TextResourceManager.ValueValidationTitleText, MessageBoxButtons.OK, MessageBoxIcon.Warning);
                                     System.Media.SystemSounds.Asterisk.Play();
 
                                     // Reset old valid value
@@ -1721,10 +1722,10 @@ namespace GarminFitnessPlugin.View
 
                                     Utils.DoubleToTime(doubleMin, out minMinutes, out minSeconds);
                                     Utils.DoubleToTime(doubleMax, out maxMinutes, out maxSeconds);
-                                    MessageBox.Show(String.Format(GarminFitnessView.GetLocalizedString("TimeRangeValidationText"),
+                                    MessageBox.Show(String.Format(TextResourceManager.TimeRangeValidationText,
                                                                   minMinutes, minSeconds,
                                                                   maxMinutes, maxSeconds),
-                                                    GarminFitnessView.GetLocalizedString("ValueValidationTitleText"), MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                                                    TextResourceManager.ValueValidationTitleText, MessageBoxButtons.OK, MessageBoxIcon.Warning);
                                     System.Media.SystemSounds.Asterisk.Play();
 
                                     // Reset old valid value
@@ -1868,8 +1869,8 @@ namespace GarminFitnessPlugin.View
                 e.Cancel = !Utils.IsTextIntegerInRange(RepetitionCountText.Text, Constants.MinRepeats, Constants.MaxRepeats);
                 if (e.Cancel)
                 {
-                    MessageBox.Show(String.Format(GarminFitnessView.GetLocalizedString("IntegerRangeValidationText"), Constants.MinRepeats, Constants.MaxRepeats),
-                                    GarminFitnessView.GetLocalizedString("ValueValidationTitleText"),
+                    MessageBox.Show(String.Format(TextResourceManager.IntegerRangeValidationText, Constants.MinRepeats, Constants.MaxRepeats),
+                                    TextResourceManager.ValueValidationTitleText,
                                     MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     System.Media.SystemSounds.Asterisk.Play();
 

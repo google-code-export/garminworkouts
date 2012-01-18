@@ -222,9 +222,6 @@
   <data name="DistanceDurationLabelText" xml:space="preserve">
     <value>How far?</value>
   </data>
-  <data name="DoubleRangeValidationText" xml:space="preserve">
-    <value>Value must be a decimal number between {0:0.00} and {1:0.00}</value>
-  </data>
   <data name="EditBikingProfileText" xml:space="preserve">
     <value>Biking profile</value>
   </data>
@@ -386,9 +383,6 @@
   </data>
   <data name="IndependentModeRadioButtonText" xml:space="preserve">
     <value>I want to configure the zones independently</value>
-  </data>
-  <data name="IntegerRangeValidationText" xml:space="preserve">
-    <value>Value must be an integer between {0} and {1}</value>
   </data>
   <data name="InvalidWorkoutNameText" xml:space="preserve">
     <value>The entered workout name is invalid.  The name must be unique and cannot be empty.</value>
@@ -609,9 +603,6 @@
   <data name="TimeDurationLabelText" xml:space="preserve">
     <value>How much time?</value>
   </data>
-  <data name="TimeRangeValidationText" xml:space="preserve">
-    <value>Value must be a duration between {0:00}:{1:00} and {2:00}:{3:00}</value>
-  </data>
   <data name="ToDeviceText" xml:space="preserve">
     <value>To Device</value>
   </data>
@@ -629,9 +620,6 @@
   </data>
   <data name="UseParentCategoryText" xml:space="preserve">
     <value>Use parent category</value>
-  </data>
-  <data name="ValueValidationTitleText" xml:space="preserve">
-    <value>Invalid value</value>
   </data>
   <data name="WeightLabelText" xml:space="preserve">
     <value>Weight :</value>
