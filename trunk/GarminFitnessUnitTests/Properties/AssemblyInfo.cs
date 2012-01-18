@@ -1,17 +1,16 @@
 ﻿using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
-using System.Resources;
 
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("Garmin Fitness Plugin")]
-[assembly: AssemblyDescription("SportTracks 3.0 plugin to configure and import/export workouts with Garmin Fitness units")]
+[assembly: AssemblyTitle("GarminFitnessUnitTests")]
+[assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("GarminFitnessPlugin.Properties")]
-[assembly: AssemblyCopyright("")]
+[assembly: AssemblyProduct("GarminFitnessUnitTests")]
+[assembly: AssemblyCopyright("Copyright ©  2012")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -21,7 +20,7 @@ using System.Resources;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("ba218e6e-01a1-4a63-9fda-1fa937e56fe9")]
+[assembly: Guid("921685ab-c16e-4adb-acbb-73b1feb6e8a8")]
 
 // Version information for an assembly consists of the following four values:
 //
@@ -30,6 +29,8 @@ using System.Resources;
 //      Build Number
 //      Revision
 //
-[assembly: AssemblyVersion("2.0.464")]
+// You can specify all the values or you can default the Build and Revision Numbers 
+// by using the '*' as shown below:
+// [assembly: AssemblyVersion("1.0.*")]
+[assembly: AssemblyVersion("1.0.0.0")]
 [assembly: AssemblyFileVersion("1.0.0.0")]
-[assembly: NeutralResourcesLanguageAttribute("en-US")]
