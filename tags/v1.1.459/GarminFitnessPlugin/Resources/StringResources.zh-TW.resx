@@ -1,0 +1,834 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="ActiveText" xml:space="preserve">
+    <value>活動</value>
+  </data>
+  <data name="AddDailyViewCheckBoxText" xml:space="preserve">
+    <value>加入至日誌</value>
+  </data>
+  <data name="AndText" xml:space="preserve">
+    <value>及</value>
+  </data>
+  <data name="AutoSplitCheckBoxText" xml:space="preserve">
+    <value>允許使用超過二十個步驟的訓練</value>
+  </data>
+  <data name="AutoText" xml:space="preserve">
+    <value>自動</value>
+  </data>
+  <data name="BetweenText" xml:space="preserve">
+    <value>介於</value>
+  </data>
+  <data name="BikeProfileExplanationText" xml:space="preserve">
+    <value>個人資訊中的部份資料是針對騎自行車使用。此資料和自行車資訊一樣包含了不同的功率區間。如果您並未擁有騎自行車相容的器材，則可略過此步驟。</value>
+  </data>
+  <data name="BikeProfileMenuItemText" xml:space="preserve">
+    <value>自行車 {0} ({1})</value>
+  </data>
+  <data name="BikingText" xml:space="preserve">
+    <value>騎自行車</value>
+  </data>
+  <data name="BirthDateLabelText" xml:space="preserve">
+    <value>出生日期</value>
+  </data>
+  <data name="BrowseButtonText" xml:space="preserve">
+    <value>瀏覽...</value>
+  </data>
+  <data name="CadenceRangeTargetDescriptionText" xml:space="preserve">
+    <value>試著將我的踏頻保持在 {0} 和 {1} {2} 之間。</value>
+  </data>
+  <data name="CadenceSettingsGroupBoxText" xml:space="preserve">
+    <value>踏頻設定</value>
+  </data>
+  <data name="CadenceTargetComboBoxText" xml:space="preserve">
+    <value>試著將我的踏頻保持在某個區間</value>
+  </data>
+  <data name="CadenceZoneSelectionLabelText" xml:space="preserve">
+    <value>在我的訓練中使用此踏頻區間:</value>
+  </data>
+  <data name="CadenceZoneTargetDescriptionText" xml:space="preserve">
+    <value>試著將我的踏頻保持在區間 {0}。</value>
+  </data>
+  <data name="CaloriesDurationComboBoxText" xml:space="preserve">
+    <value>在我燃燒特定數量的卡路里之後</value>
+  </data>
+  <data name="CaloriesDurationDescriptionText" xml:space="preserve">
+    <value>開始直到我燃燒 {0} 卡路里。</value>
+  </data>
+  <data name="CaloriesDurationLabelText" xml:space="preserve">
+    <value>多少卡路里?</value>
+  </data>
+  <data name="CategoriesText" xml:space="preserve">
+    <value>分類</value>
+  </data>
+  <data name="CategoryAssociationExplanationText" xml:space="preserve">
+    <value>為了讓您的訓練在裝置中可以正確分類，您必須將每個 SportTracks 的活動類別關聯至相對應的 Garmin 活動類別。如此一來，您的訓練才可以使用在個人資訊中設定的正確心率區間和速度區間。</value>
+  </data>
+  <data name="CategoryAssociationText" xml:space="preserve">
+    <value>Garmin 類別結合</value>
+  </data>
+  <data name="CategoryText" xml:space="preserve">
+    <value>類別</value>
+  </data>
+  <data name="CompletedExplanationText" xml:space="preserve">
+    <value>您已成功完成設定精靈。外掛現在已經可由『選擇顯示方式』功能表中使用。所有設定均可在 Garmin Fitness 外掛的『設定』頁面及『資訊』檢視畫面中進行更改。</value>
+  </data>
+  <data name="CompletedLabelText" xml:space="preserve">
+    <value>要關閉精靈，請點選『結束』</value>
+  </data>
+  <data name="CompletedText" xml:space="preserve">
+    <value>已完成</value>
+  </data>
+  <data name="ContinueLabelText" xml:space="preserve">
+    <value>要設定外掛，請點選『下一步』</value>
+  </data>
+  <data name="CooldownText" xml:space="preserve">
+    <value>冷卻</value>
+  </data>
+  <data name="CustomText" xml:space="preserve">
+    <value>自訂</value>
+  </data>
+  <data name="DataTooRecentErrorText" xml:space="preserve">
+    <value>無法以此版本的 Garmin Fitness 外掛開啟此資料，請更新至最新版本。</value>
+  </data>
+  <data name="DefaultExportDirectoryGroupBoxText" xml:space="preserve">
+    <value>預設匯出目錄</value>
+  </data>
+  <data name="DefaultHeartRateZoneLabelText" xml:space="preserve">
+    <value>使用心率區間來源:</value>
+  </data>
+  <data name="DefaultPowerZoneLabelText" xml:space="preserve">
+    <value>使用功率區間來源:</value>
+  </data>
+  <data name="DefaultSpeedZoneLabelText" xml:space="preserve">
+    <value>使用速度區間來源:</value>
+  </data>
+  <data name="DetailsText" xml:space="preserve">
+    <value>細節</value>
+  </data>
+  <data name="DeviceCommGroupBoxText" xml:space="preserve">
+    <value>裝置通訊</value>
+  </data>
+  <data name="DeviceCommunicationErrorText" xml:space="preserve">
+    <value>無法載入 Garmin 傳輸小幫手。請確認您的 SportTracks 為 2.0.3170 或之後的版本，且已安裝 Garmin 傳輸小幫手並於瀏覽器中啟用。</value>
+  </data>
+  <data name="DistanceDurationComboBoxText" xml:space="preserve">
+    <value>在我開始一段距離之後</value>
+  </data>
+  <data name="DistanceDurationDescriptionText" xml:space="preserve">
+    <value>開始 {0:0.00} {1}。</value>
+  </data>
+  <data name="DistanceDurationLabelText" xml:space="preserve">
+    <value>多遠?</value>
+  </data>
+  <data name="DoubleRangeValidationText" xml:space="preserve">
+    <value>數值必須為介於 {0:0.00} 和 {1:0.00} 之間的小數</value>
+  </data>
+  <data name="EditBikingProfileText" xml:space="preserve">
+    <value>騎自行車資訊</value>
+  </data>
+  <data name="EditProfileExplanationText" xml:space="preserve">
+    <value>您可以在此頁面編輯儲存於資訊中的個人資料。須注意，訓練的顯示方式會受到您選擇的區間（每分鐘心跳 vs %最高心率及速度 vs 步速），以及該區間於不同運動的種類所影響。</value>
+  </data>
+  <data name="EditProfileText" xml:space="preserve">
+    <value>編輯個人資訊</value>
+  </data>
+  <data name="EditRadioButtonText" xml:space="preserve">
+    <value>手動編輯我的資訊</value>
+  </data>
+  <data name="ErrorText" xml:space="preserve">
+    <value>錯誤</value>
+  </data>
+  <data name="ExportAllText" xml:space="preserve">
+    <value>匯出全部</value>
+  </data>
+  <data name="ExportAsLabelText" xml:space="preserve">
+    <value>匯出至:</value>
+  </data>
+  <data name="ExportCooldownAsText" xml:space="preserve">
+    <value>匯出冷卻為</value>
+  </data>
+  <data name="ExportProfileFailedText" xml:space="preserve">
+    <value>匯出資訊時發生錯誤。</value>
+  </data>
+  <data name="ExportProfileSuccessText" xml:space="preserve">
+    <value>資訊已成功匯出至裝置。</value>
+  </data>
+  <data name="ExportProfileText" xml:space="preserve">
+    <value>匯出資訊</value>
+  </data>
+  <data name="ExportSelectedText" xml:space="preserve">
+    <value>匯出選擇項目</value>
+  </data>
+  <data name="ExportSTHRZonesAsLabelText" xml:space="preserve">
+    <value>匯出 ST 心率區間方式:</value>
+  </data>
+  <data name="ExportSTPowerZonesAsLabelText" xml:space="preserve">
+    <value>匯出 ST 功率區間方式:</value>
+  </data>
+  <data name="ExportText" xml:space="preserve">
+    <value>匯出</value>
+  </data>
+  <data name="ExportWarmupAsText" xml:space="preserve">
+    <value>匯出熱身為</value>
+  </data>
+  <data name="ExportWorkoutsFailedText" xml:space="preserve">
+    <value>匯出訓練時發生錯誤。</value>
+  </data>
+  <data name="ExportWorkoutsSuccessText" xml:space="preserve">
+    <value>訓練已成功匯出。</value>
+  </data>
+  <data name="ExportWorkoutsText" xml:space="preserve">
+    <value>匯出訓練</value>
+  </data>
+  <data name="FemaleText" xml:space="preserve">
+    <value>女性</value>
+  </data>
+  <data name="FileDescriptionText" xml:space="preserve">
+    <value>訓練檔案</value>
+  </data>
+  <data name="FinishLabelText" xml:space="preserve">
+    <value>要稍後設定外掛，請點選『結束』</value>
+  </data>
+  <data name="FITExportText" xml:space="preserve">
+    <value>FIT 匯出</value>
+  </data>
+  <data name="FitFileText" xml:space="preserve">
+    <value>FIT 檔案</value>
+  </data>
+  <data name="FITImportText" xml:space="preserve">
+    <value>FIT 匯入</value>
+  </data>
+  <data name="ForceSplitCheckBoxText" xml:space="preserve">
+    <value>強制分段</value>
+  </data>
+  <data name="FromDeviceText" xml:space="preserve">
+    <value>從裝置</value>
+  </data>
+  <data name="FromFileText" xml:space="preserve">
+    <value>從檔案</value>
+  </data>
+  <data name="FTPLabelText" xml:space="preserve">
+    <value>函數臨界功率</value>
+  </data>
+  <data name="GarminFitnessText" xml:space="preserve">
+    <value>Garmin Fitness</value>
+  </data>
+  <data name="GarminModeRadioButtonText" xml:space="preserve">
+    <value>我要使用 Garmin 模式</value>
+  </data>
+  <data name="GarminOrSTText" xml:space="preserve">
+    <value>Garmin 或 SportTracks 模式</value>
+  </data>
+  <data name="GarminText" xml:space="preserve">
+    <value>Garmin</value>
+  </data>
+  <data name="GearWeightLabelText" xml:space="preserve">
+    <value>設備重量:</value>
+  </data>
+  <data name="GenderLabelText" xml:space="preserve">
+    <value>性別:</value>
+  </data>
+  <data name="GoToProfileText" xml:space="preserve">
+    <value>前往資訊頁面</value>
+  </data>
+  <data name="GoToWorkoutsText" xml:space="preserve">
+    <value>前往訓練頁面</value>
+  </data>
+  <data name="GTCSpeedZone10Text" xml:space="preserve">
+    <value>最快速度</value>
+  </data>
+  <data name="GTCSpeedZone1Text" xml:space="preserve">
+    <value>爬坡四</value>
+  </data>
+  <data name="GTCSpeedZone2Text" xml:space="preserve">
+    <value>爬坡三</value>
+  </data>
+  <data name="GTCSpeedZone3Text" xml:space="preserve">
+    <value>爬坡二</value>
+  </data>
+  <data name="GTCSpeedZone4Text" xml:space="preserve">
+    <value>爬坡一</value>
+  </data>
+  <data name="GTCSpeedZone5Text" xml:space="preserve">
+    <value>平路三</value>
+  </data>
+  <data name="GTCSpeedZone6Text" xml:space="preserve">
+    <value>平路二</value>
+  </data>
+  <data name="GTCSpeedZone7Text" xml:space="preserve">
+    <value>平路一</value>
+  </data>
+  <data name="GTCSpeedZone8Text" xml:space="preserve">
+    <value>下坡</value>
+  </data>
+  <data name="GTCSpeedZone9Text" xml:space="preserve">
+    <value>衝刺</value>
+  </data>
+  <data name="HasCadenceText" xml:space="preserve">
+    <value>有踏頻感應器</value>
+  </data>
+  <data name="HasPowerText" xml:space="preserve">
+    <value>有功率感應器</value>
+  </data>
+  <data name="HeartRateAboveDurationComboBoxText" xml:space="preserve">
+    <value>當我的心率高於某個等級</value>
+  </data>
+  <data name="HeartRateAboveDurationDescriptionText" xml:space="preserve">
+    <value>開始直到我的心率高於 {0} {1}。</value>
+  </data>
+  <data name="HeartRateBelowDurationComboBoxText" xml:space="preserve">
+    <value>當我的心率低於某個等級</value>
+  </data>
+  <data name="HeartRateBelowDurationDescriptionText" xml:space="preserve">
+    <value>開始直到我的心率低於 {0} {1}。</value>
+  </data>
+  <data name="HeartRateDurationLabelText" xml:space="preserve">
+    <value>心率等級?</value>
+  </data>
+  <data name="HeartRateRangeTargetDescriptionText" xml:space="preserve">
+    <value>試著將我的心率保持在 {0} 和 {1} {2} 之間。</value>
+  </data>
+  <data name="HeartRateTargetComboBoxText" xml:space="preserve">
+    <value>試著將我的心率保持在某個區間</value>
+  </data>
+  <data name="HeartRateZoneTargetDescriptionText" xml:space="preserve">
+    <value>試著將我的心率保持在區間 {0}。</value>
+  </data>
+  <data name="HideInWorkoutListText" xml:space="preserve">
+    <value>在訓練清單中隱藏</value>
+  </data>
+  <data name="HighLabelText" xml:space="preserve">
+    <value>高:</value>
+  </data>
+  <data name="HighText" xml:space="preserve">
+    <value>高</value>
+  </data>
+  <data name="HRSettingsGroupBoxText" xml:space="preserve">
+    <value>心率設定</value>
+  </data>
+  <data name="HRZonesGroupBoxText" xml:space="preserve">
+    <value>心率區間</value>
+  </data>
+  <data name="ImportEditExplanationText" xml:space="preserve">
+    <value>為了讓您的訓練使用正確的區間，我們必須設定這些區間。即使您已在 SportTracks 模式設定過外掛，您的資訊仍會用於顯示（速度 vs 步速，每分鐘心跳 vs %最高心率），因此設定個人資訊是很重要的。您可從裝置匯入或以手動編輯個人資訊。</value>
+  </data>
+  <data name="ImportOrEditProfileText" xml:space="preserve">
+    <value>匯入或編輯資訊</value>
+  </data>
+  <data name="ImportProfileErrorText" xml:space="preserve">
+    <value>匯入資訊時發生錯誤。</value>
+  </data>
+  <data name="ImportProfileText" xml:space="preserve">
+    <value>匯入資訊</value>
+  </data>
+  <data name="ImportRadioButtonText" xml:space="preserve">
+    <value>從我的裝置匯入資訊</value>
+  </data>
+  <data name="ImportWorkoutsErrorText" xml:space="preserve">
+    <value>匯入訓練時發生錯誤。</value>
+  </data>
+  <data name="ImportWorkoutsText" xml:space="preserve">
+    <value>匯入訓練</value>
+  </data>
+  <data name="IndependentModeRadioButtonText" xml:space="preserve">
+    <value>我要設定個別的區間</value>
+  </data>
+  <data name="InkFriendlyModeText" xml:space="preserve">
+    <value>節省墨水模式</value>
+  </data>
+  <data name="IntegerRangeValidationText" xml:space="preserve">
+    <value>數值必須為介於 {0} 及 {1} 之間的整數</value>
+  </data>
+  <data name="InvalidWorkoutNameText" xml:space="preserve">
+    <value>輸入的訓練名稱無效。名稱必須是唯一且不可為空白。</value>
+  </data>
+  <data name="LapButtonDurationComboBoxText" xml:space="preserve">
+    <value>當我從裝置上按下『單圈』按鈕</value>
+  </data>
+  <data name="LapButtonDurationDescriptionText" xml:space="preserve">
+    <value>開始直到我從裝置上按下『單圈』按鈕。</value>
+  </data>
+  <data name="LastExportDateText" xml:space="preserve">
+    <value>上次匯出日期:</value>
+  </data>
+  <data name="LowLabelText" xml:space="preserve">
+    <value>低:</value>
+  </data>
+  <data name="LowText" xml:space="preserve">
+    <value>低</value>
+  </data>
+  <data name="MaleText" xml:space="preserve">
+    <value>男性</value>
+  </data>
+  <data name="ManualProfileConfigurationText" xml:space="preserve">
+    <value>您將被引導完成手動設定程序</value>
+  </data>
+  <data name="ManualSTGarminZonesExplanationText" xml:space="preserve">
+    <value>您已選擇手動設定區間。請於此外掛可用區間中選擇使用於每個類別的模式。</value>
+  </data>
+  <data name="MaxHRLabelText" xml:space="preserve">
+    <value>最大心率</value>
+  </data>
+  <data name="MillimeterText" xml:space="preserve">
+    <value>公厘</value>
+  </data>
+  <data name="MinuteAbbrText" xml:space="preserve">
+    <value>分</value>
+  </data>
+  <data name="ModeExplanationText" xml:space="preserve">
+    <value>Garmin Fitness 外掛的其中一個功能是提供與 SportTracks 更好的整合。意思是可以用 SportTracks 定義的心率，速度和功率區間取代 Garmin 定義的區間。此選擇亦可針對每個區間類型自行定義。</value>
+  </data>
+  <data name="NameLabelText" xml:space="preserve">
+    <value>名稱:</value>
+  </data>
+  <data name="NameText" xml:space="preserve">
+    <value>名稱</value>
+  </data>
+  <data name="NeedActivityTemplateText" xml:space="preserve">
+    <value>要從此訓練中建立活動，在日誌中至少需要存在一個以上的活動。您的日誌似乎沒有包含任何活動，因此請先建立一個空的活動，重新排定訓練，然後再刪除該暫存活動。</value>
+  </data>
+  <data name="NeverExportedText" xml:space="preserve">
+    <value>從未匯出</value>
+  </data>
+  <data name="NewNameLabelText" xml:space="preserve">
+    <value>新的名稱:</value>
+  </data>
+  <data name="NoDeviceSupportText" xml:space="preserve">
+    <value>裝置 {0} 不支援 {1}。這須要有適用的功能。</value>
+  </data>
+  <data name="NoMassStorageSupportText" xml:space="preserve">
+    <value>大容量儲存裝置傳輸</value>
+  </data>
+  <data name="NotesLabelText" xml:space="preserve">
+    <value>備註:</value>
+  </data>
+  <data name="NullTargetComboBoxText" xml:space="preserve">
+    <value>在此步驟中無指定的目標</value>
+  </data>
+  <data name="NullTargetDescriptionText" xml:space="preserve">
+    <value />
+  </data>
+  <data name="NumberText" xml:space="preserve">
+    <value>數量</value>
+  </data>
+  <data name="OdometerLabelText" xml:space="preserve">
+    <value>里程表:</value>
+  </data>
+  <data name="OpenFileText" xml:space="preserve">
+    <value>匯入訓練</value>
+  </data>
+  <data name="OtherText" xml:space="preserve">
+    <value>其它</value>
+  </data>
+  <data name="PaceRangeTargetDescriptionText" xml:space="preserve">
+    <value>試著將我的步速保持在 {0:00}:{1:00} 及 {2:00}:{3:00} 分鐘/{4} 之間。</value>
+  </data>
+  <data name="PackWorkoutsOnExportCheckBoxText" xml:space="preserve">
+    <value>匯出時打包訓練 (使用 FR405 時啟用)</value>
+  </data>
+  <data name="PageSetupText" xml:space="preserve">
+    <value>設定頁面</value>
+  </data>
+  <data name="PartNumberingNotesText" xml:space="preserve">
+    <value>部份 {0}/{1}</value>
+  </data>
+  <data name="PasteStepErrorText" xml:space="preserve">
+    <value>無法貼上步驟，您的訓練不能包含這麼多步驟。每個訓練中最大的步驟數量為二十個。</value>
+  </data>
+  <data name="PercentFTPText" xml:space="preserve">
+    <value>%FTP</value>
+  </data>
+  <data name="PerHourText" xml:space="preserve">
+    <value>/小時</value>
+  </data>
+  <data name="PowerAboveDurationComboBoxText" xml:space="preserve">
+    <value>當我的功率高於某個等級</value>
+  </data>
+  <data name="PowerAboveDurationDescriptionText" xml:space="preserve">
+    <value>開始直到我的功率高於 {0} {1}。</value>
+  </data>
+  <data name="PowerBelowDurationComboBoxText" xml:space="preserve">
+    <value>當我的功率低於某個等級</value>
+  </data>
+  <data name="PowerBelowDurationDescriptionText" xml:space="preserve">
+    <value>開始直到我的功率低於 {0} {1}。</value>
+  </data>
+  <data name="PowerDurationLabelText" xml:space="preserve">
+    <value>功率等級?</value>
+  </data>
+  <data name="PowerRangeTargetDescriptionText" xml:space="preserve">
+    <value>試著將我的功率保持在 {0} 和 {1} 瓦特之間。</value>
+  </data>
+  <data name="PowerSettingsGroupBoxText" xml:space="preserve">
+    <value>功率設定</value>
+  </data>
+  <data name="PowerTargetComboBoxText" xml:space="preserve">
+    <value>試著將我的功率保持在某個區間</value>
+  </data>
+  <data name="PowerZoneSelectionLabelText" xml:space="preserve">
+    <value>在我的訓練中使用此功率區間:</value>
+  </data>
+  <data name="PowerZonesGroupBoxText" xml:space="preserve">
+    <value>功率區間</value>
+  </data>
+  <data name="PowerZoneTargetDescriptionText" xml:space="preserve">
+    <value>試著將我的功率保持在區間 {0}。</value>
+  </data>
+  <data name="PrintAllText" xml:space="preserve">
+    <value>列印全部</value>
+  </data>
+  <data name="PrintOptionsText" xml:space="preserve">
+    <value>列印選項</value>
+  </data>
+  <data name="PrintPreviewText" xml:space="preserve">
+    <value>預覽列印</value>
+  </data>
+  <data name="PrintSelectedText" xml:space="preserve">
+    <value>列印選擇項目</value>
+  </data>
+  <data name="PrintText" xml:space="preserve">
+    <value>列印</value>
+  </data>
+  <data name="ProfileText" xml:space="preserve">
+    <value>資訊</value>
+  </data>
+  <data name="RefreshButtonText" xml:space="preserve">
+    <value>重新整理裝置</value>
+  </data>
+  <data name="RenameExplanationLabelText" xml:space="preserve">
+    <value>選擇此選項將使用下列名稱作為訓練名稱。</value>
+  </data>
+  <data name="RenameLabelText" xml:space="preserve">
+    <value>重新命名</value>
+  </data>
+  <data name="RepeatCountComboBoxText" xml:space="preserve">
+    <value>於重複特定次數後。</value>
+  </data>
+  <data name="RepeatStepDescriptionText" xml:space="preserve">
+    <value>重複下列步驟 {0} 次:</value>
+  </data>
+  <data name="RepeatUntilCaloriesDurationDescriptionText" xml:space="preserve">
+    <value>重複直到我燃燒 {0} 卡路里。</value>
+  </data>
+  <data name="RepeatUntilDistanceDurationDescriptionText" xml:space="preserve">
+    <value>重複 {0:0.00} {1}。</value>
+  </data>
+  <data name="RepeatUntilHeartRateAboveDurationDescriptionText" xml:space="preserve">
+    <value>重複直到我的心率高於 {0} {1}。</value>
+  </data>
+  <data name="RepeatUntilHeartRateBelowDurationDescriptionText" xml:space="preserve">
+    <value>重複直到我的心率低於 {0} {1}。</value>
+  </data>
+  <data name="RepeatUntilPowerAboveDurationDescriptionText" xml:space="preserve">
+    <value>重複直到我的功率高於 {0} {1}。</value>
+  </data>
+  <data name="RepeatUntilPowerBelowDurationDescriptionText" xml:space="preserve">
+    <value>重複直到我的功率低於 {0} {1}。</value>
+  </data>
+  <data name="RepeatUntilTimeDurationDescriptionText" xml:space="preserve">
+    <value>重複 {0:00}:{1:00}:{2:00}。</value>
+  </data>
+  <data name="RepetitionCountLabelText" xml:space="preserve">
+    <value>您要重複多少次?</value>
+  </data>
+  <data name="RepetitionPropertiesGroupText" xml:space="preserve">
+    <value>重複內容</value>
+  </data>
+  <data name="ReplaceExplanationLabelText" xml:space="preserve">
+    <value>選擇此選項會將目前的訓練覆蓋至相同名稱。</value>
+  </data>
+  <data name="ReplaceLabelText" xml:space="preserve">
+    <value>取代</value>
+  </data>
+  <data name="ReplaceRenameDialogText" xml:space="preserve">
+    <value>取代或重新命名?</value>
+  </data>
+  <data name="ReplaceRenameIntroLabelText" xml:space="preserve">
+    <value>已存在相同名稱的訓練。您可以取代目前的訓練，或是重新命名為新的名稱。</value>
+  </data>
+  <data name="RestingCheckBoxText" xml:space="preserve">
+    <value>休息步驟</value>
+  </data>
+  <data name="RestingHeartRateLabelText" xml:space="preserve">
+    <value>休息心率:</value>
+  </data>
+  <data name="RestText" xml:space="preserve">
+    <value>休息</value>
+  </data>
+  <data name="RunningText" xml:space="preserve">
+    <value>跑步</value>
+  </data>
+  <data name="RunWizardText" xml:space="preserve">
+    <value>執行設定精靈...</value>
+  </data>
+  <data name="ScheduleBannerText" xml:space="preserve">
+    <value>排程</value>
+  </data>
+  <data name="SelectCategoryDialogText" xml:space="preserve">
+    <value>選擇訓練類別</value>
+  </data>
+  <data name="SelectDateText" xml:space="preserve">
+    <value>選擇日期</value>
+  </data>
+  <data name="SelectDeviceIntroText" xml:space="preserve">
+    <value>在下方選擇您的裝置。如果您的裝置未顯示，請確認裝置已連接至電腦，並按下『重新整理』按鈕。</value>
+  </data>
+  <data name="SelectDeviceText" xml:space="preserve">
+    <value>選擇裝置</value>
+  </data>
+  <data name="SelectFolderText" xml:space="preserve">
+    <value>選擇資料夾</value>
+  </data>
+  <data name="SelectWorkoutText" xml:space="preserve">
+    <value>選擇訓練</value>
+  </data>
+  <data name="SettingsPageNameText" xml:space="preserve">
+    <value>Garmin Fitness 設定</value>
+  </data>
+  <data name="SetupGarminOrSTZonesText" xml:space="preserve">
+    <value>設定個別區間</value>
+  </data>
+  <data name="SpeedRangeTargetDescriptionText" xml:space="preserve">
+    <value>試著將我的速度保持在 {0:0.00} {2}/小時 和 {1:0.00} {2}/小時 之間。</value>
+  </data>
+  <data name="SpeedSettingsGroupBoxText" xml:space="preserve">
+    <value>速度設定</value>
+  </data>
+  <data name="SpeedTargetComboBoxText" xml:space="preserve">
+    <value>試著將我的速度保持在某個區間</value>
+  </data>
+  <data name="SpeedZonesGroupBoxText" xml:space="preserve">
+    <value>速度區間</value>
+  </data>
+  <data name="SpeedZoneTargetDescriptionText" xml:space="preserve">
+    <value>試著將我的速度保持在區間 {0}</value>
+  </data>
+  <data name="SportTracksText" xml:space="preserve">
+    <value>SportTracks</value>
+  </data>
+  <data name="StepDetailsText" xml:space="preserve">
+    <value>步驟</value>
+  </data>
+  <data name="StepDurationGroupText" xml:space="preserve">
+    <value>步驟持續時間</value>
+  </data>
+  <data name="StepDurationLabelText" xml:space="preserve">
+    <value>此步驟結束時間?</value>
+  </data>
+  <data name="StepNameLabelText" xml:space="preserve">
+    <value>自訂步驟名稱:</value>
+  </data>
+  <data name="StepTargetGroupText" xml:space="preserve">
+    <value>步驟目標</value>
+  </data>
+  <data name="StepTargetLabelText" xml:space="preserve">
+    <value>此步驟中您的目標?</value>
+  </data>
+  <data name="STModeRadioButtonText" xml:space="preserve">
+    <value>我要使用 SportTracks 模式</value>
+  </data>
+  <data name="STZonesExplanationText" xml:space="preserve">
+    <value>當使用 SportTracks 區間時，此外掛使用已定義於分類訓練中相同的心率及速度區間。SportTracks 活動類別不包含踏頻及功率區間，此為必須個別定義它們的原因。</value>
+  </data>
+  <data name="SuccessText" xml:space="preserve">
+    <value>成功</value>
+  </data>
+  <data name="TCXFileText" xml:space="preserve">
+    <value>TCX 檔案</value>
+  </data>
+  <data name="TimeDurationComboBoxText" xml:space="preserve">
+    <value>在我開始某個時間之後</value>
+  </data>
+  <data name="TimeDurationDescriptionText" xml:space="preserve">
+    <value>持續 {0:00}:{1:00}:{2:00}</value>
+  </data>
+  <data name="TimeDurationLabelText" xml:space="preserve">
+    <value>多少時間?</value>
+  </data>
+  <data name="TimeRangeValidationText" xml:space="preserve">
+    <value>數值必須為介於 {0:00}:{1:00} 和 {2:00}:{3:00} 的持續時間</value>
+  </data>
+  <data name="ToDeviceText" xml:space="preserve">
+    <value>至裝置</value>
+  </data>
+  <data name="ToFileText" xml:space="preserve">
+    <value>至檔案</value>
+  </data>
+  <data name="ToLabelText" xml:space="preserve">
+    <value>至</value>
+  </data>
+  <data name="TooRecentDataText" xml:space="preserve">
+    <value>此資料對已安裝的外掛版本太新。請安裝最新版本的外掛。</value>
+  </data>
+  <data name="TransferringToDeviceText" xml:space="preserve">
+    <value>傳送至裝置</value>
+  </data>
+  <data name="UnrollRepeatsText" xml:space="preserve">
+    <value>展開重複步驟</value>
+  </data>
+  <data name="UseCategoryForAllCheckBoxText" xml:space="preserve">
+    <value>使用於所有訓練</value>
+  </data>
+  <data name="UseCustomCategoryText" xml:space="preserve">
+    <value>使用自訂分類</value>
+  </data>
+  <data name="UseParentCategoryText" xml:space="preserve">
+    <value>使用主分類</value>
+  </data>
+  <data name="ValueValidationTitleText" xml:space="preserve">
+    <value>無效的數值</value>
+  </data>
+  <data name="WarmupText" xml:space="preserve">
+    <value>熱身</value>
+  </data>
+  <data name="WarningText" xml:space="preserve">
+    <value>警告</value>
+  </data>
+  <data name="WeightLabelText" xml:space="preserve">
+    <value>重量:</value>
+  </data>
+  <data name="WelcomeLabelText" xml:space="preserve">
+    <value>歡迎使用 Garmin Fitness 外掛設定精靈。此精靈將協助您設定日誌所使用的外掛。您可在任何時間點選『結束』按鈕退出精靈。如果您日後想設定此外掛，可由外掛的『設定』頁面啟動此精靈，因此請放心設定。</value>
+  </data>
+  <data name="WelcomeText" xml:space="preserve">
+    <value>歡迎</value>
+  </data>
+  <data name="WheelSizeGroupBoxText" xml:space="preserve">
+    <value>輪胎大小</value>
+  </data>
+  <data name="WheelSizeLabelText" xml:space="preserve">
+    <value>輪胎大小:</value>
+  </data>
+  <data name="WhichZoneText" xml:space="preserve">
+    <value>區間?</value>
+  </data>
+  <data name="WizardSTZonesText" xml:space="preserve">
+    <value>SportTracks 區間</value>
+  </data>
+  <data name="WorkoutLinkStepText" xml:space="preserve">
+    <value>訓練連結: {0}</value>
+  </data>
+  <data name="WorkoutsText" xml:space="preserve">
+    <value>訓練</value>
+  </data>
+  <data name="WorkoutsWereSplitText" xml:space="preserve">
+    <value>部份訓練包含超過二十個步驟。我們會將它們在日誌中自動分段，以便在選項中管理變更，建議您再查看一下內容。</value>
+  </data>
+</root>
