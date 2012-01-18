@@ -228,9 +228,6 @@
   <data name="DistanceDurationLabelText" xml:space="preserve">
     <value>Quelle distance?</value>
   </data>
-  <data name="DoubleRangeValidationText" xml:space="preserve">
-    <value>La valeur doit être un nombre décimal entre {0:0.00} et {1:0.00}</value>
-  </data>
   <data name="EditBikingProfileText" xml:space="preserve">
     <value>Profil cycliste</value>
   </data>
@@ -398,9 +395,6 @@
   </data>
   <data name="IndependentModeRadioButtonText" xml:space="preserve">
     <value>Je veux configurer les zones indépendemment</value>
-  </data>
-  <data name="IntegerRangeValidationText" xml:space="preserve">
-    <value>La valeur doit être un nombre entier entre {0:0.00} et {1:0.00}</value>
   </data>
   <data name="InvalidWorkoutNameText" xml:space="preserve">
     <value>Le nom entré est invalide.  Le nom de votre entraînement doit être unique et non-vide.</value>
@@ -630,9 +624,6 @@
   <data name="TimeDurationLabelText" xml:space="preserve">
     <value>Combien de temps?</value>
   </data>
-  <data name="TimeRangeValidationText" xml:space="preserve">
-    <value>La valeur doit être une durée entre {0:00}:{1:00} et {2:00}:{3:00}</value>
-  </data>
   <data name="ToDeviceText" xml:space="preserve">
     <value>Vers l'appareil</value>
   </data>
@@ -650,9 +641,6 @@
   </data>
   <data name="UseParentCategoryText" xml:space="preserve">
     <value>Utiliser la catégorie de mon parent</value>
-  </data>
-  <data name="ValueValidationTitleText" xml:space="preserve">
-    <value>Valeur invalide</value>
   </data>
   <data name="WarningText" xml:space="preserve">
     <value>Avertissement</value>

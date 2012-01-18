@@ -421,15 +421,6 @@ namespace GarminFitnessPlugin.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Value must be a decimal number between {0:0.00} and {1:0.00}.
-        /// </summary>
-        internal static string DoubleRangeValidationText {
-            get {
-                return ResourceManager.GetString("DoubleRangeValidationText", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Biking profile.
         /// </summary>
         internal static string EditBikingProfileText {
@@ -1092,15 +1083,6 @@ namespace GarminFitnessPlugin.Resources {
         internal static string InkFriendlyModeText {
             get {
                 return ResourceManager.GetString("InkFriendlyModeText", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Value must be an integer between {0} and {1}.
-        /// </summary>
-        internal static string IntegerRangeValidationText {
-            get {
-                return ResourceManager.GetString("IntegerRangeValidationText", resourceCulture);
             }
         }
         
@@ -2023,15 +2005,6 @@ namespace GarminFitnessPlugin.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Value must be a duration between {0:00}:{1:00} and {2:00}:{3:00}.
-        /// </summary>
-        internal static string TimeRangeValidationText {
-            get {
-                return ResourceManager.GetString("TimeRangeValidationText", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to To Device.
         /// </summary>
         internal static string ToDeviceText {
@@ -2109,15 +2082,6 @@ namespace GarminFitnessPlugin.Resources {
         internal static string UseParentCategoryText {
             get {
                 return ResourceManager.GetString("UseParentCategoryText", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Invalid value.
-        /// </summary>
-        internal static string ValueValidationTitleText {
-            get {
-                return ResourceManager.GetString("ValueValidationTitleText", resourceCulture);
             }
         }
         

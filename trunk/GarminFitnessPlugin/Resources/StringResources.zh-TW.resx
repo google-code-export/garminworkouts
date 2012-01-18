@@ -237,9 +237,6 @@
   <data name="DistanceDurationLabelText" xml:space="preserve">
     <value>多遠?</value>
   </data>
-  <data name="DoubleRangeValidationText" xml:space="preserve">
-    <value>數值必須為介於 {0:0.00} 和 {1:0.00} 之間的小數</value>
-  </data>
   <data name="EditBikingProfileText" xml:space="preserve">
     <value>騎自行車資訊</value>
   </data>
@@ -452,9 +449,6 @@
   </data>
   <data name="InkFriendlyModeText" xml:space="preserve">
     <value>節省墨水模式</value>
-  </data>
-  <data name="IntegerRangeValidationText" xml:space="preserve">
-    <value>數值必須為介於 {0} 及 {1} 之間的整數</value>
   </data>
   <data name="InvalidWorkoutNameText" xml:space="preserve">
     <value>輸入的訓練名稱無效。名稱必須是唯一且不可為空白。</value>
@@ -762,9 +756,6 @@
   <data name="TimeDurationLabelText" xml:space="preserve">
     <value>多少時間?</value>
   </data>
-  <data name="TimeRangeValidationText" xml:space="preserve">
-    <value>數值必須為介於 {0:00}:{1:00} 和 {2:00}:{3:00} 的持續時間</value>
-  </data>
   <data name="ToDeviceText" xml:space="preserve">
     <value>至裝置</value>
   </data>
@@ -791,9 +782,6 @@
   </data>
   <data name="UseParentCategoryText" xml:space="preserve">
     <value>使用主分類</value>
-  </data>
-  <data name="ValueValidationTitleText" xml:space="preserve">
-    <value>無效的數值</value>
   </data>
   <data name="WarmupText" xml:space="preserve">
     <value>熱身</value>
