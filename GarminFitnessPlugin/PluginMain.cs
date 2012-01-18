@@ -16,6 +16,10 @@ using GarminFitnessPlugin.Data;
 using GarminFitnessPlugin.View;
 using GarminFitnessPlugin.Controller;
 
+#if DEBUG
+using STCommon.NUnit;
+#endif
+
 namespace GarminFitnessPlugin
 {
     class PluginMain : STFrameworkEntryPoint, IPlugin
@@ -23,6 +27,14 @@ namespace GarminFitnessPlugin
         public PluginMain() : base(GUIDs.PluginMain)
         {
             STFrameworkEntryPoint.LogbookChanged += new LogbookChangedEventHandler(OnLogbookChanged);
+
+#if DEBUG
+            String testAssemblyLocation = typeof(PluginMain).Assembly.Location;
+            testAssemblyLocation = testAssemblyLocation.Substring(0, testAssemblyLocation.LastIndexOf('\\'));
+            testAssemblyLocation += "\\GarminFitnessUnitTests.dll";
+
+            NUnitTestManager.Instance.RegisterTestAssembly(testAssemblyLocation);
+#endif
         }
 
         private void OnLogbookChanged(object sender, ILogbook oldLogbook, ILogbook newLogbook)
