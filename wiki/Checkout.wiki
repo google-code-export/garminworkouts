@@ -1,0 +1,4 @@
+=Dependencies=
+This project depends on the st-common project for many UI controls and utility functions.  [http://code.google.com/p/st-common You can access this project here.]
+
+For all information on the distribution plugin source access, [http://code.google.com/p/garminworkouts/source/checkout click here]
