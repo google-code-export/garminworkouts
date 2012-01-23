@@ -46,14 +46,5 @@ namespace GarminFitnessPlugin.Data
         {
             base.Deserialize(parentNode);
         }
-
-        public override void Serialize(GarXFaceNet._Workout._Step step)
-        {
-            step.SetDurationType(GarXFaceNet._Workout._Step.DurationTypes.Open);
-        }
-
-        public override void Deserialize(GarXFaceNet._Workout._Step step)
-        {
-        }
     }
 }

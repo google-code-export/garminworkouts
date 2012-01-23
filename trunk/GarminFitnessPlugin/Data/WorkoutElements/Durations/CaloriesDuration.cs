@@ -75,17 +75,6 @@ namespace GarminFitnessPlugin.Data
             m_CaloriesToSpend.Deserialize(parentNode.FirstChild);
         }
 
-        public override void Serialize(GarXFaceNet._Workout._Step step)
-        {
-            step.SetDurationType(GarXFaceNet._Workout._Step.DurationTypes.CaloriesBurned);
-            step.SetDurationValue(CaloriesToSpend);
-        }
-
-        public override void Deserialize(GarXFaceNet._Workout._Step step)
-        {
-            CaloriesToSpend = (UInt16)step.GetDurationValue();
-        }
-
         public UInt16 CaloriesToSpend
         {
             get { return m_CaloriesToSpend; }

@@ -81,12 +81,9 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>D:\Zone Five Software\SportTracks 3\Common.Visuals.dll</HintPath>
     </Reference>
-    <Reference Include="GarXFaceNet, Version=1.0.3805.31245, Culture=neutral, processorArchitecture=x86">
+    <Reference Include="SportTracksPluginFramework1.0.10, Version=1.0.10.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\References\GarXFaceNet.dll</HintPath>
-    </Reference>
-    <Reference Include="SportTracksPluginFramework1.0.10">
-      <HintPath>..\..\SportTracksPluginFramework\SportTracksPluginFramework\bin\Release\SportTracksPluginFramework1.0.10.dll</HintPath>
+      <HintPath>..\References\SportTracksPluginFramework\SportTracksPluginFramework1.0.10.dll</HintPath>
     </Reference>
     <Reference Include="STCommonWithRes">
       <HintPath>..\..\STCommon\STCommon\bin\$(Configuration)\STCommonWithRes.dll</HintPath>

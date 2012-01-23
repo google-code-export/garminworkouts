@@ -98,9 +98,6 @@ namespace GarminFitnessPlugin.Data
         {
         }
 
-        public abstract UInt32 Serialize(GarXFaceNet._Workout workout, UInt32 stepIndex);
-        public abstract void Deserialize(GarXFaceNet._Workout workout, UInt32 stepIndex);
-
         public virtual UInt16 StepCount
         {
             get

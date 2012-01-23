@@ -78,17 +78,6 @@ namespace GarminFitnessPlugin.Data
             m_Zone.Deserialize(parentNode.FirstChild);
         }
 
-        public override void Serialize(GarXFaceNet._Workout._Step step)
-        {
-            step.SetTargetType(1);
-            step.SetTargetValue(Zone);
-        }
-
-        public override void Deserialize(GarXFaceNet._Workout._Step step)
-        {
-            Zone = (Byte)step.GetDurationValue();
-        }
-
         public Byte Zone
         {
             get { return m_Zone; }

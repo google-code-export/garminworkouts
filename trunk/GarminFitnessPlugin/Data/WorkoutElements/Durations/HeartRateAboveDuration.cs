@@ -115,38 +115,6 @@ namespace GarminFitnessPlugin.Data
             }
         }
 
-        public override void Serialize(GarXFaceNet._Workout._Step step)
-        {
-            step.SetDurationType(GarXFaceNet._Workout._Step.DurationTypes.HeartRateLessThan);
-
-            if (IsPercentageMaxHeartRate)
-            {
-                step.SetDurationValue(MaxHeartRate);
-            }
-            else
-            {
-                step.SetDurationValue((UInt32)(MaxHeartRate + 100));
-            }
-        }
-
-        public override void Deserialize(GarXFaceNet._Workout._Step step)
-        {
-            UInt16 duration = (UInt16)step.GetDurationValue();
-
-            if (duration <= 100)
-            {
-                m_IsPercentageMaxHR.Value = true;
-                m_MaxHeartRatePercent.Value = (Byte)duration;
-            }
-            else
-            {
-                m_IsPercentageMaxHR.Value = false;
-                m_MaxHeartRateBPM.Value = (Byte)(duration - 100);
-            }
-
-            ValidateValue(MaxHeartRate, IsPercentageMaxHeartRate);
-        }
-
         private void ValidateValue(Byte maxHeartRate, bool isPercentageMaxHeartRate)
         {
             if (isPercentageMaxHeartRate)
