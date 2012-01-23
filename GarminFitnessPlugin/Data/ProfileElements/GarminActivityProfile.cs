@@ -566,45 +566,6 @@ namespace GarminFitnessPlugin.Data
             }
         }
 
-        public void Serialize(GarXFaceNet._FitnessUserProfile._Activity activityProfile)
-        {
-            HRReferential HRReference = HRZonesReferential;
-
-            HRZonesReferential = HRReferential.HRReferential_BPM;
-            activityProfile.SetGearWeight((float)Weight.Convert(GearWeightInPounds, Weight.Units.Pound, Weight.Units.Kilogram));
-            activityProfile.SetMaxHeartRate(MaximumHeartRate);
-
-            for (UInt32 i = 0; i < 5; ++i)
-            {
-                GarXFaceNet._FitnessUserProfile._Activity._HeartRateZone hrZone = activityProfile.GetHeartRateZone(i);
-
-                hrZone.SetLowHeartRate((UInt32)GetHeartRateLowLimit((int)i));
-                hrZone.SetHighHeartRate((UInt32)GetHeartRateHighLimit((int)i));
-            }
-
-            for (UInt32 i = 0; i < 10; ++i)
-            {
-                GarXFaceNet._FitnessUserProfile._Activity._SpeedZone speedZone = activityProfile.GetSpeedZone(i);
-
-                speedZone.SetName(m_SpeedZones[(int)i].Name);
-                speedZone.SetLowSpeed((float)m_SpeedZones[(int)i].Low);
-                speedZone.SetHighSpeed((float)m_SpeedZones[(int)i].High);
-            }
-
-            HRZonesReferential = HRReference;
-        }
-
-        public void Deserialize(GarXFaceNet._FitnessUserProfile._Activity activityProfile)
-        {
-            SetGearWeightInUnits(activityProfile.GetGearWeight(), Weight.Units.Kilogram);
-            MaximumHeartRate = (Byte)activityProfile.GetMaxHeartRate();
-
-            for (UInt32 i = 0; i < 5; ++i)
-            {
-                GarXFaceNet._FitnessUserProfile._Activity._HeartRateZone hrZone = activityProfile.GetHeartRateZone(i);
-            }
-        }
-
         private void ReadHRZone(int index, XmlNode parentNode)
         {
             Debug.Assert(index >= 0 && index < Constants.GarminHRZoneCount);

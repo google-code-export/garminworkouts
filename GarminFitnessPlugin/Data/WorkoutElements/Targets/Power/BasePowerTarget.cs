@@ -200,17 +200,6 @@ namespace GarminFitnessPlugin.Data
                 }
             }
         }
-        
-        public override void Serialize(GarXFaceNet._Workout._Step step)
-        {
-            throw new NoDeviceSupportException(null, "Power targets not supported by USB devices");
-        }
-
-        public override void Deserialize(GarXFaceNet._Workout._Step step)
-        {
-            // We should not end up here, not defined by protocol
-            Debug.Assert(false);
-        }
 
         public override void HandleTargetOverride(XmlNode extensionNode)
         {

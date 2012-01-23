@@ -272,31 +272,6 @@ namespace GarminFitnessPlugin.Data
             }
         }
 
-        public override void Deserialize(GarXFaceNet._Workout workout)
-        {
-            Steps.Clear();
-            Category = null;
-
-            Name = workout.GetName();
-
-            Steps.Deserialize(workout);
-        }
-
-        public override void DeserializeOccurances(GarXFaceNet._WorkoutOccuranceList occuranceList)
-        {
-            ScheduledDates.Clear();
-
-            for (UInt32 i = 0; i < occuranceList.GetCount(); ++i)
-            {
-                GarXFaceNet._WorkoutOccurance occurance = occuranceList.GetAtIndex(i);
-
-                if (occurance.GetWorkoutName().Equals(Name))
-                {
-                    ScheduleWorkout(new DateTime(1989, 12, 31) + new TimeSpan(0, 0, (int)occurance.GetDay()));
-                }
-            }
-        }
-
         public override void DeserializeFromFIT(FITMessage workoutMessage)
         {
             FITMessage stepMessage;

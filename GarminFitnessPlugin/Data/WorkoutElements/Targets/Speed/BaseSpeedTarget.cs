@@ -48,9 +48,6 @@ namespace GarminFitnessPlugin.Data
             {
             }
 
-            public abstract void Serialize(GarXFaceNet._Workout._Step step);
-            public abstract void Deserialize(GarXFaceNet._Workout._Step step);
-
             protected void TriggerTargetChangedEvent(IConcreteSpeedTarget target, PropertyChangedEventArgs args)
             {
                 if (target == BaseTarget.ConcreteTarget)
@@ -208,16 +205,6 @@ namespace GarminFitnessPlugin.Data
                 {
                 }
             }
-        }
-
-        public override void Serialize(GarXFaceNet._Workout._Step step)
-        {
-            ConcreteTarget.Serialize(step);
-        }
-
-        public override void Deserialize(GarXFaceNet._Workout._Step step)
-        {
-            ConcreteTarget.Deserialize(step);
         }
 
         public override void HandleTargetOverride(XmlNode extensionNode)

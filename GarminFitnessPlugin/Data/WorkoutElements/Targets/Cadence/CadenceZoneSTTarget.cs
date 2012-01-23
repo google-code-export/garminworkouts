@@ -154,20 +154,6 @@ namespace GarminFitnessPlugin.Data
             Debug.Assert(false);
         }
 
-        public override void Serialize(GarXFaceNet._Workout._Step step)
-        {
-            step.SetTargetType(3);
-            step.SetTargetValue(0);
-            step.SetTargetCustomZoneLow(Zone.Low);
-            step.SetTargetCustomZoneHigh(Zone.High);
-        }
-        
-        public override void Deserialize(GarXFaceNet._Workout._Step step)
-        {
-            // We should not end up here, the Xml deserialization should pass by extensions
-            Debug.Assert(false);
-        }
-
         public INamedLowHighZone Zone
         {
             get { return m_Zone; }

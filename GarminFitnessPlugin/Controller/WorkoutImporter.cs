@@ -129,28 +129,6 @@ namespace GarminFitnessPlugin.Controller
             }
         }
 
-        public static bool ImportWorkout(GarXFaceNet._Workout workout, GarXFaceNet._WorkoutOccuranceList occuranceList)
-        {
-            GarminFitnessView pluginView = PluginMain.GetApplication().ActiveView as GarminFitnessView;
-            GarminWorkoutControl workoutControl = pluginView.GetCurrentView() as GarminWorkoutControl;
-            IActivityCategory category = null;
-            String workoutName = workout.GetName();
-
-            workoutControl.GetNewWorkoutNameAndCategory(ref workoutName, ref category);
-
-            Workout newWorkout = GarminWorkoutManager.Instance.CreateWorkout(category);
-
-            if (newWorkout == null)
-            {
-                return false;
-            }
-
-            newWorkout.Deserialize(workout);
-            newWorkout.DeserializeOccurances(occuranceList);
-
-            return true;
-        }
-
         public static Workout ImportWorkoutFromFIT(Stream importStream, out UInt32 workoutId)
         {
             workoutId = UInt32.MaxValue;

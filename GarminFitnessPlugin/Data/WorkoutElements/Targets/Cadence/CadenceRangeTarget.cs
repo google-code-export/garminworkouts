@@ -111,20 +111,6 @@ namespace GarminFitnessPlugin.Data
             SetValues(Math.Min(MinCadence, MaxCadence), Math.Max(MinCadence, MaxCadence));
         }
 
-        public override void Serialize(GarXFaceNet._Workout._Step step)
-        {
-            step.SetTargetType(3);
-            step.SetTargetValue(0);
-            step.SetTargetCustomZoneLow(MinCadence);
-            step.SetTargetCustomZoneHigh(MaxCadence);
-        }
-
-        public override void Deserialize(GarXFaceNet._Workout._Step step)
-        {
-            MinCadence = (Byte)step.GetTargetCustomZoneLow();
-            MaxCadence = (Byte)step.GetTargetCustomZoneHigh();
-        }
-
         public void ValidateValues(Byte min, Byte max)
         {
             Debug.Assert(min <= max);

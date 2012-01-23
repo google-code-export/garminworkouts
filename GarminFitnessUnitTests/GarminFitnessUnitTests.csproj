@@ -50,8 +50,9 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>D:\NUnit 2.5.9\bin\net-2.0\framework\nunit.framework.dll</HintPath>
     </Reference>
-    <Reference Include="SportTracksPluginFramework1.0.10">
-      <HintPath>..\..\SportTracksPluginFramework\SportTracksPluginFramework\bin\Release\SportTracksPluginFramework1.0.10.dll</HintPath>
+    <Reference Include="SportTracksPluginFramework1.0.10, Version=1.0.10.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\References\SportTracksPluginFramework\SportTracksPluginFramework1.0.10.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.XML" />

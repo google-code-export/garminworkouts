@@ -205,20 +205,6 @@ namespace GarminFitnessPlugin.Data
             }
         }
 
-        public override void Serialize(GarXFaceNet._Workout._Step step)
-        {
-            step.SetTargetType(0);
-            step.SetTargetValue(0);
-            step.SetTargetCustomZoneLow((float)MinMetersPerSecond);
-            step.SetTargetCustomZoneHigh((float)MaxMetersPerSecond);
-        }
-
-        public override void Deserialize(GarXFaceNet._Workout._Step step)
-        {
-            MinMetersPerSecond = step.GetTargetCustomZoneLow();
-            MaxMetersPerSecond = step.GetTargetCustomZoneHigh();
-        }
-
         public double GetMinSpeedInBaseUnitsPerHour()
         {
             return GetMinSpeedInUnitsPerHour(BaseUnit);

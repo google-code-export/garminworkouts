@@ -434,36 +434,6 @@ namespace GarminFitnessPlugin.Data
             TriggerActivityProfileChangedEvent(m_ActivityProfiles[2], new PropertyChangedEventArgs(""));
         }
 
-        public void Serialize(GarXFaceNet._FitnessUserProfile userProfile)
-        {
-            userProfile.SetBirthDay((UInt32)BirthDate.Day);
-            userProfile.SetBirthMonth((UInt32)BirthDate.Month);
-            userProfile.SetBirthYear((UInt32)BirthDate.Year);
-            userProfile.SetGender(IsMale ? GarXFaceNet._FitnessUserProfile.GenderTypes.Male : GarXFaceNet._FitnessUserProfile.GenderTypes.Female);
-            userProfile.SetUsersWeight((float)WeightInKilos);
-
-            for(UInt32 i = 0; i < (int)GarminCategories.GarminCategoriesCount; ++i)
-            {
-                GarminActivityProfile activity  = GetProfileForActivity((GarminCategories)i);
-
-                activity.Serialize(userProfile.GetActivity(i));
-            }
-        }
-
-        public void Deserialize(GarXFaceNet._FitnessUserProfile userProfile)
-        {
-            BirthDate = new DateTime((int)userProfile.GetBirthYear(), (int)userProfile.GetBirthMonth(), (int)userProfile.GetBirthDay());
-            IsMale = (userProfile.GetGender() == GarXFaceNet._FitnessUserProfile.GenderTypes.Male);
-            WeightInKilos = userProfile.GetUsersWeight();
-
-            for (UInt32 i = 0; i < (int)GarminCategories.GarminCategoriesCount; ++i)
-            {
-                GarminActivityProfile activity = GetProfileForActivity((GarminCategories)i);
-
-                activity.Deserialize(userProfile.GetActivity(i));
-            }
-        }
-
         private string PeekActivityType(XmlNode activityNode)
         {
             for (int i = 0; i < activityNode.Attributes.Count; ++i)

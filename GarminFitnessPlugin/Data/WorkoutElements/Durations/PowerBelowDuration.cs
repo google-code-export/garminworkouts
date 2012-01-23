@@ -77,18 +77,6 @@ namespace GarminFitnessPlugin.Data
             throw new NotSupportedException();
         }
 
-        public override void Serialize(GarXFaceNet._Workout._Step step)
-        {
-            // Unsupported by USB
-            throw new NotSupportedException();
-        }
-
-        public override void Deserialize(GarXFaceNet._Workout._Step step)
-        {
-            // Unsupported by USB
-            throw new NotSupportedException();
-        }
-
         private void ValidateValue(UInt16 minPower, bool isPercentFTP)
         {
             if (isPercentFTP)
