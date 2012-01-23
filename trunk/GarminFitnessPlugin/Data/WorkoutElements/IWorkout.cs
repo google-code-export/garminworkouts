@@ -9,7 +9,7 @@ using GarminFitnessPlugin.Controller;
 
 namespace GarminFitnessPlugin.Data
 {
-    abstract class IWorkout : IPluginSerializable, IXMLSerializable
+    public abstract class IWorkout : IPluginSerializable, IXMLSerializable
     {
 #region IXMLSerializable Members
 

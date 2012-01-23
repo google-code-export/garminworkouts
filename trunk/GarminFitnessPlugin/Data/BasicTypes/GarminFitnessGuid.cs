@@ -7,7 +7,7 @@ using System.Xml;
 
 namespace GarminFitnessPlugin.Data
 {
-    class GarminFitnessGuid : IPluginSerializable, IXMLSerializable
+    public class GarminFitnessGuid : IPluginSerializable, IXMLSerializable
     {
         public GarminFitnessGuid(Guid value)
         {

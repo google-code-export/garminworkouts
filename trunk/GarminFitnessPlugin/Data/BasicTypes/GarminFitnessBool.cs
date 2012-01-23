@@ -6,7 +6,7 @@ using GarminFitnessPlugin.Controller;
 
 namespace GarminFitnessPlugin.Data
 {
-    class GarminFitnessBool : IPluginSerializable, IXMLSerializable
+    public class GarminFitnessBool : IPluginSerializable, IXMLSerializable
     {
         public GarminFitnessBool(bool value)
             : this(value, Boolean.TrueString, Boolean.FalseString)

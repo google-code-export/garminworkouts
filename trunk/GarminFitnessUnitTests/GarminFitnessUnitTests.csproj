@@ -54,10 +54,18 @@
       <HintPath>..\..\SportTracksPluginFramework\SportTracksPluginFramework\bin\Release\SportTracksPluginFramework1.0.10.dll</HintPath>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.XML" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="StepDurationSerializationTests.cs" />
     <Compile Include="WorkoutSerializationTests.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\GarminFitnessPublic\GarminFitnessPublic.csproj">
+      <Project>{4D913D44-16BE-4AEA-BB4C-3221E1E388BD}</Project>
+      <Name>GarminFitnessPublic</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

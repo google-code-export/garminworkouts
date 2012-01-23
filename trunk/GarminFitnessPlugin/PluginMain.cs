@@ -22,7 +22,7 @@ using STCommon.NUnit;
 
 namespace GarminFitnessPlugin
 {
-    class PluginMain : STFrameworkEntryPoint, IPlugin
+    public class PluginMain : STFrameworkEntryPoint, IPlugin
     {
         public PluginMain() : base(GUIDs.PluginMain)
         {

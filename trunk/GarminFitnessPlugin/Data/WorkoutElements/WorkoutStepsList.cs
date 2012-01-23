@@ -8,7 +8,7 @@ using GarminFitnessPlugin.Controller;
 
 namespace GarminFitnessPlugin.Data
 {
-    class WorkoutStepsList : IPluginSerializable, IXMLSerializable, IEnumerable<IStep>
+    public class WorkoutStepsList : IPluginSerializable, IXMLSerializable, IEnumerable<IStep>
     {
         public WorkoutStepsList(IWorkout parentWorkout)
         {

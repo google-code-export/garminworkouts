@@ -5,7 +5,7 @@ using System.Reflection;
 
 namespace GarminFitnessPlugin.Data
 {
-    abstract class IPluginSerializable
+    public abstract class IPluginSerializable
     {
         public void Deserialize(Stream stream, DataVersion version)
         {

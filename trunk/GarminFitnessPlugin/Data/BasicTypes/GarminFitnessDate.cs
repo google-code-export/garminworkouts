@@ -7,7 +7,7 @@ using System.Xml;
 
 namespace GarminFitnessPlugin.Data
 {
-    class GarminFitnessDate : IPluginSerializable, IXMLSerializable
+    public class GarminFitnessDate : IPluginSerializable, IXMLSerializable
     {
         public GarminFitnessDate()
             : this(new DateTime(0))

@@ -7,7 +7,7 @@ using System.ComponentModel;
 
 namespace GarminFitnessPlugin.Data
 {
-    abstract class ITarget : IPluginSerializable, IXMLSerializable, IDirty
+    public abstract class ITarget : IPluginSerializable, IXMLSerializable, IDirty
     {
         protected ITarget(TargetType type, IStep parent)
         {

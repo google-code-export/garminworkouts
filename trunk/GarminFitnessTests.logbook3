@@ -1,0 +1,112 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Logbook xmlns="urn:uuid:D0EB2ED5-49B6-44e3-B13C-CF15BE7DD7DD" version="3.0" referenceId="33f2b1cb-6f18-4697-bafc-6078d94d2519">
+  <Metadata created="2012-01-19T08:14:08Z" modified="2012-01-19T08:14:08Z" />
+  <Athlete referenceId="36cde190-de95-4177-a532-691944f90b46" sex="Male">
+    <Metadata created="2012-01-19T08:14:08Z" modified="2012-01-19T08:14:10Z" />
+    <History />
+  </Athlete>
+  <ClimbZones>
+    <Category name="Standard" referenceId="36d65643-7244-47c9-bd01-405f7bf5d484">
+      <Zones>
+        <Zone name="Ascending" low="2">
+          <Color argb="FFC17D11" />
+        </Zone>
+        <Zone name="Flat" flat="true" low="-2" high="2">
+          <Color argb="FFEDA630" />
+        </Zone>
+        <Zone name="Descending" high="-2">
+          <Color argb="FFF3C576" />
+        </Zone>
+      </Zones>
+    </Category>
+  </ClimbZones>
+  <SpeedZones>
+    <Category name="Running" referenceId="6d87c9b6-628e-4ad4-9a0a-bc63f95e54ea">
+      <Zones>
+        <Zone name="Walking" low="0" high="1.78816">
+          <Color argb="FF204A87" />
+        </Zone>
+        <Zone name="Jogging" low="1.78816" high="2.68224">
+          <Color argb="FF316FCC" />
+        </Zone>
+        <Zone name="Running" low="2.68224">
+          <Color argb="FF769FDE" />
+        </Zone>
+      </Zones>
+    </Category>
+    <Category name="Cycling" referenceId="946a0a30-75c3-4fe8-827c-2b6d4d4dcfed">
+      <Zones>
+        <Zone name="Zone 1" low="0" high="4.4704">
+          <Color argb="FF204A87" />
+        </Zone>
+        <Zone name="Zone 2" low="4.4704" high="6.7056">
+          <Color argb="FF2B62B5" />
+        </Zone>
+        <Zone name="Zone 3" low="6.7056" high="8.9408">
+          <Color argb="FF457ED3" />
+        </Zone>
+        <Zone name="Zone 4" low="8.9408">
+          <Color argb="FF769FDE" />
+        </Zone>
+      </Zones>
+    </Category>
+  </SpeedZones>
+  <HeartRateZones>
+    <Category name="Standard" referenceId="a73e7a11-b520-40fc-831c-5c8f9a745b75">
+      <Zones>
+        <Zone name="Zone 1" low="0" high="120">
+          <Color argb="FFCC0000" />
+        </Zone>
+        <Zone name="Zone 2" low="120" high="140">
+          <Color argb="FFF20000" />
+        </Zone>
+        <Zone name="Zone 3" low="140" high="160">
+          <Color argb="FFFF1A1A" />
+        </Zone>
+        <Zone name="Zone 4" low="160" high="180">
+          <Color argb="FFFF4040" />
+        </Zone>
+        <Zone name="Zone 5" low="180">
+          <Color argb="FFFF6666" />
+        </Zone>
+      </Zones>
+    </Category>
+  </HeartRateZones>
+  <CadenceZones>
+    <Category name="Standard" referenceId="9b534961-59e8-41c0-8b1d-f47bcb6a5cfd">
+      <Zones>
+        <Zone name="Cadence" low="0">
+          <Color argb="FF4E9A06" />
+        </Zone>
+      </Zones>
+    </Category>
+  </CadenceZones>
+  <PowerZones>
+    <Category name="Standard" referenceId="922170b1-9b58-49e6-aa44-028936c2ad91">
+      <Zones>
+        <Zone name="Power" low="0">
+          <Color argb="FF5C3566" />
+        </Zone>
+      </Zones>
+    </Category>
+  </PowerZones>
+  <CustomDataFieldDefinitions />
+  <ActivityCategories>
+    <Category referenceId="fa756214-cf71-11db-9705-005056c00008" name="My Activities" useParentSettings="false" speedUnits="Pace" stoppedSpeed="0" speedZone="6d87c9b6-628e-4ad4-9a0a-bc63f95e54ea" heartRateZone="a73e7a11-b520-40fc-831c-5c8f9a745b75" useSystemLengthUnits="true">
+      <Metadata created="2012-01-19T08:14:08Z" modified="2012-01-19T08:14:15Z" />
+    </Category>
+    <Category referenceId="0277c86c-cf72-11db-9705-005056c00008" name="My Friends Activities" useParentSettings="false" speedUnits="Pace" stoppedSpeed="0" speedZone="6d87c9b6-628e-4ad4-9a0a-bc63f95e54ea" heartRateZone="a73e7a11-b520-40fc-831c-5c8f9a745b75" useSystemLengthUnits="true">
+      <Metadata created="2012-01-19T08:14:08Z" modified="2012-01-19T08:14:08Z" />
+    </Category>
+  </ActivityCategories>
+  <Activities />
+  <Routes />
+  <Equipment />
+  <AnalysisOptions />
+  <ExcludedOnPriorImport />
+  <ExtensionData>
+    <Plugins>
+      <Plugin id="ba218e6e-01a1-4a63-9fda-1fa937e56fe9"><![CDATA[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]]></Plugin>
+    </Plugins>
+  </ExtensionData>
+</Logbook>

@@ -9,7 +9,7 @@ namespace GarminFitnessUnitTests
     class WorkoutSerializationTests
     {
         [Test]
-        public void TestXMLSerialization()
+        public void TestTCXSerialization()
         {
         }
     }

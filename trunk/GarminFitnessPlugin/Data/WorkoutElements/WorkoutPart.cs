@@ -8,7 +8,7 @@ using ZoneFiveSoftware.Common.Data.Fitness;
 
 namespace GarminFitnessPlugin.Data
 {
-    class WorkoutPart : IWorkout
+    public class WorkoutPart : IWorkout
     {
         public WorkoutPart(Workout fullWorkout, int partNumber)
         {
