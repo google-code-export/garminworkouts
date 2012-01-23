@@ -7,7 +7,7 @@ using GarminFitnessPlugin.Controller;
 
 namespace GarminFitnessPlugin.Data
 {
-    class HeartRateAboveDuration : IDuration
+    public class HeartRateAboveDuration : IDuration
     {
         public HeartRateAboveDuration(IStep parent)
             : base(DurationType.HeartRateAbove, parent)
@@ -19,8 +19,8 @@ namespace GarminFitnessPlugin.Data
         {
             ValidateValue(maxHeartRate, isPercentageMaxHeartRate);
 
-            MaxHeartRate = maxHeartRate;
-            IsPercentageMaxHeartRate = isPercentageMaxHeartRate;
+            m_IsPercentageMaxHR.Value = isPercentageMaxHeartRate;
+            InternalMaxHeartRate.Value = maxHeartRate;
         }
 
         public HeartRateAboveDuration(Stream stream, DataVersion version, IStep parent)
@@ -166,9 +166,8 @@ namespace GarminFitnessPlugin.Data
             {
                 if (MaxHeartRate != value)
                 {
-                    ValidateValue(value, IsPercentageMaxHeartRate);
-
                     InternalMaxHeartRate.Value = value;
+                    ValidateValue(value, IsPercentageMaxHeartRate);
 
                     TriggerDurationChangedEvent(new PropertyChangedEventArgs("MaxHeartRate"));
                 }
@@ -197,8 +196,8 @@ namespace GarminFitnessPlugin.Data
             {
                 if (IsPercentageMaxHeartRate != value)
                 {
-                    ValidateValue(MaxHeartRate, value);
                     m_IsPercentageMaxHR.Value = value;
+                    ValidateValue(MaxHeartRate, value);
 
                     TriggerDurationChangedEvent(new PropertyChangedEventArgs("IsPercentageMaxHeartRate"));
                 }

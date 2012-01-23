@@ -7,7 +7,7 @@ using GarminFitnessPlugin.Controller;
 
 namespace GarminFitnessPlugin.Data
 {
-    abstract class IDuration : IPluginSerializable, IXMLSerializable
+    public abstract class IDuration : IPluginSerializable, IXMLSerializable
     {
         protected IDuration(DurationType type, IStep parent)
         {

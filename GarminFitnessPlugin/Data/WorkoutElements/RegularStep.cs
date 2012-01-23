@@ -11,7 +11,7 @@ using GarminFitnessPlugin.Controller;
 
 namespace GarminFitnessPlugin.Data
 {
-    class RegularStep : IStep
+    public class RegularStep : IStep
     {
         public enum StepIntensity
         {

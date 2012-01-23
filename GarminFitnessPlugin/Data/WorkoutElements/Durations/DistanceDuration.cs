@@ -9,7 +9,7 @@ using GarminFitnessPlugin.Controller;
 
 namespace GarminFitnessPlugin.Data
 {
-    class DistanceDuration : IDuration
+    public class DistanceDuration : IDuration
     {
         public DistanceDuration(IStep parent)
             : base(DurationType.Distance, parent)

@@ -5,7 +5,7 @@ using GarminFitnessPlugin.Controller;
 
 namespace GarminFitnessPlugin.Data
 {
-    class LapButtonDuration : IDuration
+    public class LapButtonDuration : IDuration
     {
         public LapButtonDuration(IStep parent)
             : base(DurationType.LapButton, parent)

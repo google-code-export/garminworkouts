@@ -9,7 +9,7 @@ using GarminFitnessPlugin.Controller;
 
 namespace GarminFitnessPlugin.Data
 {
-    abstract class IStep : IPluginSerializable, IXMLSerializable, IDirty
+    public abstract class IStep : IPluginSerializable, IXMLSerializable, IDirty
     {
         protected IStep(StepType type, Workout parent)
         {

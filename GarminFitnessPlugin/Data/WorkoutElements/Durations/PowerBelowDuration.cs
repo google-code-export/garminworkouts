@@ -7,7 +7,7 @@ using GarminFitnessPlugin.Controller;
 
 namespace GarminFitnessPlugin.Data
 {
-    class PowerBelowDuration : IDuration
+    public class PowerBelowDuration : IDuration
     {
         public PowerBelowDuration(IStep parent)
             : base(DurationType.PowerBelow, parent)
@@ -19,8 +19,8 @@ namespace GarminFitnessPlugin.Data
         {
             ValidateValue(minPower, isPercentFTP);
 
-            MinPower = minPower;
-            IsPercentFTP = isPercentFTP;
+            m_IsPercentFTP.Value = isPercentFTP;
+            InternalMinPower.Value = minPower;
         }
 
         public PowerBelowDuration(Stream stream, DataVersion version, IStep parent)
@@ -68,25 +68,25 @@ namespace GarminFitnessPlugin.Data
         public override void Serialize(XmlNode parentNode, String nodeName, XmlDocument document)
         {
             // Unsupported by TCX
-            Debug.Assert(false);
+            throw new NotSupportedException();
         }
 
         public override void Deserialize(XmlNode parentNode)
         {
             // Unsupported by TCX
-            Debug.Assert(false);
+            throw new NotSupportedException();
         }
 
         public override void Serialize(GarXFaceNet._Workout._Step step)
         {
             // Unsupported by USB
-            Debug.Assert(false);
+            throw new NotSupportedException();
         }
 
         public override void Deserialize(GarXFaceNet._Workout._Step step)
         {
             // Unsupported by USB
-            Debug.Assert(false);
+            throw new NotSupportedException();
         }
 
         private void ValidateValue(UInt16 minPower, bool isPercentFTP)
@@ -113,8 +113,8 @@ namespace GarminFitnessPlugin.Data
             {
                 if (IsPercentFTP != value)
                 {
-                    ValidateValue(MinPower, value);
                     m_IsPercentFTP.Value = value;
+                    ValidateValue(MinPower, value);
 
                     TriggerDurationChangedEvent(new PropertyChangedEventArgs("IsPercentFTP"));
                 }
@@ -128,9 +128,8 @@ namespace GarminFitnessPlugin.Data
             {
                 if (MinPower != value)
                 {
-                    ValidateValue(value, IsPercentFTP);
-
                     InternalMinPower.Value = value;
+                    ValidateValue(value, IsPercentFTP);
 
                     TriggerDurationChangedEvent(new PropertyChangedEventArgs("MinPower"));
                 }

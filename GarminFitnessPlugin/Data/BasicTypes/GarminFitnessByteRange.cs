@@ -6,7 +6,7 @@ using GarminFitnessPlugin.Controller;
 
 namespace GarminFitnessPlugin.Data
 {
-    class GarminFitnessByteRange : IPluginSerializable, IXMLSerializable
+    public class GarminFitnessByteRange : IPluginSerializable, IXMLSerializable
     {
         public GarminFitnessByteRange(Byte value)
             : this(value, Byte.MinValue, Byte.MaxValue)

@@ -9,7 +9,7 @@ using GarminFitnessPlugin.Controller;
 
 namespace GarminFitnessPlugin.Data
 {
-    class RepeatStep : IStep
+    public class RepeatStep : IStep
     {
         public RepeatStep(Workout parent)
             : this(2, parent)

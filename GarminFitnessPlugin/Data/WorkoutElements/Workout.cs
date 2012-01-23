@@ -14,7 +14,7 @@ using GarminFitnessPlugin.View;
 
 namespace GarminFitnessPlugin.Data
 {
-    class Workout : IWorkout, IPublicWorkout, IDirty
+    public class Workout : IWorkout, IPublicWorkout, IDirty
     {
         public Workout(Guid workoutId, string name, IActivityCategory category) :
             this(name, category)
