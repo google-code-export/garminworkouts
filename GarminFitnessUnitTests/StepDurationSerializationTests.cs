@@ -6,6 +6,8 @@ using NUnit.Framework;
 using ZoneFiveSoftware.Common.Data.Measurement;
 using GarminFitnessPlugin;
 using GarminFitnessPlugin.Data;
+using GarminFitnessPlugin.Controller;
+using System.IO;
 
 namespace GarminFitnessUnitTests
 {
@@ -21,11 +23,10 @@ namespace GarminFitnessUnitTests
             Workout placeholderWorkout = new Workout("Test", PluginMain.GetApplication().Logbook.ActivityCategories[0]);
             RegularStep placeholderStep = new RegularStep(placeholderWorkout);
 
+            // Setup document
             testDocument.AppendChild(testDocument.CreateXmlDeclaration("1.0", "UTF-8", "no"));
             database = testDocument.CreateNode(XmlNodeType.Element, "TrainingCenterDatabase", null);
             testDocument.AppendChild(database);
-
-            // xmlns:xsi namespace attribute
             attribute = testDocument.CreateAttribute("xmlns", "xsi", GarminFitnessPlugin.Constants.xmlns);
             attribute.Value = "http://www.w3.org/2001/XMLSchema-instance";
             database.Attributes.Append(attribute);
@@ -46,7 +47,7 @@ namespace GarminFitnessUnitTests
             timeDuration.Serialize(database, "TimeDuration2", testDocument);
             int durationPosition2 = testDocument.InnerXml.IndexOf(timeDurationResult2);
             Assert.GreaterOrEqual(durationPosition2, 0, "Invalid time duration serialization");
-            Assert.AreNotEqual(durationPosition1, durationPosition2, "Different time durations serialization");
+            Assert.AreNotEqual(durationPosition1, durationPosition2, "Time durations serialization don't differ");
 
             // Distance
             DistanceDuration distanceDuration = new DistanceDuration(1, Length.Units.Kilometer, placeholderStep);
@@ -58,7 +59,7 @@ namespace GarminFitnessUnitTests
             distanceDuration.Serialize(database, "DistanceDuration2", testDocument);
             durationPosition2 = testDocument.InnerXml.IndexOf(distanceDurationResult2);
             Assert.GreaterOrEqual(durationPosition2, 0, "Invalid distance duration serialization");
-            Assert.AreNotEqual(durationPosition1, durationPosition2, "Different distance durations serialization");
+            Assert.AreNotEqual(durationPosition1, durationPosition2, "Distance durations serialization don't differ");
 
             // Calories
             CaloriesDuration caloriesDuration = new CaloriesDuration(550, placeholderStep);
@@ -70,19 +71,19 @@ namespace GarminFitnessUnitTests
             caloriesDuration.Serialize(database, "CaloriesDuration2", testDocument);
             durationPosition2 = testDocument.InnerXml.IndexOf(caloriesDurationResult2);
             Assert.GreaterOrEqual(durationPosition2, 0, "Invalid calories duration serialization");
-            Assert.AreNotEqual(durationPosition1, durationPosition2, "Different calories durations serialization");
+            Assert.AreNotEqual(durationPosition1, durationPosition2, "Calories durations serialization don't differ");
 
             // HR above
             HeartRateAboveDuration hrAboveDuration = new HeartRateAboveDuration(160, false, placeholderStep);
             hrAboveDuration.Serialize(database, "HRAboveDuration1", testDocument);
             durationPosition1 = testDocument.InnerXml.IndexOf(hrAboveDurationResult1);
-            Assert.GreaterOrEqual(durationPosition1, 0, "Invalid calories duration serialization");
+            Assert.GreaterOrEqual(durationPosition1, 0, "Invalid HRAbove duration serialization");
 
             hrAboveDuration.MaxHeartRate = 130;
             hrAboveDuration.Serialize(database, "HRAboveDuration2", testDocument);
             durationPosition2 = testDocument.InnerXml.IndexOf(hrAboveDurationResult2);
             Assert.GreaterOrEqual(durationPosition2, 0, "Invalid HRAbove duration serialization");
-            Assert.AreNotEqual(durationPosition1, durationPosition2, "Different HRAbove durations serialization");
+            Assert.AreNotEqual(durationPosition1, durationPosition2, "HRAbove durations serialization don't differ");
 
             hrAboveDuration.IsPercentageMaxHeartRate = true;
             hrAboveDuration.MaxHeartRate = 50;
@@ -94,19 +95,19 @@ namespace GarminFitnessUnitTests
             hrAboveDuration.Serialize(database, "HRAboveDuration4", testDocument);
             durationPosition2 = testDocument.InnerXml.IndexOf(hrAboveDurationResult4);
             Assert.GreaterOrEqual(durationPosition2, 0, "Invalid HRAbove duration serialization");
-            Assert.AreNotEqual(durationPosition1, durationPosition2, "Different HRAbove %Max durations serialization");
+            Assert.AreNotEqual(durationPosition1, durationPosition2, "HRAbove %Max durations serialization don't differ");
 
             // HR Below
             HeartRateBelowDuration hrBelowDuration = new HeartRateBelowDuration(160, false, placeholderStep);
             hrBelowDuration.Serialize(database, "HRBelowDuration1", testDocument);
             durationPosition1 = testDocument.InnerXml.IndexOf(hrBelowDurationResult1);
-            Assert.GreaterOrEqual(durationPosition1, 0, "Invalid calories duration serialization");
+            Assert.GreaterOrEqual(durationPosition1, 0, "Invalid HRBelow duration serialization");
 
             hrBelowDuration.MinHeartRate = 130;
             hrBelowDuration.Serialize(database, "HRBelowDuration2", testDocument);
             durationPosition2 = testDocument.InnerXml.IndexOf(hrBelowDurationResult2);
             Assert.GreaterOrEqual(durationPosition2, 0, "Invalid HRBelow duration serialization");
-            Assert.AreNotEqual(durationPosition1, durationPosition2, "Different HRBelow durations serialization");
+            Assert.AreNotEqual(durationPosition1, durationPosition2, "HRBelow durations serialization don't differ");
 
             hrBelowDuration.IsPercentageMaxHeartRate = true;
             hrBelowDuration.MinHeartRate = 50;
@@ -118,7 +119,7 @@ namespace GarminFitnessUnitTests
             hrBelowDuration.Serialize(database, "HRBelowDuration4", testDocument);
             durationPosition2 = testDocument.InnerXml.IndexOf(hrBelowDurationResult4);
             Assert.GreaterOrEqual(durationPosition2, 0, "Invalid HRBelow duration serialization");
-            Assert.AreNotEqual(durationPosition1, durationPosition2, "Different HRBelow %Max durations serialization");
+            Assert.AreNotEqual(durationPosition1, durationPosition2, "HRBelow %Max durations serialization don't differ");
 
             // Power above
             try
@@ -127,7 +128,7 @@ namespace GarminFitnessUnitTests
                 powerAboveDuration.Serialize(database, "PowerAboveDuration1", testDocument);
                 Assert.Fail("PowerAbove duration was serialized in TCX");
             }
-            catch (NotSupportedException e)
+            catch (NotSupportedException)
             {
             }
 
@@ -138,9 +139,165 @@ namespace GarminFitnessUnitTests
                 powerBelowDuration.Serialize(database, "PowerBelowDuration1", testDocument);
                 Assert.Fail("PowerBelow duration was serialized in TCX");
             }
-            catch (NotSupportedException e)
+            catch (NotSupportedException)
             {
             }
+        }
+
+        [Test]
+        public void TestTCXDeserialization()
+        {
+            XmlDocument testDocument = new XmlDocument();
+            XmlNode readNode;
+            XmlNode database;
+            Workout placeholderWorkout = new Workout("Test", PluginMain.GetApplication().Logbook.ActivityCategories[0]);
+            RegularStep placeholderStep = new RegularStep(placeholderWorkout);
+            IDuration loadedDuration = null;
+
+            // Setup document
+            testDocument.AppendChild(testDocument.CreateXmlDeclaration("1.0", "UTF-8", "no"));
+            database = testDocument.CreateNode(XmlNodeType.Element, "TrainingCenterDatabase", null);
+            testDocument.AppendChild(database);
+            XmlAttribute attribute = testDocument.CreateAttribute("xmlns", "xsi", GarminFitnessPlugin.Constants.xmlns);
+            attribute.Value = "http://www.w3.org/2001/XMLSchema-instance";
+            database.Attributes.Append(attribute);
+            readNode = testDocument.CreateElement("TestNode");
+            database.AppendChild(readNode);
+
+            // Lap button
+            readNode.InnerXml = lapDurationResult;
+            loadedDuration = DurationFactory.Create(readNode.FirstChild, placeholderStep);
+            Assert.IsNotNull(loadedDuration, "Lap duration wasn't properly deserialized");
+            Assert.IsTrue(loadedDuration is LapButtonDuration, "Lap duration wasn't deserialized as proper type");
+
+            // Time
+            readNode.InnerXml = timeDurationResult1;
+            loadedDuration = DurationFactory.Create(readNode.FirstChild, placeholderStep);
+            Assert.IsNotNull(loadedDuration, "Time duration wasn't properly deserialized");
+            Assert.IsTrue(loadedDuration is TimeDuration, "Time duration wasn't deserialized as proper type");
+            TimeDuration timeDuration = loadedDuration as TimeDuration;
+            Assert.AreEqual(500, timeDuration.TimeInSeconds, "Time duration didn't deserialize the proper time");
+
+            readNode.InnerXml = timeDurationResult2;
+            loadedDuration = DurationFactory.Create(readNode.FirstChild, placeholderStep);
+            Assert.IsNotNull(loadedDuration, "Time duration wasn't properly deserialized");
+            Assert.IsTrue(loadedDuration is TimeDuration, "Time duration wasn't deserialized as proper type");
+            timeDuration = loadedDuration as TimeDuration;
+            Assert.AreEqual(300, timeDuration.TimeInSeconds, "Time duration didn't deserialize the proper time");
+
+            // Distance
+            readNode.InnerXml = distanceDurationResult1;
+            loadedDuration = DurationFactory.Create(readNode.FirstChild, placeholderStep);
+            Assert.IsNotNull(loadedDuration, "Distance duration wasn't properly deserialized");
+            Assert.IsTrue(loadedDuration is DistanceDuration, "Distance duration wasn't deserialized as proper type");
+            DistanceDuration distanceDuration = loadedDuration as DistanceDuration;
+            Assert.AreEqual(1,
+                            Length.Convert(distanceDuration.GetDistanceInBaseUnit(), distanceDuration.BaseUnit, Length.Units.Kilometer),
+                            "Distance duration didn't deserialize the proper distance");
+
+            readNode.InnerXml = distanceDurationResult2;
+            loadedDuration = DurationFactory.Create(readNode.FirstChild, placeholderStep);
+            Assert.IsNotNull(loadedDuration, "Distance duration wasn't properly deserialized");
+            Assert.IsTrue(loadedDuration is DistanceDuration, "Distance duration wasn't deserialized as proper type");
+            distanceDuration = loadedDuration as DistanceDuration;
+            Assert.AreEqual(1,
+                            Length.Convert(distanceDuration.GetDistanceInBaseUnit(), distanceDuration.BaseUnit, Length.Units.Mile),
+                            0.5,
+                            "Distance duration didn't deserialize the proper distance");
+
+            // Calories
+            readNode.InnerXml = caloriesDurationResult1;
+            loadedDuration = DurationFactory.Create(readNode.FirstChild, placeholderStep);
+            Assert.IsNotNull(loadedDuration, "Calories duration wasn't properly deserialized");
+            Assert.IsTrue(loadedDuration is CaloriesDuration, "Calories duration wasn't deserialized as proper type");
+            CaloriesDuration caloriesDuration = loadedDuration as CaloriesDuration;
+            Assert.AreEqual(550, caloriesDuration.CaloriesToSpend, "Calories duration didn't deserialize the proper calories");
+
+            readNode.InnerXml = caloriesDurationResult2;
+            loadedDuration = DurationFactory.Create(readNode.FirstChild, placeholderStep);
+            Assert.IsNotNull(loadedDuration, "Calories duration wasn't properly deserialized");
+            Assert.IsTrue(loadedDuration is CaloriesDuration, "Calories duration wasn't deserialized as proper type");
+            caloriesDuration = loadedDuration as CaloriesDuration;
+            Assert.AreEqual(100, caloriesDuration.CaloriesToSpend, "Calories duration didn't deserialize the proper calories");
+
+            // HR above
+            readNode.InnerXml = hrAboveDurationResult1;
+            loadedDuration = DurationFactory.Create(readNode.FirstChild, placeholderStep);
+            Assert.IsNotNull(loadedDuration, "HRAbove duration wasn't properly deserialized");
+            Assert.IsTrue(loadedDuration is HeartRateAboveDuration, "HRAbove duration wasn't deserialized as proper type");
+            HeartRateAboveDuration hrAboveDuration = loadedDuration as HeartRateAboveDuration;
+            Assert.IsFalse(hrAboveDuration.IsPercentageMaxHeartRate, "HRAbove duration didn't deserialize the proper hr %Max");
+            Assert.AreEqual(160, hrAboveDuration.MaxHeartRate, "HRAbove duration didn't deserialize the proper hr");
+
+            readNode.InnerXml = hrAboveDurationResult2;
+            loadedDuration = DurationFactory.Create(readNode.FirstChild, placeholderStep);
+            Assert.IsNotNull(loadedDuration, "HRAbove duration wasn't properly deserialized");
+            Assert.IsTrue(loadedDuration is HeartRateAboveDuration, "HRAbove duration wasn't deserialized as proper type");
+            hrAboveDuration = loadedDuration as HeartRateAboveDuration;
+            Assert.IsFalse(hrAboveDuration.IsPercentageMaxHeartRate, "HRAbove duration didn't deserialize the proper hr %Max");
+            Assert.AreEqual(130, hrAboveDuration.MaxHeartRate, "HRAbove duration didn't deserialize the proper hr");
+
+            readNode.InnerXml = hrAboveDurationResult3;
+            loadedDuration = DurationFactory.Create(readNode.FirstChild, placeholderStep);
+            Assert.IsNotNull(loadedDuration, "HRAbove duration wasn't properly deserialized");
+            Assert.IsTrue(loadedDuration is HeartRateAboveDuration, "HRAbove duration wasn't deserialized as proper type");
+            hrAboveDuration = loadedDuration as HeartRateAboveDuration;
+            Assert.IsTrue(hrAboveDuration.IsPercentageMaxHeartRate, "HRAbove duration didn't deserialize the proper hr %Max");
+            Assert.AreEqual(50, hrAboveDuration.MaxHeartRate, "HRAbove duration didn't deserialize the proper hr");
+
+            readNode.InnerXml = hrAboveDurationResult4;
+            loadedDuration = DurationFactory.Create(readNode.FirstChild, placeholderStep);
+            Assert.IsNotNull(loadedDuration, "HRAbove duration wasn't properly deserialized");
+            Assert.IsTrue(loadedDuration is HeartRateAboveDuration, "HRAbove duration wasn't deserialized as proper type");
+            hrAboveDuration = loadedDuration as HeartRateAboveDuration;
+            Assert.IsTrue(hrAboveDuration.IsPercentageMaxHeartRate, "HRAbove duration didn't deserialize the proper hr %Max");
+            Assert.AreEqual(70, hrAboveDuration.MaxHeartRate, "HRAbove duration didn't deserialize the proper hr");
+
+            // HR Below
+            readNode.InnerXml = hrBelowDurationResult1;
+            loadedDuration = DurationFactory.Create(readNode.FirstChild, placeholderStep);
+            Assert.IsNotNull(loadedDuration, "HRBelow duration wasn't properly deserialized");
+            Assert.IsTrue(loadedDuration is HeartRateBelowDuration, "HRBelow duration wasn't deserialized as proper type");
+            HeartRateBelowDuration hrBelowDuration = loadedDuration as HeartRateBelowDuration;
+            Assert.IsFalse(hrBelowDuration.IsPercentageMaxHeartRate, "HRBelow duration didn't deserialize the proper hr %Max");
+            Assert.AreEqual(160, hrBelowDuration.MinHeartRate, "HRBelow duration didn't deserialize the proper hr");
+
+            readNode.InnerXml = hrBelowDurationResult2;
+            loadedDuration = DurationFactory.Create(readNode.FirstChild, placeholderStep);
+            Assert.IsNotNull(loadedDuration, "HRBelow duration wasn't properly deserialized");
+            Assert.IsTrue(loadedDuration is HeartRateBelowDuration, "HRBelow duration wasn't deserialized as proper type");
+            hrBelowDuration = loadedDuration as HeartRateBelowDuration;
+            Assert.IsFalse(hrBelowDuration.IsPercentageMaxHeartRate, "HRBelow duration didn't deserialize the proper hr %Max");
+            Assert.AreEqual(130, hrBelowDuration.MinHeartRate, "HRBelow duration didn't deserialize the proper hr");
+
+            readNode.InnerXml = hrBelowDurationResult3;
+            loadedDuration = DurationFactory.Create(readNode.FirstChild, placeholderStep);
+            Assert.IsNotNull(loadedDuration, "HRBelow duration wasn't properly deserialized");
+            Assert.IsTrue(loadedDuration is HeartRateBelowDuration, "HRBelow duration wasn't deserialized as proper type");
+            hrBelowDuration = loadedDuration as HeartRateBelowDuration;
+            Assert.IsTrue(hrBelowDuration.IsPercentageMaxHeartRate, "HRBelow duration didn't deserialize the proper hr %Max");
+            Assert.AreEqual(50, hrBelowDuration.MinHeartRate, "HRBelow duration didn't deserialize the proper hr");
+
+            readNode.InnerXml = hrBelowDurationResult4;
+            loadedDuration = DurationFactory.Create(readNode.FirstChild, placeholderStep);
+            Assert.IsNotNull(loadedDuration, "HRBelow duration wasn't properly deserialized");
+            Assert.IsTrue(loadedDuration is HeartRateBelowDuration, "HRBelow duration wasn't deserialized as proper type");
+            hrBelowDuration = loadedDuration as HeartRateBelowDuration;
+            Assert.IsTrue(hrBelowDuration.IsPercentageMaxHeartRate, "HRBelow duration didn't deserialize the proper hr %Max");
+            Assert.AreEqual(70, hrBelowDuration.MinHeartRate, "HRBelow duration didn't deserialize the proper hr");
+
+            // Invalid duration
+            readNode.InnerXml = invalidDuration1;
+            loadedDuration = DurationFactory.Create(readNode.FirstChild, placeholderStep);
+            Assert.IsNull(loadedDuration, "Invalid duration was properly deserialized");
+
+            readNode.InnerXml = invalidDuration2;
+            loadedDuration = DurationFactory.Create(readNode.FirstChild, placeholderStep);
+            Assert.IsNull(loadedDuration, "Empty type duration was properly deserialized");
+
+            readNode.InnerXml = invalidDuration3;
+            loadedDuration = DurationFactory.Create(readNode.FirstChild, placeholderStep);
+            Assert.IsNull(loadedDuration, "No type duration was properly deserialized");
         }
 
         const String lapDurationResult = "<LapDuration xsi:type=\"UserInitiated_t\" />";
@@ -158,5 +315,8 @@ namespace GarminFitnessUnitTests
         const String hrBelowDurationResult2 = "<HRBelowDuration2 xsi:type=\"HeartRateBelow_t\"><HeartRate xsi:type=\"HeartRateInBeatsPerMinute_t\"><Value>130</Value></HeartRate></HRBelowDuration2>";
         const String hrBelowDurationResult3 = "<HRBelowDuration3 xsi:type=\"HeartRateBelow_t\"><HeartRate xsi:type=\"HeartRateAsPercentOfMax_t\"><Value>50</Value></HeartRate></HRBelowDuration3>";
         const String hrBelowDurationResult4 = "<HRBelowDuration4 xsi:type=\"HeartRateBelow_t\"><HeartRate xsi:type=\"HeartRateAsPercentOfMax_t\"><Value>70</Value></HeartRate></HRBelowDuration4>";
+        const String invalidDuration1 = "<Invalid xsi:type=\"Invalid_t\">Test invalid</Invalid>";
+        const String invalidDuration2 = "<Invalid xsi:type=\"\">Test empty type</Invalid>";
+        const String invalidDuration3 = "<Invalid>Test no type</Invalid>";
     }
 }
