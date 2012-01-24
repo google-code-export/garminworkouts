@@ -7,7 +7,7 @@ using GarminFitnessPlugin.Controller;
 
 namespace GarminFitnessPlugin.Data
 {
-    class NullTarget : ITarget
+    public class NullTarget : ITarget
     {
         public NullTarget(IStep parent)
             : base(TargetType.Null, parent)

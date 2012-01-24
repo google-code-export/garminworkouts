@@ -9,7 +9,7 @@ using GarminFitnessPlugin.Controller;
 
 namespace GarminFitnessPlugin.Data
 {
-    class GarminBikeProfile : IPluginSerializable, IXMLSerializable
+    public class GarminBikeProfile : IPluginSerializable, IXMLSerializable
     {
         public GarminBikeProfile()
         {

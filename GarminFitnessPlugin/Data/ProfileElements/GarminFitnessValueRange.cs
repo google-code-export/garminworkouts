@@ -5,7 +5,7 @@ using ZoneFiveSoftware.Common.Data;
 
 namespace GarminFitnessPlugin.Data
 {
-    class GarminFitnessValueRange<T> : IValueRange<T> where T : IComparable<T>
+    public class GarminFitnessValueRange<T> : IValueRange<T> where T : IComparable<T>
     {
         public GarminFitnessValueRange(T lower, T upper)
         {

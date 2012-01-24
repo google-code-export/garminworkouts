@@ -275,20 +275,7 @@ namespace GarminFitnessPlugin.Data
                 }
                 else if (child.Name == "Duration")
                 {
-                    if (child.Attributes.Count == 1 && child.Attributes[0].Name == Constants.XsiTypeTCXString)
-                    {
-                        string stepTypeString = child.Attributes[0].Value;
-
-                        for (int j = 0; j < (int)IDuration.DurationType.DurationTypeCount; ++j)
-                        {
-                            if (stepTypeString == Constants.DurationTypeTCXString[j])
-                            {
-                                DurationFactory.Create((IDuration.DurationType)j, child, this);
-                                durationLoaded = true;
-                                break;
-                            }
-                        }
-                    }
+                    durationLoaded = (DurationFactory.Create(child, this) != null);
                 }
                 else if (child.Name == "Target")
                 {

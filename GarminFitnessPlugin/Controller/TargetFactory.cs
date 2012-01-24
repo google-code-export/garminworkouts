@@ -7,7 +7,7 @@ using GarminFitnessPlugin.Data;
 
 namespace GarminFitnessPlugin.Controller
 {
-    class TargetFactory
+    public class TargetFactory
     {
         static public ITarget Create(ITarget.TargetType type, RegularStep parent)
         {

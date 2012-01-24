@@ -8,7 +8,7 @@ using GarminFitnessPlugin.Controller;
 
 namespace GarminFitnessPlugin.Data
 {
-    class BaseCadenceTarget : ITarget
+    public class BaseCadenceTarget : ITarget
     {
         public abstract class IConcreteCadenceTarget : IPluginSerializable, IXMLSerializable, IDirty
         {

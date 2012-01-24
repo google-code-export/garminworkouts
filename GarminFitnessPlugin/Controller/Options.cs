@@ -11,7 +11,7 @@ using GarminFitnessPlugin.Data;
 
 namespace GarminFitnessPlugin.Controller
 {
-    class Options : IPluginSerializable, IXMLSerializable
+    public class Options : IPluginSerializable, IXMLSerializable
     {
         private class STCategoriesInfo
         {

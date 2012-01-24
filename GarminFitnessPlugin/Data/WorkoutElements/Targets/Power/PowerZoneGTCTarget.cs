@@ -7,7 +7,7 @@ using GarminFitnessPlugin.Controller;
 
 namespace GarminFitnessPlugin.Data
 {
-    class PowerZoneGTCTarget : BasePowerTarget.IConcretePowerTarget
+    public class PowerZoneGTCTarget : BasePowerTarget.IConcretePowerTarget
     {
         public PowerZoneGTCTarget(BasePowerTarget baseTarget)
             : base(PowerTargetType.ZoneGTC, baseTarget)

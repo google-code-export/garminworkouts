@@ -10,7 +10,7 @@ using GarminFitnessPlugin.Data;
 
 namespace GarminFitnessPlugin.Controller
 {
-    class GarminProfileManager : IPluginSerializable, IXMLSerializable
+    public class GarminProfileManager : IPluginSerializable, IXMLSerializable
     {
         private GarminProfileManager()
         {
@@ -20,7 +20,7 @@ namespace GarminFitnessPlugin.Controller
             UserProfile.ActivityProfileChanged += new GarminProfile.ActivityProfileChangedEventHandler(OnUserActivityProfileChanged);
         }
 
-        void OnUserProfileChanged(object sender, PropertyChangedEventArgs changedProperty)
+        private void OnUserProfileChanged(object sender, PropertyChangedEventArgs changedProperty)
         {
             if (ProfileChanged != null)
             {
@@ -28,7 +28,7 @@ namespace GarminFitnessPlugin.Controller
             }
         }
 
-        void OnUserActivityProfileChanged(GarminActivityProfile profileChanged, PropertyChangedEventArgs changedProperty)
+        private void OnUserActivityProfileChanged(GarminActivityProfile profileChanged, PropertyChangedEventArgs changedProperty)
         {
             if (ActivityProfileChanged != null)
             {
