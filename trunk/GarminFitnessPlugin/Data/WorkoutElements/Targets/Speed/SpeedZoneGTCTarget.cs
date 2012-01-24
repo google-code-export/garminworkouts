@@ -7,7 +7,7 @@ using GarminFitnessPlugin.Controller;
 
 namespace GarminFitnessPlugin.Data
 {
-    class SpeedZoneGTCTarget : BaseSpeedTarget.IConcreteSpeedTarget
+    public class SpeedZoneGTCTarget : BaseSpeedTarget.IConcreteSpeedTarget
     {
         public SpeedZoneGTCTarget(BaseSpeedTarget baseTarget)
             : base(SpeedTargetType.ZoneGTC, baseTarget)

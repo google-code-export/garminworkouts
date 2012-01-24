@@ -8,7 +8,7 @@ using GarminFitnessPlugin.Controller;
 
 namespace GarminFitnessPlugin.Data
 {
-    class BasePowerTarget : ITarget
+    public class BasePowerTarget : ITarget
     {
         public abstract class IConcretePowerTarget : IPluginSerializable, IXMLSerializable, IDirty
         {

@@ -13,7 +13,7 @@ using GarminFitnessPlugin.View;
 
 namespace GarminFitnessPlugin.Data
 {
-    class GarminActivityProfile : IPluginSerializable, IXMLSerializable
+    public class GarminActivityProfile : IPluginSerializable, IXMLSerializable
     {
         public enum HRReferential
         {

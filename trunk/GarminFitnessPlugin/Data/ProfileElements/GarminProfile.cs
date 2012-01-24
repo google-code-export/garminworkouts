@@ -9,14 +9,14 @@ using GarminFitnessPlugin.Controller;
 
 namespace GarminFitnessPlugin.Data
 {
-    class GarminProfile : IPluginSerializable, IXMLSerializable
+    public class GarminProfile : IPluginSerializable, IXMLSerializable
     {
         public GarminProfile()
         {
             Cleanup();
         }
 
-        void OnActivityProfileChanged(GarminActivityProfile profileModified, PropertyChangedEventArgs changedProperty)
+        private void OnActivityProfileChanged(GarminActivityProfile profileModified, PropertyChangedEventArgs changedProperty)
         {
             TriggerActivityProfileChangedEvent(profileModified, changedProperty);
         }

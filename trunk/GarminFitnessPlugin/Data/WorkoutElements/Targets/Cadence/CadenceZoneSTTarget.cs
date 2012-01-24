@@ -10,7 +10,7 @@ using GarminFitnessPlugin.Controller;
 
 namespace GarminFitnessPlugin.Data
 {
-    class CadenceZoneSTTarget : BaseCadenceTarget.IConcreteCadenceTarget
+    public class CadenceZoneSTTarget : BaseCadenceTarget.IConcreteCadenceTarget
     {
         public CadenceZoneSTTarget(BaseCadenceTarget baseTarget)
             : base(CadenceTargetType.ZoneST, baseTarget)

@@ -7,7 +7,7 @@ using GarminFitnessPlugin.Data;
 
 namespace GarminFitnessPlugin.Controller
 {
-    class DurationFactory
+    public class DurationFactory
     {
         static public IDuration Create(IDuration.DurationType type, RegularStep parent)
         {
@@ -245,12 +245,27 @@ namespace GarminFitnessPlugin.Controller
             return newDuration;
         }
 
-        static public IDuration Create(IDuration.DurationType type, XmlNode parentNode, RegularStep parent)
+        static public IDuration Create(XmlNode parentNode, RegularStep parent)
         {
-            IDuration newDuration = Create(type, parent);
+            IDuration newDuration = null;
 
-            newDuration.Deserialize(parentNode);
-            parent.Duration = newDuration;
+            if (parentNode.Attributes.Count == 1 && parentNode.Attributes[0].Name == Constants.XsiTypeTCXString)
+            {
+                string stepTypeString = parentNode.Attributes[0].Value;
+
+                // Power above & below are FIT only so stop the loop there
+                for (int i = 0; i < (int)IDuration.DurationType.PowerAbove; ++i)
+                {
+                    if (stepTypeString == Constants.DurationTypeTCXString[i])
+                    {
+                        newDuration = DurationFactory.Create((IDuration.DurationType)i, parent);
+                        newDuration.Deserialize(parentNode);
+                        parent.Duration = newDuration;
+
+                        break;
+                    }
+                }
+            }
 
             return newDuration;
         }

@@ -9,7 +9,7 @@ using GarminFitnessPlugin.Controller;
 
 namespace GarminFitnessPlugin.Data
 {
-    class HeartRateZoneSTTarget : BaseHeartRateTarget.IConcreteHeartRateTarget
+    public class HeartRateZoneSTTarget : BaseHeartRateTarget.IConcreteHeartRateTarget
     {
         public HeartRateZoneSTTarget(BaseHeartRateTarget baseTarget)
             : base(HeartRateTargetType.ZoneST, baseTarget)

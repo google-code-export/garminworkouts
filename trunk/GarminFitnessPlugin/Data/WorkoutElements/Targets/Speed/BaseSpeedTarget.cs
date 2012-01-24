@@ -9,7 +9,7 @@ using System.ComponentModel;
 
 namespace GarminFitnessPlugin.Data
 {
-    class BaseSpeedTarget : ITarget
+    public class BaseSpeedTarget : ITarget
     {
         public abstract class IConcreteSpeedTarget : IPluginSerializable, IXMLSerializable, IDirty
         {
