@@ -278,13 +278,14 @@ namespace GarminFitnessPlugin.Data
                             }
                         }
                         else if (childNode.Name == "Target" && childNode.Attributes.Count == 1 &&
-                            childNode.Attributes[0].Name == Constants.XsiTypeTCXString &&
-                            childNode.Attributes[0].Value == Constants.TargetTypeTCXString[(int)ITarget.TargetType.Power])
+                                 childNode.Attributes[0].Name == Constants.XsiTypeTCXString &&
+                                 childNode.Attributes[0].Value == Constants.TargetTypeTCXString[(int)ITarget.TargetType.Power])
                         {
                             Debug.Assert(step != null && step.Type == IStep.StepType.Regular);
                             RegularStep concreteStep = (RegularStep)step;
 
-                            TargetFactory.Create(ITarget.TargetType.Power, childNode, concreteStep);
+                            TargetFactory.Create(ITarget.TargetType.Power, concreteStep);
+                            concreteStep.Target.Deserialize(childNode);
                         }
                     }
                 }

@@ -314,10 +314,10 @@ namespace GarminFitnessPlugin.Controller
             return String.Format("{0:00}:{1:00}", min, sec);
         }
 
-        public static void DoubleToTime(double time, out UInt16 minutes, out UInt16 seconds)
+        public static void DoubleToTime(double timeInMinutes, out UInt16 minutes, out UInt16 seconds)
         {
-            minutes = (UInt16)(time);
-            seconds = (UInt16)Math.Round((time - (UInt16)time) * Constants.SecondsPerMinute, MidpointRounding.AwayFromZero);
+            minutes = (UInt16)(timeInMinutes);
+            seconds = (UInt16)Math.Round((timeInMinutes - (UInt16)timeInMinutes) * Constants.SecondsPerMinute, MidpointRounding.AwayFromZero);
 
             if(seconds == Constants.SecondsPerMinute)
             {
@@ -334,36 +334,6 @@ namespace GarminFitnessPlugin.Controller
         public static double PaceToSpeed(double pace)
         {
             return Constants.MinutesPerHour / pace;
-        }
-
-        public static int FindIndexForZone(IList<INamedLowHighZone> list, INamedLowHighZone zone)
-        {
-            Debug.Assert(list.Count > 0);
-
-            for (int i = 0; i < list.Count; ++i)
-            {
-                if (list[i].Name == zone.Name)
-                {
-                    return i;
-                }
-            }
-
-            return -1;
-        }
-
-        public static int FindIndexForZoneCategory(IZoneCategoryList list, IZoneCategory zone)
-        {
-            Debug.Assert(list.Count > 0);
-
-            for (int i = 0; i < list.Count; ++i)
-            {
-                if (list[i] == zone)
-                {
-                    return i;
-                }
-            }
-
-            return 0;
         }
 
         public static bool GetStepInfo(IStep step, List<IStep> referenceList, out List<IStep> owningList, out UInt16 index)
@@ -397,7 +367,7 @@ namespace GarminFitnessPlugin.Controller
 
         public static void SerializeSTZoneInfoXML(IStep step, IZoneCategory categoryZones, INamedLowHighZone zone, XmlDocument document)
         {
-            int index = FindIndexForZone(categoryZones.Zones, zone);
+            int index = categoryZones.Zones.IndexOf(zone);
 
             if (index != -1)
             {

@@ -447,14 +447,14 @@ namespace GarminFitnessPlugin.View
             // Cadence
             if (PluginMain.GetApplication().Logbook != null)
             {
-                int cadenceSelectedIndex = Utils.FindIndexForZoneCategory(PluginMain.GetApplication().Logbook.CadenceZones, Options.Instance.CadenceZoneCategory);
+                int cadenceSelectedIndex = PluginMain.GetApplication().Logbook.CadenceZones.IndexOf(Options.Instance.CadenceZoneCategory);
                 CadenceZoneComboBox.SelectedIndex = cadenceSelectedIndex;
             }
 
             // Power
             if (PluginMain.GetApplication().Logbook != null)
             {
-                int powerSelectedIndex = Utils.FindIndexForZoneCategory(PluginMain.GetApplication().Logbook.PowerZones, Options.Instance.PowerZoneCategory);
+                int powerSelectedIndex = PluginMain.GetApplication().Logbook.PowerZones.IndexOf(Options.Instance.PowerZoneCategory);
                 PowerZoneComboBox.SelectedIndex = powerSelectedIndex;
             }
 

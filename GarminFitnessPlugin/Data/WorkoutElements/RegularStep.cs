@@ -279,20 +279,7 @@ namespace GarminFitnessPlugin.Data
                 }
                 else if (child.Name == "Target")
                 {
-                    if (child.Attributes.Count == 1 && child.Attributes[0].Name == Constants.XsiTypeTCXString)
-                    {
-                        string stepTypeString = child.Attributes[0].Value;
-
-                        for (int j = 0; j < (int)ITarget.TargetType.TargetTypeCount; ++j)
-                        {
-                            if (stepTypeString == Constants.TargetTypeTCXString[j])
-                            {
-                                TargetFactory.Create((ITarget.TargetType)j, child, this);
-                                targetLoaded = true;
-                                break;
-                            }
-                        }
-                    }
+                    targetLoaded = (TargetFactory.Create(child, this) != null);
                 }
                 else if (child.Name == "Intensity")
                 {

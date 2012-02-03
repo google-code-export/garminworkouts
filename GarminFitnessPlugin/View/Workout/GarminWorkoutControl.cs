@@ -3148,8 +3148,7 @@ namespace GarminFitnessPlugin.View
                             case BaseSpeedTarget.IConcreteSpeedTarget.SpeedTargetType.ZoneST:
                                 {
                                     SpeedZoneSTTarget concreteTarget = (SpeedZoneSTTarget)baseTarget.ConcreteTarget;
-                                    ZoneComboBox.SelectedIndex = Utils.FindIndexForZone(baseTarget.ParentStep.ParentConcreteWorkout.Category.SpeedZone.Zones,
-                                                                                        concreteTarget.Zone) + 1;
+                                    ZoneComboBox.SelectedIndex = baseTarget.ParentStep.ParentConcreteWorkout.Category.SpeedZone.Zones.IndexOf(concreteTarget.Zone) + 1;
                                     break;
                                 }
                             case BaseSpeedTarget.IConcreteSpeedTarget.SpeedTargetType.Range:
@@ -3193,8 +3192,7 @@ namespace GarminFitnessPlugin.View
                             case BaseCadenceTarget.IConcreteCadenceTarget.CadenceTargetType.ZoneST:
                                 {
                                     CadenceZoneSTTarget concreteTarget = (CadenceZoneSTTarget)baseTarget.ConcreteTarget;
-                                    ZoneComboBox.SelectedIndex = Utils.FindIndexForZone(Options.Instance.CadenceZoneCategory.Zones,
-                                                                                                       concreteTarget.Zone) + 1;
+                                    ZoneComboBox.SelectedIndex = Options.Instance.CadenceZoneCategory.Zones.IndexOf(concreteTarget.Zone) + 1;
                                     break;
                                 }
                             case BaseCadenceTarget.IConcreteCadenceTarget.CadenceTargetType.Range:
@@ -3226,8 +3224,7 @@ namespace GarminFitnessPlugin.View
                             case BaseHeartRateTarget.IConcreteHeartRateTarget.HeartRateTargetType.ZoneST:
                                 {
                                     HeartRateZoneSTTarget concreteTarget = (HeartRateZoneSTTarget)baseTarget.ConcreteTarget;
-                                    ZoneComboBox.SelectedIndex = Utils.FindIndexForZone(baseTarget.ParentStep.ParentConcreteWorkout.Category.HeartRateZone.Zones,
-                                                                                                       concreteTarget.Zone) + 1;
+                                    ZoneComboBox.SelectedIndex = baseTarget.ParentStep.ParentConcreteWorkout.Category.HeartRateZone.Zones.IndexOf(concreteTarget.Zone) + 1;
                                     break;
                                 }
                             case BaseHeartRateTarget.IConcreteHeartRateTarget.HeartRateTargetType.Range:
@@ -3258,8 +3255,7 @@ namespace GarminFitnessPlugin.View
                             case BasePowerTarget.IConcretePowerTarget.PowerTargetType.ZoneST:
                                 {
                                     PowerZoneSTTarget concreteTarget = (PowerZoneSTTarget)baseTarget.ConcreteTarget;
-                                    ZoneComboBox.SelectedIndex = Utils.FindIndexForZone(Options.Instance.PowerZoneCategory.Zones,
-                                                                                        concreteTarget.Zone) + 1;
+                                    ZoneComboBox.SelectedIndex = Options.Instance.PowerZoneCategory.Zones.IndexOf(concreteTarget.Zone) + 1;
                                     break;
                                 }
                             case BasePowerTarget.IConcretePowerTarget.PowerTargetType.Range:
