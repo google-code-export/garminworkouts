@@ -1,4 +1,6 @@
 ﻿using System;
+using System.IO;
+using System.Text;
 using System.Xml;
 using NUnit.Framework;
 using ZoneFiveSoftware.Common.Data.Fitness;
@@ -550,14 +552,77 @@ namespace GarminFitnessUnitTests
         [Test]
         public void TestDeserializeSTTargetExtensions()
         {
-            Assert.Fail("Not implemented");
-            // Cadence ST zone
+            ILogbook logbook = PluginMain.GetApplication().Logbook;
+            Workout deserializedWorkout = new Workout("TestWorkout", logbook.ActivityCategories[0]);
+            XmlDocument testDocument = new XmlDocument();
+            RegularStep step;
+
+            testDocument.LoadXml(workoutSTExtensionsResult);
+            Assert.AreEqual("TrainingCenterDatabase", testDocument.LastChild.Name, "Cannot find database node");
+            Assert.AreEqual("Workouts", testDocument.LastChild.FirstChild.Name, "Cannot find workouts node");
+            Assert.AreEqual("Workout", testDocument.LastChild.FirstChild.FirstChild.Name, "Cannot find workout node");
+            deserializedWorkout.Deserialize(testDocument.LastChild.FirstChild.FirstChild);
+
+            Assert.AreEqual("TestSTExtension", deserializedWorkout.Name, "Invalid workout name deserialized");
+            Assert.AreEqual(4, deserializedWorkout.StepCount, "Invalid step count deserialized");
 
             // Speed ST zone
+            BaseSpeedTarget speedTarget;
+            SpeedZoneSTTarget speedSTTarget;
+
+            Assert.IsTrue(deserializedWorkout.Steps[0] is RegularStep, "First step is of invalid type");
+            step = deserializedWorkout.Steps[0] as RegularStep;
+            Assert.IsTrue(step.Target is BaseSpeedTarget, "First step target is of invalid type");
+            speedTarget = step.Target as BaseSpeedTarget;
+            Assert.IsTrue(speedTarget.ConcreteTarget is SpeedZoneSTTarget, "Speed concrete target is of invalid type");
+            speedSTTarget = speedTarget.ConcreteTarget as SpeedZoneSTTarget;
+            Assert.AreEqual(logbook.SpeedZones[0].Zones[3], speedSTTarget.Zone, "Invalid speed ST zone deserialized");
+
+            // Cadence ST zone
+            BaseCadenceTarget cadenceTarget;
+            CadenceZoneSTTarget cadenceSTTarget;
+
+            Assert.IsTrue(deserializedWorkout.Steps[1] is RegularStep, "Second step is of invalid type");
+            step = deserializedWorkout.Steps[1] as RegularStep;
+            Assert.IsTrue(step.Target is BaseCadenceTarget, "Second step target is of invalid type");
+            cadenceTarget = step.Target as BaseCadenceTarget;
+            Assert.IsTrue(cadenceTarget.ConcreteTarget is CadenceZoneSTTarget, "Cadence concrete target is of invalid type");
+            cadenceSTTarget = cadenceTarget.ConcreteTarget as CadenceZoneSTTarget;
+            Assert.AreEqual(logbook.CadenceZones[0].Zones[4], cadenceSTTarget.Zone, "Invalid cadence ST zone deserialized");
 
             // HR ST zone
+            BaseHeartRateTarget hrTarget;
+            HeartRateZoneSTTarget hrSTTarget;
+
+            Assert.IsTrue(deserializedWorkout.Steps[2] is RegularStep, "Third step is of invalid type");
+            step = deserializedWorkout.Steps[2] as RegularStep;
+            Assert.IsTrue(step.Target is BaseHeartRateTarget, "Third step target is of invalid type");
+            hrTarget = step.Target as BaseHeartRateTarget;
+            Assert.IsTrue(hrTarget.ConcreteTarget is HeartRateZoneSTTarget, "HR concrete target is of invalid type");
+            hrSTTarget = hrTarget.ConcreteTarget as HeartRateZoneSTTarget;
+            Assert.AreEqual(logbook.HeartRateZones[0].Zones[3], hrSTTarget.Zone, "Invalid HR ST zone deserialized");
 
             // Power ST zone
+            BasePowerTarget powerTarget;
+            PowerZoneSTTarget powerSTTarget;
+
+            Assert.IsTrue(deserializedWorkout.Steps[3] is RegularStep, "Fourth step is of invalid type");
+            step = deserializedWorkout.Steps[3] as RegularStep;
+            Assert.IsTrue(step.Target is BasePowerTarget, "Fourth step target is of invalid type");
+            powerTarget = step.Target as BasePowerTarget;
+            Assert.IsTrue(powerTarget.ConcreteTarget is PowerZoneSTTarget, "Power concrete target is of invalid type");
+            powerSTTarget = powerTarget.ConcreteTarget as PowerZoneSTTarget;
+            Assert.AreEqual(logbook.PowerZones[0].Zones[0], powerSTTarget.Zone, "Invalid power ST zone deserialized");
+        }
+
+        [Test]
+        public void TestPowerTargetSerialization()
+        {
+            IWorkout workout = GarminWorkoutManager.Instance.GetWorkout("TestPowerExt");
+            MemoryStream stream = new MemoryStream();
+
+            WorkoutExporter.ExportWorkout(workout, stream);
+            Assert.AreEqual(workoutPowerExtensionsResult, Encoding.UTF8.GetString(stream.GetBuffer(), 0, (int)stream.Length), "Power target extension not properly serialized");
         }
 
         const String noTargetResult = "<NoTarget xsi:type=\"None_t\" />";
@@ -603,5 +668,67 @@ namespace GarminFitnessUnitTests
         const String powerSTTargetResult3 = "<PowerSTTarget3 xsi:type=\"Power_t\"><PowerZone xsi:type=\"CustomPowerZone_t\"><Low xsi:type=\"PowerAsPercentOfFTP_t\"><Value>60</Value></Low><High xsi:type=\"PowerAsPercentOfFTP_t\"><Value>80</Value></High></PowerZone></PowerSTTarget3>";
         const String powerSTTargetResult4 = "<PowerSTTarget4 xsi:type=\"Power_t\"><PowerZone xsi:type=\"CustomPowerZone_t\"><Low xsi:type=\"PowerAsPercentOfFTP_t\"><Value>120</Value></Low><High xsi:type=\"PowerAsPercentOfFTP_t\"><Value>160</Value></High></PowerZone></PowerSTTarget4>";
         const String powerSTTargetExtensionResult1 = "<TargetOverride><StepId>2</StepId><Category><Id>922170b1-9b58-49e6-aa44-028936c2ad91</Id><Index>3</Index></Category></TargetOverride>";
+
+        const String workoutPowerExtensionsResult =
+@"<?xml version=""1.0"" encoding=""utf-8"" standalone=""no""?>
+<TrainingCenterDatabase xmlns=""http://www.garmin.com/xmlschemas/TrainingCenterDatabase/v2"" xmlns:xsi=""http://www.w3.org/2001/XMLSchema-instance"" xsi:schemaLocation=""http://www.garmin.com/xmlschemas/TrainingCenterDatabase/v2 http://www.garmin.com/xmlschemas/TrainingCenterDatabasev2.xsd http://www.garmin.com/xmlschemas/WorkoutExtension/v1 http://www.garmin.com/xmlschemas/WorkoutExtensionv1.xsd"">
+  <Workouts>
+    <Workout Sport=""Other"">
+      <Name>TestPowerExt</Name>
+      <Step xsi:type=""Step_t"">
+        <StepId>1</StepId>
+        <Duration xsi:type=""UserInitiated_t"" />
+        <Intensity>Active</Intensity>
+        <Target xsi:type=""None_t"" />
+      </Step>
+      <Creator xsi:type=""Device_t"">
+        <Name />
+        <UnitId>1234567890</UnitId>
+        <ProductID>0</ProductID>
+        <Version>
+          <VersionMajor>0</VersionMajor>
+          <VersionMinor>0</VersionMinor>
+          <BuildMajor>0</BuildMajor>
+          <BuildMinor>0</BuildMinor>
+        </Version>
+      </Creator>
+      <Extensions>
+        <Steps xmlns=""http://www.garmin.com/xmlschemas/WorkoutExtension/v1"">
+          <Step xsi:type=""Step_t"">
+            <StepId>1</StepId>
+            <Duration xsi:type=""UserInitiated_t"" />
+            <Intensity>Active</Intensity>
+            <Target xsi:type=""Power_t"">
+              <PowerZone xsi:type=""CustomPowerZone_t"">
+                <Low xsi:type=""PowerInWatts_t"">
+                  <Value>20</Value>
+                </Low>
+                <High xsi:type=""PowerInWatts_t"">
+                  <Value>150</Value>
+                </High>
+              </PowerZone>
+            </Target>
+          </Step>
+        </Steps>
+        <SportTracksExtensions xmlns=""http://www.zonefivesoftware.com/sporttracks/plugins/?p=garmin-fitness"">
+          <SportTracksCategory>fa756214-cf71-11db-9705-005056c00008</SportTracksCategory>
+          <StepNotes>
+            <StepId>1</StepId>
+            <Notes>
+            </Notes>
+          </StepNotes>
+          <TargetOverride>
+            <StepId>1</StepId>
+            <Category>
+              <Id>922170b1-9b58-49e6-aa44-028936c2ad91</Id>
+              <Index>0</Index>
+            </Category>
+          </TargetOverride>
+        </SportTracksExtensions>
+      </Extensions>
+    </Workout>
+  </Workouts>
+</TrainingCenterDatabase>";
+        const String workoutSTExtensionsResult = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?><TrainingCenterDatabase xmlns=\"http://www.garmin.com/xmlschemas/TrainingCenterDatabase/v2\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:schemaLocation=\"http://www.garmin.com/xmlschemas/TrainingCenterDatabase/v2 http://www.garmin.com/xmlschemas/TrainingCenterDatabasev2.xsd http://www.garmin.com/xmlschemas/WorkoutExtension/v1 http://www.garmin.com/xmlschemas/WorkoutExtensionv1.xsd\"><Workouts><Workout Sport=\"Other\"><Name>TestSTExtension</Name><Step xsi:type=\"Step_t\"><StepId>1</StepId><Duration xsi:type=\"UserInitiated_t\" /><Intensity>Active</Intensity><Target xsi:type=\"Speed_t\"><SpeedZone xsi:type=\"CustomSpeedZone_t\"><ViewAs>Pace</ViewAs><LowInMetersPerSecond>8.33333</LowInMetersPerSecond><HighInMetersPerSecond>26.82240</HighInMetersPerSecond></SpeedZone></Target></Step><Step xsi:type=\"Step_t\"><StepId>2</StepId><Duration xsi:type=\"UserInitiated_t\" /><Intensity>Active</Intensity><Target xsi:type=\"Cadence_t\"><Low>100.00000</Low><High>120.00000</High></Target></Step><Step xsi:type=\"Step_t\"><StepId>3</StepId><Duration xsi:type=\"UserInitiated_t\" /><Intensity>Active</Intensity><Target xsi:type=\"HeartRate_t\"><HeartRateZone xsi:type=\"CustomHeartRateZone_t\"><Low xsi:type=\"HeartRateInBeatsPerMinute_t\"><Value>160</Value></Low><High xsi:type=\"HeartRateInBeatsPerMinute_t\"><Value>180</Value></High></HeartRateZone></Target></Step><Step xsi:type=\"Step_t\"><StepId>4</StepId><Duration xsi:type=\"UserInitiated_t\" /><Intensity>Active</Intensity><Target xsi:type=\"None_t\" /></Step><Creator xsi:type=\"Device_t\"><Name /><UnitId>1234567890</UnitId><ProductID>0</ProductID><Version><VersionMajor>0</VersionMajor><VersionMinor>0</VersionMinor><BuildMajor>0</BuildMajor><BuildMinor>0</BuildMinor></Version></Creator><Extensions><Steps xmlns=\"http://www.garmin.com/xmlschemas/WorkoutExtension/v1\"><Step xsi:type=\"Step_t\"><StepId>4</StepId><Duration xsi:type=\"UserInitiated_t\" /><Intensity>Active</Intensity><Target xsi:type=\"Power_t\"><PowerZone xsi:type=\"CustomPowerZone_t\"><Low xsi:type=\"PowerInWatts_t\"><Value>20</Value></Low><High xsi:type=\"PowerInWatts_t\"><Value>150</Value></High></PowerZone></Target></Step></Steps><SportTracksExtensions xmlns=\"http://www.zonefivesoftware.com/sporttracks/plugins/?p=garmin-fitness\"><SportTracksCategory>fa756214-cf71-11db-9705-005056c00008</SportTracksCategory><StepNotes><StepId>1</StepId><Notes></Notes></StepNotes><TargetOverride><StepId>1</StepId><Category><Id>6d87c9b6-628e-4ad4-9a0a-bc63f95e54ea</Id><Index>3</Index></Category></TargetOverride><StepNotes><StepId>2</StepId><Notes></Notes></StepNotes><TargetOverride><StepId>2</StepId><Category><Id>9b534961-59e8-41c0-8b1d-f47bcb6a5cfd</Id><Index>4</Index></Category></TargetOverride><StepNotes><StepId>3</StepId><Notes></Notes></StepNotes><TargetOverride><StepId>3</StepId><Category><Id>a73e7a11-b520-40fc-831c-5c8f9a745b75</Id><Index>3</Index></Category></TargetOverride><StepNotes><StepId>4</StepId><Notes></Notes></StepNotes><TargetOverride><StepId>4</StepId><Category><Id>922170b1-9b58-49e6-aa44-028936c2ad91</Id><Index>0</Index></Category></TargetOverride></SportTracksExtensions></Extensions></Workout></Workouts></TrainingCenterDatabase>";
     }
 }

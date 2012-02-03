@@ -92,6 +92,9 @@ namespace GarminFitnessUnitTests
             Assert.AreEqual(200, logbook.PowerZones[0].Zones[2].Low, "Power category 0 values mismatch");
             Assert.AreEqual(300, logbook.PowerZones[0].Zones[3].Low, "Power category 0 values mismatch");
             Assert.AreEqual(400, logbook.PowerZones[0].Zones[4].Low, "Power category 0 values mismatch");
+
+            Assert.GreaterOrEqual(1, GarminWorkoutManager.Instance.Workouts.Count, "Invalid number of workouts in logbook");
+            Assert.IsNotNull(GarminWorkoutManager.Instance.GetWorkout("TestPowerExt"), "Cannot find required workout named TestPowerExt");
         }
     }
 }

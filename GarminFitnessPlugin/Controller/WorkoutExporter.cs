@@ -9,7 +9,7 @@ using GarminFitnessPlugin.Data;
 
 namespace GarminFitnessPlugin.Controller
 {
-    class WorkoutExporter
+    public class WorkoutExporter
     {
         public static void ExportWorkout(IWorkout workout, Stream exportStream)
         {

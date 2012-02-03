@@ -11,7 +11,7 @@ using System.ComponentModel;
 
 namespace GarminFitnessPlugin.Controller
 {
-    class GarminWorkoutManager : IPluginSerializable
+    public class GarminWorkoutManager : IPluginSerializable
     {
         public enum FileFormats
         {
