@@ -340,30 +340,14 @@ namespace GarminFitnessPlugin.Controller
         {
             Debug.Assert(list.Count > 0);
 
-            for (int i = 0; i < list.Count; ++i)
-            {
-                if (list[i].Name == zone.Name)
-                {
-                    return i;
-                }
-            }
-
-            return -1;
+            return list.IndexOf(zone);
         }
 
         public static int FindIndexForZoneCategory(IZoneCategoryList list, IZoneCategory zone)
         {
             Debug.Assert(list.Count > 0);
 
-            for (int i = 0; i < list.Count; ++i)
-            {
-                if (list[i] == zone)
-                {
-                    return i;
-                }
-            }
-
-            return 0;
+            return list.IndexOf(zone);
         }
 
         public static bool GetStepInfo(IStep step, List<IStep> referenceList, out List<IStep> owningList, out UInt16 index)
@@ -444,6 +428,7 @@ namespace GarminFitnessPlugin.Controller
             fileName = fileName.Replace('|', '_');
             fileName = fileName.Replace('.', '_');
             fileName = fileName.Replace('&', '_');
+            fileName = fileName.Replace('%', '_');
 
             if (format == GarminWorkoutManager.FileFormats.TCX)
             {
