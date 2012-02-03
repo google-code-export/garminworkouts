@@ -97,13 +97,27 @@ namespace GarminFitnessPlugin.Controller
             return newTarget;
         }
 
-        static public ITarget Create(ITarget.TargetType type, XmlNode parentNode, RegularStep parent)
+        static public ITarget Create(XmlNode parentNode, RegularStep parent)
         {
-            ITarget newTarget = Create(type, parent);
+            ITarget newTarget = null;
 
-            newTarget.Deserialize(parentNode);
-            parent.Target = newTarget;
-            
+            if (parentNode.Attributes.Count == 1 && parentNode.Attributes[0].Name == Constants.XsiTypeTCXString)
+            {
+                string stepTypeString = parentNode.Attributes[0].Value;
+
+                for (int i = 0; i < (int)ITarget.TargetType.TargetTypeCount; ++i)
+                {
+                    if (stepTypeString == Constants.TargetTypeTCXString[i])
+                    {
+                        newTarget = TargetFactory.Create((ITarget.TargetType)i, parent);
+                        newTarget.Deserialize(parentNode);
+                        parent.Target = newTarget;
+
+                        break;
+                    }
+                }
+            }
+
             return newTarget;
         }
 

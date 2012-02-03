@@ -14,7 +14,7 @@ namespace GarminFitnessPlugin.Data
         {
         }
 
-        public PowerRangeTarget(Byte minPower, Byte maxPower,
+        public PowerRangeTarget(UInt16 minPower, UInt16 maxPower,
                                 bool isPercentFTP, BasePowerTarget baseTarget)
             : this(baseTarget)
         {
@@ -220,7 +220,7 @@ namespace GarminFitnessPlugin.Data
 
         private void ValidateValue(UInt16 minPower, UInt16 maxPower, bool isPercentFTP)
         {
-            if (IsPercentFTP)
+            if (isPercentFTP)
             {
                 Debug.Assert(m_MinPowerPercent.IsInRange(minPower));
                 Debug.Assert(m_MaxPowerPercent.IsInRange(maxPower));

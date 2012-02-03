@@ -43,7 +43,7 @@ namespace GarminFitnessPlugin.Data
             GarminFitnessString categoryRefID = new GarminFitnessString(zoneRefID);
             categoryRefID.Serialize(stream);
 
-            GarminFitnessInt32Range zoneIndex = new GarminFitnessInt32Range(Utils.FindIndexForZone(zones.Zones, Zone));
+            GarminFitnessInt32Range zoneIndex = new GarminFitnessInt32Range(zones.Zones.IndexOf(Zone));
             zoneIndex.Serialize(stream);
 
             GarminFitnessBool dirty = new GarminFitnessBool(IsDirty);

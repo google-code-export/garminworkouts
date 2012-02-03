@@ -47,7 +47,7 @@ namespace GarminFitnessUnitTests
             timeDuration.Serialize(database, "TimeDuration2", testDocument);
             int durationPosition2 = testDocument.InnerXml.IndexOf(timeDurationResult2);
             Assert.GreaterOrEqual(durationPosition2, 0, "Invalid time duration serialization");
-            Assert.AreNotEqual(durationPosition1, durationPosition2, "Time durations serialization don't differ");
+            Assert.Greater(durationPosition2, durationPosition1, "Time durations serialization don't differ");
 
             // Distance
             DistanceDuration distanceDuration = new DistanceDuration(1, Length.Units.Kilometer, placeholderStep);
@@ -59,7 +59,7 @@ namespace GarminFitnessUnitTests
             distanceDuration.Serialize(database, "DistanceDuration2", testDocument);
             durationPosition2 = testDocument.InnerXml.IndexOf(distanceDurationResult2);
             Assert.GreaterOrEqual(durationPosition2, 0, "Invalid distance duration serialization");
-            Assert.AreNotEqual(durationPosition1, durationPosition2, "Distance durations serialization don't differ");
+            Assert.Greater(durationPosition2, durationPosition1, "Distance durations serialization don't differ");
 
             // Calories
             CaloriesDuration caloriesDuration = new CaloriesDuration(550, placeholderStep);
@@ -71,7 +71,7 @@ namespace GarminFitnessUnitTests
             caloriesDuration.Serialize(database, "CaloriesDuration2", testDocument);
             durationPosition2 = testDocument.InnerXml.IndexOf(caloriesDurationResult2);
             Assert.GreaterOrEqual(durationPosition2, 0, "Invalid calories duration serialization");
-            Assert.AreNotEqual(durationPosition1, durationPosition2, "Calories durations serialization don't differ");
+            Assert.Greater(durationPosition2, durationPosition1, "Calories durations serialization don't differ");
 
             // HR above
             HeartRateAboveDuration hrAboveDuration = new HeartRateAboveDuration(160, false, placeholderStep);
@@ -83,7 +83,7 @@ namespace GarminFitnessUnitTests
             hrAboveDuration.Serialize(database, "HRAboveDuration2", testDocument);
             durationPosition2 = testDocument.InnerXml.IndexOf(hrAboveDurationResult2);
             Assert.GreaterOrEqual(durationPosition2, 0, "Invalid HRAbove duration serialization");
-            Assert.AreNotEqual(durationPosition1, durationPosition2, "HRAbove durations serialization don't differ");
+            Assert.Greater(durationPosition2, durationPosition1, "HRAbove durations serialization don't differ");
 
             hrAboveDuration.IsPercentageMaxHeartRate = true;
             hrAboveDuration.MaxHeartRate = 50;
@@ -95,7 +95,7 @@ namespace GarminFitnessUnitTests
             hrAboveDuration.Serialize(database, "HRAboveDuration4", testDocument);
             durationPosition2 = testDocument.InnerXml.IndexOf(hrAboveDurationResult4);
             Assert.GreaterOrEqual(durationPosition2, 0, "Invalid HRAbove duration serialization");
-            Assert.AreNotEqual(durationPosition1, durationPosition2, "HRAbove %Max durations serialization don't differ");
+            Assert.Greater(durationPosition2, durationPosition1, "HRAbove %Max durations serialization don't differ");
 
             // HR Below
             HeartRateBelowDuration hrBelowDuration = new HeartRateBelowDuration(160, false, placeholderStep);
@@ -107,7 +107,7 @@ namespace GarminFitnessUnitTests
             hrBelowDuration.Serialize(database, "HRBelowDuration2", testDocument);
             durationPosition2 = testDocument.InnerXml.IndexOf(hrBelowDurationResult2);
             Assert.GreaterOrEqual(durationPosition2, 0, "Invalid HRBelow duration serialization");
-            Assert.AreNotEqual(durationPosition1, durationPosition2, "HRBelow durations serialization don't differ");
+            Assert.Greater(durationPosition2, durationPosition1, "HRBelow durations serialization don't differ");
 
             hrBelowDuration.IsPercentageMaxHeartRate = true;
             hrBelowDuration.MinHeartRate = 50;
@@ -119,7 +119,7 @@ namespace GarminFitnessUnitTests
             hrBelowDuration.Serialize(database, "HRBelowDuration4", testDocument);
             durationPosition2 = testDocument.InnerXml.IndexOf(hrBelowDurationResult4);
             Assert.GreaterOrEqual(durationPosition2, 0, "Invalid HRBelow duration serialization");
-            Assert.AreNotEqual(durationPosition1, durationPosition2, "HRBelow %Max durations serialization don't differ");
+            Assert.Greater(durationPosition2, durationPosition1, "HRBelow %Max durations serialization don't differ");
 
             // Power above
             try
