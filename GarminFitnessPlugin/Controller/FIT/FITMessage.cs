@@ -7,7 +7,7 @@ using GarminFitnessPlugin.Data;
 
 namespace GarminFitnessPlugin.Controller
 {
-    public class FITMessage
+    class FITMessage
     {
         public FITMessage(FITGlobalMessageIds messageType) :
             this(messageType, BitConverter.IsLittleEndian)

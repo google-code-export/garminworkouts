@@ -8,7 +8,7 @@ using ZoneFiveSoftware.Common.Data.Fitness;
 
 namespace GarminFitnessPlugin.Data
 {
-    public class WorkoutPart : IWorkout
+    class WorkoutPart : IWorkout
     {
         public WorkoutPart(Workout fullWorkout, int partNumber)
         {
@@ -144,6 +144,16 @@ namespace GarminFitnessPlugin.Data
             throw new Exception("Cannot deserialize a WorkoutPart");
         }
 #endregion
+
+        public override void Deserialize(GarXFaceNet._Workout workout)
+        {
+            throw new Exception("Cannot deserialize a WorkoutPart");
+        }
+
+        public override void DeserializeOccurances(GarXFaceNet._WorkoutOccuranceList occuranceList)
+        {
+            throw new Exception("Cannot deserialize a WorkoutPart");
+        }
 
         public override void DeserializeFromFIT(FITMessage workoutMessage)
         {

@@ -7,7 +7,7 @@ using GarminFitnessPlugin.Data;
 
 namespace GarminFitnessPlugin.Controller
 {
-    public class TargetFactory
+    class TargetFactory
     {
         static public ITarget Create(ITarget.TargetType type, RegularStep parent)
         {
@@ -97,27 +97,13 @@ namespace GarminFitnessPlugin.Controller
             return newTarget;
         }
 
-        static public ITarget Create(XmlNode parentNode, RegularStep parent)
+        static public ITarget Create(ITarget.TargetType type, XmlNode parentNode, RegularStep parent)
         {
-            ITarget newTarget = null;
+            ITarget newTarget = Create(type, parent);
 
-            if (parentNode.Attributes.Count == 1 && parentNode.Attributes[0].Name == Constants.XsiTypeTCXString)
-            {
-                string stepTypeString = parentNode.Attributes[0].Value;
-
-                for (int i = 0; i < (int)ITarget.TargetType.TargetTypeCount; ++i)
-                {
-                    if (stepTypeString == Constants.TargetTypeTCXString[i])
-                    {
-                        newTarget = TargetFactory.Create((ITarget.TargetType)i, parent);
-                        newTarget.Deserialize(parentNode);
-                        parent.Target = newTarget;
-
-                        break;
-                    }
-                }
-            }
-
+            newTarget.Deserialize(parentNode);
+            parent.Target = newTarget;
+            
             return newTarget;
         }
 

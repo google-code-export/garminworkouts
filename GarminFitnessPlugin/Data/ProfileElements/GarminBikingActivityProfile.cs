@@ -10,7 +10,7 @@ using GarminFitnessPlugin.Controller;
 
 namespace GarminFitnessPlugin.Data
 {
-    public class GarminBikingActivityProfile : GarminActivityProfile
+    class GarminBikingActivityProfile : GarminActivityProfile
     {
         public GarminBikingActivityProfile(GarminCategories category) :
             base(category)

@@ -5,7 +5,7 @@ using GarminFitnessPlugin.Controller;
 
 namespace GarminFitnessPlugin
 {
-    public class Constants
+    class Constants
     {
         public static readonly double Delta = 0.00005;
 

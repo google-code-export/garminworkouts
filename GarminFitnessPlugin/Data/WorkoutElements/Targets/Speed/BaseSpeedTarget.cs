@@ -9,7 +9,7 @@ using System.ComponentModel;
 
 namespace GarminFitnessPlugin.Data
 {
-    public class BaseSpeedTarget : ITarget
+    class BaseSpeedTarget : ITarget
     {
         public abstract class IConcreteSpeedTarget : IPluginSerializable, IXMLSerializable, IDirty
         {
@@ -47,6 +47,9 @@ namespace GarminFitnessPlugin.Data
             public virtual void Deserialize(XmlNode parentNode)
             {
             }
+
+            public abstract void Serialize(GarXFaceNet._Workout._Step step);
+            public abstract void Deserialize(GarXFaceNet._Workout._Step step);
 
             protected void TriggerTargetChangedEvent(IConcreteSpeedTarget target, PropertyChangedEventArgs args)
             {
@@ -205,6 +208,16 @@ namespace GarminFitnessPlugin.Data
                 {
                 }
             }
+        }
+
+        public override void Serialize(GarXFaceNet._Workout._Step step)
+        {
+            ConcreteTarget.Serialize(step);
+        }
+
+        public override void Deserialize(GarXFaceNet._Workout._Step step)
+        {
+            ConcreteTarget.Deserialize(step);
         }
 
         public override void HandleTargetOverride(XmlNode extensionNode)

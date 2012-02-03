@@ -4,7 +4,7 @@ using System.Text;
 
 namespace GarminFitnessPlugin.Data
 {
-    public interface IDirty
+    interface IDirty
     {
         bool IsDirty
         {

@@ -9,7 +9,7 @@ using GarminFitnessPlugin.Controller;
 
 namespace GarminFitnessPlugin.Data
 {
-    public class SpeedRangeTarget : BaseSpeedTarget.IConcreteSpeedTarget
+    class SpeedRangeTarget : BaseSpeedTarget.IConcreteSpeedTarget
     {
         public SpeedRangeTarget(BaseSpeedTarget baseTarget)
             : base(SpeedTargetType.Range, baseTarget)
@@ -203,6 +203,20 @@ namespace GarminFitnessPlugin.Data
                                            Length.Units.Meter);
                 }
             }
+        }
+
+        public override void Serialize(GarXFaceNet._Workout._Step step)
+        {
+            step.SetTargetType(0);
+            step.SetTargetValue(0);
+            step.SetTargetCustomZoneLow((float)MinMetersPerSecond);
+            step.SetTargetCustomZoneHigh((float)MaxMetersPerSecond);
+        }
+
+        public override void Deserialize(GarXFaceNet._Workout._Step step)
+        {
+            MinMetersPerSecond = step.GetTargetCustomZoneLow();
+            MaxMetersPerSecond = step.GetTargetCustomZoneHigh();
         }
 
         public double GetMinSpeedInBaseUnitsPerHour()

@@ -5,7 +5,7 @@ using ZoneFiveSoftware.Common.Data.Fitness;
 
 namespace GarminFitnessPlugin.Data
 {
-    public class GarminFitnessNamedSpeedZone
+    class GarminFitnessNamedSpeedZone
     {
         public GarminFitnessNamedSpeedZone(double min, double max, string name)
         {

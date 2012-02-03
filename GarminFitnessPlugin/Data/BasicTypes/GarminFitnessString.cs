@@ -6,7 +6,7 @@ using System.Xml;
 
 namespace GarminFitnessPlugin.Data
 {
-    public class GarminFitnessString : IPluginSerializable, IXMLSerializable
+    class GarminFitnessString : IPluginSerializable, IXMLSerializable
     {
         public GarminFitnessString()
             : this(String.Empty)

@@ -8,7 +8,7 @@ using GarminFitnessPlugin.Data;
 
 namespace GarminFitnessPlugin.Controller
 {
-    public class FITMessageField
+    class FITMessageField
     {
         private enum DataType
         {

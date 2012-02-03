@@ -228,6 +228,9 @@
   <data name="DistanceDurationLabelText" xml:space="preserve">
     <value>Hvor langt?</value>
   </data>
+  <data name="DoubleRangeValidationText" xml:space="preserve">
+    <value>Verdien må være et desimaltall mellom {0:0.00} og {1:0.00}</value>
+  </data>
   <data name="EditBikingProfileText" xml:space="preserve">
     <value>Sykkelprofil</value>
   </data>
@@ -392,6 +395,9 @@
   </data>
   <data name="IndependentModeRadioButtonText" xml:space="preserve">
     <value>Jeg ønsker å sette opp sonene uavhengig av hverandre</value>
+  </data>
+  <data name="IntegerRangeValidationText" xml:space="preserve">
+    <value>Verdien må være et heltall mellom {0} og {1}</value>
   </data>
   <data name="InvalidWorkoutNameText" xml:space="preserve">
     <value>Navnet du gav trenigsprogrammet er ikke gyldig. Det må være unikt, og ikke blankt.</value>
@@ -618,6 +624,9 @@
   <data name="TimeDurationLabelText" xml:space="preserve">
     <value>Hvor lang tid?</value>
   </data>
+  <data name="TimeRangeValidationText" xml:space="preserve">
+    <value>Verdien må være et tidsrom mellom {0:00}:{1:00} og {2:00}:{3:00}</value>
+  </data>
   <data name="ToDeviceText" xml:space="preserve">
     <value>Til enhet</value>
   </data>
@@ -635,6 +644,9 @@
   </data>
   <data name="UseParentCategoryText" xml:space="preserve">
     <value>Benytt kategorien over</value>
+  </data>
+  <data name="ValueValidationTitleText" xml:space="preserve">
+    <value>Ugyldig verdi</value>
   </data>
   <data name="WarningText" xml:space="preserve">
     <value>Advarsel</value>

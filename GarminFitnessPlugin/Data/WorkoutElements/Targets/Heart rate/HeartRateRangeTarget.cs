@@ -7,7 +7,7 @@ using GarminFitnessPlugin.Controller;
 
 namespace GarminFitnessPlugin.Data
 {
-    public class HeartRateRangeTarget : BaseHeartRateTarget.IConcreteHeartRateTarget
+    class HeartRateRangeTarget : BaseHeartRateTarget.IConcreteHeartRateTarget
     {
         public HeartRateRangeTarget(BaseHeartRateTarget baseTarget)
             : base(HeartRateTargetType.Range, baseTarget)
@@ -193,6 +193,48 @@ namespace GarminFitnessPlugin.Data
             // Make sure min and max are in the right order, GTC doesn't enforce
             IsPercentMaxHeartRate = isPercentMax;
             SetValues(Math.Min(InternalMinHeartRate, InternalMaxHeartRate), Math.Max(InternalMinHeartRate, InternalMaxHeartRate), isPercentMax);
+        }
+
+        public override void Serialize(GarXFaceNet._Workout._Step step)
+        {
+            step.SetTargetType(1);
+            step.SetTargetValue(0);
+
+            if (IsPercentMaxHeartRate)
+            {
+                step.SetTargetCustomZoneLow(MinHeartRate);
+                step.SetTargetCustomZoneHigh(MaxHeartRate);
+            }
+            else
+            {
+                step.SetTargetCustomZoneLow(MinHeartRate + 100);
+                step.SetTargetCustomZoneHigh(MaxHeartRate + 100);
+            }
+        }
+
+        public override void Deserialize(GarXFaceNet._Workout._Step step)
+        {
+            float minHR = step.GetTargetCustomZoneLow();
+            float maxHR = step.GetTargetCustomZoneHigh();
+
+            if (minHR <= 100 && maxHR <= 100)
+            {
+                m_IsPercentMaxHeartRate.Value = true;
+                m_MinHeartRatePercent.Value = (Byte)minHR;
+                m_MaxHeartRatePercent.Value = (Byte)maxHR;
+            }
+            else if (minHR > 100 && maxHR > 100)
+            {
+                m_IsPercentMaxHeartRate.Value = false;
+                m_MinHeartRateBPM.Value = (Byte)(minHR - 100);
+                m_MaxHeartRateBPM.Value = (Byte)(maxHR - 100);
+            }
+            else
+            {
+                Debug.Assert(false, "both min & max cadence should be either in percent max or BPM, cannot mix & match");
+            }
+
+            ValidateValue(MinHeartRate, MaxHeartRate, IsPercentMaxHeartRate);
         }
 
         public void SetIsPercentMax(bool isPercentMax)

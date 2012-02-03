@@ -2,7 +2,7 @@ using GarminFitnessPlugin.Controller;
 
 namespace GarminFitnessPlugin.Data
 {
-    public enum GarminCategories
+    enum GarminCategories
     {
         [GarminCategoryStringProviderAttribute("RunningText")]
         Running = 0,

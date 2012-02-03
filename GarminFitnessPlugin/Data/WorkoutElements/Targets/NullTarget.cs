@@ -7,7 +7,7 @@ using GarminFitnessPlugin.Controller;
 
 namespace GarminFitnessPlugin.Data
 {
-    public class NullTarget : ITarget
+    class NullTarget : ITarget
     {
         public NullTarget(IStep parent)
             : base(TargetType.Null, parent)
@@ -50,6 +50,15 @@ namespace GarminFitnessPlugin.Data
         }
 
         public override void HandleTargetOverride(XmlNode extensionNode)
+        {
+        }
+
+        public override void Serialize(GarXFaceNet._Workout._Step step)
+        {
+            step.SetTargetType(2);
+        }
+
+        public override void Deserialize(GarXFaceNet._Workout._Step step)
         {
         }
 

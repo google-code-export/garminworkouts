@@ -9,7 +9,7 @@ using GarminFitnessPlugin.Controller;
 
 namespace GarminFitnessPlugin.Data
 {
-    public class HeartRateZoneSTTarget : BaseHeartRateTarget.IConcreteHeartRateTarget
+    class HeartRateZoneSTTarget : BaseHeartRateTarget.IConcreteHeartRateTarget
     {
         public HeartRateZoneSTTarget(BaseHeartRateTarget baseTarget)
             : base(HeartRateTargetType.ZoneST, baseTarget)
@@ -41,7 +41,7 @@ namespace GarminFitnessPlugin.Data
             GarminFitnessString categoryRefID = new GarminFitnessString(zoneRefID);
             categoryRefID.Serialize(stream);
 
-            GarminFitnessInt32Range zoneIndex = new GarminFitnessInt32Range(zones.Zones.IndexOf(Zone));
+            GarminFitnessInt32Range zoneIndex = new GarminFitnessInt32Range(Utils.FindIndexForZone(zones.Zones, Zone));
             zoneIndex.Serialize(stream);
 
             GarminFitnessBool dirty = new GarminFitnessBool(IsDirty);
@@ -199,6 +199,20 @@ namespace GarminFitnessPlugin.Data
         }
 
         public override void Deserialize(XmlNode parentNode)
+        {
+            // We should not end up here, the Xml deserialization should pass by extensions
+            Debug.Assert(false);
+        }
+
+        public override void Serialize(GarXFaceNet._Workout._Step step)
+        {
+            step.SetTargetType(1);
+            step.SetTargetValue(0);
+            step.SetTargetCustomZoneLow(Zone.Low);
+            step.SetTargetCustomZoneHigh(Zone.High);
+        }
+
+        public override void Deserialize(GarXFaceNet._Workout._Step step)
         {
             // We should not end up here, the Xml deserialization should pass by extensions
             Debug.Assert(false);

@@ -8,7 +8,7 @@ using GarminFitnessPlugin.Controller;
 
 namespace GarminFitnessPlugin.Data
 {
-    public class WorkoutStepsList : IPluginSerializable, IXMLSerializable, IEnumerable<IStep>
+    class WorkoutStepsList : IPluginSerializable, IXMLSerializable, IEnumerable<IStep>
     {
         public WorkoutStepsList(IWorkout parentWorkout)
         {
@@ -240,6 +240,39 @@ namespace GarminFitnessPlugin.Data
 
 #endregion
 
+        public UInt32 Serialize(GarXFaceNet._Workout workout, UInt32 stepIndex)
+        {
+            UInt32 internalStepIndex = stepIndex;
+
+            foreach (IStep step in m_InternalStepList)
+            {
+                internalStepIndex = step.Serialize(workout, internalStepIndex);
+            }
+
+            return internalStepIndex;
+        }
+
+        public void Deserialize(GarXFaceNet._Workout workout)
+        {
+            for (UInt32 i = 0; i < workout.GetNumValidSteps(); ++i)
+            {
+                GarXFaceNet._Workout._Step step = workout.GetStep(i);
+                IStep newStep;
+
+                if (step.GetDurationType() == GarXFaceNet._Workout._Step.DurationTypes.Repeat)
+                {
+                    newStep = new RepeatStep(m_ParentWorkout.ConcreteWorkout);
+                }
+                else
+                {
+                    newStep = new RegularStep(m_ParentWorkout.ConcreteWorkout);
+                }
+
+                newStep.Deserialize(workout, i);
+                AddStepToRoot(newStep);
+            }
+        }
+
         private void HandleSTExtension(XmlNode extensionsNode)
         {
             foreach (XmlNode currentExtension in extensionsNode.ChildNodes)
@@ -278,14 +311,13 @@ namespace GarminFitnessPlugin.Data
                             }
                         }
                         else if (childNode.Name == "Target" && childNode.Attributes.Count == 1 &&
-                                 childNode.Attributes[0].Name == Constants.XsiTypeTCXString &&
-                                 childNode.Attributes[0].Value == Constants.TargetTypeTCXString[(int)ITarget.TargetType.Power])
+                            childNode.Attributes[0].Name == Constants.XsiTypeTCXString &&
+                            childNode.Attributes[0].Value == Constants.TargetTypeTCXString[(int)ITarget.TargetType.Power])
                         {
                             Debug.Assert(step != null && step.Type == IStep.StepType.Regular);
                             RegularStep concreteStep = (RegularStep)step;
 
-                            TargetFactory.Create(ITarget.TargetType.Power, concreteStep);
-                            concreteStep.Target.Deserialize(childNode);
+                            TargetFactory.Create(ITarget.TargetType.Power, childNode, concreteStep);
                         }
                     }
                 }

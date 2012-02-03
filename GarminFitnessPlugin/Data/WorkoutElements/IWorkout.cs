@@ -9,7 +9,7 @@ using GarminFitnessPlugin.Controller;
 
 namespace GarminFitnessPlugin.Data
 {
-    public abstract class IWorkout : IPluginSerializable, IXMLSerializable
+    abstract class IWorkout : IPluginSerializable, IXMLSerializable
     {
 #region IXMLSerializable Members
 
@@ -147,6 +147,45 @@ namespace GarminFitnessPlugin.Data
 
 #endregion
 
+        public void Serialize(GarXFaceNet._WorkoutList workoutList)
+        {
+            if (GetSplitPartsCount() > 1)
+            {
+                List<WorkoutPart> splitParts = ConcreteWorkout.SplitInSeperateParts();
+
+                foreach (WorkoutPart part in splitParts)
+                {
+                    part.Serialize(workoutList);
+                }
+            }
+            else
+            {
+                GarXFaceNet._Workout workout = new GarXFaceNet._Workout();
+
+                workout.SetName(Name);
+                workout.SetNumValidSteps((UInt32)Steps.Count);
+                workout.SetSportType((GarXFaceNet._Workout.SportTypes)Options.Instance.GetGarminCategory(Category));
+
+                Steps.Serialize(workout, 0);
+
+                workoutList.Add(workout);
+            }
+        }
+
+        public void SerializeOccurances(GarXFaceNet._WorkoutOccuranceList occuranceList)
+        {
+            foreach (DateTime scheduledDate in ScheduledDates)
+            {
+                GarXFaceNet._WorkoutOccurance newOccurance = new GarXFaceNet._WorkoutOccurance();
+                TimeSpan timeSinceReference = scheduledDate.AddHours(12).ToUniversalTime() - new DateTime(1989, 12, 31);
+
+                newOccurance.SetWorkoutName(Name);
+                newOccurance.SetDay((UInt32)(timeSinceReference.TotalSeconds));
+
+                occuranceList.Add(newOccurance);
+            }
+        }
+
         public virtual void SerializetoFIT(Stream stream)
         {
             Debug.Assert(GetSplitPartsCount() == 1);
@@ -215,6 +254,8 @@ namespace GarminFitnessPlugin.Data
         }
 
         public abstract void DeserializeFromFIT(FITMessage workoutMessage);
+        public abstract void Deserialize(GarXFaceNet._Workout workout);
+        public abstract void DeserializeOccurances(GarXFaceNet._WorkoutOccuranceList occuranceList);
 
         public List<IStep> DeserializeSteps(Stream stream)
         {

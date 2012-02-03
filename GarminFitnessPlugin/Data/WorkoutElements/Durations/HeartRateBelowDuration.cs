@@ -7,7 +7,7 @@ using GarminFitnessPlugin.Controller;
 
 namespace GarminFitnessPlugin.Data
 {
-    public class HeartRateBelowDuration : IDuration
+    class HeartRateBelowDuration : IDuration
     {
         public HeartRateBelowDuration(IStep parent)
             : base(DurationType.HeartRateBelow, parent)
@@ -19,8 +19,8 @@ namespace GarminFitnessPlugin.Data
         {
             ValidateValue(minHeartRate, isPercentageMaxHeartRate);
 
-            m_IsPercentageMaxHR.Value = isPercentageMaxHeartRate;
-            InternalMinHeartRate.Value = minHeartRate;
+            MinHeartRate = minHeartRate;
+            IsPercentageMaxHeartRate = isPercentageMaxHeartRate;
         }
 
         public HeartRateBelowDuration(Stream stream, DataVersion version, IStep parent)
@@ -115,6 +115,38 @@ namespace GarminFitnessPlugin.Data
             }
         }
 
+        public override void Serialize(GarXFaceNet._Workout._Step step)
+        {
+            step.SetDurationType(GarXFaceNet._Workout._Step.DurationTypes.HeartRateGreaterThan);
+
+            if (IsPercentageMaxHeartRate)
+            {
+                step.SetDurationValue(InternalMinHeartRate);
+            }
+            else
+            {
+                step.SetDurationValue((UInt16)(InternalMinHeartRate + 100));
+            }
+        }
+
+        public override void Deserialize(GarXFaceNet._Workout._Step step)
+        {
+            UInt16 duration = (UInt16)step.GetDurationValue();
+
+            if (duration <= 100)
+            {
+                m_IsPercentageMaxHR.Value = true;
+                m_MinHeartRatePercent.Value = (Byte)duration;
+            }
+            else
+            {
+                m_IsPercentageMaxHR.Value = false;
+                m_MinHeartRateBPM.Value = (Byte)(duration - 100);
+            }
+
+            ValidateValue(MinHeartRate, IsPercentageMaxHeartRate);
+        }
+
         private void ValidateValue(Byte minHeartRate, bool isPercentageMaxHeartRate)
         {
             if (isPercentageMaxHeartRate)
@@ -134,8 +166,8 @@ namespace GarminFitnessPlugin.Data
             {
                 if (IsPercentageMaxHeartRate != value)
                 {
-                    m_IsPercentageMaxHR.Value = value;
                     ValidateValue(MinHeartRate, value);
+                    m_IsPercentageMaxHR.Value = value;
 
                     TriggerDurationChangedEvent(new PropertyChangedEventArgs("IsPercentageMaxHeartRate"));
                 }
@@ -149,8 +181,9 @@ namespace GarminFitnessPlugin.Data
             {
                 if (MinHeartRate != value)
                 {
-                    InternalMinHeartRate.Value = value;
                     ValidateValue(value, m_IsPercentageMaxHR);
+
+                    InternalMinHeartRate.Value = value;
 
                     TriggerDurationChangedEvent(new PropertyChangedEventArgs("MinHeartRate"));
                 }

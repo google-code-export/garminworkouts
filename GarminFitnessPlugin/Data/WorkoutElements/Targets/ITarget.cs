@@ -7,7 +7,7 @@ using System.ComponentModel;
 
 namespace GarminFitnessPlugin.Data
 {
-    public abstract class ITarget : IPluginSerializable, IXMLSerializable, IDirty
+    abstract class ITarget : IPluginSerializable, IXMLSerializable, IDirty
     {
         protected ITarget(TargetType type, IStep parent)
         {
@@ -50,6 +50,9 @@ namespace GarminFitnessPlugin.Data
         }
 
         public abstract void HandleTargetOverride(XmlNode extensionNode);
+
+        public abstract void Serialize(GarXFaceNet._Workout._Step step);
+        public abstract void Deserialize(GarXFaceNet._Workout._Step step);
 
         public TargetType Type
         {

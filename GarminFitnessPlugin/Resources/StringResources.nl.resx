@@ -228,6 +228,9 @@
   <data name="DistanceDurationLabelText" xml:space="preserve">
     <value>Hoe ver?</value>
   </data>
+  <data name="DoubleRangeValidationText" xml:space="preserve">
+    <value>Waarde moet een decimaal getal zijn tussen {0:0.00} en {1:0.00}</value>
+  </data>
   <data name="EditBikingProfileText" xml:space="preserve">
     <value>Fiets profiel</value>
   </data>
@@ -392,6 +395,9 @@
   </data>
   <data name="IndependentModeRadioButtonText" xml:space="preserve">
     <value>Ik wil de zones onafhankelijk van elkaar instellen</value>
+  </data>
+  <data name="IntegerRangeValidationText" xml:space="preserve">
+    <value>Waarde moet een geheel getal zijn tussen {0} en {1}</value>
   </data>
   <data name="InvalidWorkoutNameText" xml:space="preserve">
     <value>De ingevoerde naam voor de training is onbruikbaar. De naam moet uniek zijn en mag ook niet leeg zijn.</value>
@@ -621,6 +627,9 @@
   <data name="TimeDurationLabelText" xml:space="preserve">
     <value>Hoeveel tijd?</value>
   </data>
+  <data name="TimeRangeValidationText" xml:space="preserve">
+    <value>Waarde moet een tijd zijn tussen {0:00}:{1:00} en {2:00}:{3:00}</value>
+  </data>
   <data name="ToDeviceText" xml:space="preserve">
     <value>Naar Apparaat</value>
   </data>
@@ -638,6 +647,9 @@
   </data>
   <data name="UseParentCategoryText" xml:space="preserve">
     <value>Gebruik hogere categorie</value>
+  </data>
+  <data name="ValueValidationTitleText" xml:space="preserve">
+    <value>Onjuiste waarde</value>
   </data>
   <data name="WarningText" xml:space="preserve">
     <value>Waarschuwing</value>

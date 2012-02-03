@@ -9,7 +9,7 @@ using GarminFitnessPlugin.Controller;
 
 namespace GarminFitnessPlugin.Data
 {
-    public class RepeatStep : IStep
+    class RepeatStep : IStep
     {
         public RepeatStep(Workout parent)
             : this(2, parent)
@@ -290,6 +290,64 @@ namespace GarminFitnessPlugin.Data
             for (int i = 0; i < stepsToRepeat.Count; ++i)
             {
                 m_StepsToRepeat.Add(stepsToRepeat[i]);
+            }
+        }
+
+        public override UInt32 Serialize(GarXFaceNet._Workout workout, UInt32 stepIndex)
+        {
+            UInt32 firstStepIndex = stepIndex;
+
+            foreach (IStep currentStep in StepsToRepeat)
+            {
+                stepIndex = currentStep.Serialize(workout, stepIndex);
+            }
+
+            GarXFaceNet._Workout._Step repeatStep = workout.GetStep(stepIndex);
+
+            repeatStep.SetCustomName(String.Empty);
+
+            repeatStep.SetDurationType(GarXFaceNet._Workout._Step.DurationTypes.Repeat);
+            repeatStep.SetDurationValue(firstStepIndex + 1);
+
+            Debug.Assert(Duration is RepeatCountDuration);
+
+            RepeatCountDuration duration = Duration as RepeatCountDuration;
+            repeatStep.SetTargetValue(duration.RepetitionCount);
+
+            return stepIndex + 1;
+        }
+
+        public override void Deserialize(GarXFaceNet._Workout workout, UInt32 stepIndex)
+        {
+            GarXFaceNet._Workout._Step step = workout.GetStep(stepIndex);
+            Int32 precedingStepsToRepeat = (Int32)((step.GetDurationValue() - 1) - stepIndex);
+            List<IStep> stepsToRepeat = new List<IStep>();
+
+            while(precedingStepsToRepeat > 0)
+            {
+                Int32 precedingStepIndex = ParentWorkout.Steps.Count - 1;
+                Int32 precedingStepCounter = ParentWorkout.Steps[precedingStepIndex].StepCount;
+
+                while (precedingStepCounter < precedingStepsToRepeat)
+                {
+                    precedingStepCounter += ParentWorkout.Steps[precedingStepIndex].StepCount;
+                    precedingStepIndex--;
+                }
+
+                IStep precedingStep = ParentWorkout.Steps[precedingStepIndex];
+
+                stepsToRepeat.Add(precedingStep);
+
+                precedingStepsToRepeat -= precedingStep.StepCount;
+            }
+
+            // Officialize result in workout
+            ParentConcreteWorkout.Steps.RemoveSteps(stepsToRepeat, false);
+            // In case the repeat wasn't yet registered on the workout
+            StepsToRepeat.Clear();
+            foreach (IStep currentStep in stepsToRepeat)
+            {
+                StepsToRepeat.Add(currentStep);
             }
         }
 

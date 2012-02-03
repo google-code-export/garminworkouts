@@ -6,7 +6,7 @@ using GarminFitnessPlugin.Controller;
 
 namespace GarminFitnessPlugin.Data
 {
-    public class GarminFitnessUInt32Range : IPluginSerializable, IXMLSerializable, IComparable<GarminFitnessUInt32Range>
+    class GarminFitnessUInt32Range : IPluginSerializable, IXMLSerializable, IComparable<GarminFitnessUInt32Range>
     {
         public GarminFitnessUInt32Range(UInt32 value)
             : this(value, UInt32.MinValue, UInt32.MaxValue)

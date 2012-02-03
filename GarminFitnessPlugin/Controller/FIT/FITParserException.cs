@@ -4,7 +4,7 @@ using System.Text;
 
 namespace GarminFitnessPlugin.Controller
 {
-    public class FITParserException : Exception
+    class FITParserException : Exception
     {
         public FITParserException(string message) :
             base(message)

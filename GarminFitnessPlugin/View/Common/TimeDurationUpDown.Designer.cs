@@ -124,7 +124,6 @@ namespace GarminFitnessPlugin.View
             // UpDownArrows
             // 
             this.UpDownArrows.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.UpDownArrows.Enabled = false;
             this.UpDownArrows.Location = new System.Drawing.Point(66, 2);
             this.UpDownArrows.Name = "UpDownArrows";
             this.UpDownArrows.Size = new System.Drawing.Size(18, 20);

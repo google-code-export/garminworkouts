@@ -11,7 +11,7 @@ using GarminFitnessPlugin.Controller;
 
 namespace GarminFitnessPlugin.Data
 {
-    public class RegularStep : IStep
+    class RegularStep : IStep
     {
         public enum StepIntensity
         {
@@ -275,11 +275,37 @@ namespace GarminFitnessPlugin.Data
                 }
                 else if (child.Name == "Duration")
                 {
-                    durationLoaded = (DurationFactory.Create(child, this) != null);
+                    if (child.Attributes.Count == 1 && child.Attributes[0].Name == Constants.XsiTypeTCXString)
+                    {
+                        string stepTypeString = child.Attributes[0].Value;
+
+                        for (int j = 0; j < (int)IDuration.DurationType.DurationTypeCount; ++j)
+                        {
+                            if (stepTypeString == Constants.DurationTypeTCXString[j])
+                            {
+                                DurationFactory.Create((IDuration.DurationType)j, child, this);
+                                durationLoaded = true;
+                                break;
+                            }
+                        }
+                    }
                 }
                 else if (child.Name == "Target")
                 {
-                    targetLoaded = (TargetFactory.Create(child, this) != null);
+                    if (child.Attributes.Count == 1 && child.Attributes[0].Name == Constants.XsiTypeTCXString)
+                    {
+                        string stepTypeString = child.Attributes[0].Value;
+
+                        for (int j = 0; j < (int)ITarget.TargetType.TargetTypeCount; ++j)
+                        {
+                            if (stepTypeString == Constants.TargetTypeTCXString[j])
+                            {
+                                TargetFactory.Create((ITarget.TargetType)j, child, this);
+                                targetLoaded = true;
+                                break;
+                            }
+                        }
+                    }
                 }
                 else if (child.Name == "Intensity")
                 {
@@ -304,6 +330,49 @@ namespace GarminFitnessPlugin.Data
             if (!durationLoaded || !targetLoaded || !intensityLoaded)
             {
                 throw new GarminFitnessXmlDeserializationException("Information missing in the XML node", parentNode);
+            }
+        }
+
+        public override UInt32 Serialize(GarXFaceNet._Workout workout, UInt32 stepIndex)
+        {
+            GarXFaceNet._Workout._Step step = workout.GetStep(stepIndex);
+
+            step.SetCustomName(Name);
+            step.SetIntensity((Intensity == StepIntensity.Rest || Intensity == StepIntensity.Cooldown) ?
+                                GarXFaceNet._Workout._Step.IntensityTypes.Rest :
+                                GarXFaceNet._Workout._Step.IntensityTypes.Active);
+
+            Duration.Serialize(step);
+            Target.Serialize(step);
+
+            return stepIndex + 1;
+        }
+
+        public override void Deserialize(GarXFaceNet._Workout workout, UInt32 stepIndex)
+        {
+            GarXFaceNet._Workout._Step step = workout.GetStep(stepIndex);
+
+            Name = step.GetCustomName();
+
+            if (step.GetIntensity() == GarXFaceNet._Workout._Step.IntensityTypes.Rest)
+            {
+                Intensity = StepIntensity.Rest;
+            }
+            else
+            {
+                Intensity = StepIntensity.Active;
+            }
+
+            Duration.Deserialize(step);
+
+            try
+            {
+                Target.Deserialize(step);
+            }
+            catch (NoDeviceSupportException)
+            {
+                // Unsupported target = power.  Replace with a null target
+                new NullTarget(this).Serialize(step);
             }
         }
 

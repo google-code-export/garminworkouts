@@ -7,7 +7,7 @@ using GarminFitnessPlugin.Controller;
 
 namespace GarminFitnessPlugin.Data
 {
-    public abstract class IDuration : IPluginSerializable, IXMLSerializable
+    abstract class IDuration : IPluginSerializable, IXMLSerializable
     {
         protected IDuration(DurationType type, IStep parent)
         {
@@ -50,6 +50,9 @@ namespace GarminFitnessPlugin.Data
         public virtual void Deserialize(XmlNode parentNode)
         {
         }
+
+        public abstract void Serialize(GarXFaceNet._Workout._Step step);
+        public abstract void Deserialize(GarXFaceNet._Workout._Step step);
 
         protected void TriggerDurationChangedEvent(PropertyChangedEventArgs args)
         {

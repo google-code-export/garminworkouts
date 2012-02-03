@@ -228,6 +228,9 @@
   <data name="DistanceDurationLabelText" xml:space="preserve">
     <value>Jak daleko?</value>
   </data>
+  <data name="DoubleRangeValidationText" xml:space="preserve">
+    <value>Wartosci muszą być liczbami pomiedzy {0:0:00} i {1:0:00}</value>
+  </data>
   <data name="EditBikingProfileText" xml:space="preserve">
     <value>Profil rowerowy</value>
   </data>
@@ -392,6 +395,9 @@
   </data>
   <data name="IndependentModeRadioButtonText" xml:space="preserve">
     <value>Chcę niezależnie skonfigurować strefy</value>
+  </data>
+  <data name="IntegerRangeValidationText" xml:space="preserve">
+    <value>Wartosci muszą być liczbami całkowitymi pomiędzy {0} i {1} </value>
   </data>
   <data name="InvalidWorkoutNameText" xml:space="preserve">
     <value>Wprowadzona nazwa treningu jest nieprawidłowa. Nazwa musi być unikalna i nie może być pusta.</value>
@@ -618,6 +624,9 @@
   <data name="TimeDurationLabelText" xml:space="preserve">
     <value>Jak długo?</value>
   </data>
+  <data name="TimeRangeValidationText" xml:space="preserve">
+    <value>Podaj wartość pomiędzy {0:00}:{1:00} i {2:00}:{3:00}</value>
+  </data>
   <data name="ToDeviceText" xml:space="preserve">
     <value>Do urzadzenia</value>
   </data>
@@ -635,6 +644,9 @@
   </data>
   <data name="UseParentCategoryText" xml:space="preserve">
     <value>Uzyj nadrzędnej kategorii</value>
+  </data>
+  <data name="ValueValidationTitleText" xml:space="preserve">
+    <value>Wartość niedozwolona</value>
   </data>
   <data name="WarningText" xml:space="preserve">
     <value>Uwaga</value>

@@ -5,7 +5,7 @@ using GarminFitnessPlugin.Controller;
 
 namespace GarminFitnessPlugin.Data
 {
-    public class LapButtonDuration : IDuration
+    class LapButtonDuration : IDuration
     {
         public LapButtonDuration(IStep parent)
             : base(DurationType.LapButton, parent)
@@ -45,6 +45,15 @@ namespace GarminFitnessPlugin.Data
         public override void Deserialize(XmlNode parentNode)
         {
             base.Deserialize(parentNode);
+        }
+
+        public override void Serialize(GarXFaceNet._Workout._Step step)
+        {
+            step.SetDurationType(GarXFaceNet._Workout._Step.DurationTypes.Open);
+        }
+
+        public override void Deserialize(GarXFaceNet._Workout._Step step)
+        {
         }
     }
 }

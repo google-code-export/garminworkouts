@@ -237,6 +237,9 @@
   <data name="DistanceDurationLabelText" xml:space="preserve">
     <value>Какое расстояние?</value>
   </data>
+  <data name="DoubleRangeValidationText" xml:space="preserve">
+    <value>Значение должно быть десятичным числом от {0:0.00} до {1:0.00}</value>
+  </data>
   <data name="EditBikingProfileText" xml:space="preserve">
     <value>Велосипедный профиль</value>
   </data>
@@ -449,6 +452,9 @@
   </data>
   <data name="InkFriendlyModeText" xml:space="preserve">
     <value>Режим экономии тонера</value>
+  </data>
+  <data name="IntegerRangeValidationText" xml:space="preserve">
+    <value>Значение должно быть целым числом от {0} до {1}</value>
   </data>
   <data name="InvalidWorkoutNameText" xml:space="preserve">
     <value>Введенное имя тренировки недействительно. Имя должно быть уникальным и непустым.</value>
@@ -756,6 +762,9 @@
   <data name="TimeDurationLabelText" xml:space="preserve">
     <value>Через какое время?</value>
   </data>
+  <data name="TimeRangeValidationText" xml:space="preserve">
+    <value>Значение должно быть периодом времени от {0:00}:{1:00} до {2:00}:{3:00}</value>
+  </data>
   <data name="ToDeviceText" xml:space="preserve">
     <value>В навигатор</value>
   </data>
@@ -782,6 +791,9 @@
   </data>
   <data name="UseParentCategoryText" xml:space="preserve">
     <value>Использовать родительскую категорию</value>
+  </data>
+  <data name="ValueValidationTitleText" xml:space="preserve">
+    <value>Недопустимое значение</value>
   </data>
   <data name="WarmupText" xml:space="preserve">
     <value>Разминка</value>

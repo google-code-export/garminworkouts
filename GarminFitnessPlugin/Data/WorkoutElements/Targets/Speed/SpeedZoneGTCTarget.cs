@@ -7,7 +7,7 @@ using GarminFitnessPlugin.Controller;
 
 namespace GarminFitnessPlugin.Data
 {
-    public class SpeedZoneGTCTarget : BaseSpeedTarget.IConcreteSpeedTarget
+    class SpeedZoneGTCTarget : BaseSpeedTarget.IConcreteSpeedTarget
     {
         public SpeedZoneGTCTarget(BaseSpeedTarget baseTarget)
             : base(SpeedTargetType.ZoneGTC, baseTarget)
@@ -76,6 +76,17 @@ namespace GarminFitnessPlugin.Data
             }
 
             m_Zone.Deserialize(parentNode.FirstChild);
+        }
+
+        public override void Serialize(GarXFaceNet._Workout._Step step)
+        {
+            step.SetTargetType(0);
+            step.SetTargetValue(Zone);
+        }
+
+        public override void Deserialize(GarXFaceNet._Workout._Step step)
+        {
+            Zone = (Byte)step.GetTargetValue();
         }
 
         public Byte Zone

@@ -5,7 +5,7 @@ using System.IO;
 
 namespace GarminFitnessPlugin.Controller
 {
-    public class FITUtils
+    class FITUtils
     {
         public static UInt16 ComputeStreamCRC(MemoryStream dataStream)
         {

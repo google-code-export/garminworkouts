@@ -8,7 +8,7 @@ using GarminFitnessPlugin.Controller;
 
 namespace GarminFitnessPlugin.Data
 {
-    public class GarminFitnessDoubleRange : IPluginSerializable, IXMLSerializable, IComparable<GarminFitnessDoubleRange>
+    class GarminFitnessDoubleRange : IPluginSerializable, IXMLSerializable, IComparable<GarminFitnessDoubleRange>
     {
         public GarminFitnessDoubleRange(double value)
             : this(value, double.MinValue, double.MaxValue)

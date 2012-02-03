@@ -9,7 +9,7 @@ using GarminFitnessPlugin.Controller;
 
 namespace GarminFitnessPlugin.Data
 {
-    public abstract class IStep : IPluginSerializable, IXMLSerializable, IDirty
+    abstract class IStep : IPluginSerializable, IXMLSerializable, IDirty
     {
         protected IStep(StepType type, Workout parent)
         {
@@ -97,6 +97,9 @@ namespace GarminFitnessPlugin.Data
         public virtual void Deserialize(XmlNode parentNode)
         {
         }
+
+        public abstract UInt32 Serialize(GarXFaceNet._Workout workout, UInt32 stepIndex);
+        public abstract void Deserialize(GarXFaceNet._Workout workout, UInt32 stepIndex);
 
         public virtual UInt16 StepCount
         {

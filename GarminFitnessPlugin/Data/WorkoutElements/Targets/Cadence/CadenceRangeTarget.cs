@@ -8,7 +8,7 @@ using GarminFitnessPlugin.Controller;
 
 namespace GarminFitnessPlugin.Data
 {
-    public class CadenceRangeTarget : BaseCadenceTarget.IConcreteCadenceTarget
+    class CadenceRangeTarget : BaseCadenceTarget.IConcreteCadenceTarget
     {
         public CadenceRangeTarget(BaseCadenceTarget baseTarget)
             : base(CadenceTargetType.Range, baseTarget)
@@ -109,6 +109,20 @@ namespace GarminFitnessPlugin.Data
 
             // Reorder, GTC doesn't enforce
             SetValues(Math.Min(MinCadence, MaxCadence), Math.Max(MinCadence, MaxCadence));
+        }
+
+        public override void Serialize(GarXFaceNet._Workout._Step step)
+        {
+            step.SetTargetType(3);
+            step.SetTargetValue(0);
+            step.SetTargetCustomZoneLow(MinCadence);
+            step.SetTargetCustomZoneHigh(MaxCadence);
+        }
+
+        public override void Deserialize(GarXFaceNet._Workout._Step step)
+        {
+            MinCadence = (Byte)step.GetTargetCustomZoneLow();
+            MaxCadence = (Byte)step.GetTargetCustomZoneHigh();
         }
 
         public void ValidateValues(Byte min, Byte max)

@@ -7,7 +7,7 @@ using GarminFitnessPlugin.Controller;
 
 namespace GarminFitnessPlugin.Data
 {
-    public class PowerAboveDuration : IDuration
+    class PowerAboveDuration : IDuration
     {
         public PowerAboveDuration(IStep parent)
             : base(DurationType.PowerAbove, parent)
@@ -19,8 +19,8 @@ namespace GarminFitnessPlugin.Data
         {
             ValidateValue(maxPower, isPercentFTP);
 
-            m_IsPercentFTP.Value = isPercentFTP;
-            InternalMaxPower.Value = maxPower;
+            MaxPower = maxPower;
+            IsPercentFTP = isPercentFTP;
         }
 
         public PowerAboveDuration(Stream stream, DataVersion version, IStep parent)
@@ -68,13 +68,25 @@ namespace GarminFitnessPlugin.Data
         public override void Serialize(XmlNode parentNode, String nodeName, XmlDocument document)
         {
             // Unsupported by TCX
-            throw new NotSupportedException();
+            Debug.Assert(false);
         }
 
         public override void Deserialize(XmlNode parentNode)
         {
             // Unsupported by TCX
-            throw new NotSupportedException();
+            Debug.Assert(false);
+        }
+
+        public override void Serialize(GarXFaceNet._Workout._Step step)
+        {
+            // Unsupported by USB
+            Debug.Assert(false);
+        }
+
+        public override void Deserialize(GarXFaceNet._Workout._Step step)
+        {
+            // Unsupported by USB
+            Debug.Assert(false);
         }
 
         private void ValidateValue(UInt16 maxPower, bool isPercentFTP)
@@ -101,8 +113,9 @@ namespace GarminFitnessPlugin.Data
             {
                 if (MaxPower != value)
                 {
-                    InternalMaxPower.Value = value;
                     ValidateValue(value, IsPercentFTP);
+
+                    InternalMaxPower.Value = value;
 
                     TriggerDurationChangedEvent(new PropertyChangedEventArgs("MaxPower"));
                 }
@@ -131,8 +144,8 @@ namespace GarminFitnessPlugin.Data
             {
                 if (IsPercentFTP != value)
                 {
-                    m_IsPercentFTP.Value = value;
                     ValidateValue(MaxPower, value);
+                    m_IsPercentFTP.Value = value;
 
                     TriggerDurationChangedEvent(new PropertyChangedEventArgs("IsPercentFTP"));
                 }

@@ -7,7 +7,7 @@ using GarminFitnessPlugin.Controller;
 
 namespace GarminFitnessPlugin.Data
 {
-    public class TimeDuration : IDuration
+    class TimeDuration : IDuration
     {
         public TimeDuration(IStep parent)
             : base(DurationType.Time, parent)
@@ -73,6 +73,17 @@ namespace GarminFitnessPlugin.Data
             }
 
             m_TimeInSeconds.Deserialize(parentNode.FirstChild);
+        }
+
+        public override void Serialize(GarXFaceNet._Workout._Step step)
+        {
+            step.SetDurationType(GarXFaceNet._Workout._Step.DurationTypes.Time);
+            step.SetDurationValue(TimeInSeconds);
+        }
+
+        public override void Deserialize(GarXFaceNet._Workout._Step step)
+        {
+            TimeInSeconds = (UInt16)step.GetDurationValue();
         }
 
         public UInt16 TimeInSeconds

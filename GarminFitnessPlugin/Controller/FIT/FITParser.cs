@@ -6,7 +6,7 @@ using System.Diagnostics;
 
 namespace GarminFitnessPlugin.Controller
 {
-    public class FITParser
+    class FITParser
     {
         private FITParser()
         {

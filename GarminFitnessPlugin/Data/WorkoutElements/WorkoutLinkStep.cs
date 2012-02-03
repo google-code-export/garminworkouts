@@ -88,6 +88,16 @@ namespace GarminFitnessPlugin.Data
 
 #region IStep members
 
+        public override uint Serialize(GarXFaceNet._Workout workout, uint stepIndex)
+        {
+            return LinkedWorkoutSteps.Serialize(workout, stepIndex);
+        }
+
+        public override void Deserialize(GarXFaceNet._Workout workout, uint stepIndex)
+        {
+            throw new NotImplementedException();
+        }
+
         public override void Serialize(Stream stream)
         {
             base.Serialize(stream);

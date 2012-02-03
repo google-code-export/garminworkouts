@@ -228,6 +228,9 @@
   <data name="DistanceDurationLabelText" xml:space="preserve">
     <value>Hur långt?</value>
   </data>
+  <data name="DoubleRangeValidationText" xml:space="preserve">
+    <value>Värdet måste vara ett decimalt nummer mellan {0:0.00} och {1:0.00}</value>
+  </data>
   <data name="EditBikingProfileText" xml:space="preserve">
     <value>Cykelprofil</value>
   </data>
@@ -392,6 +395,9 @@
   </data>
   <data name="IndependentModeRadioButtonText" xml:space="preserve">
     <value>Jag vill ställa in zoner individuellt</value>
+  </data>
+  <data name="IntegerRangeValidationText" xml:space="preserve">
+    <value>Värdet måste vara ett heltal mellan {0} och {1}.</value>
   </data>
   <data name="InvalidWorkoutNameText" xml:space="preserve">
     <value>Namnet på passet är ogiltigt. Namnet måste vara unikt och kan inte vara tomt.</value>
@@ -618,6 +624,9 @@
   <data name="TimeDurationLabelText" xml:space="preserve">
     <value>Hur lång tid?</value>
   </data>
+  <data name="TimeRangeValidationText" xml:space="preserve">
+    <value>Värdet måste vara en tid mellan {0:00}:{1:00} och {2:00}:{3:00}</value>
+  </data>
   <data name="ToDeviceText" xml:space="preserve">
     <value>Till enhet</value>
   </data>
@@ -635,6 +644,9 @@
   </data>
   <data name="UseParentCategoryText" xml:space="preserve">
     <value>Använd ovanliggande kategori</value>
+  </data>
+  <data name="ValueValidationTitleText" xml:space="preserve">
+    <value>Ogiltigt värde</value>
   </data>
   <data name="WarningText" xml:space="preserve">
     <value>Varning</value>

@@ -9,7 +9,7 @@ using GarminFitnessPlugin.Controller;
 
 namespace GarminFitnessPlugin.Data
 {
-    public class PowerZoneSTTarget : BasePowerTarget.IConcretePowerTarget
+    class PowerZoneSTTarget : BasePowerTarget.IConcretePowerTarget
     {
         public PowerZoneSTTarget(BasePowerTarget baseTarget)
             : base(PowerTargetType.ZoneST, baseTarget)
@@ -41,7 +41,7 @@ namespace GarminFitnessPlugin.Data
             GarminFitnessString categoryRefID = new GarminFitnessString(zoneRefID);
             categoryRefID.Serialize(stream);
 
-            GarminFitnessInt32Range zoneIndex = new GarminFitnessInt32Range(zones.Zones.IndexOf(Zone));
+            GarminFitnessInt32Range zoneIndex = new GarminFitnessInt32Range(Utils.FindIndexForZone(zones.Zones, Zone));
             zoneIndex.Serialize(stream);
 
             GarminFitnessBool dirty = new GarminFitnessBool(IsDirty);

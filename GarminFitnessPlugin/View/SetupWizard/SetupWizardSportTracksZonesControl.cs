@@ -17,7 +17,7 @@ namespace GarminFitnessPlugin.View
             CadenceZoneSelectionLabel.Text = GarminFitnessView.GetLocalizedString("CadenceZoneSelectionLabelText");
             PowerZoneSelectionLabel.Text = GarminFitnessView.GetLocalizedString("PowerZoneSelectionLabelText");
 
-            int cadenceSelectedIndex = PluginMain.GetApplication().Logbook.CadenceZones.IndexOf(Options.Instance.CadenceZoneCategory);
+            int cadenceSelectedIndex = Utils.FindIndexForZoneCategory(PluginMain.GetApplication().Logbook.CadenceZones, Options.Instance.CadenceZoneCategory);
             CadenceZoneComboBox.Items.Clear();
             for (int i = 0; i < PluginMain.GetApplication().Logbook.CadenceZones.Count; ++i)
             {
@@ -27,7 +27,7 @@ namespace GarminFitnessPlugin.View
             }
             CadenceZoneComboBox.SelectedIndex = cadenceSelectedIndex;
 
-            int powerSelectedIndex = PluginMain.GetApplication().Logbook.PowerZones.IndexOf(Options.Instance.PowerZoneCategory);
+            int powerSelectedIndex = Utils.FindIndexForZoneCategory(PluginMain.GetApplication().Logbook.PowerZones, Options.Instance.PowerZoneCategory);
             PowerZoneComboBox.Items.Clear();
             for (int i = 0; i < PluginMain.GetApplication().Logbook.PowerZones.Count; ++i)
             {
