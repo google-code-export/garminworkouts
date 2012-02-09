@@ -73,7 +73,7 @@ namespace GarminFitnessUnitTests
             Assert.GreaterOrEqual(durationPosition2, 0, "Invalid calories duration serialization");
             Assert.Greater(durationPosition2, durationPosition1, "Calories durations serialization don't differ");
 
-            // HR above
+            // HR Above
             HeartRateAboveDuration hrAboveDuration = new HeartRateAboveDuration(160, false, placeholderStep);
             hrAboveDuration.Serialize(database, "HRAboveDuration1", testDocument);
             durationPosition1 = testDocument.InnerXml.IndexOf(hrAboveDurationResult1);
@@ -121,7 +121,7 @@ namespace GarminFitnessUnitTests
             Assert.GreaterOrEqual(durationPosition2, 0, "Invalid HRBelow duration serialization");
             Assert.Greater(durationPosition2, durationPosition1, "HRBelow %Max durations serialization don't differ");
 
-            // Power above
+            // Power Above
             try
             {
                 PowerAboveDuration powerAboveDuration = new PowerAboveDuration(160, false, placeholderStep);
@@ -220,7 +220,7 @@ namespace GarminFitnessUnitTests
             caloriesDuration = loadedDuration as CaloriesDuration;
             Assert.AreEqual(100, caloriesDuration.CaloriesToSpend, "Calories duration didn't deserialize the proper calories");
 
-            // HR above
+            // HR Above
             readNode.InnerXml = hrAboveDurationResult1;
             loadedDuration = DurationFactory.Create(readNode.FirstChild, placeholderStep);
             Assert.IsNotNull(loadedDuration, "HRAbove duration wasn't properly deserialized");
@@ -298,6 +298,327 @@ namespace GarminFitnessUnitTests
             readNode.InnerXml = invalidDuration3;
             loadedDuration = DurationFactory.Create(readNode.FirstChild, placeholderStep);
             Assert.IsNull(loadedDuration, "No type duration was properly deserialized");
+        }
+
+        // This test only validates the value saved in the messages/fields, not the binary serialization itself.  The
+        // binary serialization is handled by other tests.
+        [Test]
+        public void TestFITSerialization()
+        {
+            Workout placeholderWorkout = new Workout("Test", PluginMain.GetApplication().Logbook.ActivityCategories[0]);
+            RegularStep placeholderStep = new RegularStep(placeholderWorkout);
+            FITMessage serializedMessage = new FITMessage(FITGlobalMessageIds.WorkoutStep);
+            FITMessageField messageField;
+
+            // Lap button
+            LapButtonDuration lapDuration = new LapButtonDuration(placeholderStep);
+            lapDuration.FillFITStepMessage(serializedMessage);
+            messageField = serializedMessage.GetField((Byte)FITWorkoutStepFieldIds.DurationType);
+            Assert.IsNotNull(messageField, "Duration type field not serialized for lap button duration");
+            Assert.AreEqual(FITWorkoutStepDurationTypes.Open, (FITWorkoutStepDurationTypes)messageField.GetEnum(), "Invalid duration type in field for lap button duration");
+            serializedMessage.Clear();
+
+            // Time duration
+            TimeDuration timeDuration = new TimeDuration(500, placeholderStep);
+            timeDuration.FillFITStepMessage(serializedMessage);
+            messageField = serializedMessage.GetField((Byte)FITWorkoutStepFieldIds.DurationType);
+            Assert.IsNotNull(messageField, "Duration type field not serialized for time duration");
+            Assert.AreEqual(FITWorkoutStepDurationTypes.Time, (FITWorkoutStepDurationTypes)messageField.GetEnum(), "Invalid duration type in field for time duration");
+            messageField = serializedMessage.GetField((Byte)FITWorkoutStepFieldIds.DurationValue);
+            Assert.IsNotNull(messageField, "Duration type field not serialized for time duration");
+            Assert.AreEqual(500000, messageField.GetUInt32(), "Invalid duration type in field for time duration");
+            serializedMessage.Clear();
+
+            timeDuration.TimeInSeconds = 15;
+            timeDuration.FillFITStepMessage(serializedMessage);
+            messageField = serializedMessage.GetField((Byte)FITWorkoutStepFieldIds.DurationType);
+            Assert.IsNotNull(messageField, "Duration type field not serialized for time duration");
+            Assert.AreEqual(FITWorkoutStepDurationTypes.Time, (FITWorkoutStepDurationTypes)messageField.GetEnum(), "Invalid duration type in field for time duration");
+            messageField = serializedMessage.GetField((Byte)FITWorkoutStepFieldIds.DurationValue);
+            Assert.IsNotNull(messageField, "Duration type field not serialized for time duration");
+            Assert.AreEqual(15000, messageField.GetUInt32(), "Invalid duration type in field for time duration");
+            serializedMessage.Clear();
+
+            // Distance duration
+            DistanceDuration distanceDuration = new DistanceDuration(1000, Length.Units.Centimeter, placeholderStep);
+            distanceDuration.FillFITStepMessage(serializedMessage);
+            messageField = serializedMessage.GetField((Byte)FITWorkoutStepFieldIds.DurationType);
+            Assert.IsNotNull(messageField, "Duration type field not serialized for time duration");
+            Assert.AreEqual(FITWorkoutStepDurationTypes.Distance, (FITWorkoutStepDurationTypes)messageField.GetEnum(), "Invalid duration type in field for distance duration");
+            messageField = serializedMessage.GetField((Byte)FITWorkoutStepFieldIds.DurationValue);
+            Assert.IsNotNull(messageField, "Duration type field not serialized for distance duration");
+            Assert.AreEqual(1000, messageField.GetUInt32(), "Invalid duration value in field for distance duration");
+            serializedMessage.Clear();
+
+            distanceDuration = new DistanceDuration(15, Length.Units.NauticalMile, placeholderStep);
+            distanceDuration.FillFITStepMessage(serializedMessage);
+            messageField = serializedMessage.GetField((Byte)FITWorkoutStepFieldIds.DurationType);
+            Assert.IsNotNull(messageField, "Duration type field not serialized for time duration");
+            Assert.AreEqual(FITWorkoutStepDurationTypes.Distance, (FITWorkoutStepDurationTypes)messageField.GetEnum(), "Invalid duration type in field for distance duration");
+            messageField = serializedMessage.GetField((Byte)FITWorkoutStepFieldIds.DurationValue);
+            Assert.IsNotNull(messageField, "Duration type field not serialized for distance duration");
+            Assert.AreEqual(2778000, messageField.GetUInt32(), "Invalid duration value in field for distance duration");
+            serializedMessage.Clear();
+
+            // Calories duration
+            CaloriesDuration caloriesDuration = new CaloriesDuration(1000, placeholderStep);
+            caloriesDuration.FillFITStepMessage(serializedMessage);
+            messageField = serializedMessage.GetField((Byte)FITWorkoutStepFieldIds.DurationType);
+            Assert.IsNotNull(messageField, "Duration type field not serialized for time duration");
+            Assert.AreEqual(FITWorkoutStepDurationTypes.Calories, (FITWorkoutStepDurationTypes)messageField.GetEnum(), "Invalid duration type in field for calories duration");
+            messageField = serializedMessage.GetField((Byte)FITWorkoutStepFieldIds.DurationValue);
+            Assert.IsNotNull(messageField, "Duration type field not serialized for calories duration");
+            Assert.AreEqual(1000, messageField.GetUInt32(), "Invalid duration value in field for calories duration");
+            serializedMessage.Clear();
+
+            caloriesDuration.CaloriesToSpend = 452;
+            caloriesDuration.FillFITStepMessage(serializedMessage);
+            messageField = serializedMessage.GetField((Byte)FITWorkoutStepFieldIds.DurationType);
+            Assert.IsNotNull(messageField, "Duration type field not serialized for time duration");
+            Assert.AreEqual(FITWorkoutStepDurationTypes.Calories, (FITWorkoutStepDurationTypes)messageField.GetEnum(), "Invalid duration type in field for calories duration");
+            messageField = serializedMessage.GetField((Byte)FITWorkoutStepFieldIds.DurationValue);
+            Assert.IsNotNull(messageField, "Duration type field not serialized for calories duration");
+            Assert.AreEqual(452, messageField.GetUInt32(), "Invalid duration value in field for calories duration");
+            serializedMessage.Clear();
+
+            // HR Above
+            HeartRateAboveDuration hrAboveDuration = new HeartRateAboveDuration(145, false, placeholderStep);
+            hrAboveDuration.FillFITStepMessage(serializedMessage);
+            messageField = serializedMessage.GetField((Byte)FITWorkoutStepFieldIds.DurationType);
+            Assert.IsNotNull(messageField, "Duration type field not serialized for HRAbove duration");
+            Assert.AreEqual(FITWorkoutStepDurationTypes.HeartRateGreaterThan, (FITWorkoutStepDurationTypes)messageField.GetEnum(), "Invalid duration type in field for HRAbove duration");
+            messageField = serializedMessage.GetField((Byte)FITWorkoutStepFieldIds.DurationValue);
+            Assert.IsNotNull(messageField, "Duration type field not serialized for HRAbove duration");
+            Assert.AreEqual(245, messageField.GetUInt32(), "Invalid duration value in field for HRAbove duration");
+            serializedMessage.Clear();
+
+            hrAboveDuration = new HeartRateAboveDuration(75, true, placeholderStep);
+            hrAboveDuration.FillFITStepMessage(serializedMessage);
+            messageField = serializedMessage.GetField((Byte)FITWorkoutStepFieldIds.DurationType);
+            Assert.IsNotNull(messageField, "Duration type field not serialized for HRAbove duration");
+            Assert.AreEqual(FITWorkoutStepDurationTypes.HeartRateGreaterThan, (FITWorkoutStepDurationTypes)messageField.GetEnum(), "Invalid duration type in field for HRAbove duration");
+            messageField = serializedMessage.GetField((Byte)FITWorkoutStepFieldIds.DurationValue);
+            Assert.IsNotNull(messageField, "Duration type field not serialized for HRAbove duration");
+            Assert.AreEqual(75, messageField.GetUInt32(), "Invalid duration value in field for HRAbove duration");
+            serializedMessage.Clear();
+
+            // HR Below
+            HeartRateBelowDuration hrBelowDuration = new HeartRateBelowDuration(145, false, placeholderStep);
+            hrBelowDuration.FillFITStepMessage(serializedMessage);
+            messageField = serializedMessage.GetField((Byte)FITWorkoutStepFieldIds.DurationType);
+            Assert.IsNotNull(messageField, "Duration type field not serialized for HRBelow duration");
+            Assert.AreEqual(FITWorkoutStepDurationTypes.HeartRateLessThan, (FITWorkoutStepDurationTypes)messageField.GetEnum(), "Invalid duration type in field for HRBelow duration");
+            messageField = serializedMessage.GetField((Byte)FITWorkoutStepFieldIds.DurationValue);
+            Assert.IsNotNull(messageField, "Duration type field not serialized for HRBelow duration");
+            Assert.AreEqual(245, messageField.GetUInt32(), "Invalid duration value in field for HRBelow duration");
+            serializedMessage.Clear();
+
+            hrBelowDuration = new HeartRateBelowDuration(55, true, placeholderStep);
+            hrBelowDuration.FillFITStepMessage(serializedMessage);
+            messageField = serializedMessage.GetField((Byte)FITWorkoutStepFieldIds.DurationType);
+            Assert.IsNotNull(messageField, "Duration type field not serialized for HRBelow duration");
+            Assert.AreEqual(FITWorkoutStepDurationTypes.HeartRateLessThan, (FITWorkoutStepDurationTypes)messageField.GetEnum(), "Invalid duration type in field for HRBelow duration");
+            messageField = serializedMessage.GetField((Byte)FITWorkoutStepFieldIds.DurationValue);
+            Assert.IsNotNull(messageField, "Duration type field not serialized for HRBelow duration");
+            Assert.AreEqual(55, messageField.GetUInt32(), "Invalid duration value in field for HRBelow duration");
+            serializedMessage.Clear();
+
+            // Power Above
+            PowerAboveDuration powerAboveDuration = new PowerAboveDuration(150, false, placeholderStep);
+            powerAboveDuration.FillFITStepMessage(serializedMessage);
+            messageField = serializedMessage.GetField((Byte)FITWorkoutStepFieldIds.DurationType);
+            Assert.IsNotNull(messageField, "Duration type field not serialized for PowerAbove duration");
+            Assert.AreEqual(FITWorkoutStepDurationTypes.PowerGreaterThan, (FITWorkoutStepDurationTypes)messageField.GetEnum(), "Invalid duration type in field for PowerAbove duration");
+            messageField = serializedMessage.GetField((Byte)FITWorkoutStepFieldIds.DurationValue);
+            Assert.IsNotNull(messageField, "Duration type field not serialized for PowerAbove duration");
+            Assert.AreEqual(1150, messageField.GetUInt32(), "Invalid duration value in field for PowerAbove duration");
+            serializedMessage.Clear();
+
+            powerAboveDuration = new PowerAboveDuration(150, true, placeholderStep);
+            powerAboveDuration.FillFITStepMessage(serializedMessage);
+            messageField = serializedMessage.GetField((Byte)FITWorkoutStepFieldIds.DurationType);
+            Assert.IsNotNull(messageField, "Duration type field not serialized for PowerAbove duration");
+            Assert.AreEqual(FITWorkoutStepDurationTypes.PowerGreaterThan, (FITWorkoutStepDurationTypes)messageField.GetEnum(), "Invalid duration type in field for PowerAbove duration");
+            messageField = serializedMessage.GetField((Byte)FITWorkoutStepFieldIds.DurationValue);
+            Assert.IsNotNull(messageField, "Duration type field not serialized for PowerAbove duration");
+            Assert.AreEqual(150, messageField.GetUInt32(), "Invalid duration value in field for PowerAbove duration");
+            serializedMessage.Clear();
+
+            // Power Below
+            PowerBelowDuration powerBelowDuration = new PowerBelowDuration(175, false, placeholderStep);
+            powerBelowDuration.FillFITStepMessage(serializedMessage);
+            messageField = serializedMessage.GetField((Byte)FITWorkoutStepFieldIds.DurationType);
+            Assert.IsNotNull(messageField, "Duration type field not serialized for PowerBelow duration");
+            Assert.AreEqual(FITWorkoutStepDurationTypes.PowerLessThan, (FITWorkoutStepDurationTypes)messageField.GetEnum(), "Invalid duration type in field for PowerBelow duration");
+            messageField = serializedMessage.GetField((Byte)FITWorkoutStepFieldIds.DurationValue);
+            Assert.IsNotNull(messageField, "Duration type field not serialized for PowerBelow duration");
+            Assert.AreEqual(1175, messageField.GetUInt32(), "Invalid duration value in field for PowerBelow duration");
+            serializedMessage.Clear();
+
+            powerBelowDuration = new PowerBelowDuration(60, true, placeholderStep);
+            powerBelowDuration.FillFITStepMessage(serializedMessage);
+            messageField = serializedMessage.GetField((Byte)FITWorkoutStepFieldIds.DurationType);
+            Assert.IsNotNull(messageField, "Duration type field not serialized for PowerBelow duration");
+            Assert.AreEqual(FITWorkoutStepDurationTypes.PowerLessThan, (FITWorkoutStepDurationTypes)messageField.GetEnum(), "Invalid duration type in field for PowerBelow duration");
+            messageField = serializedMessage.GetField((Byte)FITWorkoutStepFieldIds.DurationValue);
+            Assert.IsNotNull(messageField, "Duration type field not serialized for PowerBelow duration");
+            Assert.AreEqual(60, messageField.GetUInt32(), "Invalid duration value in field for PowerBelow duration");
+            serializedMessage.Clear();
+        }
+
+        // This test only validates the value loaded from the messages/fields, not the binary deserialization itself.  The
+        // binary deserialization is handled by other tests.
+        [Test]
+        public void TestFITDeserialization()
+        {
+            Workout placeholderWorkout = new Workout("Test", PluginMain.GetApplication().Logbook.ActivityCategories[0]);
+            RegularStep placeholderStep = new RegularStep(placeholderWorkout);
+            FITMessage serializedMessage = new FITMessage(FITGlobalMessageIds.WorkoutStep);
+            FITMessageField typeField = new FITMessageField((Byte)FITWorkoutStepFieldIds.DurationType);
+            FITMessageField valueField = new FITMessageField((Byte)FITWorkoutStepFieldIds.DurationValue);
+            IDuration deserializedDuration;
+
+            serializedMessage.AddField(typeField);
+
+            // Lap button
+            typeField.SetEnum((Byte)FITWorkoutStepDurationTypes.Open);
+            deserializedDuration = DurationFactory.Create(serializedMessage, placeholderStep);
+            Assert.IsTrue(deserializedDuration is LapButtonDuration, "Lap button duration not properly FIT deserialized without value field");
+
+            serializedMessage.AddField(valueField);
+            deserializedDuration = DurationFactory.Create(serializedMessage, placeholderStep);
+            Assert.IsTrue(deserializedDuration is LapButtonDuration, "Lap button duration not properly FIT deserialized with unset value field");
+
+            valueField.SetUInt32(1);
+            deserializedDuration = DurationFactory.Create(serializedMessage, placeholderStep);
+            Assert.IsTrue(deserializedDuration is LapButtonDuration, "Lap button duration not properly FIT deserialized with value field");
+        
+            // Time duration
+            TimeDuration timeDuration;
+
+            typeField.SetEnum((Byte)FITWorkoutStepDurationTypes.Time);
+            valueField.SetUInt32(60000);
+            deserializedDuration = DurationFactory.Create(serializedMessage, placeholderStep);
+            Assert.IsTrue(deserializedDuration is TimeDuration, "Time duration not properly FIT deserialized");
+            timeDuration = deserializedDuration as TimeDuration;
+            Assert.AreEqual(60, timeDuration.TimeInSeconds, "Invalid value deserialized for FIT time duration");
+
+            valueField.SetUInt32(3600000);
+            deserializedDuration = DurationFactory.Create(serializedMessage, placeholderStep);
+            Assert.IsTrue(deserializedDuration is TimeDuration, "Time duration not properly FIT deserialized");
+            timeDuration = deserializedDuration as TimeDuration;
+            Assert.AreEqual(1, timeDuration.Hours, "Invalid value deserialized for FIT time duration");
+            Assert.AreEqual(0, timeDuration.Minutes, "Invalid value deserialized for FIT time duration");
+            Assert.AreEqual(0, timeDuration.Seconds, "Invalid value deserialized for FIT time duration");
+
+            // Distance duration
+            DistanceDuration distanceDuration;
+
+            typeField.SetEnum((Byte)FITWorkoutStepDurationTypes.Distance);
+            valueField.SetUInt32(60000);
+            deserializedDuration = DurationFactory.Create(serializedMessage, placeholderStep);
+            Assert.IsTrue(deserializedDuration is DistanceDuration, "Distance duration not properly FIT deserialized");
+            distanceDuration = deserializedDuration as DistanceDuration;
+            Assert.AreEqual(0.6,
+                            Length.Convert(distanceDuration.GetDistanceInBaseUnit(), distanceDuration.BaseUnit, Length.Units.Kilometer),
+                            "Invalid value deserialized for FIT distance duration");
+
+            valueField.SetUInt32(160934);
+            deserializedDuration = DurationFactory.Create(serializedMessage, placeholderStep);
+            Assert.IsTrue(deserializedDuration is DistanceDuration, "Distance duration not properly FIT deserialized");
+            distanceDuration = deserializedDuration as DistanceDuration;
+            Assert.AreEqual(1.0,
+                            Length.Convert(distanceDuration.GetDistanceInBaseUnit(), distanceDuration.BaseUnit, Length.Units.Mile),
+                            STCommon.Data.Constants.Delta,
+                            "Invalid value deserialized for FIT distance duration");
+
+            // Calories duration
+            CaloriesDuration caloriesDuration;
+
+            typeField.SetEnum((Byte)FITWorkoutStepDurationTypes.Calories);
+            valueField.SetUInt32(456);
+            deserializedDuration = DurationFactory.Create(serializedMessage, placeholderStep);
+            Assert.IsTrue(deserializedDuration is CaloriesDuration, "Calories duration not properly FIT deserialized");
+            caloriesDuration = deserializedDuration as CaloriesDuration;
+            Assert.AreEqual(456, caloriesDuration.CaloriesToSpend, "Invalid value deserialized for FIT calories duration");
+
+            valueField.SetUInt32(100);
+            deserializedDuration = DurationFactory.Create(serializedMessage, placeholderStep);
+            Assert.IsTrue(deserializedDuration is CaloriesDuration, "Calories duration not properly FIT deserialized");
+            caloriesDuration = deserializedDuration as CaloriesDuration;
+            Assert.AreEqual(100, caloriesDuration.CaloriesToSpend, "Invalid value deserialized for FIT calories duration");
+
+            // HR Above
+            HeartRateAboveDuration hrAboveDuration;
+
+            typeField.SetEnum((Byte)FITWorkoutStepDurationTypes.HeartRateGreaterThan);
+            valueField.SetUInt32(256);
+            deserializedDuration = DurationFactory.Create(serializedMessage, placeholderStep);
+            Assert.IsTrue(deserializedDuration is HeartRateAboveDuration, "HRAbove duration not properly FIT deserialized");
+            hrAboveDuration = deserializedDuration as HeartRateAboveDuration;
+            Assert.AreEqual(false, hrAboveDuration.IsPercentageMaxHeartRate, "Invalid value deserialized for FIT HRAbove duration");
+            Assert.AreEqual(156, hrAboveDuration.MaxHeartRate, "Invalid value deserialized for FIT HRAbove duration");
+
+            valueField.SetUInt32(88);
+            deserializedDuration = DurationFactory.Create(serializedMessage, placeholderStep);
+            Assert.IsTrue(deserializedDuration is HeartRateAboveDuration, "HRAbove duration not properly FIT deserialized");
+            hrAboveDuration = deserializedDuration as HeartRateAboveDuration;
+            Assert.AreEqual(true, hrAboveDuration.IsPercentageMaxHeartRate, "Invalid value deserialized for FIT HRAbove duration");
+            Assert.AreEqual(88, hrAboveDuration.MaxHeartRate, "Invalid value deserialized for FIT HRAbove duration");
+
+            // HR Below
+            HeartRateBelowDuration hrBelowDuration;
+
+            typeField.SetEnum((Byte)FITWorkoutStepDurationTypes.HeartRateLessThan);
+            valueField.SetUInt32(270);
+            deserializedDuration = DurationFactory.Create(serializedMessage, placeholderStep);
+            Assert.IsTrue(deserializedDuration is HeartRateBelowDuration, "HRBelow duration not properly FIT deserialized");
+            hrBelowDuration = deserializedDuration as HeartRateBelowDuration;
+            Assert.AreEqual(false, hrBelowDuration.IsPercentageMaxHeartRate, "Invalid value deserialized for FIT HRBelow duration");
+            Assert.AreEqual(170, hrBelowDuration.MinHeartRate, "Invalid value deserialized for FIT HRBelow duration");
+
+            valueField.SetUInt32(70);
+            deserializedDuration = DurationFactory.Create(serializedMessage, placeholderStep);
+            Assert.IsTrue(deserializedDuration is HeartRateBelowDuration, "HRBelow duration not properly FIT deserialized");
+            hrBelowDuration = deserializedDuration as HeartRateBelowDuration;
+            Assert.AreEqual(true, hrBelowDuration.IsPercentageMaxHeartRate, "Invalid value deserialized for FIT HRBelow duration");
+            Assert.AreEqual(70, hrBelowDuration.MinHeartRate, "Invalid value deserialized for FIT HRBelow duration");
+
+            // Power Above
+            PowerAboveDuration powerAboveDuration;
+
+            typeField.SetEnum((Byte)FITWorkoutStepDurationTypes.PowerGreaterThan);
+            valueField.SetUInt32(1256);
+            deserializedDuration = DurationFactory.Create(serializedMessage, placeholderStep);
+            Assert.IsTrue(deserializedDuration is PowerAboveDuration, "PowerAbove duration not properly FIT deserialized");
+            powerAboveDuration = deserializedDuration as PowerAboveDuration;
+            Assert.AreEqual(false, powerAboveDuration.IsPercentFTP, "Invalid value deserialized for FIT PowerAbove duration");
+            Assert.AreEqual(256, powerAboveDuration.MaxPower, "Invalid value deserialized for FIT PowerAbove duration");
+
+            valueField.SetUInt32(185);
+            deserializedDuration = DurationFactory.Create(serializedMessage, placeholderStep);
+            Assert.IsTrue(deserializedDuration is PowerAboveDuration, "PowerAbove duration not properly FIT deserialized");
+            powerAboveDuration = deserializedDuration as PowerAboveDuration;
+            Assert.AreEqual(true, powerAboveDuration.IsPercentFTP, "Invalid value deserialized for FIT PowerAbove duration");
+            Assert.AreEqual(185, powerAboveDuration.MaxPower, "Invalid value deserialized for FIT PowerAbove duration");
+
+            // Power Below
+            PowerBelowDuration powerBelowDuration;
+
+            typeField.SetEnum((Byte)FITWorkoutStepDurationTypes.PowerLessThan);
+            valueField.SetUInt32(1300);
+            deserializedDuration = DurationFactory.Create(serializedMessage, placeholderStep);
+            Assert.IsTrue(deserializedDuration is PowerBelowDuration, "PowerBelow duration not properly FIT deserialized");
+            powerBelowDuration = deserializedDuration as PowerBelowDuration;
+            Assert.AreEqual(false, powerBelowDuration.IsPercentFTP, "Invalid value deserialized for FIT PowerBelow duration");
+            Assert.AreEqual(300, powerBelowDuration.MinPower, "Invalid value deserialized for FIT PowerBelow duration");
+
+            valueField.SetUInt32(55);
+            deserializedDuration = DurationFactory.Create(serializedMessage, placeholderStep);
+            Assert.IsTrue(deserializedDuration is PowerBelowDuration, "PowerBelow duration not properly FIT deserialized");
+            powerBelowDuration = deserializedDuration as PowerBelowDuration;
+            Assert.AreEqual(true, powerBelowDuration.IsPercentFTP, "Invalid value deserialized for FIT PowerBelow duration");
+            Assert.AreEqual(55, powerBelowDuration.MinPower, "Invalid value deserialized for FIT PowerBelow duration");
         }
 
         const String lapDurationResult = "<LapDuration xsi:type=\"UserInitiated_t\" />";

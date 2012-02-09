@@ -59,11 +59,13 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="FactoriesTests.cs" />
+    <Compile Include="FITOnlyFeaturesTests.cs" />
     <Compile Include="FITSerializationTests.cs" />
     <Compile Include="LogbookSerializationTests.cs" />
     <Compile Include="PreconditionsTests.cs" />
     <Compile Include="ProfileSerializationTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="RepeatDurationSerializationTests.cs" />
     <Compile Include="StepDurationSerializationTests.cs" />
     <Compile Include="StepSerializationTests.cs" />
     <Compile Include="StepTargetSerializationTests.cs" />

@@ -354,12 +354,12 @@ namespace GarminFitnessPlugin.Controller
                             if (powerValue >= 1000)
                             {
                                 powerDuration.IsPercentFTP = false;
-                                powerDuration.MaxPower = (Byte)(powerValue - 1000);
+                                powerDuration.MaxPower = (UInt16)(powerValue - 1000);
                             }
                             else
                             {
                                 powerDuration.IsPercentFTP = true;
-                                powerDuration.MaxPower = (Byte)powerValue;
+                                powerDuration.MaxPower = (UInt16)powerValue;
                             }
                             newDuration = powerDuration;
                             break;
@@ -372,12 +372,12 @@ namespace GarminFitnessPlugin.Controller
                             if (powerValue >= 1000)
                             {
                                 powerDuration.IsPercentFTP = false;
-                                powerDuration.MinPower = (Byte)(powerValue - 1000);
+                                powerDuration.MinPower = (UInt16)(powerValue - 1000);
                             }
                             else
                             {
                                 powerDuration.IsPercentFTP = true;
-                                powerDuration.MinPower = (Byte)powerValue;
+                                powerDuration.MinPower = (UInt16)powerValue;
                             }
                             newDuration = powerDuration;
                             break;
