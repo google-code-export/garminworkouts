@@ -28,6 +28,7 @@ namespace GarminFitnessUnitTests
             int targetPosition1;
             int targetPosition2;
 
+            // This is required to determine the step's id in the workout during serialization
             placeholderWorkout.Steps.AddStepToRoot(placeholderStep);
 
             // Setup document
@@ -623,6 +624,22 @@ namespace GarminFitnessUnitTests
 
             WorkoutExporter.ExportWorkout(workout, stream);
             Assert.AreEqual(workoutPowerExtensionsResult, Encoding.UTF8.GetString(stream.GetBuffer(), 0, (int)stream.Length), "Power target extension not properly serialized");
+        }
+
+        // This test only validates the value saved in the messages/fields, not the binary serialization itself.  The
+        // binary serialization is handled by other tests.
+        [Test]
+        public void TestFITSerialization()
+        {
+            Assert.Fail("Not implemented");
+        }
+
+        // This test only validates the value loaded from the messages/fields, not the binary deserialization itself.  The
+        // binary deserialization is handled by other tests.
+        [Test]
+        public void TestFITDeserialization()
+        {
+            Assert.Fail("Not implemented");
         }
 
         const String noTargetResult = "<NoTarget xsi:type=\"None_t\" />";

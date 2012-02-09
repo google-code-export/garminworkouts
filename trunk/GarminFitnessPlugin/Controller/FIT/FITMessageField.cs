@@ -28,16 +28,16 @@ namespace GarminFitnessPlugin.Controller
             Byte = 0x0D
         }
 
-        public FITMessageField(Byte definitionNumber)
+        public FITMessageField(Byte definitionNumber) :
+            this(definitionNumber, (Byte)DataType.Enum, 1)
         {
-            m_DefinitionNumber = definitionNumber;
         }
 
-        public FITMessageField(Byte definitionNumber, Byte type, byte size) :
-            this(definitionNumber)
+        public FITMessageField(Byte definitionNumber, Byte type, byte size)
         {
             try
             {
+                m_DefinitionNumber = definitionNumber;
                 m_Type = (DataType)type;
 
                 if (m_Type == DataType.String ||
