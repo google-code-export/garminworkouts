@@ -55,7 +55,7 @@ namespace GarminFitnessPlugin.Data
             FITMessageField minCadence = new FITMessageField((Byte)FITWorkoutStepFieldIds.TargetCustomValueLow);
             FITMessageField maxCadence = new FITMessageField((Byte)FITWorkoutStepFieldIds.TargetCustomValueHigh);
 
-            cadenceZone.SetUInt32((Byte)0);
+            cadenceZone.SetUInt32(0);
             message.AddField(cadenceZone);
             minCadence.SetUInt32((UInt32)Math.Max(Constants.MinCadence, Zone.Low));
             message.AddField(minCadence);

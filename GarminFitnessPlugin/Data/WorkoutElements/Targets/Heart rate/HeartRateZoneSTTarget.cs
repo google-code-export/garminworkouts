@@ -56,7 +56,7 @@ namespace GarminFitnessPlugin.Data
             bool exportAsPercentMax = Options.Instance.ExportSportTracksHeartRateAsPercentMax;
             float lastMaxHR = GarminProfileManager.Instance.UserProfile.GetProfileForActivity(Options.Instance.GetGarminCategory(BaseTarget.ParentStep.ParentWorkout.Category)).MaximumHeartRate;
 
-            HRZone.SetUInt32((Byte)0);
+            HRZone.SetUInt32(0);
             message.AddField(HRZone);
 
             if (float.IsNaN(lastMaxHR))

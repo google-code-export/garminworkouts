@@ -42,7 +42,7 @@ namespace GarminFitnessPlugin.Data
             FITMessageField minPower = new FITMessageField((Byte)FITWorkoutStepFieldIds.TargetCustomValueLow);
             FITMessageField maxPower = new FITMessageField((Byte)FITWorkoutStepFieldIds.TargetCustomValueHigh);
 
-            powerZone.SetUInt32((Byte)0);
+            powerZone.SetUInt32(0);
             message.AddField(powerZone);
 
             if (IsPercentFTP)

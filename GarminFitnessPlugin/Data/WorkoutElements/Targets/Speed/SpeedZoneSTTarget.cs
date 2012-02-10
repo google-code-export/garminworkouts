@@ -56,7 +56,7 @@ namespace GarminFitnessPlugin.Data
             FITMessageField minSpeed = new FITMessageField((Byte)FITWorkoutStepFieldIds.TargetCustomValueLow);
             FITMessageField maxSpeed = new FITMessageField((Byte)FITWorkoutStepFieldIds.TargetCustomValueHigh);
 
-            speedZone.SetUInt32((Byte)0);
+            speedZone.SetUInt32(0);
             message.AddField(speedZone);
             minSpeed.SetUInt32((UInt32)(Utils.Clamp(Zone.Low, Constants.MinSpeedMetersPerSecond, Constants.MaxSpeedMetersPerSecond) * 1000));
             message.AddField(minSpeed);

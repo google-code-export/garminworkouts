@@ -68,7 +68,7 @@ namespace GarminFitnessPlugin.Data
                 exportAsPercentFTP = false;
             }
 
-            powerZone.SetUInt32((Byte)0);
+            powerZone.SetUInt32(0);
             message.AddField(powerZone);
 
             if (exportAsPercentFTP)

@@ -41,7 +41,7 @@ namespace GarminFitnessPlugin.Data
             FITMessageField minHR = new FITMessageField((Byte)FITWorkoutStepFieldIds.TargetCustomValueLow);
             FITMessageField maxHR = new FITMessageField((Byte)FITWorkoutStepFieldIds.TargetCustomValueHigh);
 
-            HRZone.SetUInt32((Byte)0);
+            HRZone.SetUInt32(0);
             message.AddField(HRZone);
 
             if (IsPercentMaxHeartRate)

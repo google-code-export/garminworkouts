@@ -92,13 +92,13 @@ namespace GarminFitnessUnitTests
             speedTarget.ConcreteTarget = new SpeedRangeTarget(20, 30, Length.Units.Kilometer, Speed.Units.Speed, speedTarget);
             speedTarget.Serialize(database, "SpeedRangeTarget3", testDocument);
             targetPosition1 = testDocument.InnerXml.IndexOf(speedRangeTargetResult3);
-            Assert.GreaterOrEqual(targetPosition1, 0, "Invalid SpeedRange %Max target serialization");
+            Assert.GreaterOrEqual(targetPosition1, 0, "Invalid SpeedRange pace target serialization");
 
             speedTarget.ConcreteTarget = new SpeedRangeTarget(7.5, 15, Length.Units.Mile, Speed.Units.Pace, speedTarget);
             speedTarget.Serialize(database, "SpeedRangeTarget4", testDocument);
             targetPosition2 = testDocument.InnerXml.IndexOf(speedRangeTargetResult4);
-            Assert.GreaterOrEqual(targetPosition2, 0, "Invalid SpeedRRange %Max target serialization");
-            Assert.Greater(targetPosition2, targetPosition1, "SpeedRange %Max target serializations don't differ");
+            Assert.GreaterOrEqual(targetPosition2, 0, "Invalid SpeedRRange pace target serialization");
+            Assert.Greater(targetPosition2, targetPosition1, "SpeedRange pace target serializations don't differ");
 
             // Speed Garmin zone
             speedTarget.ConcreteTarget = new SpeedZoneGTCTarget(1, speedTarget);
@@ -631,7 +631,473 @@ namespace GarminFitnessUnitTests
         [Test]
         public void TestFITSerialization()
         {
-            Assert.Fail("Not implemented");
+            Workout placeholderWorkout = new Workout("Test", PluginMain.GetApplication().Logbook.ActivityCategories[0]);
+            RegularStep placeholderStep = new RegularStep(placeholderWorkout);
+            ILogbook logbook = PluginMain.GetApplication().Logbook;
+            bool exportHRAsMax = Options.Instance.ExportSportTracksHeartRateAsPercentMax;
+            bool exportPowerAsFTP = Options.Instance.ExportSportTracksPowerAsPercentFTP;
+            FITMessage serializedMessage = new FITMessage(FITGlobalMessageIds.WorkoutStep);
+            FITMessageField messageField;
+
+            // This is required to determine the step's id in the workout during serialization
+            placeholderWorkout.Steps.AddStepToRoot(placeholderStep);
+
+            // No target
+            NullTarget noTarget = new NullTarget(placeholderStep);
+            noTarget.FillFITStepMessage(serializedMessage);
+            messageField = serializedMessage.GetField((Byte)FITWorkoutStepFieldIds.TargetType);
+            Assert.IsNotNull(messageField, "Invalid no target FIT serialization");
+            Assert.AreEqual((Byte)FITWorkoutStepTargetTypes.NoTarget, messageField.GetEnum(), "Invalid target type in field for target");
+            serializedMessage.Clear();
+
+            // Cadence targets
+            BaseCadenceTarget cadenceTarget = new BaseCadenceTarget(placeholderStep);
+
+            // Cadence range
+            cadenceTarget.ConcreteTarget = new CadenceRangeTarget(80, 90, cadenceTarget);
+            cadenceTarget.FillFITStepMessage(serializedMessage);
+            messageField = serializedMessage.GetField((Byte)FITWorkoutStepFieldIds.TargetType);
+            Assert.IsNotNull(messageField, "Invalid CadenceRange target FIT serialization");
+            Assert.AreEqual((Byte)FITWorkoutStepTargetTypes.Cadence, messageField.GetEnum(), "Invalid target type in field for CadenceRange target");
+            messageField = serializedMessage.GetField((Byte)FITWorkoutStepFieldIds.TargetValue);
+            Assert.IsNotNull(messageField, "Invalid CadenceRange target FIT serialization");
+            Assert.AreEqual(0, messageField.GetUInt32(), "Invalid zone value in field for CadenceRange target");
+            messageField = serializedMessage.GetField((Byte)FITWorkoutStepFieldIds.TargetCustomValueLow);
+            Assert.IsNotNull(messageField, "Invalid CadenceRange target FIT serialization");
+            Assert.AreEqual(80, messageField.GetUInt32(), "Invalid lower value in field for CadenceRange target");
+            messageField = serializedMessage.GetField((Byte)FITWorkoutStepFieldIds.TargetCustomValueHigh);
+            Assert.IsNotNull(messageField, "Invalid CadenceRange target FIT serialization");
+            Assert.AreEqual(90, messageField.GetUInt32(), "Invalid upper value in field for CadenceRange target");
+            serializedMessage.Clear();
+
+            cadenceTarget.ConcreteTarget = new CadenceRangeTarget(60, 120, cadenceTarget);
+            cadenceTarget.FillFITStepMessage(serializedMessage);
+            messageField = serializedMessage.GetField((Byte)FITWorkoutStepFieldIds.TargetType);
+            Assert.IsNotNull(messageField, "Invalid CadenceRange target FIT serialization");
+            Assert.AreEqual((Byte)FITWorkoutStepTargetTypes.Cadence, messageField.GetEnum(), "Invalid target type in field for CadenceRange target");
+            messageField = serializedMessage.GetField((Byte)FITWorkoutStepFieldIds.TargetValue);
+            Assert.IsNotNull(messageField, "Invalid CadenceRange target FIT serialization");
+            Assert.AreEqual(0, messageField.GetUInt32(), "Invalid zone value in field for CadenceRange target");
+            messageField = serializedMessage.GetField((Byte)FITWorkoutStepFieldIds.TargetCustomValueLow);
+            Assert.IsNotNull(messageField, "Invalid CadenceRange target FIT serialization");
+            Assert.AreEqual(60, messageField.GetUInt32(), "Invalid lower value in field for CadenceRange target");
+            messageField = serializedMessage.GetField((Byte)FITWorkoutStepFieldIds.TargetCustomValueHigh);
+            Assert.IsNotNull(messageField, "Invalid CadenceRange target FIT serialization");
+            Assert.AreEqual(120, messageField.GetUInt32(), "Invalid upper value in field for CadenceRange target");
+            serializedMessage.Clear();
+
+            // Cadence ST zone
+            cadenceTarget.ConcreteTarget = new CadenceZoneSTTarget(logbook.CadenceZones[0].Zones[2], cadenceTarget);
+            cadenceTarget.FillFITStepMessage(serializedMessage);
+            messageField = serializedMessage.GetField((Byte)FITWorkoutStepFieldIds.TargetType);
+            Assert.IsNotNull(messageField, "Invalid CadenceST target FIT serialization");
+            Assert.AreEqual((Byte)FITWorkoutStepTargetTypes.Cadence, messageField.GetEnum(), "Invalid target type in field for CadenceST target");
+            messageField = serializedMessage.GetField((Byte)FITWorkoutStepFieldIds.TargetValue);
+            Assert.IsNotNull(messageField, "Invalid CadenceRange target FIT serialization");
+            Assert.AreEqual(0, messageField.GetUInt32(), "Invalid zone value in field for CadenceRange target");
+            messageField = serializedMessage.GetField((Byte)FITWorkoutStepFieldIds.TargetCustomValueLow);
+            Assert.IsNotNull(messageField, "Invalid CadenceRange target FIT serialization");
+            Assert.AreEqual(70, messageField.GetUInt32(), "Invalid lower value in field for CadenceRange target");
+            messageField = serializedMessage.GetField((Byte)FITWorkoutStepFieldIds.TargetCustomValueHigh);
+            Assert.IsNotNull(messageField, "Invalid CadenceRange target FIT serialization");
+            Assert.AreEqual(85, messageField.GetUInt32(), "Invalid upper value in field for CadenceRange target");
+            serializedMessage.Clear();
+
+            cadenceTarget.ConcreteTarget = new CadenceZoneSTTarget(logbook.CadenceZones[0].Zones[4], cadenceTarget);
+            cadenceTarget.FillFITStepMessage(serializedMessage);
+            messageField = serializedMessage.GetField((Byte)FITWorkoutStepFieldIds.TargetType);
+            Assert.IsNotNull(messageField, "Invalid CadenceST target FIT serialization");
+            Assert.AreEqual((Byte)FITWorkoutStepTargetTypes.Cadence, messageField.GetEnum(), "Invalid target type in field for CadenceST target");
+            messageField = serializedMessage.GetField((Byte)FITWorkoutStepFieldIds.TargetValue);
+            Assert.IsNotNull(messageField, "Invalid CadenceRange target FIT serialization");
+            Assert.AreEqual(0, messageField.GetUInt32(), "Invalid zone value in field for CadenceRange target");
+            messageField = serializedMessage.GetField((Byte)FITWorkoutStepFieldIds.TargetCustomValueLow);
+            Assert.IsNotNull(messageField, "Invalid CadenceRange target FIT serialization");
+            Assert.AreEqual(100, messageField.GetUInt32(), "Invalid lower value in field for CadenceRange target");
+            messageField = serializedMessage.GetField((Byte)FITWorkoutStepFieldIds.TargetCustomValueHigh);
+            Assert.IsNotNull(messageField, "Invalid CadenceRange target FIT serialization");
+            Assert.AreEqual(120, messageField.GetUInt32(), "Invalid upper value in field for CadenceRange target");
+            serializedMessage.Clear();
+
+            // Speed targets
+            BaseSpeedTarget speedTarget = new BaseSpeedTarget(placeholderStep);
+
+            // Speed range
+            placeholderWorkout.Category = logbook.ActivityCategories[0].SubCategories[3];
+            speedTarget.ConcreteTarget = new SpeedRangeTarget(20, 30, Length.Units.Kilometer, Speed.Units.Speed, speedTarget);
+            speedTarget.FillFITStepMessage(serializedMessage);
+            messageField = serializedMessage.GetField((Byte)FITWorkoutStepFieldIds.TargetType);
+            Assert.IsNotNull(messageField, "Invalid SpeedRange target FIT serialization");
+            Assert.AreEqual((Byte)FITWorkoutStepTargetTypes.Speed, messageField.GetEnum(), "Invalid target type in field for SpeedRange target");
+            messageField = serializedMessage.GetField((Byte)FITWorkoutStepFieldIds.TargetValue);
+            Assert.IsNotNull(messageField, "Invalid SpeedRange target FIT serialization");
+            Assert.AreEqual(0, messageField.GetUInt32(), "Invalid zone value in field for SpeedRange target");
+            messageField = serializedMessage.GetField((Byte)FITWorkoutStepFieldIds.TargetCustomValueLow);
+            Assert.IsNotNull(messageField, "Invalid SpeedRange target FIT serialization");
+            Assert.AreEqual(5555, messageField.GetUInt32(), "Invalid lower value in field for SpeedRange target");
+            messageField = serializedMessage.GetField((Byte)FITWorkoutStepFieldIds.TargetCustomValueHigh);
+            Assert.IsNotNull(messageField, "Invalid SpeedRange target FIT serialization");
+            Assert.AreEqual(8333, messageField.GetUInt32(), "Invalid upper value in field for SpeedRange target");
+            serializedMessage.Clear();
+
+            speedTarget.ConcreteTarget = new SpeedRangeTarget(20, 30, Length.Units.Mile, Speed.Units.Speed, speedTarget);
+            speedTarget.FillFITStepMessage(serializedMessage);
+            messageField = serializedMessage.GetField((Byte)FITWorkoutStepFieldIds.TargetType);
+            Assert.IsNotNull(messageField, "Invalid SpeedRange target FIT serialization");
+            Assert.AreEqual((Byte)FITWorkoutStepTargetTypes.Speed, messageField.GetEnum(), "Invalid target type in field for SpeedRange target");
+            messageField = serializedMessage.GetField((Byte)FITWorkoutStepFieldIds.TargetValue);
+            Assert.IsNotNull(messageField, "Invalid SpeedRange target FIT serialization");
+            Assert.AreEqual(0, messageField.GetUInt32(), "Invalid zone value in field for SpeedRange target");
+            messageField = serializedMessage.GetField((Byte)FITWorkoutStepFieldIds.TargetCustomValueLow);
+            Assert.IsNotNull(messageField, "Invalid SpeedRange target FIT serialization");
+            Assert.AreEqual(8940, messageField.GetUInt32(), "Invalid lower value in field for SpeedRange target");
+            messageField = serializedMessage.GetField((Byte)FITWorkoutStepFieldIds.TargetCustomValueHigh);
+            Assert.IsNotNull(messageField, "Invalid SpeedRange target FIT serialization");
+            Assert.AreEqual(13411, messageField.GetUInt32(), "Invalid upper value in field for SpeedRange target");
+            serializedMessage.Clear();
+
+            // Pace shouldn't change the values saved
+            placeholderWorkout.Category = logbook.ActivityCategories[0].SubCategories[2];
+            speedTarget.FillFITStepMessage(serializedMessage);
+            messageField = serializedMessage.GetField((Byte)FITWorkoutStepFieldIds.TargetType);
+            Assert.IsNotNull(messageField, "Invalid SpeedRange pace target FIT serialization");
+            Assert.AreEqual((Byte)FITWorkoutStepTargetTypes.Speed, messageField.GetEnum(), "Invalid target type in field for SpeedRange target");
+            messageField = serializedMessage.GetField((Byte)FITWorkoutStepFieldIds.TargetValue);
+            Assert.IsNotNull(messageField, "Invalid SpeedRange pace target FIT serialization");
+            Assert.AreEqual(0, messageField.GetUInt32(), "Invalid zone value in field for SpeedRange pace target");
+            messageField = serializedMessage.GetField((Byte)FITWorkoutStepFieldIds.TargetCustomValueLow);
+            Assert.IsNotNull(messageField, "Invalid SpeedRange pace target FIT serialization");
+            Assert.AreEqual(8940, messageField.GetUInt32(), "Invalid lower value in field for SpeedRange pace target");
+            messageField = serializedMessage.GetField((Byte)FITWorkoutStepFieldIds.TargetCustomValueHigh);
+            Assert.IsNotNull(messageField, "Invalid SpeedRange pace target FIT serialization");
+            Assert.AreEqual(13411, messageField.GetUInt32(), "Invalid upper value in field for SpeedRange pace target");
+            serializedMessage.Clear();
+
+            // Speed Garmin zone
+            speedTarget.ConcreteTarget = new SpeedZoneGTCTarget(1, speedTarget);
+            speedTarget.FillFITStepMessage(serializedMessage);
+            messageField = serializedMessage.GetField((Byte)FITWorkoutStepFieldIds.TargetType);
+            Assert.IsNotNull(messageField, "Invalid SpeedGTC target FIT serialization");
+            Assert.AreEqual((Byte)FITWorkoutStepTargetTypes.Speed, messageField.GetEnum(), "Invalid target type in field for SpeedGTC target");
+            messageField = serializedMessage.GetField((Byte)FITWorkoutStepFieldIds.TargetValue);
+            Assert.IsNotNull(messageField, "Invalid SpeedGTC target FIT serialization");
+            Assert.AreEqual(1, messageField.GetUInt32(), "Invalid zone value in field for SpeedGTC target");
+            serializedMessage.Clear();
+
+            speedTarget.ConcreteTarget = new SpeedZoneGTCTarget(3, speedTarget);
+            speedTarget.FillFITStepMessage(serializedMessage);
+            messageField = serializedMessage.GetField((Byte)FITWorkoutStepFieldIds.TargetType);
+            Assert.IsNotNull(messageField, "Invalid SpeedGTC target FIT serialization");
+            Assert.AreEqual((Byte)FITWorkoutStepTargetTypes.Speed, messageField.GetEnum(), "Invalid target type in field for SpeedGTC target");
+            messageField = serializedMessage.GetField((Byte)FITWorkoutStepFieldIds.TargetValue);
+            Assert.IsNotNull(messageField, "Invalid SpeedGTC target FIT serialization");
+            Assert.AreEqual(3, messageField.GetUInt32(), "Invalid zone value in field for SpeedGTC target");
+            serializedMessage.Clear();
+
+            // Speed ST zone
+            Options.Instance.ExportSportTracksHeartRateAsPercentMax = false;
+            placeholderWorkout.Category = logbook.ActivityCategories[0].SubCategories[3];
+            speedTarget.ConcreteTarget = new SpeedZoneSTTarget(logbook.SpeedZones[0].Zones[1], speedTarget);
+            speedTarget.FillFITStepMessage(serializedMessage);
+            messageField = serializedMessage.GetField((Byte)FITWorkoutStepFieldIds.TargetType);
+            Assert.IsNotNull(messageField, "Invalid SpeedST target FIT serialization");
+            Assert.AreEqual((Byte)FITWorkoutStepTargetTypes.Speed, messageField.GetEnum(), "Invalid target type in field for target");
+            messageField = serializedMessage.GetField((Byte)FITWorkoutStepFieldIds.TargetValue);
+            Assert.IsNotNull(messageField, "Invalid SpeedRange target FIT serialization");
+            Assert.AreEqual(0, messageField.GetUInt32(), "Invalid zone value in field for SpeedRange target");
+            messageField = serializedMessage.GetField((Byte)FITWorkoutStepFieldIds.TargetCustomValueLow);
+            Assert.IsNotNull(messageField, "Invalid SpeedRange target FIT serialization");
+            Assert.AreEqual(2777, messageField.GetUInt32(), "Invalid lower value in field for SpeedRange target");
+            messageField = serializedMessage.GetField((Byte)FITWorkoutStepFieldIds.TargetCustomValueHigh);
+            Assert.IsNotNull(messageField, "Invalid SpeedRange target FIT serialization");
+            Assert.AreEqual(5555, messageField.GetUInt32(), "Invalid upper value in field for SpeedRange target");
+            serializedMessage.Clear();
+
+            speedTarget.ConcreteTarget = new SpeedZoneSTTarget(logbook.SpeedZones[0].Zones[2], speedTarget);
+            speedTarget.FillFITStepMessage(serializedMessage);
+            messageField = serializedMessage.GetField((Byte)FITWorkoutStepFieldIds.TargetType);
+            Assert.IsNotNull(messageField, "Invalid SpeedST target FIT serialization");
+            Assert.AreEqual((Byte)FITWorkoutStepTargetTypes.Speed, messageField.GetEnum(), "Invalid target type in field for target");
+            messageField = serializedMessage.GetField((Byte)FITWorkoutStepFieldIds.TargetValue);
+            Assert.IsNotNull(messageField, "Invalid SpeedRange target FIT serialization");
+            Assert.AreEqual(0, messageField.GetUInt32(), "Invalid zone value in field for SpeedRange target");
+            messageField = serializedMessage.GetField((Byte)FITWorkoutStepFieldIds.TargetCustomValueLow);
+            Assert.IsNotNull(messageField, "Invalid SpeedRange target FIT serialization");
+            Assert.AreEqual(5555, messageField.GetUInt32(), "Invalid lower value in field for SpeedRange target");
+            messageField = serializedMessage.GetField((Byte)FITWorkoutStepFieldIds.TargetCustomValueHigh);
+            Assert.IsNotNull(messageField, "Invalid SpeedRange target FIT serialization");
+            Assert.AreEqual(8333, messageField.GetUInt32(), "Invalid upper value in field for SpeedRange target");
+            serializedMessage.Clear();
+
+            // Pace shouldn't change the values saved
+            placeholderWorkout.Category = logbook.ActivityCategories[0].SubCategories[2];
+            speedTarget.FillFITStepMessage(serializedMessage);
+            messageField = serializedMessage.GetField((Byte)FITWorkoutStepFieldIds.TargetType);
+            Assert.IsNotNull(messageField, "Invalid SpeedST target FIT serialization");
+            Assert.AreEqual((Byte)FITWorkoutStepTargetTypes.Speed, messageField.GetEnum(), "Invalid target type in field for target");
+            messageField = serializedMessage.GetField((Byte)FITWorkoutStepFieldIds.TargetValue);
+            Assert.IsNotNull(messageField, "Invalid SpeedRange pace target FIT serialization");
+            Assert.AreEqual(0, messageField.GetUInt32(), "Invalid zone value in field for SpeedRange pace target");
+            messageField = serializedMessage.GetField((Byte)FITWorkoutStepFieldIds.TargetCustomValueLow);
+            Assert.IsNotNull(messageField, "Invalid SpeedRange pace target FIT serialization");
+            Assert.AreEqual(5555, messageField.GetUInt32(), "Invalid lower value in field for SpeedRange pace target");
+            messageField = serializedMessage.GetField((Byte)FITWorkoutStepFieldIds.TargetCustomValueHigh);
+            Assert.IsNotNull(messageField, "Invalid SpeedRange pace target FIT serialization");
+            Assert.AreEqual(8333, messageField.GetUInt32(), "Invalid upper value in field for SpeedRange pace target");
+            serializedMessage.Clear();
+
+            // Heart rate targets
+            BaseHeartRateTarget hrTarget = new BaseHeartRateTarget(placeholderStep);
+
+            // HR range
+            hrTarget.ConcreteTarget = new HeartRateRangeTarget(130, 170, false, hrTarget);
+            hrTarget.FillFITStepMessage(serializedMessage);
+            messageField = serializedMessage.GetField((Byte)FITWorkoutStepFieldIds.TargetType);
+            Assert.IsNotNull(messageField, "Invalid HRRange target FIT serialization");
+            Assert.AreEqual((Byte)FITWorkoutStepTargetTypes.HeartRate, messageField.GetEnum(), "Invalid target type in field for HRRange target");
+            messageField = serializedMessage.GetField((Byte)FITWorkoutStepFieldIds.TargetValue);
+            Assert.IsNotNull(messageField, "Invalid HRRange target FIT serialization");
+            Assert.AreEqual(0, messageField.GetUInt32(), "Invalid zone value in field for HRRange target");
+            messageField = serializedMessage.GetField((Byte)FITWorkoutStepFieldIds.TargetCustomValueLow);
+            Assert.IsNotNull(messageField, "Invalid HRRange target FIT serialization");
+            Assert.AreEqual(230, messageField.GetUInt32(), "Invalid lower value in field for HRRange target");
+            messageField = serializedMessage.GetField((Byte)FITWorkoutStepFieldIds.TargetCustomValueHigh);
+            Assert.IsNotNull(messageField, "Invalid HRRange target FIT serialization");
+            Assert.AreEqual(270, messageField.GetUInt32(), "Invalid upper value in field for HRRange target");
+            serializedMessage.Clear();
+
+            hrTarget.ConcreteTarget = new HeartRateRangeTarget(100, 190, false, hrTarget);
+            hrTarget.FillFITStepMessage(serializedMessage);
+            messageField = serializedMessage.GetField((Byte)FITWorkoutStepFieldIds.TargetType);
+            Assert.IsNotNull(messageField, "Invalid HRRange target FIT serialization");
+            Assert.AreEqual((Byte)FITWorkoutStepTargetTypes.HeartRate, messageField.GetEnum(), "Invalid target type in field for HRRange target");
+            messageField = serializedMessage.GetField((Byte)FITWorkoutStepFieldIds.TargetValue);
+            Assert.IsNotNull(messageField, "Invalid HRRange target FIT serialization");
+            Assert.AreEqual(0, messageField.GetUInt32(), "Invalid zone value in field for HRRange target");
+            messageField = serializedMessage.GetField((Byte)FITWorkoutStepFieldIds.TargetCustomValueLow);
+            Assert.IsNotNull(messageField, "Invalid HRRange target FIT serialization");
+            Assert.AreEqual(200, messageField.GetUInt32(), "Invalid lower value in field for HRRange target");
+            messageField = serializedMessage.GetField((Byte)FITWorkoutStepFieldIds.TargetCustomValueHigh);
+            Assert.IsNotNull(messageField, "Invalid HRRange target FIT serialization");
+            Assert.AreEqual(290, messageField.GetUInt32(), "Invalid upper value in field for HRRange target");
+            serializedMessage.Clear();
+
+            hrTarget.ConcreteTarget = new HeartRateRangeTarget(50, 70, true, hrTarget);
+            hrTarget.FillFITStepMessage(serializedMessage);
+            messageField = serializedMessage.GetField((Byte)FITWorkoutStepFieldIds.TargetType);
+            Assert.IsNotNull(messageField, "Invalid HRRange %Max target FIT serialization");
+            Assert.AreEqual((Byte)FITWorkoutStepTargetTypes.HeartRate, messageField.GetEnum(), "Invalid target type in field for HRRange %Max target");
+            messageField = serializedMessage.GetField((Byte)FITWorkoutStepFieldIds.TargetValue);
+            Assert.IsNotNull(messageField, "Invalid HRRange %Max target FIT serialization");
+            Assert.AreEqual(0, messageField.GetUInt32(), "Invalid zone value in field for HRRange %Max target");
+            messageField = serializedMessage.GetField((Byte)FITWorkoutStepFieldIds.TargetCustomValueLow);
+            Assert.IsNotNull(messageField, "Invalid HRRange %Max target FIT serialization");
+            Assert.AreEqual(50, messageField.GetUInt32(), "Invalid lower value in field for HRRange %Max target");
+            messageField = serializedMessage.GetField((Byte)FITWorkoutStepFieldIds.TargetCustomValueHigh);
+            Assert.IsNotNull(messageField, "Invalid HRRange %Max target FIT serialization");
+            Assert.AreEqual(70, messageField.GetUInt32(), "Invalid upper value in field for HRRange %Max target");
+            serializedMessage.Clear();
+
+            // HR Garmin zone
+            hrTarget.ConcreteTarget = new HeartRateZoneGTCTarget(1, hrTarget);
+            hrTarget.FillFITStepMessage(serializedMessage);
+            messageField = serializedMessage.GetField((Byte)FITWorkoutStepFieldIds.TargetType);
+            Assert.IsNotNull(messageField, "Invalid HRGTC target FIT serialization");
+            Assert.AreEqual((Byte)FITWorkoutStepTargetTypes.HeartRate, messageField.GetEnum(), "Invalid target type in field for HRGTC target");
+            messageField = serializedMessage.GetField((Byte)FITWorkoutStepFieldIds.TargetValue);
+            Assert.IsNotNull(messageField, "Invalid HRGTC target FIT serialization");
+            Assert.AreEqual(1, messageField.GetUInt32(), "Invalid zone value in field for HRGTC target");
+            serializedMessage.Clear();
+
+            hrTarget.ConcreteTarget = new HeartRateZoneGTCTarget(3, hrTarget);
+            hrTarget.FillFITStepMessage(serializedMessage);
+            messageField = serializedMessage.GetField((Byte)FITWorkoutStepFieldIds.TargetType);
+            Assert.IsNotNull(messageField, "Invalid HRGTC target FIT serialization");
+            Assert.AreEqual((Byte)FITWorkoutStepTargetTypes.HeartRate, messageField.GetEnum(), "Invalid target type in field for HRGTC target");
+            messageField = serializedMessage.GetField((Byte)FITWorkoutStepFieldIds.TargetValue);
+            Assert.IsNotNull(messageField, "Invalid HRGTC target FIT serialization");
+            Assert.AreEqual(3, messageField.GetUInt32(), "Invalid zone value in field for HRGTC target");
+            serializedMessage.Clear();
+
+            // HR ST zone
+            Options.Instance.ExportSportTracksHeartRateAsPercentMax = false;
+            hrTarget.ConcreteTarget = new HeartRateZoneSTTarget(logbook.HeartRateZones[0].Zones[2], hrTarget);
+            hrTarget.FillFITStepMessage(serializedMessage);
+            messageField = serializedMessage.GetField((Byte)FITWorkoutStepFieldIds.TargetType);
+            Assert.IsNotNull(messageField, "Invalid HRST target FIT serialization");
+            Assert.AreEqual((Byte)FITWorkoutStepTargetTypes.HeartRate, messageField.GetEnum(), "Invalid target type in field for HRST target");
+            messageField = serializedMessage.GetField((Byte)FITWorkoutStepFieldIds.TargetValue);
+            Assert.IsNotNull(messageField, "Invalid HRST target FIT serialization");
+            Assert.AreEqual(0, messageField.GetUInt32(), "Invalid zone value in field for HRST target");
+            messageField = serializedMessage.GetField((Byte)FITWorkoutStepFieldIds.TargetCustomValueLow);
+            Assert.IsNotNull(messageField, "Invalid HRST target FIT serialization");
+            Assert.AreEqual(240, messageField.GetUInt32(), "Invalid lower value in field for HRST target");
+            messageField = serializedMessage.GetField((Byte)FITWorkoutStepFieldIds.TargetCustomValueHigh);
+            Assert.IsNotNull(messageField, "Invalid HRST target FIT serialization");
+            Assert.AreEqual(260, messageField.GetUInt32(), "Invalid upper value in field for HRST target");
+            serializedMessage.Clear();
+
+            hrTarget.ConcreteTarget = new HeartRateZoneSTTarget(logbook.HeartRateZones[0].Zones[4], hrTarget);
+            hrTarget.FillFITStepMessage(serializedMessage);
+            messageField = serializedMessage.GetField((Byte)FITWorkoutStepFieldIds.TargetType);
+            Assert.IsNotNull(messageField, "Invalid HRST target FIT serialization");
+            Assert.AreEqual((Byte)FITWorkoutStepTargetTypes.HeartRate, messageField.GetEnum(), "Invalid target type in field for HRST target");
+            messageField = serializedMessage.GetField((Byte)FITWorkoutStepFieldIds.TargetValue);
+            Assert.IsNotNull(messageField, "Invalid HRST target FIT serialization");
+            Assert.AreEqual(0, messageField.GetUInt32(), "Invalid zone value in field for HRST target");
+            messageField = serializedMessage.GetField((Byte)FITWorkoutStepFieldIds.TargetCustomValueLow);
+            Assert.IsNotNull(messageField, "Invalid HRST target FIT serialization");
+            Assert.AreEqual(280, messageField.GetUInt32(), "Invalid lower value in field for HRST target");
+            messageField = serializedMessage.GetField((Byte)FITWorkoutStepFieldIds.TargetCustomValueHigh);
+            Assert.IsNotNull(messageField, "Invalid HRST target FIT serialization");
+            Assert.AreEqual(340, messageField.GetUInt32(), "Invalid upper value in field for HRST target");
+            serializedMessage.Clear();
+
+            placeholderWorkout.Category = logbook.ActivityCategories[0].SubCategories[1];
+            Options.Instance.ExportSportTracksHeartRateAsPercentMax = true;
+            hrTarget.ConcreteTarget = new HeartRateZoneSTTarget(logbook.HeartRateZones[1].Zones[2], hrTarget);
+            hrTarget.FillFITStepMessage(serializedMessage);
+            messageField = serializedMessage.GetField((Byte)FITWorkoutStepFieldIds.TargetType);
+            Assert.IsNotNull(messageField, "Invalid HRST %Max target FIT serialization");
+            Assert.AreEqual((Byte)FITWorkoutStepTargetTypes.HeartRate, messageField.GetEnum(), "Invalid target type in field for HRST %Max target");
+            messageField = serializedMessage.GetField((Byte)FITWorkoutStepFieldIds.TargetValue);
+            Assert.IsNotNull(messageField, "Invalid HRST %Max target FIT serialization");
+            Assert.AreEqual(0, messageField.GetUInt32(), "Invalid zone value in field for HRST %Max target");
+            messageField = serializedMessage.GetField((Byte)FITWorkoutStepFieldIds.TargetCustomValueLow);
+            Assert.IsNotNull(messageField, "Invalid HRST %Max target FIT serialization");
+            Assert.AreEqual(68, messageField.GetUInt32(), "Invalid lower value in field for HRST %Max target");
+            messageField = serializedMessage.GetField((Byte)FITWorkoutStepFieldIds.TargetCustomValueHigh);
+            Assert.IsNotNull(messageField, "Invalid HRST %Max target FIT serialization");
+            Assert.AreEqual(82, messageField.GetUInt32(), "Invalid upper value in field for HRST %Max target");
+            serializedMessage.Clear();
+
+            // Power targets
+            BasePowerTarget powerTarget = new BasePowerTarget(placeholderStep);
+
+            // Power range
+            powerTarget.ConcreteTarget = new PowerRangeTarget(150, 200, false, powerTarget);
+            powerTarget.FillFITStepMessage(serializedMessage);
+            messageField = serializedMessage.GetField((Byte)FITWorkoutStepFieldIds.TargetType);
+            Assert.IsNotNull(messageField, "Invalid PowerRange target FIT serialization");
+            Assert.AreEqual((Byte)FITWorkoutStepTargetTypes.Power, messageField.GetEnum(), "Invalid target type in field for PowerRange target");
+            messageField = serializedMessage.GetField((Byte)FITWorkoutStepFieldIds.TargetValue);
+            Assert.IsNotNull(messageField, "Invalid PowerRange target FIT serialization");
+            Assert.AreEqual(0, messageField.GetUInt32(), "Invalid zone value in field for PowerRange target");
+            messageField = serializedMessage.GetField((Byte)FITWorkoutStepFieldIds.TargetCustomValueLow);
+            Assert.IsNotNull(messageField, "Invalid PowerRange target FIT serialization");
+            Assert.AreEqual(1150, messageField.GetUInt32(), "Invalid lower value in field for PowerRange target");
+            messageField = serializedMessage.GetField((Byte)FITWorkoutStepFieldIds.TargetCustomValueHigh);
+            Assert.IsNotNull(messageField, "Invalid PowerRange target FIT serialization");
+            Assert.AreEqual(1200, messageField.GetUInt32(), "Invalid upper value in field for PowerRange target");
+            serializedMessage.Clear();
+
+            powerTarget.ConcreteTarget = new PowerRangeTarget(300, 400, false, powerTarget);
+            powerTarget.FillFITStepMessage(serializedMessage);
+            messageField = serializedMessage.GetField((Byte)FITWorkoutStepFieldIds.TargetType);
+            Assert.IsNotNull(messageField, "Invalid PowerRange target FIT serialization");
+            Assert.AreEqual((Byte)FITWorkoutStepTargetTypes.Power, messageField.GetEnum(), "Invalid target type in field for target");
+            messageField = serializedMessage.GetField((Byte)FITWorkoutStepFieldIds.TargetValue);
+            Assert.IsNotNull(messageField, "Invalid PowerRange target FIT serialization");
+            Assert.AreEqual(0, messageField.GetUInt32(), "Invalid zone value in field for PowerRange target");
+            messageField = serializedMessage.GetField((Byte)FITWorkoutStepFieldIds.TargetCustomValueLow);
+            Assert.IsNotNull(messageField, "Invalid PowerRange target FIT serialization");
+            Assert.AreEqual(1300, messageField.GetUInt32(), "Invalid lower value in field for PowerRange target");
+            messageField = serializedMessage.GetField((Byte)FITWorkoutStepFieldIds.TargetCustomValueHigh);
+            Assert.IsNotNull(messageField, "Invalid PowerRange target FIT serialization");
+            Assert.AreEqual(1400, messageField.GetUInt32(), "Invalid upper value in field for PowerRange target");
+            serializedMessage.Clear();
+
+            powerTarget.ConcreteTarget = new PowerRangeTarget(67, 80, true, powerTarget);
+            powerTarget.FillFITStepMessage(serializedMessage);
+            messageField = serializedMessage.GetField((Byte)FITWorkoutStepFieldIds.TargetType);
+            Assert.IsNotNull(messageField, "Invalid PowerRange %FTP target FIT serialization");
+            Assert.AreEqual((Byte)FITWorkoutStepTargetTypes.Power, messageField.GetEnum(), "Invalid target type in field for PowerRange %FTP target");
+            messageField = serializedMessage.GetField((Byte)FITWorkoutStepFieldIds.TargetValue);
+            Assert.IsNotNull(messageField, "Invalid PowerRange %FTP target FIT serialization");
+            Assert.AreEqual(0, messageField.GetUInt32(), "Invalid zone value in field for PowerRange %FTP target");
+            messageField = serializedMessage.GetField((Byte)FITWorkoutStepFieldIds.TargetCustomValueLow);
+            Assert.IsNotNull(messageField, "Invalid PowerRange %FTP target FIT serialization");
+            Assert.AreEqual(67, messageField.GetUInt32(), "Invalid lower value in field for PowerRange %FTP target");
+            messageField = serializedMessage.GetField((Byte)FITWorkoutStepFieldIds.TargetCustomValueHigh);
+            Assert.IsNotNull(messageField, "Invalid PowerRange %FTP target FIT serialization");
+            Assert.AreEqual(80, messageField.GetUInt32(), "Invalid upper value in field for PowerRange %FTP target");
+            serializedMessage.Clear();
+
+            // Power Garmin zone
+            powerTarget.ConcreteTarget = new PowerZoneGTCTarget(1, powerTarget);
+            powerTarget.FillFITStepMessage(serializedMessage);
+            messageField = serializedMessage.GetField((Byte)FITWorkoutStepFieldIds.TargetType);
+            Assert.IsNotNull(messageField, "Invalid PowerGTC target FIT serialization");
+            Assert.AreEqual((Byte)FITWorkoutStepTargetTypes.Power, messageField.GetEnum(), "Invalid target type in field for PowerGTC target");
+            messageField = serializedMessage.GetField((Byte)FITWorkoutStepFieldIds.TargetValue);
+            Assert.IsNotNull(messageField, "Invalid PowerGTC target FIT serialization");
+            Assert.AreEqual(1, messageField.GetUInt32(), "Invalid zone value in field for PowerGTC target");
+            serializedMessage.Clear();
+
+            powerTarget.ConcreteTarget = new PowerZoneGTCTarget(3, powerTarget);
+            powerTarget.FillFITStepMessage(serializedMessage);
+            messageField = serializedMessage.GetField((Byte)FITWorkoutStepFieldIds.TargetType);
+            Assert.IsNotNull(messageField, "Invalid PowerGTC target FIT serialization");
+            Assert.AreEqual((Byte)FITWorkoutStepTargetTypes.Power, messageField.GetEnum(), "Invalid target type in field for target");
+            messageField = serializedMessage.GetField((Byte)FITWorkoutStepFieldIds.TargetValue);
+            Assert.IsNotNull(messageField, "Invalid PowerGTC target FIT serialization");
+            Assert.AreEqual(3, messageField.GetUInt32(), "Invalid zone value in field for PowerGTC target");
+            serializedMessage.Clear();
+
+            // Power ST zone
+            placeholderWorkout.Category = logbook.ActivityCategories[0].SubCategories[4];
+            Options.Instance.ExportSportTracksPowerAsPercentFTP = false;
+            powerTarget.ConcreteTarget = new PowerZoneSTTarget(logbook.PowerZones[0].Zones[1], powerTarget);
+            powerTarget.FillFITStepMessage(serializedMessage);
+            messageField = serializedMessage.GetField((Byte)FITWorkoutStepFieldIds.TargetType);
+            Assert.IsNotNull(messageField, "Invalid PowerST target FIT serialization");
+            Assert.AreEqual((Byte)FITWorkoutStepTargetTypes.Power, messageField.GetEnum(), "Invalid target type in field for PowerST target");
+            messageField = serializedMessage.GetField((Byte)FITWorkoutStepFieldIds.TargetValue);
+            Assert.IsNotNull(messageField, "Invalid PowerST target FIT serialization");
+            Assert.AreEqual(0, messageField.GetUInt32(), "Invalid zone value in field for PowerST target");
+            messageField = serializedMessage.GetField((Byte)FITWorkoutStepFieldIds.TargetCustomValueLow);
+            Assert.IsNotNull(messageField, "Invalid PowerST target FIT serialization");
+            Assert.AreEqual(1150, messageField.GetUInt32(), "Invalid lower value in field for PowerST target");
+            messageField = serializedMessage.GetField((Byte)FITWorkoutStepFieldIds.TargetCustomValueHigh);
+            Assert.IsNotNull(messageField, "Invalid PowerSTFTP target FIT serialization");
+            Assert.AreEqual(1200, messageField.GetUInt32(), "Invalid upper value in field for PowerST target");
+            serializedMessage.Clear();
+
+            powerTarget.ConcreteTarget = new PowerZoneSTTarget(logbook.PowerZones[0].Zones[3], powerTarget);
+            powerTarget.FillFITStepMessage(serializedMessage);
+            messageField = serializedMessage.GetField((Byte)FITWorkoutStepFieldIds.TargetType);
+            Assert.IsNotNull(messageField, "Invalid PowerST target FIT serialization");
+            Assert.AreEqual((Byte)FITWorkoutStepTargetTypes.Power, messageField.GetEnum(), "Invalid target type in field for PowerST target");
+            messageField = serializedMessage.GetField((Byte)FITWorkoutStepFieldIds.TargetValue);
+            Assert.IsNotNull(messageField, "Invalid PowerST target FIT serialization");
+            Assert.AreEqual(0, messageField.GetUInt32(), "Invalid zone value in field for PowerST target");
+            messageField = serializedMessage.GetField((Byte)FITWorkoutStepFieldIds.TargetCustomValueLow);
+            Assert.IsNotNull(messageField, "Invalid PowerST target FIT serialization");
+            Assert.AreEqual(1300, messageField.GetUInt32(), "Invalid lower value in field for PowerST target");
+            messageField = serializedMessage.GetField((Byte)FITWorkoutStepFieldIds.TargetCustomValueHigh);
+            Assert.IsNotNull(messageField, "Invalid PowerSTFTP target FIT serialization");
+            Assert.AreEqual(1400, messageField.GetUInt32(), "Invalid upper value in field for PowerST target");
+            serializedMessage.Clear();
+
+            Options.Instance.ExportSportTracksPowerAsPercentFTP = true;
+            powerTarget.FillFITStepMessage(serializedMessage);
+            messageField = serializedMessage.GetField((Byte)FITWorkoutStepFieldIds.TargetType);
+            Assert.IsNotNull(messageField, "Invalid PowerST %FTP target FIT serialization");
+            Assert.AreEqual((Byte)FITWorkoutStepTargetTypes.Power, messageField.GetEnum(), "Invalid target type in field for PowerST %FTP target");
+            messageField = serializedMessage.GetField((Byte)FITWorkoutStepFieldIds.TargetValue);
+            Assert.IsNotNull(messageField, "Invalid PowerST %FTP target FIT serialization");
+            Assert.AreEqual(0, messageField.GetUInt32(), "Invalid zone value in field for PowerST %FTP target");
+            messageField = serializedMessage.GetField((Byte)FITWorkoutStepFieldIds.TargetCustomValueLow);
+            Assert.IsNotNull(messageField, "Invalid PowerST %FTP target FIT serialization");
+            Assert.AreEqual(120, messageField.GetUInt32(), "Invalid lower value in field for PowerST %FTP target");
+            messageField = serializedMessage.GetField((Byte)FITWorkoutStepFieldIds.TargetCustomValueHigh);
+            Assert.IsNotNull(messageField, "Invalid PowerST %FTP target FIT serialization");
+            Assert.AreEqual(160, messageField.GetUInt32(), "Invalid upper value in field for PowerST %FTP target");
+            serializedMessage.Clear();
+
+            // Make sure to reset options to previous values
+            Options.Instance.ExportSportTracksHeartRateAsPercentMax = exportHRAsMax;
+            Options.Instance.ExportSportTracksPowerAsPercentFTP = exportPowerAsFTP;
         }
 
         // This test only validates the value loaded from the messages/fields, not the binary deserialization itself.  The
@@ -639,10 +1105,229 @@ namespace GarminFitnessUnitTests
         [Test]
         public void TestFITDeserialization()
         {
-            Assert.Fail("Not implemented");
+            Workout placeholderWorkout = new Workout("Test", PluginMain.GetApplication().Logbook.ActivityCategories[0]);
+            RegularStep placeholderStep = new RegularStep(placeholderWorkout);
+            FITMessage serializedMessage = new FITMessage(FITGlobalMessageIds.WorkoutStep);
+            FITMessageField typeField = new FITMessageField((Byte)FITWorkoutStepFieldIds.TargetType);
+            FITMessageField valueField = new FITMessageField((Byte)FITWorkoutStepFieldIds.TargetValue);
+            FITMessageField lowRangeField = new FITMessageField((Byte)FITWorkoutStepFieldIds.TargetCustomValueLow);
+            FITMessageField highRangeField = new FITMessageField((Byte)FITWorkoutStepFieldIds.TargetCustomValueHigh);
+            ITarget loadedTarget = null;
+
+            serializedMessage.AddField(typeField);
+
+            // No target
+            typeField.SetEnum((Byte)FITWorkoutStepTargetTypes.NoTarget);
+            loadedTarget = TargetFactory.Create(serializedMessage, placeholderStep);
+            Assert.IsTrue(loadedTarget is NullTarget, "No target not properly FIT deserialized without value fields");
+
+            serializedMessage.AddField(valueField);
+            serializedMessage.AddField(lowRangeField);
+            serializedMessage.AddField(highRangeField);
+            loadedTarget = TargetFactory.Create(serializedMessage, placeholderStep);
+            Assert.IsTrue(loadedTarget is NullTarget, "No target not properly FIT deserialized with unset value fields");
+
+            valueField.SetUInt32(1);
+            lowRangeField.SetUInt32(1);
+            highRangeField.SetUInt32(1);
+            loadedTarget = TargetFactory.Create(serializedMessage, placeholderStep);
+            Assert.IsTrue(loadedTarget is NullTarget, "No target not properly FIT deserialized with value fields");
+
+            // Cadence targets
+            BaseCadenceTarget cadenceTarget;
+
+            // Cadence range
+            CadenceRangeTarget cadenceRangeTarget;
+
+            typeField.SetEnum((Byte)FITWorkoutStepTargetTypes.Cadence);
+            valueField.SetUInt32(0);
+            lowRangeField.SetUInt32(80);
+            highRangeField.SetUInt32(90);
+            loadedTarget = TargetFactory.Create(serializedMessage, placeholderStep);
+            Assert.IsNotNull(loadedTarget, "CadenceRange target wasn't properly deserialized");
+            Assert.IsTrue(loadedTarget is BaseCadenceTarget, "CadenceRange target wasn't deserialized as proper type");
+            cadenceTarget = loadedTarget as BaseCadenceTarget;
+            Assert.IsTrue(cadenceTarget.ConcreteTarget is CadenceRangeTarget, "CadenceRange target wasn't deserialized as proper concrete type");
+            cadenceRangeTarget = cadenceTarget.ConcreteTarget as CadenceRangeTarget;
+            Assert.AreEqual(80, cadenceRangeTarget.MinCadence, "CadenceRange min value wasn't properly deserialized");
+            Assert.AreEqual(90, cadenceRangeTarget.MaxCadence, "CadenceRange max value wasn't properly deserialized");
+
+            lowRangeField.SetUInt32(60);
+            highRangeField.SetUInt32(120);
+            loadedTarget = TargetFactory.Create(serializedMessage, placeholderStep);
+            Assert.IsNotNull(loadedTarget, "CadenceRange target wasn't properly deserialized");
+            Assert.IsTrue(loadedTarget is BaseCadenceTarget, "CadenceRange target wasn't deserialized as proper type");
+            cadenceTarget = loadedTarget as BaseCadenceTarget;
+            Assert.IsTrue(cadenceTarget.ConcreteTarget is CadenceRangeTarget, "CadenceRange target wasn't deserialized as proper concrete type");
+            cadenceRangeTarget = cadenceTarget.ConcreteTarget as CadenceRangeTarget;
+            Assert.AreEqual(60, cadenceRangeTarget.MinCadence, "CadenceRange min value wasn't properly deserialized");
+            Assert.AreEqual(120, cadenceRangeTarget.MaxCadence, "CadenceRange max value wasn't properly deserialized");
+
+            // Speed targets
+            BaseSpeedTarget speedTarget;
+
+            // Speed range
+            SpeedRangeTarget speedRangeTarget;
+            double speed;
+
+            typeField.SetEnum((Byte)FITWorkoutStepTargetTypes.Speed);
+            valueField.SetUInt32(0);
+            lowRangeField.SetUInt32(5555);
+            highRangeField.SetUInt32(8333);
+            loadedTarget = TargetFactory.Create(serializedMessage, placeholderStep);
+            Assert.IsNotNull(loadedTarget, "SpeedRange target wasn't properly deserialized");
+            Assert.IsTrue(loadedTarget is BaseSpeedTarget, "SpeedRange target wasn't deserialized as proper type");
+            speedTarget = loadedTarget as BaseSpeedTarget;
+            Assert.IsTrue(speedTarget.ConcreteTarget is SpeedRangeTarget, "SpeedRange target wasn't deserialized as proper concrete type");
+            speedRangeTarget = speedTarget.ConcreteTarget as SpeedRangeTarget;
+            speed = Length.Convert(speedRangeTarget.GetMinSpeedInBaseUnitsPerHour(), speedRangeTarget.BaseUnit, Length.Units.Kilometer);
+            Assert.AreEqual(20, speed, 0.01, "SpeedRange min value wasn't properly deserialized");
+            speed = Length.Convert(speedRangeTarget.GetMaxSpeedInBaseUnitsPerHour(), speedRangeTarget.BaseUnit, Length.Units.Kilometer);
+            Assert.AreEqual(30, speed, 0.01, "SpeedRange max value wasn't properly deserialized");
+
+            lowRangeField.SetUInt32(1788);
+            highRangeField.SetUInt32(3576);
+            loadedTarget = TargetFactory.Create(serializedMessage, placeholderStep);
+            Assert.IsNotNull(loadedTarget, "SpeedRange target wasn't properly deserialized");
+            Assert.IsTrue(loadedTarget is BaseSpeedTarget, "SpeedRange target wasn't deserialized as proper type");
+            speedTarget = loadedTarget as BaseSpeedTarget;
+            Assert.IsTrue(speedTarget.ConcreteTarget is SpeedRangeTarget, "SpeedRange target wasn't deserialized as proper concrete type");
+            speedRangeTarget = speedTarget.ConcreteTarget as SpeedRangeTarget;
+            speed = Length.Convert(speedRangeTarget.GetMinSpeedInBaseUnitsPerHour(), speedRangeTarget.BaseUnit, Length.Units.Mile);
+            Assert.AreEqual(4, speed, 0.01, "SpeedRange min value wasn't properly deserialized");
+            speed = Length.Convert(speedRangeTarget.GetMaxSpeedInBaseUnitsPerHour(), speedRangeTarget.BaseUnit, Length.Units.Mile);
+            Assert.AreEqual(8, speed, 0.01, "SpeedRange max value wasn't properly deserialized");
+
+            // Speed Garmin zone
+            SpeedZoneGTCTarget speedGTCTarget;
+
+            valueField.SetUInt32(1);
+            loadedTarget = TargetFactory.Create(serializedMessage, placeholderStep);
+            Assert.IsNotNull(loadedTarget, "SpeedGTC target wasn't properly deserialized");
+            Assert.IsTrue(loadedTarget is BaseSpeedTarget, "SpeedGTC target wasn't deserialized as proper type");
+            speedTarget = loadedTarget as BaseSpeedTarget;
+            Assert.IsTrue(speedTarget.ConcreteTarget is SpeedZoneGTCTarget, "SpeedGTC target wasn't deserialized as proper concrete type");
+            speedGTCTarget = speedTarget.ConcreteTarget as SpeedZoneGTCTarget;
+            Assert.AreEqual(1, speedGTCTarget.Zone, "SpeedGTC zone value wasn't properly deserialized");
+
+            valueField.SetUInt32(3);
+            loadedTarget = TargetFactory.Create(serializedMessage, placeholderStep);
+            Assert.IsNotNull(loadedTarget, "SpeedGTC target wasn't properly deserialized");
+            Assert.IsTrue(loadedTarget is BaseSpeedTarget, "SpeedGTC target wasn't deserialized as proper type");
+            speedTarget = loadedTarget as BaseSpeedTarget;
+            Assert.IsTrue(speedTarget.ConcreteTarget is SpeedZoneGTCTarget, "SpeedGTC target wasn't deserialized as proper concrete type");
+            speedGTCTarget = speedTarget.ConcreteTarget as SpeedZoneGTCTarget;
+            Assert.AreEqual(3, speedGTCTarget.Zone, "SpeedGTC zone value wasn't properly deserialized");
+
+            // Heart rate targets
+            BaseHeartRateTarget hrTarget;
+
+            // Heart rate range
+            HeartRateRangeTarget hrRangeTarget;
+
+            typeField.SetEnum((Byte)FITWorkoutStepTargetTypes.HeartRate);
+            valueField.SetUInt32(0);
+            lowRangeField.SetUInt32(230);
+            highRangeField.SetUInt32(270);
+            loadedTarget = TargetFactory.Create(serializedMessage, placeholderStep);
+            Assert.IsNotNull(loadedTarget, "HRRange target wasn't properly deserialized");
+            Assert.IsTrue(loadedTarget is BaseHeartRateTarget, "HRRange target wasn't deserialized as proper type");
+            hrTarget = loadedTarget as BaseHeartRateTarget;
+            Assert.IsTrue(hrTarget.ConcreteTarget is HeartRateRangeTarget, "HRRange target wasn't deserialized as proper concrete type");
+            hrRangeTarget = hrTarget.ConcreteTarget as HeartRateRangeTarget;
+            Assert.AreEqual(false, hrRangeTarget.IsPercentMaxHeartRate, "HRRange %Max wasn't properly deserialized");
+            Assert.AreEqual(130, hrRangeTarget.MinHeartRate, "HRRange min value wasn't properly deserialized");
+            Assert.AreEqual(170, hrRangeTarget.MaxHeartRate, "HRRange max value wasn't properly deserialized");
+
+            lowRangeField.SetUInt32(50);
+            highRangeField.SetUInt32(70);
+            loadedTarget = TargetFactory.Create(serializedMessage, placeholderStep);
+            Assert.IsNotNull(loadedTarget, "HRRange target wasn't properly deserialized");
+            Assert.IsTrue(loadedTarget is BaseHeartRateTarget, "HRRange target wasn't deserialized as proper type");
+            hrTarget = loadedTarget as BaseHeartRateTarget;
+            Assert.IsTrue(hrTarget.ConcreteTarget is HeartRateRangeTarget, "HRRange target wasn't deserialized as proper concrete type");
+            hrRangeTarget = hrTarget.ConcreteTarget as HeartRateRangeTarget;
+            Assert.AreEqual(true, hrRangeTarget.IsPercentMaxHeartRate, "HRRange %Max wasn't properly deserialized");
+            Assert.AreEqual(50, hrRangeTarget.MinHeartRate, "HRRange min value wasn't properly deserialized");
+            Assert.AreEqual(70, hrRangeTarget.MaxHeartRate, "HRRange max value wasn't properly deserialized");
+
+            // Heart rate Garmin zone
+            HeartRateZoneGTCTarget hrGTCTarget;
+
+            valueField.SetUInt32(2);
+            loadedTarget = TargetFactory.Create(serializedMessage, placeholderStep);
+            Assert.IsNotNull(loadedTarget, "HRGTC target wasn't properly deserialized");
+            Assert.IsTrue(loadedTarget is BaseHeartRateTarget, "HRGTC target wasn't deserialized as proper type");
+            hrTarget = loadedTarget as BaseHeartRateTarget;
+            Assert.IsTrue(hrTarget.ConcreteTarget is HeartRateZoneGTCTarget, "HRGTC target wasn't deserialized as proper concrete type");
+            hrGTCTarget = hrTarget.ConcreteTarget as HeartRateZoneGTCTarget;
+            Assert.AreEqual(2, hrGTCTarget.Zone, "HRGTC zone value wasn't properly deserialized");
+
+            valueField.SetUInt32(4);
+            loadedTarget = TargetFactory.Create(serializedMessage, placeholderStep);
+            Assert.IsNotNull(loadedTarget, "HRGTC target wasn't properly deserialized");
+            Assert.IsTrue(loadedTarget is BaseHeartRateTarget, "HRGTC target wasn't deserialized as proper type");
+            hrTarget = loadedTarget as BaseHeartRateTarget;
+            Assert.IsTrue(hrTarget.ConcreteTarget is HeartRateZoneGTCTarget, "HRGTC target wasn't deserialized as proper concrete type");
+            hrGTCTarget = hrTarget.ConcreteTarget as HeartRateZoneGTCTarget;
+            Assert.AreEqual(4, hrGTCTarget.Zone, "HRGTC zone value wasn't properly deserialized");
+
+            // Power targets
+            BasePowerTarget powerTarget;
+
+            // Power range
+            PowerRangeTarget powerRangeTarget;
+
+            typeField.SetEnum((Byte)FITWorkoutStepTargetTypes.Power);
+            valueField.SetUInt32(0);
+            lowRangeField.SetUInt32(1150);
+            highRangeField.SetUInt32(1200);
+            loadedTarget = TargetFactory.Create(serializedMessage, placeholderStep);
+            Assert.IsNotNull(loadedTarget, "PowerRange target wasn't properly deserialized");
+            Assert.IsTrue(loadedTarget is BasePowerTarget, "PowerRange target wasn't deserialized as proper type");
+            powerTarget = loadedTarget as BasePowerTarget;
+            Assert.IsTrue(powerTarget.ConcreteTarget is PowerRangeTarget, "PowerRange target wasn't deserialized as proper concrete type");
+            powerRangeTarget = powerTarget.ConcreteTarget as PowerRangeTarget;
+            Assert.AreEqual(false, powerRangeTarget.IsPercentFTP, "PowerRange %FTP wasn't properly deserialized");
+            Assert.AreEqual(150, powerRangeTarget.MinPower, "PowerRange min value wasn't properly deserialized");
+            Assert.AreEqual(200, powerRangeTarget.MaxPower, "PowerRange max value wasn't properly deserialized");
+
+            lowRangeField.SetUInt32(67);
+            highRangeField.SetUInt32(200);
+            loadedTarget = TargetFactory.Create(serializedMessage, placeholderStep);
+            Assert.IsNotNull(loadedTarget, "PowerRange target wasn't properly deserialized");
+            Assert.IsTrue(loadedTarget is BasePowerTarget, "PowerRange target wasn't deserialized as proper type");
+            powerTarget = loadedTarget as BasePowerTarget;
+            Assert.IsTrue(powerTarget.ConcreteTarget is PowerRangeTarget, "PowerRange target wasn't deserialized as proper concrete type");
+            powerRangeTarget = powerTarget.ConcreteTarget as PowerRangeTarget;
+            Assert.AreEqual(true, powerRangeTarget.IsPercentFTP, "PowerRange %FTP wasn't properly deserialized");
+            Assert.AreEqual(67, powerRangeTarget.MinPower, "PowerRange min value wasn't properly deserialized");
+            Assert.AreEqual(200, powerRangeTarget.MaxPower, "PowerRange max value wasn't properly deserialized");
+
+            // Power Garmin zone
+            PowerZoneGTCTarget powerGTCTarget;
+
+            valueField.SetUInt32(1);
+            loadedTarget = TargetFactory.Create(serializedMessage, placeholderStep);
+            Assert.IsNotNull(loadedTarget, "PowerGTC target wasn't properly deserialized");
+            Assert.IsTrue(loadedTarget is BasePowerTarget, "PowerGTC target wasn't deserialized as proper type");
+            powerTarget = loadedTarget as BasePowerTarget;
+            Assert.IsTrue(powerTarget.ConcreteTarget is PowerZoneGTCTarget, "PowerGTC target wasn't deserialized as proper concrete type");
+            powerGTCTarget = powerTarget.ConcreteTarget as PowerZoneGTCTarget;
+            Assert.AreEqual(1, powerGTCTarget.Zone, "PowerGTC zone value wasn't properly deserialized");
+
+            valueField.SetUInt32(7);
+            loadedTarget = TargetFactory.Create(serializedMessage, placeholderStep);
+            Assert.IsNotNull(loadedTarget, "PowerGTC target wasn't properly deserialized");
+            Assert.IsTrue(loadedTarget is BasePowerTarget, "PowerGTC target wasn't deserialized as proper type");
+            powerTarget = loadedTarget as BasePowerTarget;
+            Assert.IsTrue(powerTarget.ConcreteTarget is PowerZoneGTCTarget, "PowerGTC target wasn't deserialized as proper concrete type");
+            powerGTCTarget = powerTarget.ConcreteTarget as PowerZoneGTCTarget;
+            Assert.AreEqual(7, powerGTCTarget.Zone, "PowerGTC zone value wasn't properly deserialized");
         }
 
         const String noTargetResult = "<NoTarget xsi:type=\"None_t\" />";
+
         const String cadenceRangeTargetResult1 = "<CadenceRangeTarget1 xsi:type=\"Cadence_t\"><Low>80.00000</Low><High>90.00000</High></CadenceRangeTarget1>";
         const String cadenceRangeTargetResult2 = "<CadenceRangeTarget2 xsi:type=\"Cadence_t\"><Low>60.00000</Low><High>120.00000</High></CadenceRangeTarget2>";
         const String cadenceSTTargetResult1 = "<CadenceSTTarget1 xsi:type=\"Cadence_t\"><Low>70.00000</Low><High>85.00000</High></CadenceSTTarget1>";
