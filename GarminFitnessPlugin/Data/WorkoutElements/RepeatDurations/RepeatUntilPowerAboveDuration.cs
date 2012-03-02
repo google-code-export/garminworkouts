@@ -7,7 +7,7 @@ using GarminFitnessPlugin.Controller;
 
 namespace GarminFitnessPlugin.Data
 {
-    class RepeatUntilPowerAboveDuration : IRepeatDuration
+    public class RepeatUntilPowerAboveDuration : IRepeatDuration
     {
         public RepeatUntilPowerAboveDuration(RepeatStep parent)
             : base(RepeatDurationType.RepeatUntilPowerAbove, parent)
@@ -49,13 +49,13 @@ namespace GarminFitnessPlugin.Data
         public override void Serialize(XmlNode parentNode, String nodeName, XmlDocument document)
         {
             // XML not supported
-            Debug.Assert(false);
+            throw new NotSupportedException();
         }
 
         public override void Deserialize(XmlNode parentNode)
         {
             // XML not supported
-            Debug.Assert(false);
+            throw new NotSupportedException();
         }
 
         public override void FillFITStepMessage(FITMessage message)
@@ -101,9 +101,8 @@ namespace GarminFitnessPlugin.Data
             {
                 if (MaxPower != value)
                 {
-                    ValidateValue(value, IsPercentFTP);
-
                     InternalMaxPower.Value = value;
+                    ValidateValue(value, IsPercentFTP);
 
                     TriggerDurationChangedEvent(new PropertyChangedEventArgs("MaxPower"));
                 }
@@ -133,7 +132,6 @@ namespace GarminFitnessPlugin.Data
                 if (IsPercentFTP != value)
                 {
                     m_IsPercentFTP.Value = value;
-
                     ValidateValue(MaxPower, value);
 
                     TriggerDurationChangedEvent(new PropertyChangedEventArgs("IsPercentFTP"));

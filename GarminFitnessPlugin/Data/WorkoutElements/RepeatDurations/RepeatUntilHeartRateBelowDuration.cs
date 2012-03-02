@@ -7,7 +7,7 @@ using GarminFitnessPlugin.Controller;
 
 namespace GarminFitnessPlugin.Data
 {
-    class RepeatUntilHeartRateBelowDuration : IRepeatDuration
+    public class RepeatUntilHeartRateBelowDuration : IRepeatDuration
     {
         public RepeatUntilHeartRateBelowDuration(RepeatStep parent)
             : base(RepeatDurationType.RepeatUntilHeartRateBelow, parent)
@@ -49,13 +49,13 @@ namespace GarminFitnessPlugin.Data
         public override void Serialize(XmlNode parentNode, String nodeName, XmlDocument document)
         {
             // XML not supported
-            Debug.Assert(false);
+            throw new NotSupportedException();
         }
 
         public override void Deserialize(XmlNode parentNode)
         {
             // XML not supported
-            Debug.Assert(false);
+            throw new NotSupportedException();
         }
 
         public override void FillFITStepMessage(FITMessage message)
@@ -101,8 +101,8 @@ namespace GarminFitnessPlugin.Data
             {
                 if (IsPercentageMaxHeartRate != value)
                 {
-                    ValidateValue(MinHeartRate, value);
                     m_IsPercentageMaxHR.Value = value;
+                    ValidateValue(MinHeartRate, value);
 
                     TriggerDurationChangedEvent(new PropertyChangedEventArgs("IsPercentageMaxHeartRate"));
                 }
@@ -117,7 +117,6 @@ namespace GarminFitnessPlugin.Data
                 if (MinHeartRate != value)
                 {
                     InternalMinHeartRate.Value = value;
-
                     ValidateValue(value, m_IsPercentageMaxHR);
 
                     TriggerDurationChangedEvent(new PropertyChangedEventArgs("MinHeartRate"));

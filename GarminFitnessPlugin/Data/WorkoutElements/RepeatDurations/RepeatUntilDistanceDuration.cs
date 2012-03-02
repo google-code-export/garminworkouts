@@ -8,7 +8,7 @@ using GarminFitnessPlugin.Controller;
 
 namespace GarminFitnessPlugin.Data
 {
-    class RepeatUntilDistanceDuration : IRepeatDuration
+    public class RepeatUntilDistanceDuration : IRepeatDuration
     {
         public RepeatUntilDistanceDuration(RepeatStep parent)
             : base(RepeatDurationType.RepeatUntilDistance, parent)
@@ -46,13 +46,13 @@ namespace GarminFitnessPlugin.Data
         public override void Serialize(XmlNode parentNode, String nodeName, XmlDocument document)
         {
             // XML not supported
-            Debug.Assert(false);
+            throw new NotSupportedException();
         }
 
         public override void Deserialize(XmlNode parentNode)
         {
             // XML not supported
-            Debug.Assert(false);
+            throw new NotSupportedException();
         }
 
         public override void FillFITStepMessage(FITMessage message)
