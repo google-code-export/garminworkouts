@@ -228,7 +228,7 @@ namespace GarminFitnessPlugin.Data
             base.Serialize(parentNode, nodeName, document);
 
             Debug.Assert(Duration is RepeatCountDuration);
-            Duration.Serialize(parentNode.LastChild, "", document);
+            Duration.Serialize(parentNode.LastChild, "Repetitions", document);
 
             // Export all children
             foreach(IStep currentStep in StepsToRepeat)

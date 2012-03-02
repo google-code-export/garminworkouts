@@ -6,7 +6,7 @@ using GarminFitnessPlugin.Controller;
 
 namespace GarminFitnessPlugin.Data
 {
-    class RepeatCountDuration : IRepeatDuration
+    public class RepeatCountDuration : IRepeatDuration
     {
         public RepeatCountDuration(RepeatStep parent)
             : base(RepeatDurationType.RepeatCount, parent)
@@ -36,7 +36,7 @@ namespace GarminFitnessPlugin.Data
 
         public override void Serialize(XmlNode parentNode, String nodeName, XmlDocument document)
         {
-            m_RepetitionCount.Serialize(parentNode, "Repetitions", document);
+            m_RepetitionCount.Serialize(parentNode, nodeName, document);
         }
 
         public override void Deserialize(XmlNode parentNode)
