@@ -394,6 +394,13 @@ namespace GarminFitnessPlugin.Controller
             m_StringLength = stringLength;
         }
 
+        public void SetString(String value)
+        {
+            Debug.Assert(value.Length < Byte.MaxValue);
+
+            SetString(value, (Byte)(value.Length + 1));
+        }
+
         public String GetString()
         {
             Debug.Assert(m_Type == DataType.String);
