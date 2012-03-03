@@ -265,6 +265,9 @@ namespace GarminFitnessPlugin.Data
             bool targetLoaded = false;
             bool intensityLoaded = false;
 
+            // Reset the name in case it's not in the XML (which means no name)
+            m_Name.Value = "";
+
             for (int i = 0; i < parentNode.ChildNodes.Count; ++i)
             {
                 XmlNode child = parentNode.ChildNodes[i];

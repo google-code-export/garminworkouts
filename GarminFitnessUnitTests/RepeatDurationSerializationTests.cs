@@ -51,7 +51,7 @@ namespace GarminFitnessUnitTests
                 caloriesDuration.Serialize(database, "RepeatUntilCaloriesDuration", testDocument);
                 Assert.Fail("Repeat until calories should not serialize");
             }
-            catch (NotSupportedException e)
+            catch (NotSupportedException)
             {            	
             }
 
@@ -61,7 +61,7 @@ namespace GarminFitnessUnitTests
                 distanceDuration.Serialize(database, "RepeatUntilDistanceDuration", testDocument);
                 Assert.Fail("Repeat until distance should not serialize");
             }
-            catch (NotSupportedException e)
+            catch (NotSupportedException)
             {
             }
 
@@ -71,7 +71,7 @@ namespace GarminFitnessUnitTests
                 hrAboveDuration.Serialize(database, "RepeatUntilHRAboveDuration", testDocument);
                 Assert.Fail("Repeat until HRAbove should not serialize");
             }
-            catch (NotSupportedException e)
+            catch (NotSupportedException)
             {
             }
 
@@ -81,7 +81,7 @@ namespace GarminFitnessUnitTests
                 hrBelowDuration.Serialize(database, "RepeatUntilHRBelowDuration", testDocument);
                 Assert.Fail("Repeat until HRBelow should not serialize");
             }
-            catch (NotSupportedException e)
+            catch (NotSupportedException)
             {
             }
 
@@ -91,7 +91,7 @@ namespace GarminFitnessUnitTests
                 powerAboveDuration.Serialize(database, "RepeatUntilPowerAboveDuration", testDocument);
                 Assert.Fail("Repeat until PowerAbove should not serialize");
             }
-            catch (NotSupportedException e)
+            catch (NotSupportedException)
             {
             }
 
@@ -101,7 +101,7 @@ namespace GarminFitnessUnitTests
                 powerBelowDuration.Serialize(database, "RepeatUntilPowerBelowDuration", testDocument);
                 Assert.Fail("Repeat until PowerBelow should not serialize");
             }
-            catch (NotSupportedException e)
+            catch (NotSupportedException)
             {
             }
 
@@ -111,7 +111,7 @@ namespace GarminFitnessUnitTests
                 timeDuration.Serialize(database, "RepeatUntilTimeDuration", testDocument);
                 Assert.Fail("Repeat until time should not serialize");
             }
-            catch (NotSupportedException e)
+            catch (NotSupportedException)
             {
             }
 
@@ -121,7 +121,7 @@ namespace GarminFitnessUnitTests
                 caloriesDuration.Serialize(database, "RepeatUntilCaloriesDuration", testDocument);
                 Assert.Fail("Repeat until calories should not serialize");
             }
-            catch (NotSupportedException e)
+            catch (NotSupportedException)
             {
             }
         }
@@ -163,7 +163,7 @@ namespace GarminFitnessUnitTests
                 caloriesDuration.Deserialize(readNode.FirstChild);
                 Assert.Fail("Repeat until calories should not deserialize");
             }
-            catch (NotSupportedException e)
+            catch (NotSupportedException)
             {
             }
 
@@ -173,7 +173,7 @@ namespace GarminFitnessUnitTests
                 distanceDuration.Deserialize(readNode.FirstChild);
                 Assert.Fail("Repeat until distance should not deserialize");
             }
-            catch (NotSupportedException e)
+            catch (NotSupportedException)
             {
             }
 
@@ -183,7 +183,7 @@ namespace GarminFitnessUnitTests
                 hrAboveDuration.Deserialize(readNode.FirstChild);
                 Assert.Fail("Repeat until HRAbove should not deserialize");
             }
-            catch (NotSupportedException e)
+            catch (NotSupportedException)
             {
             }
 
@@ -193,7 +193,7 @@ namespace GarminFitnessUnitTests
                 hrBelowDuration.Deserialize(readNode.FirstChild);
                 Assert.Fail("Repeat until HRBelow should not deserialize");
             }
-            catch (NotSupportedException e)
+            catch (NotSupportedException)
             {
             }
 
@@ -203,7 +203,7 @@ namespace GarminFitnessUnitTests
                 powerAboveDuration.Deserialize(readNode.FirstChild);
                 Assert.Fail("Repeat until PowerAbove should not deserialize");
             }
-            catch (NotSupportedException e)
+            catch (NotSupportedException)
             {
             }
 
@@ -213,7 +213,7 @@ namespace GarminFitnessUnitTests
                 powerBelowDuration.Deserialize(readNode.FirstChild);
                 Assert.Fail("Repeat until PowerBelow should not deserialize");
             }
-            catch (NotSupportedException e)
+            catch (NotSupportedException)
             {
             }
 
@@ -223,7 +223,7 @@ namespace GarminFitnessUnitTests
                 timeDuration.Deserialize(readNode.FirstChild);
                 Assert.Fail("Repeat until time should not deserialize");
             }
-            catch (NotSupportedException e)
+            catch (NotSupportedException)
             {
             }
 
@@ -233,7 +233,7 @@ namespace GarminFitnessUnitTests
                 caloriesDuration.Deserialize(readNode.FirstChild);
                 Assert.Fail("Repeat until calories should not deserialize");
             }
-            catch (NotSupportedException e)
+            catch (NotSupportedException)
             {
             }
         }
