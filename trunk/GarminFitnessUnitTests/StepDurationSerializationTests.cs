@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Text;
 using System.Xml;
 using NUnit.Framework;
@@ -7,7 +8,6 @@ using ZoneFiveSoftware.Common.Data.Measurement;
 using GarminFitnessPlugin;
 using GarminFitnessPlugin.Data;
 using GarminFitnessPlugin.Controller;
-using System.IO;
 
 namespace GarminFitnessUnitTests
 {
