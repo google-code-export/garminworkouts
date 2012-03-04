@@ -38,10 +38,6 @@ namespace GarminFitnessPlugin.Data
         public virtual void SerializetoFIT(Stream stream)
         {
             FITMessage message = new FITMessage(FITGlobalMessageIds.WorkoutStep);
-            FITMessageField stepId = new FITMessageField((Byte)FITWorkoutStepFieldIds.MessageIndex);
-
-            stepId.SetUInt16((UInt16)(ParentWorkout.GetStepExportId(this) - 1));
-            message.AddField(stepId);
 
             FillFITStepMessage(message);
 
@@ -50,7 +46,13 @@ namespace GarminFitnessPlugin.Data
 
         public abstract void DeserializeFromFIT(FITMessage stepMessage);
 
-        public abstract void FillFITStepMessage(FITMessage message);
+        public virtual void FillFITStepMessage(FITMessage message)
+        {
+            FITMessageField stepId = new FITMessageField((Byte)FITWorkoutStepFieldIds.MessageIndex);
+
+            stepId.SetUInt16((UInt16)(ParentWorkout.GetStepExportId(this) - 1));
+            message.AddField(stepId);
+        }
 
         public void Deserialize_V0(Stream stream, DataVersion version)
         {
