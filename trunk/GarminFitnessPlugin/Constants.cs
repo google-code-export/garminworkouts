@@ -7,8 +7,6 @@ namespace GarminFitnessPlugin
 {
     public class Constants
     {
-        public static readonly double Delta = 0.00005;
-
         public static readonly UInt16 SecondsPerMinute = 60;
         public static readonly UInt16 MinutesPerHour = 60;
         public static readonly UInt16 SecondsPerHour = (UInt16)(MinutesPerHour * SecondsPerMinute);

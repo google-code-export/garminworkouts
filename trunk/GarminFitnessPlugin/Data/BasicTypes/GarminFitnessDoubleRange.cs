@@ -76,7 +76,7 @@ namespace GarminFitnessPlugin.Data
 
         public bool IsInRange(double value)
         {
-            return value >= (m_MinimumValue - Constants.Delta) && value <= (m_MaximumValue + Constants.Delta);
+            return value >= (m_MinimumValue - STCommon.Data.Constants.Delta) && value <= (m_MaximumValue + STCommon.Data.Constants.Delta);
         }
 
         public double Value
