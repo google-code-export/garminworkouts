@@ -212,6 +212,8 @@ namespace GarminFitnessPlugin.Data
 
         public override void FillFITStepMessage(FITMessage message)
         {
+            base.FillFITStepMessage(message);
+
             FITMessageField repeatFromStep = new FITMessageField((Byte)FITWorkoutStepFieldIds.DurationValue);
             FITMessageField targetType = new FITMessageField((Byte)FITWorkoutStepFieldIds.TargetType);
 

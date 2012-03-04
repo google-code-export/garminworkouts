@@ -77,6 +77,8 @@ namespace GarminFitnessPlugin.Data
 
         public override void FillFITStepMessage(FITMessage message)
         {
+            base.FillFITStepMessage(message);
+
             FITMessageField stepName = new FITMessageField((Byte)FITWorkoutStepFieldIds.StepName);
             FITMessageField intensity = new FITMessageField((Byte)FITWorkoutStepFieldIds.Intensity);
 

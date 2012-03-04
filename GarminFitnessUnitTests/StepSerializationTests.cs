@@ -12,6 +12,66 @@ namespace GarminFitnessUnitTests
     class StepSerializationTests
     {
         [Test]
+        public void TestStepIdFITSerialization()
+        {
+            Workout placeholderWorkout = new Workout("Test", PluginMain.GetApplication().Logbook.ActivityCategories[0]);
+            RegularStep regularStep = placeholderWorkout.Steps[0] as RegularStep;
+            RepeatStep repeatStep = new RepeatStep(placeholderWorkout);
+            FITMessage serializedMessage = new FITMessage(FITGlobalMessageIds.WorkoutStep);
+            FITMessageField messageField;
+
+            // - Root
+            //  - Regular step (id = 0)
+            //  - Repeat step (id = 5)
+            //   - Regular step (id = 1)
+            //   - Repeat step (id = 3)
+            //    - Regular step (id = 2)
+            //   - Regular step (id = 4)
+            //  - Regular step (id = 6)
+            placeholderWorkout.Steps.AddStepToRoot(repeatStep);
+            repeatStep.StepsToRepeat.Add(new RepeatStep(placeholderWorkout));
+            repeatStep.StepsToRepeat.Add(new RegularStep(placeholderWorkout));
+            placeholderWorkout.Steps.AddStepToRoot(new RegularStep(placeholderWorkout));
+
+            // Test serialized step IDs
+            regularStep.FillFITStepMessage(serializedMessage);
+            messageField = serializedMessage.GetField((Byte)FITWorkoutStepFieldIds.MessageIndex);
+            Assert.IsNotNull(messageField, "Message index field not serialized for step");
+            Assert.AreEqual(0, messageField.GetUInt16(), "Invalid message index FIT serialization for regular step");
+            serializedMessage.Clear();
+
+            repeatStep.FillFITStepMessage(serializedMessage);
+            messageField = serializedMessage.GetField((Byte)FITWorkoutStepFieldIds.MessageIndex);
+            Assert.IsNotNull(messageField, "Message index field not serialized for step");
+            Assert.AreEqual(5, messageField.GetUInt16(), "Invalid message index FIT serialization for repeat step");
+            serializedMessage.Clear();
+
+            repeatStep.StepsToRepeat[0].FillFITStepMessage(serializedMessage);
+            messageField = serializedMessage.GetField((Byte)FITWorkoutStepFieldIds.MessageIndex);
+            Assert.IsNotNull(messageField, "Message index field not serialized for step");
+            Assert.AreEqual(1, messageField.GetUInt16(), "Invalid message index FIT serialization for nested regular step");
+            serializedMessage.Clear();
+
+            repeatStep.StepsToRepeat[1].FillFITStepMessage(serializedMessage);
+            messageField = serializedMessage.GetField((Byte)FITWorkoutStepFieldIds.MessageIndex);
+            Assert.IsNotNull(messageField, "Message index field not serialized for step");
+            Assert.AreEqual(3, messageField.GetUInt16(), "Invalid message index FIT serialization for nested repeat step");
+            serializedMessage.Clear();
+
+            repeatStep.StepsToRepeat[2].FillFITStepMessage(serializedMessage);
+            messageField = serializedMessage.GetField((Byte)FITWorkoutStepFieldIds.MessageIndex);
+            Assert.IsNotNull(messageField, "Message index field not serialized for step");
+            Assert.AreEqual(4, messageField.GetUInt16(), "Invalid message index FIT serialization for nested multiple regular steps");
+            serializedMessage.Clear();
+
+            placeholderWorkout.Steps[2].FillFITStepMessage(serializedMessage);
+            messageField = serializedMessage.GetField((Byte)FITWorkoutStepFieldIds.MessageIndex);
+            Assert.IsNotNull(messageField, "Message index field not serialized for step");
+            Assert.AreEqual(6, messageField.GetUInt16(), "Invalid message index FIT serialization for multiple regular steps");
+            serializedMessage.Clear();
+        }
+
+        [Test]
         public void TestRegularStepTCXSerialization()
         {
             XmlDocument testDocument = new XmlDocument();
@@ -277,25 +337,235 @@ namespace GarminFitnessUnitTests
         [Test]
         public void TestRepeatStepTCXSerialization()
         {
-            Assert.Fail("Not Implemented");
+            XmlDocument testDocument = new XmlDocument();
+            XmlNode database;
+            XmlAttribute attribute;
+            Workout placeholderWorkout = new Workout("Test", PluginMain.GetApplication().Logbook.ActivityCategories[0]);
+            RepeatStep step = new RepeatStep(placeholderWorkout);
+            int resultPosition;
+
+            placeholderWorkout.Steps.AddStepToRoot(step);
+            placeholderWorkout.Steps.RemoveStep(placeholderWorkout.Steps[0]);
+
+            // Setup document
+            testDocument.AppendChild(testDocument.CreateXmlDeclaration("1.0", "UTF-8", "no"));
+            database = testDocument.CreateNode(XmlNodeType.Element, "TrainingCenterDatabase", null);
+            testDocument.AppendChild(database);
+            attribute = testDocument.CreateAttribute("xmlns", "xsi", GarminFitnessPlugin.Constants.xmlns);
+            attribute.Value = "http://www.w3.org/2001/XMLSchema-instance";
+            database.Attributes.Append(attribute);
+
+            // Single child
+            step.Serialize(database, "RepeatStepTest1", testDocument);
+            resultPosition = testDocument.InnerXml.IndexOf(repeatStepTestResult1);
+            Assert.GreaterOrEqual(resultPosition, 0, "Invalid step TCX serialization for repeat step with single child");
+
+            // Multiple children
+            step.StepsToRepeat.Add(new RegularStep(placeholderWorkout));
+            step.Serialize(database, "RepeatStepTest2", testDocument);
+            resultPosition = testDocument.InnerXml.IndexOf(repeatStepTestResult2);
+            Assert.GreaterOrEqual(resultPosition, 0, "Invalid step TCX serialization for repeat step with multiple children");
+
+            // Nested repeat steps
+            step.StepsToRepeat.Add(new RepeatStep(placeholderWorkout));
+            step.Serialize(database, "RepeatStepTest3", testDocument);
+            resultPosition = testDocument.InnerXml.IndexOf(repeatStepTestResult3);
+            Assert.GreaterOrEqual(resultPosition, 0, "Invalid step TCX serialization for repeat step with nested repeat child");
         }
 
         [Test]
         public void TestRepeatStepTCXDeserialization()
         {
-            Assert.Fail("Not Implemented");
+            XmlDocument testDocument = new XmlDocument();
+            XmlNode readNode;
+            XmlNode database;
+            Workout placeholderWorkout = new Workout("Test", PluginMain.GetApplication().Logbook.ActivityCategories[0]);
+            RepeatStep repeatStep = new RepeatStep(placeholderWorkout);
+
+            // Setup document
+            testDocument.AppendChild(testDocument.CreateXmlDeclaration("1.0", "UTF-8", "no"));
+            database = testDocument.CreateNode(XmlNodeType.Element, "TrainingCenterDatabase", null);
+            testDocument.AppendChild(database);
+            XmlAttribute attribute = testDocument.CreateAttribute("xmlns", "xsi", GarminFitnessPlugin.Constants.xmlns);
+            attribute.Value = "http://www.w3.org/2001/XMLSchema-instance";
+            database.Attributes.Append(attribute);
+            readNode = testDocument.CreateElement("TestNode");
+            database.AppendChild(readNode);
+
+            // Single child
+            readNode.InnerXml = repeatStepTestResult1;
+            repeatStep.Deserialize(readNode.FirstChild);
+            Assert.AreEqual(1, repeatStep.StepsToRepeat.Count, "Invalid step count deserialized for repeat step with single child");
+            Assert.IsTrue(repeatStep.StepsToRepeat[0] is RegularStep, "Invalid child step deserialized for repeat step with single child");
+
+            // Multiple children
+            readNode.InnerXml = repeatStepTestResult2;
+            repeatStep.Deserialize(readNode.FirstChild);
+            Assert.AreEqual(2, repeatStep.StepsToRepeat.Count, "Invalid step count deserialized for repeat step with multiple children");
+            Assert.IsTrue(repeatStep.StepsToRepeat[0] is RegularStep, "Invalid child step deserialized for repeat step with multiple children");
+            Assert.IsTrue(repeatStep.StepsToRepeat[1] is RegularStep, "Invalid child step deserialized for repeat step with multiple children");
+
+            // Nested repeat step
+            readNode.InnerXml = repeatStepTestResult3;
+            repeatStep.Deserialize(readNode.FirstChild);
+            Assert.AreEqual(3, repeatStep.StepsToRepeat.Count, "Invalid step count deserialized for repeat step with nested repeat child");
+            Assert.IsTrue(repeatStep.StepsToRepeat[0] is RegularStep, "Invalid child step deserialized for repeat step with nested repeat child");
+            Assert.IsTrue(repeatStep.StepsToRepeat[1] is RegularStep, "Invalid child step deserialized for repeat step with nested repeat child");
+            Assert.IsTrue(repeatStep.StepsToRepeat[2] is RepeatStep, "Invalid child step deserialized for repeat step with nested repeat child");
+            RepeatStep tempRepeat = repeatStep.StepsToRepeat[2] as RepeatStep;
+            Assert.AreEqual(1, tempRepeat.StepsToRepeat.Count, "Invalid child step deserialized for repeat step with nested repeat child");
+            Assert.IsTrue(tempRepeat.StepsToRepeat[0] is RegularStep, "Invalid child step deserialized for repeat step with nested repeat child");
+
+            // Regular step after repeat
+            readNode.InnerXml = repeatStepTestResult4;
+            repeatStep.Deserialize(readNode.FirstChild);
+            Assert.AreEqual(4, repeatStep.StepsToRepeat.Count, "Invalid step count deserialized for repeat step with step after nested repeat child");
+            Assert.IsTrue(repeatStep.StepsToRepeat[3] is RegularStep, "Invalid child step deserialized for repeat step with step after nested repeat child");
         }
 
         [Test]
         public void TestRepeatStepFITSerialization()
         {
-            Assert.Fail("Not Implemented");
+            Workout placeholderWorkout = new Workout("Test", PluginMain.GetApplication().Logbook.ActivityCategories[0]);
+            RepeatStep repeatStep = new RepeatStep(placeholderWorkout);
+            FITMessage serializedMessage = new FITMessage(FITGlobalMessageIds.WorkoutStep);
+            FITMessageField messageField;
+
+            // - Root
+            //  - Repeat step (id = 4)
+            //   - Regular step (id = 0)
+            //   - Regular step (id = 1)
+            //   - Repeat step (id = 3)
+            //    - Regular step (id = 2)
+            placeholderWorkout.Steps.AddStepToRoot(repeatStep);
+            placeholderWorkout.Steps.RemoveStep(placeholderWorkout.Steps[0]);
+
+            // Single child
+            repeatStep.FillFITStepMessage(serializedMessage);
+            messageField = serializedMessage.GetField((Byte)FITWorkoutStepFieldIds.DurationValue);
+            Assert.IsNotNull(messageField, "Duration value field not serialized for repeat step");
+            Assert.AreEqual(0, messageField.GetUInt32(), "Invalid duration value FIT serialization for repeat step with single child");
+            serializedMessage.Clear();
+
+            // Multiple children
+            repeatStep.StepsToRepeat.Add(new RegularStep(placeholderWorkout));
+            repeatStep.FillFITStepMessage(serializedMessage);
+            messageField = serializedMessage.GetField((Byte)FITWorkoutStepFieldIds.DurationValue);
+            Assert.IsNotNull(messageField, "Duration value field not serialized for repeat step");
+            Assert.AreEqual(0, messageField.GetUInt32(), "Invalid duration value FIT serialization for repeat step with single child");
+            serializedMessage.Clear();
+
+            // Nested repeat steps
+            repeatStep.StepsToRepeat.Add(new RepeatStep(placeholderWorkout));
+            repeatStep.StepsToRepeat[2].FillFITStepMessage(serializedMessage);
+            messageField = serializedMessage.GetField((Byte)FITWorkoutStepFieldIds.DurationValue);
+            Assert.IsNotNull(messageField, "Duration value field not serialized for repeat step");
+            Assert.AreEqual(2, messageField.GetUInt32(), "Invalid duration value FIT serialization for repeat step with single child");
+            serializedMessage.Clear();
         }
 
         [Test]
         public void TestRepeatStepFITDeserialization()
         {
-            Assert.Fail("Not Implemented");
+            Workout placeholderWorkout = new Workout("Test", PluginMain.GetApplication().Logbook.ActivityCategories[0]);
+            RegularStep regularStep;
+            RepeatStep repeatStep = new RepeatStep(placeholderWorkout);
+            FITMessage serializedMessage = new FITMessage(FITGlobalMessageIds.WorkoutStep);
+            FITMessageField durationValueField = new FITMessageField((Byte)FITWorkoutStepFieldIds.DurationValue);
+            FITMessageField durationTypeField = new FITMessageField((Byte)FITWorkoutStepFieldIds.DurationType);
+            FITMessageField targetValueField = new FITMessageField((Byte)FITWorkoutStepFieldIds.TargetValue);
+
+            regularStep = placeholderWorkout.Steps[0] as RegularStep;
+
+            // Setup message
+            serializedMessage.AddField(durationValueField);
+            serializedMessage.AddField(durationTypeField);
+            serializedMessage.AddField(targetValueField);
+            durationValueField.SetUInt32(0); // Step id to start repeat at
+            durationTypeField.SetEnum((Byte)FITWorkoutStepDurationTypes.RepeatCount);
+            targetValueField.SetUInt32(2);
+            
+            // This test is a little hard to follow because repeat steps in FIT format regroup previously deserialized steps.
+            //  We will illustrate the expected output throughout the test to ease validation.
+
+            // At this point we have the following
+            // - Root
+            //  - Regular step (id = 0)
+            // By deserializing the message we should get the following
+            // - Root
+            //  - Repeat step (id = 1)
+            //   - Regular step (id = 0)
+            repeatStep.DeserializeFromFIT(serializedMessage);
+            placeholderWorkout.Steps.AddStepToRoot(repeatStep);
+            Assert.AreEqual(1, placeholderWorkout.Steps.Count, "Incorrect number of steps in workout after FIT deserialization of repeat step with single child");
+            Assert.AreEqual(2, placeholderWorkout.StepCount, "Incorrect number of steps in workout after FIT deserialization of repeat step with single child");
+            Assert.IsTrue(placeholderWorkout.Steps[0] is RepeatStep, "Invalid workout structure after FIT deserialization of repeat step with single child");
+            Assert.AreEqual(repeatStep, placeholderWorkout.Steps[0], "Invalid workout structure after FIT deserialization of repeat step with single child");
+            Assert.AreEqual(1, repeatStep.StepsToRepeat.Count, "Invalid number of children in repeat after FIT deserialization of repeat step with single child");
+            Assert.AreEqual(regularStep, repeatStep.StepsToRepeat[0], "Invalid child in repeat after FIT deserialization of repeat step with single child");
+
+            placeholderWorkout.Steps.AddStepToRoot(new RegularStep(placeholderWorkout));
+            placeholderWorkout.Steps.AddStepToRoot(new RegularStep(placeholderWorkout));
+            repeatStep = new RepeatStep(placeholderWorkout);
+            durationValueField.SetUInt32(2); // Step id to start repeat at
+
+            // At this point we have the following
+            // - Root
+            //  - Repeat step (id = 1)
+            //   - Regular step (id = 0)
+            //  - Regular step (id = 2)
+            //  - Regular step (id = 3)
+            // By deserializing the message we should get the following
+            // - Root
+            //  - Repeat step (id = 1)
+            //   - Regular step (id = 0)
+            //  - Repeat step (id = 4)
+            //   - Regular step (id = 2)
+            //   - Regular step (id = 3)
+            repeatStep.DeserializeFromFIT(serializedMessage);
+            placeholderWorkout.Steps.AddStepToRoot(repeatStep);
+            Assert.AreEqual(2, placeholderWorkout.Steps.Count, "Incorrect number of steps in workout after FIT deserialization of repeat step with multiple children");
+            Assert.AreEqual(5, placeholderWorkout.StepCount, "Incorrect number of steps in workout after FIT deserialization of repeat step with multiple children");
+            Assert.IsTrue(placeholderWorkout.Steps[1] is RepeatStep, "Invalid workout structure after FIT deserialization of repeat step with multiple children");
+            Assert.AreEqual(repeatStep, placeholderWorkout.Steps[1], "Invalid workout structure after FIT deserialization of repeat step with multiple children");
+            Assert.AreEqual(2, repeatStep.StepsToRepeat.Count, "Invalid number of children in repeat after FIT deserialization of repeat step with multiple children");
+            Assert.IsTrue(placeholderWorkout.Steps[0] is RepeatStep, "Invalid repeat step structure after FIT deserialization of repeat step with multiple children");
+            Assert.IsTrue(placeholderWorkout.Steps[1] is RepeatStep, "Invalid repeat step structure after FIT deserialization of repeat step with multiple children");
+
+            regularStep = new RegularStep(placeholderWorkout);
+            placeholderWorkout.Steps.InsertStepBeforeStep(regularStep, placeholderWorkout.Steps[0]);
+            repeatStep = new RepeatStep(placeholderWorkout);
+            durationValueField.SetUInt32(1); // Step id to start repeat at
+
+            // At this point we have the following
+            // - Root
+            //  - Regular step (id = 0)
+            //  - Repeat step (id = 2)
+            //   - Regular step (id = 1)
+            //  - Repeat step (id = 5)
+            //   - Regular step (id = 4)
+            //   - Regular step (id = 5)
+            //  - Repeat step (not deserialized yet)
+            // By deserializing the message we should get the following
+            // - Root
+            //  - Regular step (id = 0)
+            //  - Repeat step (id = 6)
+            //   - Repeat step (id = 2)
+            //    - Regular step (id = 1)
+            //   - Repeat step (id = 5)
+            //    - Regular step (id = 3)
+            //    - Regular step (id = 4)
+            repeatStep.DeserializeFromFIT(serializedMessage);
+            placeholderWorkout.Steps.AddStepToRoot(repeatStep);
+            Assert.AreEqual(2, placeholderWorkout.Steps.Count, "Incorrect number of steps in workout after FIT deserialization of repeat step with multiple nested children");
+            Assert.AreEqual(7, placeholderWorkout.StepCount, "Incorrect number of steps in workout after FIT deserialization of repeat step with multiple nested children");
+            Assert.IsTrue(placeholderWorkout.Steps[0] is RegularStep, "Invalid workout structure after FIT deserialization of repeat step with multiple nested children");
+            Assert.IsTrue(placeholderWorkout.Steps[1] is RepeatStep, "Invalid workout structure after FIT deserialization of repeat step with multiple nested children");
+            Assert.AreEqual(regularStep, placeholderWorkout.Steps[0], "Invalid workout structure after FIT deserialization of repeat step with multiple nested children");
+            Assert.AreEqual(repeatStep, placeholderWorkout.Steps[1], "Invalid workout structure after FIT deserialization of repeat step with multiple nested children");
+            Assert.AreEqual(2, repeatStep.StepsToRepeat.Count, "Invalid number of children in repeat after FIT deserialization of repeat step with multiple nested children");
+            Assert.IsTrue(repeatStep.StepsToRepeat[0] is RepeatStep, "Invalid repeat step structure after FIT deserialization of repeat step with multiple nested children");
+            Assert.IsTrue(repeatStep.StepsToRepeat[1] is RepeatStep, "Invalid repeat step structure after FIT deserialization of repeat step with multiple nested children");
         }
 
         [Test]
@@ -389,6 +659,11 @@ namespace GarminFitnessUnitTests
         const String stepInvalidResult3 = "<StepTest xsi:type=\"Step_t\"><StepId>1</StepId><Name>StepTest</Name><Duration xsi:type=\"UserInitiated_t\" /><Intensity>Resting</Intensity></StepTest>";
 
         const String regularStepComponentsTestResult = "<StepTest xsi:type=\"Step_t\"><StepId>1</StepId><Name>StepTest</Name><Duration xsi:type=\"Distance_t\"><Meters>1000</Meters></Duration><Intensity>Resting</Intensity><Target xsi:type=\"HeartRate_t\"><HeartRateZone xsi:type=\"PredefinedHeartRateZone_t\"><Number>1</Number></HeartRateZone></Target></StepTest>";
+
+        const String repeatStepTestResult1 = "<RepeatStepTest1 xsi:type=\"Repeat_t\"><StepId>2</StepId><Repetitions>2</Repetitions><Child xsi:type=\"Step_t\"><StepId>1</StepId><Duration xsi:type=\"UserInitiated_t\" /><Intensity>Active</Intensity><Target xsi:type=\"None_t\" /></Child></RepeatStepTest1>";
+        const String repeatStepTestResult2 = "<RepeatStepTest2 xsi:type=\"Repeat_t\"><StepId>3</StepId><Repetitions>2</Repetitions><Child xsi:type=\"Step_t\"><StepId>1</StepId><Duration xsi:type=\"UserInitiated_t\" /><Intensity>Active</Intensity><Target xsi:type=\"None_t\" /></Child><Child xsi:type=\"Step_t\"><StepId>2</StepId><Duration xsi:type=\"UserInitiated_t\" /><Intensity>Active</Intensity><Target xsi:type=\"None_t\" /></Child></RepeatStepTest2>";
+        const String repeatStepTestResult3 = "<RepeatStepTest3 xsi:type=\"Repeat_t\"><StepId>5</StepId><Repetitions>2</Repetitions><Child xsi:type=\"Step_t\"><StepId>1</StepId><Duration xsi:type=\"UserInitiated_t\" /><Intensity>Active</Intensity><Target xsi:type=\"None_t\" /></Child><Child xsi:type=\"Step_t\"><StepId>2</StepId><Duration xsi:type=\"UserInitiated_t\" /><Intensity>Active</Intensity><Target xsi:type=\"None_t\" /></Child><Child xsi:type=\"Repeat_t\"><StepId>4</StepId><Repetitions>2</Repetitions><Child xsi:type=\"Step_t\"><StepId>3</StepId><Duration xsi:type=\"UserInitiated_t\" /><Intensity>Active</Intensity><Target xsi:type=\"None_t\" /></Child></Child></RepeatStepTest3>";
+        const String repeatStepTestResult4 = "<RepeatStepTest4 xsi:type=\"Repeat_t\"><StepId>5</StepId><Repetitions>2</Repetitions><Child xsi:type=\"Step_t\"><StepId>1</StepId><Duration xsi:type=\"UserInitiated_t\" /><Intensity>Active</Intensity><Target xsi:type=\"None_t\" /></Child><Child xsi:type=\"Step_t\"><StepId>2</StepId><Duration xsi:type=\"UserInitiated_t\" /><Intensity>Active</Intensity><Target xsi:type=\"None_t\" /></Child><Child xsi:type=\"Repeat_t\"><StepId>4</StepId><Repetitions>2</Repetitions><Child xsi:type=\"Step_t\"><StepId>3</StepId><Duration xsi:type=\"UserInitiated_t\" /><Intensity>Active</Intensity><Target xsi:type=\"None_t\" /></Child></Child><Child xsi:type=\"Step_t\"><StepId>5</StepId><Duration xsi:type=\"UserInitiated_t\" /><Intensity>Active</Intensity><Target xsi:type=\"None_t\" /></Child></RepeatStepTest4>";
 
         const String stepNotesExtensionResult1 = "<StepNotes><StepId>1</StepId><Notes>This is a note</Notes></StepNotes>";
         const String stepNotesExtensionResult2 = "<StepNotes><StepId>1</StepId><Notes>This is a new note</Notes></StepNotes>";
