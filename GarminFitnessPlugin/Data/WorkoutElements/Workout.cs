@@ -499,7 +499,7 @@ namespace GarminFitnessPlugin.Data
                         int stepId = Byte.Parse(idNode.Value);
                         IStep step = Steps.GetStepById(stepId);
 
-                        step.Notes = notesNode.FirstChild.Value;
+                        step.Notes = notesNode.FirstChild.Value.Trim();
                     }
                 }
             }

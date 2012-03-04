@@ -273,17 +273,106 @@ namespace GarminFitnessUnitTests
             Assert.IsTrue(placeholderStep.Duration is CaloriesDuration, "Duration not properly FIT deserialized in regular step");
             Assert.IsTrue(placeholderStep.Target is BaseCadenceTarget, "Target not properly FIT deserialized in regular step");
         }
+        
+        [Test]
+        public void TestRepeatStepTCXSerialization()
+        {
+            Assert.Fail("Not Implemented");
+        }
+
+        [Test]
+        public void TestRepeatStepTCXDeserialization()
+        {
+            Assert.Fail("Not Implemented");
+        }
+
+        [Test]
+        public void TestRepeatStepFITSerialization()
+        {
+            Assert.Fail("Not Implemented");
+        }
+
+        [Test]
+        public void TestRepeatStepFITDeserialization()
+        {
+            Assert.Fail("Not Implemented");
+        }
 
         [Test]
         public void TestStepNotesTCXSerialization()
         {
-            Assert.Fail("Not implemented");
+            XmlDocument testDocument = new XmlDocument();
+            XmlNode database;
+            XmlAttribute attribute;
+            Workout placeholderWorkout = new Workout("Test", PluginMain.GetApplication().Logbook.ActivityCategories[0]);
+            RegularStep regularStep = placeholderWorkout.Steps[0] as RegularStep;
+            ILogbook logbook = PluginMain.GetApplication().Logbook;
+
+            // Setup document
+            testDocument.AppendChild(testDocument.CreateXmlDeclaration("1.0", "UTF-8", "no"));
+            database = testDocument.CreateNode(XmlNodeType.Element, "TrainingCenterDatabase", null);
+            testDocument.AppendChild(database);
+            attribute = testDocument.CreateAttribute("xmlns", "xsi", GarminFitnessPlugin.Constants.xmlns);
+            attribute.Value = "http://www.w3.org/2001/XMLSchema-instance";
+            database.Attributes.Append(attribute);
+
+            // Regular step
+            regularStep.Notes = "This is a note";
+            regularStep.Serialize(database, "stepNotesTest", testDocument);
+            Assert.GreaterOrEqual(placeholderWorkout.STExtensions.Count, 1, "Missing step extension node for regular step note");
+            Assert.AreEqual(stepNotesExtensionResult1,
+                            placeholderWorkout.STExtensions[placeholderWorkout.STExtensions.Count - 1].OuterXml,
+                            "Invalid step notes serialization");
+
+            regularStep.Notes = "This is a new note";
+            regularStep.Serialize(database, "stepNotesTest", testDocument);
+            Assert.GreaterOrEqual(placeholderWorkout.STExtensions.Count, 1, "Missing step extension node for regular step note");
+            Assert.AreEqual(stepNotesExtensionResult2,
+                            placeholderWorkout.STExtensions[placeholderWorkout.STExtensions.Count - 1].OuterXml,
+                            "Invalid step notes serialization");
+
+            // Repeat step
+            RepeatStep repeatStep = new RepeatStep(placeholderWorkout);
+            placeholderWorkout.Steps.AddStepToRoot(repeatStep);
+            repeatStep.Notes = "This is a repeat note";
+            repeatStep.Serialize(database, "stepNotesTest", testDocument);
+            Assert.GreaterOrEqual(placeholderWorkout.STExtensions.Count, 1, "Missing step extension node for repeat step note");
+            Assert.AreEqual(stepNotesExtensionResult3,
+                            placeholderWorkout.STExtensions[placeholderWorkout.STExtensions.Count - 2].OuterXml,
+                            "Invalid step notes serialization");
         }
 
         [Test]
         public void TestStepNotesTCXDeserialization()
         {
-            Assert.Fail("Not implemented");
+            ILogbook logbook = PluginMain.GetApplication().Logbook;
+            Workout deserializedWorkout = new Workout("TestWorkout", logbook.ActivityCategories[0]);
+            XmlDocument testDocument = new XmlDocument();
+            RegularStep regularStep;
+            RepeatStep repeatStep;
+
+            testDocument.LoadXml(workoutStepNotesExtensionsResult);
+            Assert.AreEqual("TrainingCenterDatabase", testDocument.LastChild.Name, "Cannot find database node");
+            Assert.AreEqual("Workouts", testDocument.LastChild.FirstChild.Name, "Cannot find workouts node");
+            Assert.AreEqual("Workout", testDocument.LastChild.FirstChild.FirstChild.Name, "Cannot find workout node");
+            deserializedWorkout.Deserialize(testDocument.LastChild.FirstChild.FirstChild);
+
+            Assert.AreEqual("TestStepNoteExt", deserializedWorkout.Name, "Invalid workout name deserialized");
+            Assert.AreEqual(4, deserializedWorkout.StepCount, "Invalid step count deserialized");
+
+            // Regular step
+            regularStep = deserializedWorkout.Steps[0] as RegularStep;
+            Assert.AreEqual("Test Note1", regularStep.Notes, "Invalid deserialized step note for regular step");
+            
+            regularStep = deserializedWorkout.Steps[1] as RegularStep;
+            Assert.AreEqual("Test Note2", regularStep.Notes, "Invalid deserialized step note for regular step");
+
+            // Repeat step
+            repeatStep = deserializedWorkout.Steps[2] as RepeatStep;
+            Assert.AreEqual("Test Repeat Note", repeatStep.Notes, "Invalid deserialized step note for repeat step");
+
+            regularStep = repeatStep.StepsToRepeat[0] as RegularStep;
+            Assert.AreEqual("", regularStep.Notes, "Invalid deserialized step note for nested regular step");
         }
 
         const String regularStepTestResult1 = "<StepTest1 xsi:type=\"Step_t\"><StepId>1</StepId><Name>StepTest1</Name><Duration xsi:type=\"UserInitiated_t\" /><Intensity>Active</Intensity><Target xsi:type=\"None_t\" /></StepTest1>";
@@ -300,5 +389,76 @@ namespace GarminFitnessUnitTests
         const String stepInvalidResult3 = "<StepTest xsi:type=\"Step_t\"><StepId>1</StepId><Name>StepTest</Name><Duration xsi:type=\"UserInitiated_t\" /><Intensity>Resting</Intensity></StepTest>";
 
         const String regularStepComponentsTestResult = "<StepTest xsi:type=\"Step_t\"><StepId>1</StepId><Name>StepTest</Name><Duration xsi:type=\"Distance_t\"><Meters>1000</Meters></Duration><Intensity>Resting</Intensity><Target xsi:type=\"HeartRate_t\"><HeartRateZone xsi:type=\"PredefinedHeartRateZone_t\"><Number>1</Number></HeartRateZone></Target></StepTest>";
+
+        const String stepNotesExtensionResult1 = "<StepNotes><StepId>1</StepId><Notes>This is a note</Notes></StepNotes>";
+        const String stepNotesExtensionResult2 = "<StepNotes><StepId>1</StepId><Notes>This is a new note</Notes></StepNotes>";
+        const String stepNotesExtensionResult3 = "<StepNotes><StepId>3</StepId><Notes>This is a repeat note</Notes></StepNotes>";
+
+        const String workoutStepNotesExtensionsResult =
+@"<?xml version=""1.0"" encoding=""utf-8"" standalone=""no""?>
+<TrainingCenterDatabase xmlns=""http://www.garmin.com/xmlschemas/TrainingCenterDatabase/v2"" xmlns:xsi=""http://www.w3.org/2001/XMLSchema-instance"" xsi:schemaLocation=""http://www.garmin.com/xmlschemas/TrainingCenterDatabase/v2 http://www.garmin.com/xmlschemas/TrainingCenterDatabasev2.xsd http://www.garmin.com/xmlschemas/WorkoutExtension/v1 http://www.garmin.com/xmlschemas/WorkoutExtensionv1.xsd"">
+  <Workouts>
+    <Workout Sport=""Other"">
+      <Name>TestStepNoteExt</Name>
+      <Step xsi:type=""Step_t"">
+        <StepId>1</StepId>
+        <Duration xsi:type=""UserInitiated_t"" />
+        <Intensity>Active</Intensity>
+        <Target xsi:type=""None_t"" />
+      </Step>
+      <Step xsi:type=""Step_t"">
+        <StepId>2</StepId>
+        <Duration xsi:type=""UserInitiated_t"" />
+        <Intensity>Active</Intensity>
+        <Target xsi:type=""None_t"" />
+      </Step>
+      <Step xsi:type=""Repeat_t"">
+        <StepId>4</StepId>
+        <Repetitions>2</Repetitions>
+        <Child xsi:type=""Step_t"">
+          <StepId>3</StepId>
+          <Duration xsi:type=""UserInitiated_t"" />
+          <Intensity>Active</Intensity>
+          <Target xsi:type=""None_t"" />
+        </Child>
+      </Step>
+      <Creator xsi:type=""Device_t"">
+        <Name />
+        <UnitId>1234567890</UnitId>
+        <ProductID>0</ProductID>
+        <Version>
+          <VersionMajor>0</VersionMajor>
+          <VersionMinor>0</VersionMinor>
+          <BuildMajor>0</BuildMajor>
+          <BuildMinor>0</BuildMinor>
+        </Version>
+      </Creator>
+      <Extensions>
+        <SportTracksExtensions xmlns=""http://www.zonefivesoftware.com/sporttracks/plugins/?p=garmin-fitness"">
+          <SportTracksCategory>fa756214-cf71-11db-9705-005056c00008</SportTracksCategory>
+          <StepNotes>
+            <StepId>1</StepId>
+            <Notes>Test Note1</Notes>
+          </StepNotes>
+          <StepNotes>
+            <StepId>2</StepId>
+            <Notes>
+Test Note2
+            </Notes>
+          </StepNotes>
+          <StepNotes>
+            <StepId>3</StepId>
+            <Notes>
+            </Notes>
+          </StepNotes>
+          <StepNotes>
+            <StepId>4</StepId>
+            <Notes>Test Repeat Note</Notes>
+          </StepNotes>
+        </SportTracksExtensions>
+      </Extensions>
+    </Workout>
+  </Workouts>
+</TrainingCenterDatabase>";
     }
 }
