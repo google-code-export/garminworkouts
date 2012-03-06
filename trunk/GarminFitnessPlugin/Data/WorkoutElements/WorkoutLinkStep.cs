@@ -9,7 +9,7 @@ using GarminFitnessPlugin.Controller;
 
 namespace GarminFitnessPlugin.Data
 {
-    class WorkoutLinkStep : IStep
+    public class WorkoutLinkStep : IStep
     {
         public WorkoutLinkStep(Workout parent, Workout linkedWorkout)
             : base(StepType.Link, parent)

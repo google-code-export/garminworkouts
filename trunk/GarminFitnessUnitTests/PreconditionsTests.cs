@@ -93,8 +93,24 @@ namespace GarminFitnessUnitTests
             Assert.AreEqual(300, logbook.PowerZones[0].Zones[3].Low, "Power category 0 values mismatch");
             Assert.AreEqual(400, logbook.PowerZones[0].Zones[4].Low, "Power category 0 values mismatch");
 
-            Assert.GreaterOrEqual(1, GarminWorkoutManager.Instance.Workouts.Count, "Invalid number of workouts in logbook");
             Assert.IsNotNull(GarminWorkoutManager.Instance.GetWorkout("TestPowerExt"), "Cannot find required workout named TestPowerExt");
+            Assert.IsNotNull(GarminWorkoutManager.Instance.GetWorkout("LinkStep1"), "Cannot find required workout named LinkStep1");
+            Assert.IsNotNull(GarminWorkoutManager.Instance.GetWorkout("LinkStep2"), "Cannot find required workout named LinkStep2");
+            Assert.IsTrue(GarminWorkoutManager.Instance.GetWorkout("LinkStep2").Steps[2].ForceSplitOnStep, "Workout named LinkStep2 contains invalid step");
+            Assert.IsNotNull(GarminWorkoutManager.Instance.GetWorkout("LinkStepTest1"), "Cannot find required workout named LinkStepTest1");
+            Assert.IsTrue(GarminWorkoutManager.Instance.GetWorkout("LinkStepTest1").Steps[0] is WorkoutLinkStep, "Workout named LinkStepTest1 contains invalid step");
+            Assert.IsNotNull(GarminWorkoutManager.Instance.GetWorkout("LinkStepTest2"), "Cannot find required workout named LinkStepTest2");
+            Assert.IsTrue(GarminWorkoutManager.Instance.GetWorkout("LinkStepTest2").Steps[3] is WorkoutLinkStep, "Workout named LinkStepTest2 contains invalid step");
+            Assert.IsNotNull(GarminWorkoutManager.Instance.GetWorkout("LinkStepTest3"), "Cannot find required workout named LinkStepTest3");
+            Assert.IsTrue(GarminWorkoutManager.Instance.GetWorkout("LinkStepTest3").Steps[1] is RepeatStep, "Workout named LinkStepTest3 contains invalid step");
+            Assert.IsTrue((GarminWorkoutManager.Instance.GetWorkout("LinkStepTest3").Steps[1] as RepeatStep).StepsToRepeat[0] is WorkoutLinkStep, "Workout named LinkStepTest3 contains invalid step");
+            Assert.IsNotNull(GarminWorkoutManager.Instance.GetWorkout("LinkStepTest4"), "Cannot find required workout named LinkStepTest4");
+            Assert.IsTrue(GarminWorkoutManager.Instance.GetWorkout("LinkStepTest4").Steps[0] is WorkoutLinkStep, "Workout named LinkStepTest4 contains invalid step");
+            Assert.IsNotNull(GarminWorkoutManager.Instance.GetWorkout("LinkStepTest5"), "Cannot find required workout named LinkStepTest5");
+            Assert.IsTrue(GarminWorkoutManager.Instance.GetWorkout("LinkStepTest5").Steps[1] is WorkoutLinkStep, "Workout named LinkStepTest5 contains invalid step");
+            Assert.IsNotNull(GarminWorkoutManager.Instance.GetWorkout("LinkStepTest6"), "Cannot find required workout named LinkStepTest6");
+            Assert.IsTrue(GarminWorkoutManager.Instance.GetWorkout("LinkStepTest6").Steps[0] is RepeatStep, "Workout named LinkStepTest6 contains invalid step");
+            Assert.IsTrue((GarminWorkoutManager.Instance.GetWorkout("LinkStepTest6").Steps[0] as RepeatStep).StepsToRepeat[1] is WorkoutLinkStep, "Workout named LinkStepTest6 contains invalid step");
         }
     }
 }

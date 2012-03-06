@@ -67,9 +67,12 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RepeatDurationSerializationTests.cs" />
     <Compile Include="StepDurationSerializationTests.cs" />
+    <Compile Include="StepIdsTests.cs" />
     <Compile Include="StepSerializationTests.cs" />
     <Compile Include="StepTargetSerializationTests.cs" />
+    <Compile Include="WorkoutElementRangesTests.cs" />
     <Compile Include="WorkoutSerializationTests.cs" />
+    <Compile Include="WorkoutSplitNamesTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\GarminFitnessPublic\GarminFitnessPublic.csproj">
