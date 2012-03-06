@@ -1375,7 +1375,7 @@ namespace GarminFitnessUnitTests
 @"<?xml version=""1.0"" encoding=""utf-8"" standalone=""no""?>
 <TrainingCenterDatabase xmlns=""http://www.garmin.com/xmlschemas/TrainingCenterDatabase/v2"" xmlns:xsi=""http://www.w3.org/2001/XMLSchema-instance"" xsi:schemaLocation=""http://www.garmin.com/xmlschemas/TrainingCenterDatabase/v2 http://www.garmin.com/xmlschemas/TrainingCenterDatabasev2.xsd http://www.garmin.com/xmlschemas/WorkoutExtension/v1 http://www.garmin.com/xmlschemas/WorkoutExtensionv1.xsd"">
   <Workouts>
-    <Workout Sport=""Other"">
+    <Workout Sport=""Biking"">
       <Name>TestPowerExt</Name>
       <Step xsi:type=""Step_t"">
         <StepId>1</StepId>
@@ -1413,7 +1413,7 @@ namespace GarminFitnessUnitTests
           </Step>
         </Steps>
         <SportTracksExtensions xmlns=""http://www.zonefivesoftware.com/sporttracks/plugins/?p=garmin-fitness"">
-          <SportTracksCategory>fa756214-cf71-11db-9705-005056c00008</SportTracksCategory>
+          <SportTracksCategory>f7139635-b95c-4841-b91c-b6b4b33f885c</SportTracksCategory>
           <StepNotes>
             <StepId>1</StepId>
             <Notes>

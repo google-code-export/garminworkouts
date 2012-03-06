@@ -21,27 +21,22 @@ namespace GarminFitnessUnitTests
         }
 
         [Test]
+        public void TestFITSerialization()
+        {
+            Assert.Fail("Not implemented");
+        }
+
+        [Test]
+        public void TestFITDeserialization()
+        {
+            Assert.Fail("Not implemented");
+        }
+
+        [Test]
         public void TestMultiPartSerialization()
         {
             Assert.Fail("Not implemented");
         }
 
-        [Test]
-        public void TestLinkStepSerialization()
-        {
-            Assert.Fail("Not implemented");
-        }
-
-        [Test]
-        public void TestStepNotesSerialization()
-        {
-            Assert.Fail("Not implemented");
-        }
-
-        [Test]
-        public void TestStepNotesDeserialization()
-        {
-            Assert.Fail("Not implemented");
-        }
     }
 }

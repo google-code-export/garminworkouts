@@ -12,66 +12,6 @@ namespace GarminFitnessUnitTests
     class StepSerializationTests
     {
         [Test]
-        public void TestStepIdFITSerialization()
-        {
-            Workout placeholderWorkout = new Workout("Test", PluginMain.GetApplication().Logbook.ActivityCategories[0]);
-            RegularStep regularStep = placeholderWorkout.Steps[0] as RegularStep;
-            RepeatStep repeatStep = new RepeatStep(placeholderWorkout);
-            FITMessage serializedMessage = new FITMessage(FITGlobalMessageIds.WorkoutStep);
-            FITMessageField messageField;
-
-            // - Root
-            //  - Regular step (id = 0)
-            //  - Repeat step (id = 5)
-            //   - Regular step (id = 1)
-            //   - Repeat step (id = 3)
-            //    - Regular step (id = 2)
-            //   - Regular step (id = 4)
-            //  - Regular step (id = 6)
-            placeholderWorkout.Steps.AddStepToRoot(repeatStep);
-            repeatStep.StepsToRepeat.Add(new RepeatStep(placeholderWorkout));
-            repeatStep.StepsToRepeat.Add(new RegularStep(placeholderWorkout));
-            placeholderWorkout.Steps.AddStepToRoot(new RegularStep(placeholderWorkout));
-
-            // Test serialized step IDs
-            regularStep.FillFITStepMessage(serializedMessage);
-            messageField = serializedMessage.GetField((Byte)FITWorkoutStepFieldIds.MessageIndex);
-            Assert.IsNotNull(messageField, "Message index field not serialized for step");
-            Assert.AreEqual(0, messageField.GetUInt16(), "Invalid message index FIT serialization for regular step");
-            serializedMessage.Clear();
-
-            repeatStep.FillFITStepMessage(serializedMessage);
-            messageField = serializedMessage.GetField((Byte)FITWorkoutStepFieldIds.MessageIndex);
-            Assert.IsNotNull(messageField, "Message index field not serialized for step");
-            Assert.AreEqual(5, messageField.GetUInt16(), "Invalid message index FIT serialization for repeat step");
-            serializedMessage.Clear();
-
-            repeatStep.StepsToRepeat[0].FillFITStepMessage(serializedMessage);
-            messageField = serializedMessage.GetField((Byte)FITWorkoutStepFieldIds.MessageIndex);
-            Assert.IsNotNull(messageField, "Message index field not serialized for step");
-            Assert.AreEqual(1, messageField.GetUInt16(), "Invalid message index FIT serialization for nested regular step");
-            serializedMessage.Clear();
-
-            repeatStep.StepsToRepeat[1].FillFITStepMessage(serializedMessage);
-            messageField = serializedMessage.GetField((Byte)FITWorkoutStepFieldIds.MessageIndex);
-            Assert.IsNotNull(messageField, "Message index field not serialized for step");
-            Assert.AreEqual(3, messageField.GetUInt16(), "Invalid message index FIT serialization for nested repeat step");
-            serializedMessage.Clear();
-
-            repeatStep.StepsToRepeat[2].FillFITStepMessage(serializedMessage);
-            messageField = serializedMessage.GetField((Byte)FITWorkoutStepFieldIds.MessageIndex);
-            Assert.IsNotNull(messageField, "Message index field not serialized for step");
-            Assert.AreEqual(4, messageField.GetUInt16(), "Invalid message index FIT serialization for nested multiple regular steps");
-            serializedMessage.Clear();
-
-            placeholderWorkout.Steps[2].FillFITStepMessage(serializedMessage);
-            messageField = serializedMessage.GetField((Byte)FITWorkoutStepFieldIds.MessageIndex);
-            Assert.IsNotNull(messageField, "Message index field not serialized for step");
-            Assert.AreEqual(6, messageField.GetUInt16(), "Invalid message index FIT serialization for multiple regular steps");
-            serializedMessage.Clear();
-        }
-
-        [Test]
         public void TestRegularStepTCXSerialization()
         {
             XmlDocument testDocument = new XmlDocument();
@@ -104,6 +44,8 @@ namespace GarminFitnessUnitTests
             Assert.GreaterOrEqual(resultPosition, 0, "Invalid step TCX serialization for rest step");
 
             // Warmup step
+            step = new RegularStep(placeholderWorkout);
+            placeholderWorkout.Steps.AddStepToRoot(step);
             Options.Instance.TCXExportWarmupAs = RegularStep.StepIntensity.Active;
             step.Name = "StepTest3";
             step.Intensity = RegularStep.StepIntensity.Warmup;
@@ -211,20 +153,19 @@ namespace GarminFitnessUnitTests
         public void TestRegularStepFITSerialization()
         {
             Workout placeholderWorkout = new Workout("Test", PluginMain.GetApplication().Logbook.ActivityCategories[0]);
-            RegularStep placeholderStep = new RegularStep(placeholderWorkout);
-            ILogbook logbook = PluginMain.GetApplication().Logbook;
+            RegularStep placeholderStep = placeholderWorkout.Steps[0] as RegularStep;
             bool exportHRAsMax = Options.Instance.ExportSportTracksHeartRateAsPercentMax;
             bool exportPowerAsFTP = Options.Instance.ExportSportTracksPowerAsPercentFTP;
             FITMessage serializedMessage = new FITMessage(FITGlobalMessageIds.WorkoutStep);
             FITMessageField messageField;
 
-            // This is required to determine the step's id in the workout during serialization
-            placeholderWorkout.Steps.AddStepToRoot(placeholderStep);
-
             // Active step
             placeholderStep.Name = "TestStep1";
             placeholderStep.Intensity = RegularStep.StepIntensity.Active;
             placeholderStep.FillFITStepMessage(serializedMessage);
+            messageField = serializedMessage.GetField((Byte)FITWorkoutStepFieldIds.MessageIndex);
+            Assert.IsNotNull(messageField, "Message index field not serialized for step");
+            Assert.AreEqual(0, messageField.GetUInt16(), "Invalid message index FIT serialization for regular step");
             messageField = serializedMessage.GetField((Byte)FITWorkoutStepFieldIds.StepName);
             Assert.IsNotNull(messageField, "Invalid active step name FIT serialization");
             Assert.AreEqual("TestStep1", messageField.GetString(), "Invalid name in field for active step");
@@ -237,6 +178,9 @@ namespace GarminFitnessUnitTests
             placeholderStep.Name = "TestStep2";
             placeholderStep.Intensity = RegularStep.StepIntensity.Rest;
             placeholderStep.FillFITStepMessage(serializedMessage);
+            messageField = serializedMessage.GetField((Byte)FITWorkoutStepFieldIds.MessageIndex);
+            Assert.IsNotNull(messageField, "Message index field not serialized for step");
+            Assert.AreEqual(0, messageField.GetUInt16(), "Invalid message index FIT serialization for rest step");
             messageField = serializedMessage.GetField((Byte)FITWorkoutStepFieldIds.StepName);
             Assert.IsNotNull(messageField, "Invalid active step name FIT serialization");
             Assert.AreEqual("TestStep2", messageField.GetString(), "Invalid name in field for rest step");
@@ -246,9 +190,14 @@ namespace GarminFitnessUnitTests
             serializedMessage.Clear();
 
             // Warmup step
+            placeholderStep = new RegularStep(placeholderWorkout);
+            placeholderWorkout.Steps.AddStepToRoot(placeholderStep);
             placeholderStep.Name = "TestStep3";
             placeholderStep.Intensity = RegularStep.StepIntensity.Warmup;
             placeholderStep.FillFITStepMessage(serializedMessage);
+            messageField = serializedMessage.GetField((Byte)FITWorkoutStepFieldIds.MessageIndex);
+            Assert.IsNotNull(messageField, "Message index field not serialized for step");
+            Assert.AreEqual(1, messageField.GetUInt16(), "Invalid message index FIT serialization for warmup step");
             messageField = serializedMessage.GetField((Byte)FITWorkoutStepFieldIds.StepName);
             Assert.IsNotNull(messageField, "Invalid active step name FIT serialization");
             Assert.AreEqual("TestStep3", messageField.GetString(), "Invalid name in field for warmup step");
@@ -261,6 +210,9 @@ namespace GarminFitnessUnitTests
             placeholderStep.Name = "TestStep4";
             placeholderStep.Intensity = RegularStep.StepIntensity.Cooldown;
             placeholderStep.FillFITStepMessage(serializedMessage);
+            messageField = serializedMessage.GetField((Byte)FITWorkoutStepFieldIds.MessageIndex);
+            Assert.IsNotNull(messageField, "Message index field not serialized for step");
+            Assert.AreEqual(1, messageField.GetUInt16(), "Invalid message index FIT serialization for cooldwon step");
             messageField = serializedMessage.GetField((Byte)FITWorkoutStepFieldIds.StepName);
             Assert.IsNotNull(messageField, "Invalid active step name FIT serialization");
             Assert.AreEqual("TestStep4", messageField.GetString(), "Invalid name in field for cooldown step");
@@ -569,6 +521,63 @@ namespace GarminFitnessUnitTests
         }
 
         [Test]
+        public void TestLinkStepTCXSerialization()
+        {
+            // We are validating
+            XmlDocument testDocument = new XmlDocument();
+            XmlNode database;
+            XmlAttribute attribute;
+            IWorkout workout = GarminWorkoutManager.Instance.GetWorkout("LinkStepTest1");
+            WorkoutLinkStep linkStep = workout.Steps[0] as WorkoutLinkStep;
+            int resultPosition;
+
+            // Setup document
+            testDocument.AppendChild(testDocument.CreateXmlDeclaration("1.0", "UTF-8", "no"));
+            database = testDocument.CreateNode(XmlNodeType.Element, "TrainingCenterDatabase", null);
+            testDocument.AppendChild(database);
+            attribute = testDocument.CreateAttribute("xmlns", "xsi", GarminFitnessPlugin.Constants.xmlns);
+            attribute.Value = "http://www.w3.org/2001/XMLSchema-instance";
+            database.Attributes.Append(attribute);
+
+            // Basic link step test
+            linkStep.Serialize(database, "LinkStepTest1", testDocument);
+            resultPosition = testDocument.InnerXml.IndexOf(linkStepTestResult1);
+            Assert.GreaterOrEqual(resultPosition, 0, "Invalid step TCX serialization for basic link step");
+
+            // Link step not the first in the workout
+            workout = GarminWorkoutManager.Instance.GetWorkout("LinkStepTest2");
+            linkStep = workout.Steps[3] as WorkoutLinkStep;
+            linkStep.Serialize(database, "LinkStepTest2", testDocument);
+            resultPosition = testDocument.InnerXml.IndexOf(linkStepTestResult2);
+            Assert.GreaterOrEqual(resultPosition, 0, "Invalid step TCX serialization for link step not first in workout");
+
+            // Link step nested inside a repeat
+            workout = GarminWorkoutManager.Instance.GetWorkout("LinkStepTest3");
+            linkStep = (workout.Steps[1] as RepeatStep).StepsToRepeat[0] as WorkoutLinkStep;
+            linkStep.Serialize(database, "LinkStepTest3", testDocument);
+            resultPosition = testDocument.InnerXml.IndexOf(linkStepTestResult3);
+            Assert.GreaterOrEqual(resultPosition, 0, "Invalid step TCX serialization for link step nested in repeat");
+
+            // Link step with a forced split
+            workout = GarminWorkoutManager.Instance.GetWorkout("LinkStepTest4");
+            workout.Serialize(database, "LinkStepTest4", testDocument);
+            resultPosition = testDocument.InnerXml.IndexOf(linkStepTestResult4);
+            Assert.GreaterOrEqual(resultPosition, 0, "Invalid step TCX serialization for link step with a forced split");
+
+            // Link step on split boundary
+            workout = GarminWorkoutManager.Instance.GetWorkout("LinkStepTest5");
+            workout.Serialize(database, "LinkStepTest5", testDocument);
+            resultPosition = testDocument.InnerXml.IndexOf(linkStepTestResult5);
+            Assert.GreaterOrEqual(resultPosition, 0, "Invalid step TCX serialization for link step on split boundary");
+
+            // Link step with a forced split nested in a repeat
+            workout = GarminWorkoutManager.Instance.GetWorkout("LinkStepTest6");
+            workout.Serialize(database, "LinkStepTest6", testDocument);
+            resultPosition = testDocument.InnerXml.IndexOf(linkStepTestResult6);
+            Assert.GreaterOrEqual(resultPosition, 0, "Invalid step TCX serialization for link step with a forced split nested in a repeat");
+        }
+
+        [Test]
         public void TestStepNotesTCXSerialization()
         {
             XmlDocument testDocument = new XmlDocument();
@@ -576,7 +585,6 @@ namespace GarminFitnessUnitTests
             XmlAttribute attribute;
             Workout placeholderWorkout = new Workout("Test", PluginMain.GetApplication().Logbook.ActivityCategories[0]);
             RegularStep regularStep = placeholderWorkout.Steps[0] as RegularStep;
-            ILogbook logbook = PluginMain.GetApplication().Logbook;
 
             // Setup document
             testDocument.AppendChild(testDocument.CreateXmlDeclaration("1.0", "UTF-8", "no"));
@@ -615,8 +623,7 @@ namespace GarminFitnessUnitTests
         [Test]
         public void TestStepNotesTCXDeserialization()
         {
-            ILogbook logbook = PluginMain.GetApplication().Logbook;
-            Workout deserializedWorkout = new Workout("TestWorkout", logbook.ActivityCategories[0]);
+            Workout deserializedWorkout = new Workout("TestWorkout", PluginMain.GetApplication().Logbook.ActivityCategories[0]);
             XmlDocument testDocument = new XmlDocument();
             RegularStep regularStep;
             RepeatStep repeatStep;
@@ -647,10 +654,10 @@ namespace GarminFitnessUnitTests
 
         const String regularStepTestResult1 = "<StepTest1 xsi:type=\"Step_t\"><StepId>1</StepId><Name>StepTest1</Name><Duration xsi:type=\"UserInitiated_t\" /><Intensity>Active</Intensity><Target xsi:type=\"None_t\" /></StepTest1>";
         const String regularStepTestResult2 = "<StepTest2 xsi:type=\"Step_t\"><StepId>1</StepId><Name>StepTest2</Name><Duration xsi:type=\"UserInitiated_t\" /><Intensity>Resting</Intensity><Target xsi:type=\"None_t\" /></StepTest2>";
-        const String regularStepTestResult3 = "<StepTest3 xsi:type=\"Step_t\"><StepId>1</StepId><Name>StepTest3</Name><Duration xsi:type=\"UserInitiated_t\" /><Intensity>Active</Intensity><Target xsi:type=\"None_t\" /></StepTest3>";
-        const String regularStepTestResult4 = "<StepTest4 xsi:type=\"Step_t\"><StepId>1</StepId><Name>StepTest4</Name><Duration xsi:type=\"UserInitiated_t\" /><Intensity>Resting</Intensity><Target xsi:type=\"None_t\" /></StepTest4>";
-        const String regularStepTestResult5 = "<StepTest5 xsi:type=\"Step_t\"><StepId>1</StepId><Name>StepTest5</Name><Duration xsi:type=\"UserInitiated_t\" /><Intensity>Active</Intensity><Target xsi:type=\"None_t\" /></StepTest5>";
-        const String regularStepTestResult6 = "<StepTest6 xsi:type=\"Step_t\"><StepId>1</StepId><Name>StepTest6</Name><Duration xsi:type=\"UserInitiated_t\" /><Intensity>Resting</Intensity><Target xsi:type=\"None_t\" /></StepTest6>";
+        const String regularStepTestResult3 = "<StepTest3 xsi:type=\"Step_t\"><StepId>2</StepId><Name>StepTest3</Name><Duration xsi:type=\"UserInitiated_t\" /><Intensity>Active</Intensity><Target xsi:type=\"None_t\" /></StepTest3>";
+        const String regularStepTestResult4 = "<StepTest4 xsi:type=\"Step_t\"><StepId>2</StepId><Name>StepTest4</Name><Duration xsi:type=\"UserInitiated_t\" /><Intensity>Resting</Intensity><Target xsi:type=\"None_t\" /></StepTest4>";
+        const String regularStepTestResult5 = "<StepTest5 xsi:type=\"Step_t\"><StepId>2</StepId><Name>StepTest5</Name><Duration xsi:type=\"UserInitiated_t\" /><Intensity>Active</Intensity><Target xsi:type=\"None_t\" /></StepTest5>";
+        const String regularStepTestResult6 = "<StepTest6 xsi:type=\"Step_t\"><StepId>2</StepId><Name>StepTest6</Name><Duration xsi:type=\"UserInitiated_t\" /><Intensity>Resting</Intensity><Target xsi:type=\"None_t\" /></StepTest6>";
 
         const String noNameStepTestResult = "<StepTest1 xsi:type=\"Step_t\"><StepId>1</StepId><Duration xsi:type=\"UserInitiated_t\" /><Intensity>Active</Intensity><Target xsi:type=\"None_t\" /></StepTest1>";
 
@@ -664,6 +671,13 @@ namespace GarminFitnessUnitTests
         const String repeatStepTestResult2 = "<RepeatStepTest2 xsi:type=\"Repeat_t\"><StepId>3</StepId><Repetitions>2</Repetitions><Child xsi:type=\"Step_t\"><StepId>1</StepId><Duration xsi:type=\"UserInitiated_t\" /><Intensity>Active</Intensity><Target xsi:type=\"None_t\" /></Child><Child xsi:type=\"Step_t\"><StepId>2</StepId><Duration xsi:type=\"UserInitiated_t\" /><Intensity>Active</Intensity><Target xsi:type=\"None_t\" /></Child></RepeatStepTest2>";
         const String repeatStepTestResult3 = "<RepeatStepTest3 xsi:type=\"Repeat_t\"><StepId>5</StepId><Repetitions>2</Repetitions><Child xsi:type=\"Step_t\"><StepId>1</StepId><Duration xsi:type=\"UserInitiated_t\" /><Intensity>Active</Intensity><Target xsi:type=\"None_t\" /></Child><Child xsi:type=\"Step_t\"><StepId>2</StepId><Duration xsi:type=\"UserInitiated_t\" /><Intensity>Active</Intensity><Target xsi:type=\"None_t\" /></Child><Child xsi:type=\"Repeat_t\"><StepId>4</StepId><Repetitions>2</Repetitions><Child xsi:type=\"Step_t\"><StepId>3</StepId><Duration xsi:type=\"UserInitiated_t\" /><Intensity>Active</Intensity><Target xsi:type=\"None_t\" /></Child></Child></RepeatStepTest3>";
         const String repeatStepTestResult4 = "<RepeatStepTest4 xsi:type=\"Repeat_t\"><StepId>5</StepId><Repetitions>2</Repetitions><Child xsi:type=\"Step_t\"><StepId>1</StepId><Duration xsi:type=\"UserInitiated_t\" /><Intensity>Active</Intensity><Target xsi:type=\"None_t\" /></Child><Child xsi:type=\"Step_t\"><StepId>2</StepId><Duration xsi:type=\"UserInitiated_t\" /><Intensity>Active</Intensity><Target xsi:type=\"None_t\" /></Child><Child xsi:type=\"Repeat_t\"><StepId>4</StepId><Repetitions>2</Repetitions><Child xsi:type=\"Step_t\"><StepId>3</StepId><Duration xsi:type=\"UserInitiated_t\" /><Intensity>Active</Intensity><Target xsi:type=\"None_t\" /></Child></Child><Child xsi:type=\"Step_t\"><StepId>5</StepId><Duration xsi:type=\"UserInitiated_t\" /><Intensity>Active</Intensity><Target xsi:type=\"None_t\" /></Child></RepeatStepTest4>";
+
+        const String linkStepTestResult1 = "<LinkStepTest1 xsi:type=\"Step_t\"><StepId>1</StepId><Duration xsi:type=\"UserInitiated_t\" /><Intensity>Active</Intensity><Target xsi:type=\"None_t\" /></LinkStepTest1><LinkStepTest1 xsi:type=\"Step_t\"><StepId>2</StepId><Duration xsi:type=\"UserInitiated_t\" /><Intensity>Active</Intensity><Target xsi:type=\"None_t\" /></LinkStepTest1><LinkStepTest1 xsi:type=\"Repeat_t\"><StepId>4</StepId><Repetitions>2</Repetitions><Child xsi:type=\"Step_t\"><StepId>3</StepId><Duration xsi:type=\"UserInitiated_t\" /><Intensity>Active</Intensity><Target xsi:type=\"None_t\" /></Child></LinkStepTest1>";
+        const String linkStepTestResult2 = "<LinkStepTest2 xsi:type=\"Step_t\"><StepId>5</StepId><Duration xsi:type=\"UserInitiated_t\" /><Intensity>Active</Intensity><Target xsi:type=\"None_t\" /></LinkStepTest2><LinkStepTest2 xsi:type=\"Step_t\"><StepId>6</StepId><Duration xsi:type=\"UserInitiated_t\" /><Intensity>Active</Intensity><Target xsi:type=\"None_t\" /></LinkStepTest2><LinkStepTest2 xsi:type=\"Repeat_t\"><StepId>8</StepId><Repetitions>2</Repetitions><Child xsi:type=\"Step_t\"><StepId>7</StepId><Duration xsi:type=\"UserInitiated_t\" /><Intensity>Active</Intensity><Target xsi:type=\"None_t\" /></Child></LinkStepTest2>";
+        const String linkStepTestResult3 = "<LinkStepTest3 xsi:type=\"Step_t\"><StepId>2</StepId><Duration xsi:type=\"UserInitiated_t\" /><Intensity>Active</Intensity><Target xsi:type=\"None_t\" /></LinkStepTest3><LinkStepTest3 xsi:type=\"Step_t\"><StepId>3</StepId><Duration xsi:type=\"UserInitiated_t\" /><Intensity>Active</Intensity><Target xsi:type=\"None_t\" /></LinkStepTest3><LinkStepTest3 xsi:type=\"Repeat_t\"><StepId>5</StepId><Repetitions>2</Repetitions><Child xsi:type=\"Step_t\"><StepId>4</StepId><Duration xsi:type=\"UserInitiated_t\" /><Intensity>Active</Intensity><Target xsi:type=\"None_t\" /></Child></LinkStepTest3>";
+        const String linkStepTestResult4 = "<LinkStepTest4 Sport=\"Other\"><Name>LinkStepTes-1/2</Name><Step xsi:type=\"Step_t\"><StepId>1</StepId><Duration xsi:type=\"UserInitiated_t\" /><Intensity>Active</Intensity><Target xsi:type=\"None_t\" /></Step><Step xsi:type=\"Step_t\"><StepId>2</StepId><Duration xsi:type=\"UserInitiated_t\" /><Intensity>Active</Intensity><Target xsi:type=\"None_t\" /></Step><Creator xsi:type=\"Device_t\"><Name /><UnitId>1234567890</UnitId><ProductID>0</ProductID><Version><VersionMajor>0</VersionMajor><VersionMinor>0</VersionMinor><BuildMajor>0</BuildMajor><BuildMinor>0</BuildMinor></Version></Creator><Extensions><SportTracksExtensions xmlns=\"http://www.zonefivesoftware.com/sporttracks/plugins/?p=garmin-fitness\"><SportTracksCategory>fa756214-cf71-11db-9705-005056c00008</SportTracksCategory><StepNotes><StepId>1</StepId><Notes></Notes></StepNotes><StepNotes><StepId>2</StepId><Notes></Notes></StepNotes></SportTracksExtensions></Extensions></LinkStepTest4><LinkStepTest4 Sport=\"Other\"><Name>LinkStepTes-2/2</Name><Step xsi:type=\"Repeat_t\"><StepId>2</StepId><Repetitions>2</Repetitions><Child xsi:type=\"Step_t\"><StepId>1</StepId><Duration xsi:type=\"UserInitiated_t\" /><Intensity>Active</Intensity><Target xsi:type=\"None_t\" /></Child></Step><Notes>LinkStepTest4 part 2/2</Notes><Creator xsi:type=\"Device_t\"><Name /><UnitId>1234567890</UnitId><ProductID>0</ProductID><Version><VersionMajor>0</VersionMajor><VersionMinor>0</VersionMinor><BuildMajor>0</BuildMajor><BuildMinor>0</BuildMinor></Version></Creator><Extensions><SportTracksExtensions xmlns=\"http://www.zonefivesoftware.com/sporttracks/plugins/?p=garmin-fitness\"><SportTracksCategory>fa756214-cf71-11db-9705-005056c00008</SportTracksCategory><StepNotes><StepId>2</StepId><Notes></Notes></StepNotes><StepNotes><StepId>1</StepId><Notes></Notes></StepNotes></SportTracksExtensions></Extensions></LinkStepTest4>";
+        const String linkStepTestResult5 = "<StepId>18</StepId><Duration xsi:type=\"UserInitiated_t\" /><Intensity>Active</Intensity><Target xsi:type=\"None_t\" /></Step><Step xsi:type=\"Step_t\"><StepId>19</StepId><Duration xsi:type=\"UserInitiated_t\" /><Intensity>Active</Intensity><Target xsi:type=\"None_t\" /></Step><Creator xsi:type=\"Device_t\"><Name /><UnitId>1234567890</UnitId><ProductID>0</ProductID><Version><VersionMajor>0</VersionMajor><VersionMinor>0</VersionMinor><BuildMajor>0</BuildMajor><BuildMinor>0</BuildMinor></Version></Creator><Extensions><SportTracksExtensions xmlns=\"http://www.zonefivesoftware.com/sporttracks/plugins/?p=garmin-fitness\"><SportTracksCategory>fa756214-cf71-11db-9705-005056c00008</SportTracksCategory><StepNotes><StepId>17</StepId><Notes></Notes></StepNotes><StepNotes><StepId>1</StepId><Notes></Notes></StepNotes><StepNotes><StepId>2</StepId><Notes></Notes></StepNotes><StepNotes><StepId>3</StepId><Notes></Notes></StepNotes><StepNotes><StepId>4</StepId><Notes></Notes></StepNotes><StepNotes><StepId>5</StepId><Notes></Notes></StepNotes><StepNotes><StepId>6</StepId><Notes></Notes></StepNotes><StepNotes><StepId>7</StepId><Notes></Notes></StepNotes><StepNotes><StepId>8</StepId><Notes></Notes></StepNotes><StepNotes><StepId>9</StepId><Notes></Notes></StepNotes><StepNotes><StepId>10</StepId><Notes></Notes></StepNotes><StepNotes><StepId>11</StepId><Notes></Notes></StepNotes><StepNotes><StepId>12</StepId><Notes></Notes></StepNotes><StepNotes><StepId>13</StepId><Notes></Notes></StepNotes><StepNotes><StepId>14</StepId><Notes></Notes></StepNotes><StepNotes><StepId>16</StepId><Notes></Notes></StepNotes><StepNotes><StepId>15</StepId><Notes></Notes></StepNotes><StepNotes><StepId>18</StepId><Notes></Notes></StepNotes><StepNotes><StepId>19</StepId><Notes></Notes></StepNotes></SportTracksExtensions></Extensions></LinkStepTest5><LinkStepTest5 Sport=\"Other\"><Name>LinkStepTe1-2/2</Name><Step xsi:type=\"Repeat_t\"><StepId>2</StepId><Repetitions>2</Repetitions><Child xsi:type=\"Step_t\"><StepId>1</StepId><Duration xsi:type=\"UserInitiated_t\" /><Intensity>Active</Intensity><Target xsi:type=\"None_t\" /></Child></Step><Notes>LinkStepTest5 part 2/2</Notes><Creator xsi:type=\"Device_t\"><Name /><UnitId>1234567890</UnitId><ProductID>0</ProductID><Version><VersionMajor>0</VersionMajor><VersionMinor>0</VersionMinor><BuildMajor>0</BuildMajor><BuildMinor>0</BuildMinor></Version></Creator><Extensions><SportTracksExtensions xmlns=\"http://www.zonefivesoftware.com/sporttracks/plugins/?p=garmin-fitness\"><SportTracksCategory>fa756214-cf71-11db-9705-005056c00008</SportTracksCategory><StepNotes><StepId>2</StepId><Notes></Notes></StepNotes><StepNotes><StepId>1</StepId><Notes></Notes></StepNotes></SportTracksExtensions></Extensions></LinkStepTest5>";
+        const String linkStepTestResult6 = "<LinkStepTest6 Sport=\"Other\"><Name>LinkStepTest6</Name><Step xsi:type=\"Repeat_t\"><StepId>6</StepId><Repetitions>2</Repetitions><Child xsi:type=\"Step_t\"><StepId>1</StepId><Duration xsi:type=\"UserInitiated_t\" /><Intensity>Active</Intensity><Target xsi:type=\"None_t\" /></Child><Child xsi:type=\"Step_t\"><StepId>2</StepId><Duration xsi:type=\"UserInitiated_t\" /><Intensity>Active</Intensity><Target xsi:type=\"None_t\" /></Child><Child xsi:type=\"Step_t\"><StepId>3</StepId><Duration xsi:type=\"UserInitiated_t\" /><Intensity>Active</Intensity><Target xsi:type=\"None_t\" /></Child><Child xsi:type=\"Repeat_t\"><StepId>5</StepId><Repetitions>2</Repetitions><Child xsi:type=\"Step_t\"><StepId>4</StepId><Duration xsi:type=\"UserInitiated_t\" /><Intensity>Active</Intensity><Target xsi:type=\"None_t\" /></Child></Child></Step>";
 
         const String stepNotesExtensionResult1 = "<StepNotes><StepId>1</StepId><Notes>This is a note</Notes></StepNotes>";
         const String stepNotesExtensionResult2 = "<StepNotes><StepId>1</StepId><Notes>This is a new note</Notes></StepNotes>";
