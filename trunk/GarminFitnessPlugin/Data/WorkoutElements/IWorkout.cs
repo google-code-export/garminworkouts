@@ -675,10 +675,25 @@ namespace GarminFitnessPlugin.Data
 
         public int GetStepExportId(IStep step)
         {
+            IWorkout containerWorkout = this;
             UInt16 counter = 0;
-            bool result = GetStepExportIdInternal(step, Steps, ref counter);
 
-            Debug.Assert(result);
+            if (GetSplitPartsCount() > 1)
+            {
+                ushort stepSplitPart = GetStepSplitPart(step);
+
+                if (stepSplitPart == 0)
+                {
+                    throw new Exception("Step not found in workout");
+                }
+
+                containerWorkout = ConcreteWorkout.SplitInSeperateParts()[stepSplitPart - 1];
+            }
+
+            if(!containerWorkout.GetStepExportIdInternal(step, containerWorkout.Steps, ref counter))
+            {
+                throw new Exception("Step not found in workout");
+            }
 
             return counter;
         }
