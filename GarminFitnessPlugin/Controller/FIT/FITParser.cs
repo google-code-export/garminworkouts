@@ -63,7 +63,11 @@ namespace GarminFitnessPlugin.Controller
 
         public void RestartParsing()
         {
-            m_DataStream.Seek(12, SeekOrigin.Begin);
+            int headerSize;
+
+            m_DataStream.Seek(0, SeekOrigin.Begin);
+            headerSize = m_DataStream.ReadByte();
+            m_DataStream.Seek(headerSize, SeekOrigin.Begin);
 
             // Empty definitions dictionary
             m_MessageDefinitions = new Dictionary<Byte, FITMessage>();
@@ -230,10 +234,13 @@ namespace GarminFitnessPlugin.Controller
 
         private bool ValidateHeader()
         {
+            int headerSize;
+
             m_DataStream.Seek(0, SeekOrigin.Begin);
+            headerSize = m_DataStream.ReadByte();
 
             // Check header size
-            if (m_DataStream.ReadByte() != 12)
+            if (headerSize != 12 && headerSize  != 14)
             {
                 Logger.Instance.LogText("Bad Header size");
                 return false;
@@ -254,7 +261,7 @@ namespace GarminFitnessPlugin.Controller
             byte[] intBuffer = new byte[sizeof(UInt32)];
             m_DataStream.Read(intBuffer, 0, sizeof(UInt32));
             UInt32 dataSize = BitConverter.ToUInt32(intBuffer, 0);
-            if (dataSize + 12 != m_DataStream.Length) // Add 14 for 12 header + 2 CRC bytes
+            if (dataSize + headerSize != m_DataStream.Length) // Add header & CRC bytes
             {
                 Logger.Instance.LogText("Bad data size");
                 return false;
@@ -266,6 +273,11 @@ namespace GarminFitnessPlugin.Controller
             {
                 Logger.Instance.LogText("Bad FIT descriptor");
                 return false;
+            }
+
+            if (headerSize > 12)
+            {
+                m_DataStream.Seek(headerSize - 12, SeekOrigin.Current);
             }
 
             return true;
