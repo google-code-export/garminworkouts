@@ -112,12 +112,12 @@ namespace GarminFitnessPlugin.Controller
 
     public enum FITScheduleFieldIds
     {
-        Unknown1 = 0,
-        GarminProduct,
-        Unknown3,
+        WorkoutManufacturer = 0,
+        WorkoutProduct,
+        WorkoutSN,
         WorkoutId,
-        Unknown4,
-        Unknown5,
+        WorkoutCompleted,
+        ScheduleType,
         ScheduledDate,
     }
 
@@ -217,4 +217,11 @@ namespace GarminFitnessPlugin.Controller
         Grade,
         Resistance,
     }
+
+    public enum FITScheduleType
+    {
+        Workout,
+        Course,
+    }
+
 }
