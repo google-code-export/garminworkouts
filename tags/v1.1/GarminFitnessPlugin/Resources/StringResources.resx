@@ -211,7 +211,7 @@
     <value>Details</value>
   </data>
   <data name="DeviceCommunicationErrorText" xml:space="preserve">
-    <value>Unable to load the Garmin Cummunicator Plugin.  Please make sure you have SportTracks version 2.0.3170 or later and Garmin Cummunicator Plugin installed and activated in Internet Explorer.</value>
+    <value>Unable to load the Garmin Communicator Plugin.  Please make sure you have SportTracks version 2.0.3170 or later and Garmin Communicator Plugin installed and activated in Internet Explorer.</value>
   </data>
   <data name="DistanceDurationComboBoxText" xml:space="preserve">
     <value>After I go a certain distance</value>
