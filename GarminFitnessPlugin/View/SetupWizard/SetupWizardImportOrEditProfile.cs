@@ -121,18 +121,20 @@ namespace GarminFitnessPlugin.View
         {
             if (!succeeded)
             {
-                if (!String.IsNullOrEmpty(errorText))
-                {
-                    MessageBox.Show(errorText,
-                                    GarminFitnessView.GetLocalizedString("ErrorText"),
-                                    MessageBoxButtons.OK, MessageBoxIcon.Error);
-                }
-                else if (task.Type == GarminDeviceManager.BasicTask.TaskTypes.Initialize)
+                if (task.Type == GarminDeviceManager.BasicTask.TaskTypes.Initialize)
                 {
                     MessageBox.Show(GarminFitnessView.GetLocalizedString("DeviceCommunicationErrorText"),
                                     GarminFitnessView.GetLocalizedString("ErrorText"),
                                     MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
+                else if (!String.IsNullOrEmpty(errorText))
+                {
+                    MessageBox.Show(errorText,
+                                    GarminFitnessView.GetLocalizedString("ErrorText"),
+                                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+
+                manager.CancelAllTasks();
             }
             else
             {
@@ -165,6 +167,13 @@ namespace GarminFitnessPlugin.View
                 Wizard.Cursor = Cursors.Default;
 
                 manager.TaskCompleted -= new GarminDeviceManager.TaskCompletedEventHandler(OnDeviceManagerTaskCompleted);
+
+                if (!succeeded)
+                {
+                    IExtendedWizardPage nextPage = Wizard.GetPageByType(typeof(SetupWizardEditProfile));
+
+                    Wizard.ShowPage(nextPage);
+                }
             }
         }
 

@@ -266,8 +266,6 @@ namespace GarminFitnessPlugin.Controller
                 {
                     Logger.Instance.LogText("All initializations completed");
 
-                    m_IsInitializing = false;
-
                     if (PendingTaskCount > 0)
                     {
                         StartNextTask();
@@ -285,6 +283,8 @@ namespace GarminFitnessPlugin.Controller
 
                 CancelAllTasks();
             }
+
+            m_IsInitializing = false;
         }
 
         private void OnControllerFindDevicesCompleted(object sender, Boolean succeeded, string error)
