@@ -9,8 +9,8 @@ namespace GarminFitnessPlugin.Controller
         public static readonly Byte FITProtocolMajorVersion = 1;
         public static readonly Byte FITProtocolMinorVersion = 0;
 
-        public static readonly Byte FITProfileMajorVersion = 1;
-        public static readonly Byte FITProfileMinorVersion = 0;
+        public static readonly Byte FITProfileMajorVersion = 4;
+        public static readonly Byte FITProfileMinorVersion = 10;
         public static readonly Byte FITProfileMajorVersionMultiplier = 100;
 
         public static readonly String FITFileDescriptor = ".FIT";

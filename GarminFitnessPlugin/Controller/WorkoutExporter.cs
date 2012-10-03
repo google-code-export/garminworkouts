@@ -155,18 +155,10 @@ namespace GarminFitnessPlugin.Controller
             FITMessageField exportDate = new FITMessageField((Byte)FITFileIdFieldsIds.ExportDate);
             FITMessageField number = new FITMessageField((Byte)FITFileIdFieldsIds.Number);
 
-            fileType.SetEnum((Byte)FITFileTypes.Schedules);
-            fileIdMessage.AddField(fileType);
             manufacturerId.SetUInt16(1);
             fileIdMessage.AddField(manufacturerId);
-            productId.SetUInt16(1169);
-            fileIdMessage.AddField(productId);
-            serialNumber.SetUInt32z(0);
-            fileIdMessage.AddField(serialNumber);
-            exportDate.SetUInt32((UInt32)(DateTime.UtcNow - new DateTime(1989, 12, 31)).TotalSeconds);
-            fileIdMessage.AddField(exportDate);
-            number.SetUInt16(fileIdNumber);
-            fileIdMessage.AddField(number);
+            fileType.SetEnum((Byte)FITFileTypes.Schedules);
+            fileIdMessage.AddField(fileType);
 
             fileIdMessage.Serialize(tempDataStream);
 
