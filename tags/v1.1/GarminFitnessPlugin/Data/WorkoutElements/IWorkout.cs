@@ -232,7 +232,7 @@ namespace GarminFitnessPlugin.Data
                 // Hardcoded fields from the workout file
                 workoutManufacturer.SetUInt16(1);           // Always 1
                 workoutProduct.SetUInt16(20119);            // Always 20119
-                workoutSN.SetUInt32z(0);                    // Always 0
+                workoutSN.SetUInt32z(1234567890);           // Always 1234567890
 
                 // Real data
                 scheduleType.SetEnum((Byte)FITScheduleType.Workout);
