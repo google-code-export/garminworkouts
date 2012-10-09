@@ -28,6 +28,10 @@ namespace GarminFitnessUnitTests
             Assert.AreEqual(Speed.Units.Pace, logbook.ActivityCategories[0].SubCategories[2].SpeedUnits, "Invalid speed unit for Speed test category");
             Assert.AreEqual(Speed.Units.Speed, logbook.ActivityCategories[0].SubCategories[3].SpeedUnits, "Invalid speed unit for Speed test category");
             Assert.AreEqual("PowerTest", logbook.ActivityCategories[0].SubCategories[4].Name, "Invalid name for Power test category");
+            Assert.AreEqual("CyclingCategory", logbook.ActivityCategories[0].SubCategories[5].Name, "Invalid name for Cycling test category");
+            Assert.AreEqual(GarminCategories.Biking, Options.Instance.GetGarminCategory(logbook.ActivityCategories[0].SubCategories[5]), "Invalid Garmin category name for Cycling test category");
+            Assert.AreEqual("RunningCategory", logbook.ActivityCategories[0].SubCategories[6].Name, "Invalid name for Running test category");
+            Assert.AreEqual(GarminCategories.Running, Options.Instance.GetGarminCategory(logbook.ActivityCategories[0].SubCategories[6]), "Invalid Garmin category name for Running test category");
 
             // Validate profile max HR for categories
             Assert.AreEqual(190,
