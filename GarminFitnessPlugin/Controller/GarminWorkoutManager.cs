@@ -522,7 +522,7 @@ namespace GarminFitnessPlugin.Controller
                 {
                     foreach (WorkoutPart part in workout.GetSplitParts())
                     {
-                        if (part.FITExportId == FITId)
+                        if (part.CreationTimestamp == FITId)
                         {
                             return part;
                         }
@@ -530,7 +530,7 @@ namespace GarminFitnessPlugin.Controller
                 }
                 else
                 {
-                    if (workout.FITExportId == FITId)
+                    if (workout.CreationTimestamp == FITId)
                     {
                         return workout;
                     }

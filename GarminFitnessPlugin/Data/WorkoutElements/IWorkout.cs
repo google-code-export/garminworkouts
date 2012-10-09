@@ -182,32 +182,29 @@ namespace GarminFitnessPlugin.Data
             foreach (DateTime scheduledDate in ScheduledDates)
             {
                 FITMessage scheduleMessage = new FITMessage(FITGlobalMessageIds.WorkoutSchedules);
-                FITMessageField unknown1 = new FITMessageField((Byte)FITScheduleFieldIds.Unknown1);
-                FITMessageField garminProduct = new FITMessageField((Byte)FITScheduleFieldIds.GarminProduct);
-                FITMessageField unknown3 = new FITMessageField((Byte)FITScheduleFieldIds.Unknown3);
-                FITMessageField unknown4 = new FITMessageField((Byte)FITScheduleFieldIds.Unknown4);
-                FITMessageField unknown5 = new FITMessageField((Byte)FITScheduleFieldIds.Unknown5);
+                FITMessageField workoutManufacturer = new FITMessageField((Byte)FITScheduleFieldIds.WorkoutManufacturer);
+                FITMessageField workoutProduct = new FITMessageField((Byte)FITScheduleFieldIds.WorkoutProduct);
+                FITMessageField workoutSN = new FITMessageField((Byte)FITScheduleFieldIds.WorkoutSN);
+                FITMessageField scheduleType = new FITMessageField((Byte)FITScheduleFieldIds.ScheduleType);
                 FITMessageField workoutId = new FITMessageField((Byte)FITScheduleFieldIds.WorkoutId);
                 FITMessageField scheduledField = new FITMessageField((Byte)FITScheduleFieldIds.ScheduledDate);
-                TimeSpan timeSinceReference = scheduledDate.AddHours(12).ToUniversalTime() - new DateTime(1989, 12, 31);
+                TimeSpan timeSinceReference = scheduledDate.AddHours(12) - new DateTime(1989, 12, 31);
 
-                // Unknown fields, seem to always be the same
-                unknown1.SetUInt16(1);              // Always 1
-                garminProduct.SetUInt16(20119);     // Always 20119
-                unknown3.SetUInt32z(0);             // Always 0
-                unknown4.SetEnum(0xFF);             // Always invalid
-                unknown5.SetEnum(0);                // Always 0
+                // Hardcoded fields from the workout file
+                workoutManufacturer.SetUInt16(1);           // Always 1
+                workoutProduct.SetUInt16(20119);            // Always 20119
+                workoutSN.SetUInt32z(0);                    // Always 0
 
                 // Real data
-                workoutId.SetUInt32(FITExportId);
+                scheduleType.SetEnum((Byte)FITScheduleType.Workout);
+                workoutId.SetUInt32(CreationTimestamp);
                 scheduledField.SetUInt32((UInt32)timeSinceReference.TotalSeconds);
 
-                scheduleMessage.AddField(unknown1);
-                scheduleMessage.AddField(garminProduct);
-                scheduleMessage.AddField(unknown3);
-                scheduleMessage.AddField(unknown4);
-                scheduleMessage.AddField(unknown5);
+                scheduleMessage.AddField(workoutManufacturer);
+                scheduleMessage.AddField(workoutProduct);
+                scheduleMessage.AddField(workoutSN);
                 scheduleMessage.AddField(workoutId);
+                scheduleMessage.AddField(scheduleType);
                 scheduleMessage.AddField(scheduledField);
 
                 scheduleMessage.Serialize(stream);
@@ -862,11 +859,12 @@ namespace GarminFitnessPlugin.Data
             get { return Steps.ContainsTCXExtensionFeatures; }
         }
 
-        public UInt32 FITExportId
+        public UInt32 CreationTimestamp
         {
             get
             {
-                return (UInt32)(Name.GetHashCode() & 0x0000FFFF);
+                // Trick to get a unique valid timestamp per workout
+                return (UInt32)((Name.GetHashCode() & 0x0FFFFFFF) | 0x10000000);
             }
         }
 
