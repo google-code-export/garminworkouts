@@ -77,20 +77,18 @@ namespace GarminFitnessPlugin.Data
 
         public override void FillFITStepMessage(FITMessage message)
         {
-            FITMessageField stepName = new FITMessageField((Byte)FITWorkoutStepFieldIds.StepName);
-            FITMessageField intensity = new FITMessageField((Byte)FITWorkoutStepFieldIds.Intensity);
+            FITMessageField stepName = message.GetExistingOrAddField((Byte)FITWorkoutStepFieldIds.StepName);
+            FITMessageField intensity = message.GetExistingOrAddField((Byte)FITWorkoutStepFieldIds.Intensity);
 
             if (!String.IsNullOrEmpty(Name))
             {
                 stepName.SetString(Name, (Byte)(Constants.MaxNameLength + 1));
-                message.AddField(stepName);
             }
 
             Duration.FillFITStepMessage(message);
             Target.FillFITStepMessage(message);
 
             intensity.SetEnum((Byte)Intensity);
-            message.AddField(intensity);
         }
 
         public override void DeserializeFromFIT(FITMessage stepMessage)

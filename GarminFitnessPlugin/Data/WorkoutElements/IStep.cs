@@ -39,9 +39,36 @@ namespace GarminFitnessPlugin.Data
         {
             FITMessage message = new FITMessage(FITGlobalMessageIds.WorkoutStep);
             FITMessageField stepId = new FITMessageField((Byte)FITWorkoutStepFieldIds.MessageIndex);
+            FITMessageField durationType = new FITMessageField((Byte)FITWorkoutStepFieldIds.DurationType);
+            FITMessageField durationValue = new FITMessageField((Byte)FITWorkoutStepFieldIds.DurationValue);
+            FITMessageField intensity = new FITMessageField((Byte)FITWorkoutStepFieldIds.Intensity);
+            FITMessageField stepName = new FITMessageField((Byte)FITWorkoutStepFieldIds.StepName);
+            FITMessageField targetHigh = new FITMessageField((Byte)FITWorkoutStepFieldIds.TargetCustomValueHigh);
+            FITMessageField targetLow = new FITMessageField((Byte)FITWorkoutStepFieldIds.TargetCustomValueLow);
+            FITMessageField targetType = new FITMessageField((Byte)FITWorkoutStepFieldIds.TargetType);
+            FITMessageField targetValue = new FITMessageField((Byte)FITWorkoutStepFieldIds.TargetValue);
+
+            // Fill in invalid data
+            durationType.SetEnum((Byte)0xFF);
+            durationValue.SetUInt32(0xFFFFFFFF);
+            intensity.SetEnum((Byte)0xFF);
+            stepName.SetString("", 16);
+            targetHigh.SetUInt32(0xFFFFFFFF);
+            targetLow.SetUInt32(0xFFFFFFFF);
+            targetType.SetEnum((Byte)0xFF);
+            targetValue.SetUInt32(0xFFFFFFFF);
 
             stepId.SetUInt16((UInt16)(ParentWorkout.GetStepExportId(this) - 1));
+
+            message.AddField(stepName);
+            message.AddField(durationValue);
+            message.AddField(targetValue);
+            message.AddField(targetLow);
+            message.AddField(targetHigh);
             message.AddField(stepId);
+            message.AddField(durationType);
+            message.AddField(targetType);
+            message.AddField(intensity);
 
             FillFITStepMessage(message);
 

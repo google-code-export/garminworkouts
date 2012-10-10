@@ -87,21 +87,20 @@ namespace GarminFitnessPlugin.Controller
 
         public FITMessageField GetExistingOrAddField(Byte fieldDefinitionNumber)
         {
+            FITMessageField field;
+
             if (m_Fields.ContainsKey(fieldDefinitionNumber))
             {
-                FITMessageField field = m_Fields[fieldDefinitionNumber];
-
-                if (field.IsValueValid)
-                {
-                    return field;
-                }
+                field = m_Fields[fieldDefinitionNumber];
+            }
+            else
+            {
+                // Create new field
+                field = new FITMessageField(fieldDefinitionNumber);
+                AddField(field);
             }
 
-            // Create new field
-            FITMessageField newField = new FITMessageField(fieldDefinitionNumber);
-            AddField(newField);
-
-            return newField;
+            return field;
         }
 
         public FITGlobalMessageIds GlobalMessageType
