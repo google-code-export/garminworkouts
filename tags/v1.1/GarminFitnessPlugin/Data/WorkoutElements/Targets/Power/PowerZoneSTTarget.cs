@@ -50,9 +50,9 @@ namespace GarminFitnessPlugin.Data
 
         public override void FillFITStepMessage(FITMessage message)
         {
-            FITMessageField powerZone = new FITMessageField((Byte)FITWorkoutStepFieldIds.TargetValue);
-            FITMessageField minPower = new FITMessageField((Byte)FITWorkoutStepFieldIds.TargetCustomValueLow);
-            FITMessageField maxPower = new FITMessageField((Byte)FITWorkoutStepFieldIds.TargetCustomValueHigh);
+            FITMessageField powerZone = message.GetExistingOrAddField((Byte)FITWorkoutStepFieldIds.TargetValue);
+            FITMessageField minPower = message.GetExistingOrAddField((Byte)FITWorkoutStepFieldIds.TargetCustomValueLow);
+            FITMessageField maxPower = message.GetExistingOrAddField((Byte)FITWorkoutStepFieldIds.TargetCustomValueHigh);
             bool exportAsPercentFTP = Options.Instance.ExportSportTracksPowerAsPercentFTP;
             GarminCategories category = Options.Instance.GetGarminCategory(BaseTarget.ParentStep.ParentWorkout.Category);
             float lastFTP = 0;
@@ -69,7 +69,6 @@ namespace GarminFitnessPlugin.Data
             }
 
             powerZone.SetUInt32((Byte)0);
-            message.AddField(powerZone);
 
             if (exportAsPercentFTP)
             {
@@ -83,9 +82,6 @@ namespace GarminFitnessPlugin.Data
                 minPower.SetUInt32((UInt32)Utils.Clamp(Zone.Low, Constants.MinPowerInWatts, Constants.MaxPowerWorkoutInWatts) + 1000);
                 maxPower.SetUInt32((UInt32)Utils.Clamp(Zone.High, Constants.MinPowerInWatts, Constants.MaxPowerWorkoutInWatts) + 1000);
             }
-
-            message.AddField(minPower);
-            message.AddField(maxPower);
         }
 
         public void Deserialize_V1(Stream stream, DataVersion version)

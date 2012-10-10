@@ -191,20 +191,26 @@ namespace GarminFitnessPlugin.Data
             Debug.Assert(GetSplitPartsCount() == 1);
 
             FITMessage workoutMessage = new FITMessage(FITGlobalMessageIds.Workout);
+            FITMessageField capabilities = new FITMessageField((Byte)FITWorkoutFieldIds.Capabilities);
             FITMessageField sportType = new FITMessageField((Byte)FITWorkoutFieldIds.SportType);
             FITMessageField numValidSteps = new FITMessageField((Byte)FITWorkoutFieldIds.NumSteps);
+            FITMessageField unknown = new FITMessageField((Byte)FITWorkoutFieldIds.Unknown);
             FITMessageField workoutName = new FITMessageField((Byte)FITWorkoutFieldIds.WorkoutName);
 
             sportType.SetEnum((Byte)Options.Instance.GetFITSport(Category));
-            workoutMessage.AddField(sportType);
+            capabilities.SetUInt32z(32);
             numValidSteps.SetUInt16(StepCount);
-            workoutMessage.AddField(numValidSteps);
+            unknown.SetUInt16(0xFFFF);
 
+            workoutMessage.AddField(capabilities);
             if (!String.IsNullOrEmpty(Name))
             {
                 workoutName.SetString(Name, (Byte)(Constants.MaxNameLength + 1));
                 workoutMessage.AddField(workoutName);
             }
+            workoutMessage.AddField(numValidSteps);
+            workoutMessage.AddField(unknown);
+            workoutMessage.AddField(sportType);
 
             workoutMessage.Serialize(stream);
 
@@ -225,26 +231,30 @@ namespace GarminFitnessPlugin.Data
                 FITMessageField workoutProduct = new FITMessageField((Byte)FITScheduleFieldIds.WorkoutProduct);
                 FITMessageField workoutSN = new FITMessageField((Byte)FITScheduleFieldIds.WorkoutSN);
                 FITMessageField scheduleType = new FITMessageField((Byte)FITScheduleFieldIds.ScheduleType);
+                FITMessageField workoutCompleted = new FITMessageField((Byte)FITScheduleFieldIds.WorkoutCompleted);
                 FITMessageField workoutId = new FITMessageField((Byte)FITScheduleFieldIds.WorkoutId);
                 FITMessageField scheduledField = new FITMessageField((Byte)FITScheduleFieldIds.ScheduledDate);
-                TimeSpan timeSinceReference = scheduledDate.AddHours(12) - new DateTime(1989, 12, 31);
+                TimeSpan timeSinceReference = scheduledDate.ToUniversalTime().AddHours(12) - new DateTime(1989, 12, 31);
 
                 // Hardcoded fields from the workout file
                 workoutManufacturer.SetUInt16(1);           // Always 1
                 workoutProduct.SetUInt16(20119);            // Always 20119
-                workoutSN.SetUInt32z(1234567890);           // Always 1234567890
+                workoutSN.SetUInt32z(0);                    // Invalid
+
+                workoutCompleted.SetEnum((Byte)0xFF);       // Invalid/Never completed
 
                 // Real data
                 scheduleType.SetEnum((Byte)FITScheduleType.Workout);
                 workoutId.SetUInt32(CreationTimestamp);
                 scheduledField.SetUInt32((UInt32)timeSinceReference.TotalSeconds);
 
-                scheduleMessage.AddField(workoutManufacturer);
-                scheduleMessage.AddField(workoutProduct);
                 scheduleMessage.AddField(workoutSN);
                 scheduleMessage.AddField(workoutId);
-                scheduleMessage.AddField(scheduleType);
                 scheduleMessage.AddField(scheduledField);
+                scheduleMessage.AddField(workoutManufacturer);
+                scheduleMessage.AddField(workoutProduct);
+                scheduleMessage.AddField(workoutCompleted);
+                scheduleMessage.AddField(scheduleType);
 
                 scheduleMessage.Serialize(stream);
             }

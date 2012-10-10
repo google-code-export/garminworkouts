@@ -35,10 +35,9 @@ namespace GarminFitnessPlugin.Data
 
         public override void FillFITStepMessage(FITMessage message)
         {
-            FITMessageField HRZone = new FITMessageField((Byte)FITWorkoutStepFieldIds.TargetValue);
+            FITMessageField HRZone = message.GetExistingOrAddField((Byte)FITWorkoutStepFieldIds.TargetValue);
 
             HRZone.SetUInt32(Zone);
-            message.AddField(HRZone);
         }
 
         public new void Deserialize_V0(Stream stream, DataVersion version)

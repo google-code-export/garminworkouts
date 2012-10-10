@@ -52,16 +52,13 @@ namespace GarminFitnessPlugin.Data
 
         public override void FillFITStepMessage(FITMessage message)
         {
-            FITMessageField speedZone = new FITMessageField((Byte)FITWorkoutStepFieldIds.TargetValue);
-            FITMessageField minSpeed = new FITMessageField((Byte)FITWorkoutStepFieldIds.TargetCustomValueLow);
-            FITMessageField maxSpeed = new FITMessageField((Byte)FITWorkoutStepFieldIds.TargetCustomValueHigh);
+            FITMessageField speedZone = message.GetExistingOrAddField((Byte)FITWorkoutStepFieldIds.TargetValue);
+            FITMessageField minSpeed = message.GetExistingOrAddField((Byte)FITWorkoutStepFieldIds.TargetCustomValueLow);
+            FITMessageField maxSpeed = message.GetExistingOrAddField((Byte)FITWorkoutStepFieldIds.TargetCustomValueHigh);
 
             speedZone.SetUInt32((Byte)0);
-            message.AddField(speedZone);
             minSpeed.SetUInt32((UInt32)(Utils.Clamp(Zone.Low, Constants.MinSpeedMetersPerSecond, Constants.MaxSpeedMetersPerSecond) * 1000));
-            message.AddField(minSpeed);
             maxSpeed.SetUInt32((UInt32)(Utils.Clamp(Zone.High, Constants.MinSpeedMetersPerSecond, Constants.MaxSpeedMetersPerSecond) * 1000));
-            message.AddField(maxSpeed);
         }
 
         public void Deserialize_V1(Stream stream, DataVersion version)

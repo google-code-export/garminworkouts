@@ -37,12 +37,11 @@ namespace GarminFitnessPlugin.Data
 
         public override void FillFITStepMessage(FITMessage message)
         {
-            FITMessageField HRZone = new FITMessageField((Byte)FITWorkoutStepFieldIds.TargetValue);
-            FITMessageField minHR = new FITMessageField((Byte)FITWorkoutStepFieldIds.TargetCustomValueLow);
-            FITMessageField maxHR = new FITMessageField((Byte)FITWorkoutStepFieldIds.TargetCustomValueHigh);
+            FITMessageField HRZone = message.GetExistingOrAddField((Byte)FITWorkoutStepFieldIds.TargetValue);
+            FITMessageField minHR = message.GetExistingOrAddField((Byte)FITWorkoutStepFieldIds.TargetCustomValueLow);
+            FITMessageField maxHR = message.GetExistingOrAddField((Byte)FITWorkoutStepFieldIds.TargetCustomValueHigh);
 
             HRZone.SetUInt32((Byte)0);
-            message.AddField(HRZone);
 
             if (IsPercentMaxHeartRate)
             {
@@ -54,9 +53,6 @@ namespace GarminFitnessPlugin.Data
                 minHR.SetUInt32((UInt32)MinHeartRate + 100);
                 maxHR.SetUInt32((UInt32)MaxHeartRate + 100);
             }
-
-            message.AddField(minHR);
-            message.AddField(maxHR);
         }
 
         public void Deserialize_V1(Stream stream, DataVersion version)
