@@ -159,7 +159,7 @@ namespace GarminFitnessPlugin.View
                 try
                 {
                     MemoryStream schedulesDataStream = new MemoryStream();
-                    UInt16 fileIdNumber = 0;
+                    bool serializeDefiniton = true;
 
                     foreach (IWorkout currentWorkout in workoutsToExport)
                     {
@@ -170,8 +170,9 @@ namespace GarminFitnessPlugin.View
                         {
                             if (dlg.SelectedFormat == GarminWorkoutManager.FileFormats.FIT)
                             {
-                                WorkoutExporter.ExportWorkoutToFIT(currentWorkout, file, fileIdNumber);
-                                currentWorkout.SerializetoFITSchedule(schedulesDataStream);
+                                WorkoutExporter.ExportWorkoutToFIT(currentWorkout, file);
+                                currentWorkout.SerializetoFITSchedule(schedulesDataStream, serializeDefiniton);
+                                serializeDefiniton = false;
                             }
                             else
                             {
@@ -184,8 +185,6 @@ namespace GarminFitnessPlugin.View
                             // Error creating file, throw error to display message below
                             throw new Exception();
                         }
-
-                        ++fileIdNumber;
                     }
 
                     if (Options.Instance.EnableFITScheduling &&
@@ -193,7 +192,7 @@ namespace GarminFitnessPlugin.View
                         schedulesDataStream.Length > 0)
                     {
                         FileStream schedulesFileStream = File.Create(dlg.SelectedPath + "\\" + "Schedules.fit");
-                        WorkoutExporter.ExportSchedulesFITFile(schedulesFileStream, schedulesDataStream, fileIdNumber);
+                        WorkoutExporter.ExportSchedulesFITFile(schedulesFileStream, schedulesDataStream);
                         schedulesFileStream.Close();
                     }
 

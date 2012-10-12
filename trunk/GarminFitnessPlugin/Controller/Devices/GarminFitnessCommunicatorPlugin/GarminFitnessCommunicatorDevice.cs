@@ -519,7 +519,7 @@ namespace GarminFitnessPlugin.Controller
                     if (SupportsFITWorkouts)
                     {
                         MemoryStream schedulesDataStream = new MemoryStream();
-                        UInt16 fileIdNumber = 0;
+                        bool serializeDefiniton = true;
 
                         foreach (IWorkout currentWorkout in concreteWorkouts)
                         {
@@ -527,21 +527,20 @@ namespace GarminFitnessPlugin.Controller
                             FileStream fileStream = File.Create(m_TempDirectoryLocation + fileName);
 
                             // Serialize workout & schedules
-                            WorkoutExporter.ExportWorkoutToFIT(currentWorkout, fileStream, fileIdNumber);
-                            currentWorkout.SerializetoFITSchedule(schedulesDataStream);
+                            WorkoutExporter.ExportWorkoutToFIT(currentWorkout, fileStream);
+                            currentWorkout.SerializetoFITSchedule(schedulesDataStream, serializeDefiniton);
+                            serializeDefiniton = false;
 
                             fileStream.Close();
                             filenames.Add(fileName);
 
                             Logger.Instance.LogText(String.Format("Export workout : {0}", fileName));
-
-                            ++fileIdNumber;
                         }
 
                         if (Options.Instance.EnableFITScheduling && schedulesDataStream.Length > 0)
                         {
                             FileStream schedulesFileStream = File.Create(m_TempDirectoryLocation + "\\" + "Schedules.fit");
-                            WorkoutExporter.ExportSchedulesFITFile(schedulesFileStream, schedulesDataStream, fileIdNumber);
+                            WorkoutExporter.ExportSchedulesFITFile(schedulesFileStream, schedulesDataStream);
                             schedulesFileStream.Close();
                             filenames.Add("Schedules.fit");
                             Logger.Instance.LogText("Export schedules");

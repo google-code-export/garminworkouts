@@ -34,22 +34,31 @@ namespace GarminFitnessPlugin.Controller
 
         public void Serialize(Stream stream)
         {
+            Serialize(stream, true);
+        }
+
+        public void Serialize(Stream stream, bool serializeDefiniton)
+        {
             // Definition message
             GarminFitnessByteRange recordHeader = new GarminFitnessByteRange(0x40);
-            GarminFitnessByteRange recordReservedData = new GarminFitnessByteRange(0x00);
-            GarminFitnessByteRange endianness = new GarminFitnessByteRange(0x00);
-            GarminFitnessUInt16Range messageNumber = new GarminFitnessUInt16Range((UInt16)m_GlobalMessageType);
-            GarminFitnessByteRange fieldsCount = new GarminFitnessByteRange((Byte)m_Fields.Count);
 
-            recordHeader.Serialize(stream);
-            recordReservedData.Serialize(stream);
-            endianness.Serialize(stream);
-            messageNumber.Serialize(stream);
-            fieldsCount.Serialize(stream);
-
-            foreach (FITMessageField field in m_Fields.Values)
+            if (serializeDefiniton)
             {
-                field.SerializeDefinition(stream);
+                GarminFitnessByteRange recordReservedData = new GarminFitnessByteRange(0x00);
+                GarminFitnessByteRange endianness = new GarminFitnessByteRange(0x00);
+                GarminFitnessUInt16Range messageNumber = new GarminFitnessUInt16Range((UInt16)m_GlobalMessageType);
+                GarminFitnessByteRange fieldsCount = new GarminFitnessByteRange((Byte)m_Fields.Count);
+
+                recordHeader.Serialize(stream);
+                recordReservedData.Serialize(stream);
+                endianness.Serialize(stream);
+                messageNumber.Serialize(stream);
+                fieldsCount.Serialize(stream);
+
+                foreach (FITMessageField field in m_Fields.Values)
+                {
+                    field.SerializeDefinition(stream);
+                }
             }
 
             // Data message

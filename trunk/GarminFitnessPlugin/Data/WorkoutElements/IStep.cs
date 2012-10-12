@@ -35,7 +35,7 @@ namespace GarminFitnessPlugin.Data
             m_ForceSplit.Serialize(stream);
         }
 
-        public virtual void SerializetoFIT(Stream stream)
+        public virtual void SerializetoFIT(Stream stream, bool serializeDefiniton)
         {
             FITMessage message = new FITMessage(FITGlobalMessageIds.WorkoutStep);
             FITMessageField stepId = new FITMessageField((Byte)FITWorkoutStepFieldIds.MessageIndex);
@@ -52,7 +52,7 @@ namespace GarminFitnessPlugin.Data
             durationType.SetEnum((Byte)0xFF);
             durationValue.SetUInt32(0xFFFFFFFF);
             intensity.SetEnum((Byte)0xFF);
-            stepName.SetString("", 16);
+            stepName.SetString("", (Byte)(Constants.MaxNameLength + 1));
             targetHigh.SetUInt32(0xFFFFFFFF);
             targetLow.SetUInt32(0xFFFFFFFF);
             targetType.SetEnum((Byte)0xFF);
@@ -70,7 +70,7 @@ namespace GarminFitnessPlugin.Data
 
             FillFITStepMessage(message);
 
-            message.Serialize(stream);
+            message.Serialize(stream, serializeDefiniton);
         }
 
         public abstract void DeserializeFromFIT(FITMessage stepMessage);

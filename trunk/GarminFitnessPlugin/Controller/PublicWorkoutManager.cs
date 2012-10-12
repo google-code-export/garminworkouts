@@ -108,8 +108,7 @@ namespace GarminFitnessPlugin.Controller
         {
             MemoryStream schedulesDataStream = new MemoryStream();
             List<IWorkout> workoutsToExport = new List<IWorkout>();
-
-            ushort workoutIndex = 0;
+            bool serializeDefiniton = true;
 
             // Populate list of workouts to export
             foreach (IPublicWorkout currentWorkout in workouts)
@@ -143,19 +142,18 @@ namespace GarminFitnessPlugin.Controller
 
                 if (file != null)
                 {
-                    WorkoutExporter.ExportWorkoutToFIT(concreteWorkout, file, workoutIndex, false);
-                    concreteWorkout.SerializetoFITSchedule(schedulesDataStream);
+                    WorkoutExporter.ExportWorkoutToFIT(concreteWorkout, file, false);
+                    concreteWorkout.SerializetoFITSchedule(schedulesDataStream, serializeDefiniton);
+                    serializeDefiniton = false;
 
                     file.Close();
                 }
-
-                ++workoutIndex;
             }
 
             if (Options.Instance.EnableFITScheduling && schedulesDataStream.Length > 0)
             {
                 FileStream schedulesFileStream = File.Create(directory + "\\" + "Schedules.fit");
-                WorkoutExporter.ExportSchedulesFITFile(schedulesFileStream, schedulesDataStream, workoutIndex);
+                WorkoutExporter.ExportSchedulesFITFile(schedulesFileStream, schedulesDataStream);
                 schedulesFileStream.Close();
             }
         }

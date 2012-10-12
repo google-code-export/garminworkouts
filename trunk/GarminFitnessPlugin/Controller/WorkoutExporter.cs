@@ -70,13 +70,12 @@ namespace GarminFitnessPlugin.Controller
             document.Save(new StreamWriter(exportStream));
         }
 
-        public static void ExportWorkoutToFIT(IWorkout workout, Stream exportStream, UInt16 fileIdNumber)
+        public static void ExportWorkoutToFIT(IWorkout workout, Stream exportStream)
         {
-            ExportWorkoutToFIT(workout, exportStream, fileIdNumber, true);
+            ExportWorkoutToFIT(workout, exportStream, true);
         }
 
-        public static void ExportWorkoutToFIT(IWorkout workout, Stream exportStream,
-                                              UInt16 fileIdNumber, bool updateExportDate)
+        public static void ExportWorkoutToFIT(IWorkout workout, Stream exportStream, bool updateExportDate)
         {
             MemoryStream dataStream = new MemoryStream();
 
@@ -151,7 +150,7 @@ namespace GarminFitnessPlugin.Controller
             }
         }
 
-        public static void ExportSchedulesFITFile(Stream exportStream, MemoryStream dataStream, UInt16 fileIdNumber)
+        public static void ExportSchedulesFITFile(Stream exportStream, MemoryStream dataStream)
         {
             MemoryStream tempDataStream = new MemoryStream();
 

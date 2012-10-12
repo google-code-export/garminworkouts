@@ -85,7 +85,7 @@ namespace GarminFitnessPlugin.Data
                 FITMessageField powerSensor = new FITMessageField((Byte)FITBikeProfileFieldIds.PowerSensorEnabled);
 
                 index.SetUInt16(i);
-                name.SetString(bike.Name, 16);
+                name.SetString(bike.Name, (Byte)(Constants.MaxNameLength + 1));
                 odometer.SetUInt32((UInt32)(bike.OdometerInMeters * 100));
                 customWheelSize.SetUInt16(bike.WheelSize);
                 autoWheelSize.SetUInt16(bike.WheelSize);
@@ -104,7 +104,7 @@ namespace GarminFitnessPlugin.Data
                 bikeProfileMessage.AddField(cadenceSensor);
                 bikeProfileMessage.AddField(powerSensor);
 
-                bikeProfileMessage.Serialize(outputStream);
+                bikeProfileMessage.Serialize(outputStream, i == 0);
 
                 ++i;
             }
@@ -145,7 +145,7 @@ namespace GarminFitnessPlugin.Data
                 if (i == 0)
                 {
                     index.SetUInt16(i);
-                    zoneName.SetString(String.Format("Power Zone {0}", i), 16);
+                    zoneName.SetString(String.Format("Power Zone {0}", i), (Byte)(Constants.MaxNameLength + 1));
                     highWatts.SetUInt16((UInt16)(zone.Lower * FTP));
 
                     zonesTargetMessage.AddField(index);
@@ -157,14 +157,14 @@ namespace GarminFitnessPlugin.Data
                 }
 
                 index.SetUInt16((UInt16)(i + 1));
-                zoneName.SetString(String.Format("Power Zone {0}", i + 1), 16);
+                zoneName.SetString(String.Format("Power Zone {0}", i + 1), (Byte)(Constants.MaxNameLength + 1));
                 highWatts.SetUInt16((UInt16)(zone.Upper * FTP));
 
                 zonesTargetMessage.AddField(index);
                 zonesTargetMessage.AddField(zoneName);
                 zonesTargetMessage.AddField(highWatts);
 
-                zonesTargetMessage.Serialize(outputStream);
+                zonesTargetMessage.Serialize(outputStream, false);
 
                 ++i;
             }

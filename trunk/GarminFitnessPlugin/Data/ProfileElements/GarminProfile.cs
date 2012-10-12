@@ -89,7 +89,7 @@ namespace GarminFitnessPlugin.Data
             FITMessageField weight = new FITMessageField((Byte)FITUserProfileFieldIds.Weight);
             FITMessageField restingHR = new FITMessageField((Byte)FITUserProfileFieldIds.RestingHR);
 
-            profileName.SetString(ProfileName, 16);
+            profileName.SetString(ProfileName, (Byte)(Constants.MaxNameLength + 1));
             userProfileMessage.AddField(profileName);
 
             gender.SetEnum(IsMale ? (Byte)FITGenders.Male : (Byte)FITGenders.Female);

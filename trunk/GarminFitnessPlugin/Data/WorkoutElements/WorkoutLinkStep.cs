@@ -98,11 +98,11 @@ namespace GarminFitnessPlugin.Data
             m_WorkoutStepsCopy.Serialize(stream);
         }
 
-        public override void SerializetoFIT(Stream stream)
+        public override void SerializetoFIT(Stream stream, bool serializeDefiniton)
         {
             foreach (IStep step in m_WorkoutStepsCopy)
             {
-                step.SerializetoFIT(stream);
+                step.SerializetoFIT(stream, serializeDefiniton);
             }
         }
 
