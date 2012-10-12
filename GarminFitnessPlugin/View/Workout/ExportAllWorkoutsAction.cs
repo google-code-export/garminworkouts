@@ -189,7 +189,8 @@ namespace GarminFitnessPlugin.View
                     }
 
                     if (Options.Instance.EnableFITScheduling &&
-                        dlg.SelectedFormat == GarminWorkoutManager.FileFormats.FIT)
+                        dlg.SelectedFormat == GarminWorkoutManager.FileFormats.FIT &&
+                        schedulesDataStream.Length > 0)
                     {
                         FileStream schedulesFileStream = File.Create(dlg.SelectedPath + "\\" + "Schedules.fit");
                         WorkoutExporter.ExportSchedulesFITFile(schedulesFileStream, schedulesDataStream, fileIdNumber);

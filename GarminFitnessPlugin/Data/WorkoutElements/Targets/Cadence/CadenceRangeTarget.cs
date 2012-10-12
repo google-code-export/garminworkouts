@@ -37,16 +37,13 @@ namespace GarminFitnessPlugin.Data
 
         public override void FillFITStepMessage(FITMessage message)
         {
-            FITMessageField cadenceZone = new FITMessageField((Byte)FITWorkoutStepFieldIds.TargetValue);
-            FITMessageField minCadence = new FITMessageField((Byte)FITWorkoutStepFieldIds.TargetCustomValueLow);
-            FITMessageField maxCadence = new FITMessageField((Byte)FITWorkoutStepFieldIds.TargetCustomValueHigh);
+            FITMessageField cadenceZone = message.GetExistingOrAddField((Byte)FITWorkoutStepFieldIds.TargetValue);
+            FITMessageField minCadence = message.GetExistingOrAddField((Byte)FITWorkoutStepFieldIds.TargetCustomValueLow);
+            FITMessageField maxCadence = message.GetExistingOrAddField((Byte)FITWorkoutStepFieldIds.TargetCustomValueHigh);
 
             cadenceZone.SetUInt32(0);
-            message.AddField(cadenceZone);
             minCadence.SetUInt32((UInt32)MinCadence);
-            message.AddField(minCadence);
             maxCadence.SetUInt32((UInt32)MaxCadence);
-            message.AddField(maxCadence);
         }
 
         public new void Deserialize_V0(Stream stream, DataVersion version)

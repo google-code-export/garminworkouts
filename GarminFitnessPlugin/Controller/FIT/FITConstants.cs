@@ -10,7 +10,7 @@ namespace GarminFitnessPlugin.Controller
         public static readonly Byte FITProtocolMinorVersion = 0;
 
         public static readonly Byte FITProfileMajorVersion = 1;
-        public static readonly Byte FITProfileMinorVersion = 0;
+        public static readonly Byte FITProfileMinorVersion = 2;
         public static readonly Byte FITProfileMajorVersionMultiplier = 100;
 
         public static readonly String FITFileDescriptor = ".FIT";
@@ -49,6 +49,7 @@ namespace GarminFitnessPlugin.Controller
         Workout = 26,
         WorkoutStep,
         WorkoutSchedules,
+        FileCreator = 49,
         SpeedZones = 53,
     }
 
@@ -86,6 +87,12 @@ namespace GarminFitnessPlugin.Controller
         SerialNumber,
         ExportDate,
         Number,
+    }
+
+    public enum FITFileCreatorFieldsIds
+    {
+        SoftwareVersion = 0,
+        HardwareVersion,
     }
 
     public enum FITUserProfileFieldIds
@@ -163,6 +170,7 @@ namespace GarminFitnessPlugin.Controller
         SportType = 4,
         Capabilities,
         NumSteps,
+        Unknown,
         WorkoutName = 8,
     }
 

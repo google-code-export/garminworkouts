@@ -57,13 +57,11 @@ namespace GarminFitnessPlugin.Data
 
         public override void FillFITStepMessage(FITMessage message)
         {
-            FITMessageField durationType = new FITMessageField((Byte)FITWorkoutStepFieldIds.DurationType);
-            FITMessageField repeatPower = new FITMessageField((Byte)FITWorkoutStepFieldIds.TargetValue);
+            FITMessageField durationType = message.GetExistingOrAddField((Byte)FITWorkoutStepFieldIds.DurationType);
+            FITMessageField repeatPower = message.GetExistingOrAddField((Byte)FITWorkoutStepFieldIds.TargetValue);
 
             durationType.SetEnum((Byte)FITWorkoutStepDurationTypes.RepeatUntilDistance);
-            message.AddField(durationType);
             repeatPower.SetUInt32((UInt32)GetDistanceInUnits(Length.Units.Centimeter));
-            message.AddField(repeatPower);
         }
 
         public double GetDistanceInBaseUnit()

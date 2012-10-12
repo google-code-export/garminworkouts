@@ -56,13 +56,11 @@ namespace GarminFitnessPlugin.Data
 
         public override void FillFITStepMessage(FITMessage message)
         {
-            FITMessageField durationType = new FITMessageField((Byte)FITWorkoutStepFieldIds.DurationType);
-            FITMessageField repeatPower = new FITMessageField((Byte)FITWorkoutStepFieldIds.TargetValue);
+            FITMessageField durationType = message.GetExistingOrAddField((Byte)FITWorkoutStepFieldIds.DurationType);
+            FITMessageField repeatPower = message.GetExistingOrAddField((Byte)FITWorkoutStepFieldIds.TargetValue);
 
             durationType.SetEnum((Byte)FITWorkoutStepDurationTypes.RepeatUntilCalories);
-            message.AddField(durationType);
             repeatPower.SetUInt32((UInt32)CaloriesToSpend);
-            message.AddField(repeatPower);
         }
 
         public override bool ContainsFITOnlyFeatures

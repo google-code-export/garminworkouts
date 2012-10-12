@@ -50,14 +50,13 @@ namespace GarminFitnessPlugin.Data
 
         public override void FillFITStepMessage(FITMessage message)
         {
-            FITMessageField HRZone = new FITMessageField((Byte)FITWorkoutStepFieldIds.TargetValue);
-            FITMessageField minHR = new FITMessageField((Byte)FITWorkoutStepFieldIds.TargetCustomValueLow);
-            FITMessageField maxHR = new FITMessageField((Byte)FITWorkoutStepFieldIds.TargetCustomValueHigh);
+            FITMessageField HRZone = message.GetExistingOrAddField((Byte)FITWorkoutStepFieldIds.TargetValue);
+            FITMessageField minHR = message.GetExistingOrAddField((Byte)FITWorkoutStepFieldIds.TargetCustomValueLow);
+            FITMessageField maxHR = message.GetExistingOrAddField((Byte)FITWorkoutStepFieldIds.TargetCustomValueHigh);
             bool exportAsPercentMax = Options.Instance.ExportSportTracksHeartRateAsPercentMax;
             float lastMaxHR = GarminProfileManager.Instance.UserProfile.GetProfileForActivity(Options.Instance.GetGarminCategory(BaseTarget.ParentStep.ParentWorkout.Category)).MaximumHeartRate;
 
             HRZone.SetUInt32(0);
-            message.AddField(HRZone);
 
             if (float.IsNaN(lastMaxHR))
             {
@@ -76,9 +75,6 @@ namespace GarminFitnessPlugin.Data
                 minHR.SetUInt32((UInt32)Utils.Clamp(Zone.Low, Constants.MinHRInBPM, Constants.MaxHRInBPM) + 100);
                 maxHR.SetUInt32((UInt32)Utils.Clamp(Zone.High, Constants.MinHRInBPM, Constants.MaxHRInBPM) + 100);
             }
-
-            message.AddField(minHR);
-            message.AddField(maxHR);
         }
 
         public void Deserialize_V1(Stream stream, DataVersion version)

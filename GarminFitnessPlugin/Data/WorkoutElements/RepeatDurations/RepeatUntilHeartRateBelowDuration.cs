@@ -60,11 +60,10 @@ namespace GarminFitnessPlugin.Data
 
         public override void FillFITStepMessage(FITMessage message)
         {
-            FITMessageField durationType = new FITMessageField((Byte)FITWorkoutStepFieldIds.DurationType);
-            FITMessageField repeatPower = new FITMessageField((Byte)FITWorkoutStepFieldIds.TargetValue);
+            FITMessageField durationType = message.GetExistingOrAddField((Byte)FITWorkoutStepFieldIds.DurationType);
+            FITMessageField repeatPower = message.GetExistingOrAddField((Byte)FITWorkoutStepFieldIds.TargetValue);
 
             durationType.SetEnum((Byte)FITWorkoutStepDurationTypes.RepeatUntilHeartRateLessThan);
-            message.AddField(durationType);
 
             if (IsPercentageMaxHeartRate)
             {
@@ -74,7 +73,6 @@ namespace GarminFitnessPlugin.Data
             {
                 repeatPower.SetUInt32((UInt32)MinHeartRate + 100);
             }
-            message.AddField(repeatPower);
         }
 
         private void ValidateValue(Byte minHeartRate, bool isPercentageMaxHeartRate)
