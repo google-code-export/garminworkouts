@@ -38,12 +38,11 @@ namespace GarminFitnessPlugin.Data
 
         public override void FillFITStepMessage(FITMessage message)
         {
-            FITMessageField powerZone = new FITMessageField((Byte)FITWorkoutStepFieldIds.TargetValue);
-            FITMessageField minPower = new FITMessageField((Byte)FITWorkoutStepFieldIds.TargetCustomValueLow);
-            FITMessageField maxPower = new FITMessageField((Byte)FITWorkoutStepFieldIds.TargetCustomValueHigh);
+            FITMessageField powerZone = message.GetExistingOrAddField((Byte)FITWorkoutStepFieldIds.TargetValue);
+            FITMessageField minPower = message.GetExistingOrAddField((Byte)FITWorkoutStepFieldIds.TargetCustomValueLow);
+            FITMessageField maxPower = message.GetExistingOrAddField((Byte)FITWorkoutStepFieldIds.TargetCustomValueHigh);
 
             powerZone.SetUInt32(0);
-            message.AddField(powerZone);
 
             if (IsPercentFTP)
             {
@@ -55,9 +54,6 @@ namespace GarminFitnessPlugin.Data
                 minPower.SetUInt32((UInt32)MinPower + 1000);
                 maxPower.SetUInt32((UInt32)MaxPower + 1000);
             }
-
-            message.AddField(minPower);
-            message.AddField(maxPower);
         }
 
         public void Deserialize_V1(Stream stream, DataVersion version)

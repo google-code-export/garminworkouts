@@ -214,13 +214,11 @@ namespace GarminFitnessPlugin.Data
         {
             base.FillFITStepMessage(message);
 
-            FITMessageField repeatFromStep = new FITMessageField((Byte)FITWorkoutStepFieldIds.DurationValue);
-            FITMessageField targetType = new FITMessageField((Byte)FITWorkoutStepFieldIds.TargetType);
+            FITMessageField repeatFromStep = message.GetExistingOrAddField((Byte)FITWorkoutStepFieldIds.DurationValue);
+            FITMessageField targetType = message.GetExistingOrAddField((Byte)FITWorkoutStepFieldIds.TargetType);
 
             repeatFromStep.SetUInt32((UInt32)(ParentWorkout.GetStepExportId(StepsToRepeat[0]) - 1));
-            message.AddField(repeatFromStep);
             targetType.SetEnum((Byte)FITWorkoutStepTargetTypes.NoTarget);
-            message.AddField(targetType);
 
             Duration.FillFITStepMessage(message);
         }

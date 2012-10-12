@@ -114,10 +114,9 @@ namespace GarminFitnessPlugin.Data
 
         public override void FillFITStepMessage(FITMessage message)
         {
-            FITMessageField targetType = new FITMessageField((Byte)FITWorkoutStepFieldIds.TargetType);
+            FITMessageField targetType = message.GetExistingOrAddField((Byte)FITWorkoutStepFieldIds.TargetType);
 
             targetType.SetEnum((Byte)FITWorkoutStepTargetTypes.HeartRate);
-            message.AddField(targetType);
 
             ConcreteTarget.FillFITStepMessage(message);
         }

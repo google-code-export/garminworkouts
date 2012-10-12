@@ -35,14 +35,11 @@ namespace GarminFitnessPlugin.Data
 
         public override void FillFITStepMessage(FITMessage message)
         {
-            FITMessageField durationType = new FITMessageField((Byte)FITWorkoutStepFieldIds.DurationType);
-            FITMessageField durationValue = new FITMessageField((Byte)FITWorkoutStepFieldIds.DurationValue);
+            FITMessageField durationType = message.GetExistingOrAddField((Byte)FITWorkoutStepFieldIds.DurationType);
+            FITMessageField durationValue = message.GetExistingOrAddField((Byte)FITWorkoutStepFieldIds.DurationValue);
 
             durationType.SetEnum((Byte)FITWorkoutStepDurationTypes.Time);
-            message.AddField(durationType);
-
             durationValue.SetUInt32((UInt32)TimeInSeconds * 1000);
-            message.AddField(durationValue);
         }
 
         public new void Deserialize_V0(Stream stream, DataVersion version)

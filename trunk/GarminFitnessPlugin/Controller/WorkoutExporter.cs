@@ -93,19 +93,31 @@ namespace GarminFitnessPlugin.Controller
             FITMessageField number = new FITMessageField((Byte)FITFileIdFieldsIds.Number);
 
             fileType.SetEnum((Byte)FITFileTypes.Workout);
-            fileIdMessage.AddField(fileType);
             manufacturerId.SetUInt16(1);
-            fileIdMessage.AddField(manufacturerId);
             productId.SetUInt16(20119);
-            fileIdMessage.AddField(productId);
             serialNumber.SetUInt32z(0);
-            fileIdMessage.AddField(serialNumber);
             exportDate.SetUInt32(workout.CreationTimestamp);
-            fileIdMessage.AddField(exportDate);
-            number.SetUInt16(0);
-            fileIdMessage.AddField(number);
+            number.SetUInt16(0xFFFF);
 
+            fileIdMessage.AddField(serialNumber);
+            fileIdMessage.AddField(exportDate);
+            fileIdMessage.AddField(manufacturerId);
+            fileIdMessage.AddField(productId);
+            fileIdMessage.AddField(number);
+            fileIdMessage.AddField(fileType);
             fileIdMessage.Serialize(dataStream);
+
+            // File creator message
+            FITMessage fileCreatorMessage = new FITMessage(FITGlobalMessageIds.FileCreator);
+            FITMessageField software = new FITMessageField((Byte)FITFileCreatorFieldsIds.SoftwareVersion);
+            FITMessageField hardware = new FITMessageField((Byte)FITFileCreatorFieldsIds.HardwareVersion);
+
+            software.SetUInt16(3605);
+            hardware.SetUInt8(0);
+
+            fileCreatorMessage.AddField(software);
+            fileCreatorMessage.AddField(hardware);
+            fileCreatorMessage.Serialize(dataStream);
 
             // Write workout
             workout.SerializetoFIT(dataStream);
@@ -155,18 +167,21 @@ namespace GarminFitnessPlugin.Controller
             FITMessageField exportDate = new FITMessageField((Byte)FITFileIdFieldsIds.ExportDate);
             FITMessageField number = new FITMessageField((Byte)FITFileIdFieldsIds.Number);
 
-            fileType.SetEnum((Byte)FITFileTypes.Schedules);
-            fileIdMessage.AddField(fileType);
             manufacturerId.SetUInt16(1);
-            fileIdMessage.AddField(manufacturerId);
-            productId.SetUInt16(1169);
-            fileIdMessage.AddField(productId);
+            fileType.SetEnum((Byte)FITFileTypes.Schedules);
+
+            // Invalid fields
+            productId.SetUInt16(0xFFFF);
             serialNumber.SetUInt32z(0);
+            exportDate.SetUInt32(0xFFFFFFFF);
+            number.SetUInt16(0xFFFF);
+
             fileIdMessage.AddField(serialNumber);
-            exportDate.SetUInt32((UInt32)(DateTime.UtcNow - new DateTime(1989, 12, 31)).TotalSeconds);
             fileIdMessage.AddField(exportDate);
-            number.SetUInt16(fileIdNumber);
+            fileIdMessage.AddField(manufacturerId);
+            fileIdMessage.AddField(productId);
             fileIdMessage.AddField(number);
+            fileIdMessage.AddField(fileType);
 
             fileIdMessage.Serialize(tempDataStream);
 
