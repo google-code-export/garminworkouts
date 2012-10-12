@@ -134,7 +134,7 @@ namespace GarminFitnessPlugin.Data
                 if (i == 0)
                 {
                     index.SetUInt16(i);
-                    zoneName.SetString(String.Format("HR Zone {0}", i), 16);
+                    zoneName.SetString(String.Format("HR Zone {0}", i), (Byte)(Constants.MaxNameLength + 1));
                     highBPM.SetUInt8((Byte)(zone.Lower * MaximumHeartRate));
 
                     zonesTargetMessage.AddField(index);
@@ -146,14 +146,14 @@ namespace GarminFitnessPlugin.Data
                 }
 
                 index.SetUInt16((UInt16)(i + 1));
-                zoneName.SetString(String.Format("HR Zone {0}", i + 1), 16);
+                zoneName.SetString(String.Format("HR Zone {0}", i + 1), (Byte)(Constants.MaxNameLength + 1));
                 highBPM.SetUInt8((Byte)(zone.Upper * MaximumHeartRate));
 
                 zonesTargetMessage.AddField(index);
                 zonesTargetMessage.AddField(zoneName);
                 zonesTargetMessage.AddField(highBPM);
 
-                zonesTargetMessage.Serialize(outputStream);
+                zonesTargetMessage.Serialize(outputStream, false);
 
                 ++i;
             }
@@ -173,7 +173,7 @@ namespace GarminFitnessPlugin.Data
                 if (i == 0)
                 {
                     index.SetUInt16(i);
-                    zoneName.SetString(zone.Name, 16);
+                    zoneName.SetString(zone.Name, (Byte)(Constants.MaxNameLength + 1));
                     highSpeed.SetUInt16((UInt16)(zone.Low * 1000));
 
                     zonesTargetMessage.AddField(index);
@@ -185,14 +185,14 @@ namespace GarminFitnessPlugin.Data
                 }
 
                 index.SetUInt16((UInt16)(i + 1));
-                zoneName.SetString(zone.Name, 16);
+                zoneName.SetString(zone.Name, (Byte)(Constants.MaxNameLength + 1));
                 highSpeed.SetUInt16((UInt16)(zone.High * 1000));
 
                 zonesTargetMessage.AddField(index);
                 zonesTargetMessage.AddField(zoneName);
                 zonesTargetMessage.AddField(highSpeed);
 
-                zonesTargetMessage.Serialize(outputStream);
+                zonesTargetMessage.Serialize(outputStream, false);
 
                 ++i;
             }

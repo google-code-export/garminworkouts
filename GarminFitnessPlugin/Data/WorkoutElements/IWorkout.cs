@@ -175,48 +175,53 @@ namespace GarminFitnessPlugin.Data
 
             workoutMessage.Serialize(stream);
 
+            bool serializeDefinition = true;
             foreach (IStep step in Steps)
             {
-                step.SerializetoFIT(stream);
+                step.SerializetoFIT(stream, serializeDefinition);
+                serializeDefinition = false;
             }
         }
 
-        public virtual void SerializetoFITSchedule(Stream stream)
+        public virtual void SerializetoFITSchedule(Stream stream, bool serializeDefiniton)
         {
             Debug.Assert(GetSplitPartsCount() == 1);
 
+            FITMessage scheduleMessage = new FITMessage(FITGlobalMessageIds.WorkoutSchedules);
+            FITMessageField workoutManufacturer = new FITMessageField((Byte)FITScheduleFieldIds.WorkoutManufacturer);
+            FITMessageField workoutProduct = new FITMessageField((Byte)FITScheduleFieldIds.WorkoutProduct);
+            FITMessageField workoutSN = new FITMessageField((Byte)FITScheduleFieldIds.WorkoutSN);
+            FITMessageField scheduleType = new FITMessageField((Byte)FITScheduleFieldIds.ScheduleType);
+            FITMessageField workoutCompleted = new FITMessageField((Byte)FITScheduleFieldIds.WorkoutCompleted);
+            FITMessageField workoutId = new FITMessageField((Byte)FITScheduleFieldIds.WorkoutId);
+            FITMessageField scheduledField = new FITMessageField((Byte)FITScheduleFieldIds.ScheduledDate);
+
+            // Hardcoded fields from the workout file
+            workoutManufacturer.SetUInt16(1);           // Always 1
+            workoutProduct.SetUInt16(20119);            // Always 20119
+            workoutSN.SetUInt32z(0);                    // Invalid
+            workoutCompleted.SetEnum((Byte)0xFF);       // Invalid/Not completed
+
+            // Real data
+            scheduleType.SetEnum((Byte)FITScheduleType.Workout);
+            workoutId.SetUInt32(CreationTimestamp);
+
+            scheduleMessage.AddField(workoutSN);
+            scheduleMessage.AddField(workoutId);
+            scheduleMessage.AddField(scheduledField);
+            scheduleMessage.AddField(workoutManufacturer);
+            scheduleMessage.AddField(workoutProduct);
+            scheduleMessage.AddField(workoutCompleted);
+            scheduleMessage.AddField(scheduleType);
+
             foreach (DateTime scheduledDate in ScheduledDates)
             {
-                FITMessage scheduleMessage = new FITMessage(FITGlobalMessageIds.WorkoutSchedules);
-                FITMessageField workoutManufacturer = new FITMessageField((Byte)FITScheduleFieldIds.WorkoutManufacturer);
-                FITMessageField workoutProduct = new FITMessageField((Byte)FITScheduleFieldIds.WorkoutProduct);
-                FITMessageField workoutSN = new FITMessageField((Byte)FITScheduleFieldIds.WorkoutSN);
-                FITMessageField scheduleType = new FITMessageField((Byte)FITScheduleFieldIds.ScheduleType);
-                FITMessageField workoutCompleted = new FITMessageField((Byte)FITScheduleFieldIds.WorkoutCompleted);
-                FITMessageField workoutId = new FITMessageField((Byte)FITScheduleFieldIds.WorkoutId);
-                FITMessageField scheduledField = new FITMessageField((Byte)FITScheduleFieldIds.ScheduledDate);
                 TimeSpan timeSinceReference = scheduledDate.ToUniversalTime().AddHours(12) - new DateTime(1989, 12, 31);
 
-                // Hardcoded fields from the workout file
-                workoutManufacturer.SetUInt16(1);           // Always 1
-                workoutProduct.SetUInt16(20119);            // Always 20119
-                workoutSN.SetUInt32z(0);                    // Invalid
-                workoutCompleted.SetEnum((Byte)0xFF);       // Invalid/Never completed
-
-                // Real data
-                scheduleType.SetEnum((Byte)FITScheduleType.Workout);
-                workoutId.SetUInt32(CreationTimestamp);
                 scheduledField.SetUInt32((UInt32)timeSinceReference.TotalSeconds);
 
-                scheduleMessage.AddField(workoutSN);
-                scheduleMessage.AddField(workoutId);
-                scheduleMessage.AddField(scheduledField);
-                scheduleMessage.AddField(workoutManufacturer);
-                scheduleMessage.AddField(workoutProduct);
-                scheduleMessage.AddField(workoutCompleted);
-                scheduleMessage.AddField(scheduleType);
-
-                scheduleMessage.Serialize(stream);
+                scheduleMessage.Serialize(stream, serializeDefiniton);
+                serializeDefiniton = false;
             }
         }
 
