@@ -184,7 +184,6 @@ namespace GarminFitnessPlugin.Controller
         {
             m_LocalWebPageLocation = typeof(PluginMain).Assembly.Location;
             m_LocalWebPageLocation = m_LocalWebPageLocation.Substring(0, m_LocalWebPageLocation.LastIndexOf('\\'));
-            m_LocalWebPageLocation = m_LocalWebPageLocation.Substring(0, m_LocalWebPageLocation.LastIndexOf('\\'));
             m_LocalWebPageLocation += "\\Communicator\\";
 
             m_HiddenWebBrowser.ObjectForScripting = this;
