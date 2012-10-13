@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
 using System.Runtime.InteropServices;
 using System.Security.Permissions;
 using System.Text;
@@ -192,6 +194,8 @@ namespace GarminFitnessPlugin.Controller
 
         public void Start()
         {
+            Debug.Assert(File.Exists(m_LocalWebPageLocation + "GarminFitness.html"));
+
             m_HiddenWebBrowser.Navigate(m_LocalWebPageLocation + "GarminFitness.html");
         }
 
