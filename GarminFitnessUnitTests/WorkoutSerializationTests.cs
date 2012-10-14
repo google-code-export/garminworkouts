@@ -44,29 +44,59 @@ namespace GarminFitnessUnitTests
 
             [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 32)]
             public string standardName;
+            public SYSTEMTIME standardDate;
+            public int standardBias;
 
             [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 32)]
             public string daylightName;
-
-            SYSTEMTIME standardDate;
-            SYSTEMTIME daylightDate;
-            public int standardBias;
+            public SYSTEMTIME daylightDate;
             public int daylightBias;
         }
 
         #endregion
 
-        public static TimeZone CurrentTimeZone
+        public static TimeZoneInformation CurrentTimeZone
         {
-            get { return TimeZone.CurrentTimeZone; }
+            get
+            {
+                TimeZoneInformation result;
+
+                GetTimeZoneInformation(out result);
+
+                return result;
+            }
         }
 
-        public static bool SetTimeZone(TimeZoneInformation timeZone)
+        public static SYSTEMTIME ByteArrayToSystemTime(Byte[] array, int dataOffset)
+        {
+            SYSTEMTIME result = new SYSTEMTIME();
+
+            result.wYear = BitConverter.ToInt16(array, dataOffset);
+            result.wMonth = BitConverter.ToInt16(array, dataOffset + 2);
+            result.wDayOfWeek = BitConverter.ToInt16(array, dataOffset + 4);
+            result.wDay = BitConverter.ToInt16(array, dataOffset + 6);
+            result.wHour = BitConverter.ToInt16(array, dataOffset + 8);
+            result.wMinute = BitConverter.ToInt16(array, dataOffset + 10);
+            result.wSecond = BitConverter.ToInt16(array, dataOffset + 12);
+            result.wMilliseconds = BitConverter.ToInt16(array, dataOffset + 14);
+
+            return result;
+        }
+
+        public static bool SetTimeZone(String timeZoneStdName)
         {
             //ComputerManager.EnableToken("SeTimeZonePrivilege", Process.GetCurrentProcess().Handle);
 
             // Set local system timezone
-            return SetTimeZoneInformation(ref timeZone);
+            TimeZoneInformation timeZone = Time.GetTimeZones()[timeZoneStdName];
+
+            bool result = SetTimeZoneInformation(ref timeZone);
+
+            RegistryKey key = Registry.LocalMachine.OpenSubKey("SYSTEM\\CurrentControlSet\\Control\\TimeZoneInformation", true);
+            key.SetValue("TimeZoneKeyName", timeZoneStdName);
+            key.SetValue("DynamicDaylightTimeDisabled", 0);
+
+            return result;
         }
 
         public static Dictionary<String, TimeZoneInformation> GetTimeZones()
@@ -87,16 +117,20 @@ namespace GarminFitnessUnitTests
                 //create new TZI struct and populate it with values from key
                 TimeZoneInformation TZI = new TimeZoneInformation();
 
-                TZI.standardName = individualZone.GetValue("Std").ToString();
-                TZI.daylightName = individualZone.GetValue("Dlt").ToString();
+                TZI.standardName = individualZone.GetValue("MUI_Std").ToString();
+                TZI.daylightName = individualZone.GetValue("MUI_Dlt").ToString();
 
                 //read binary TZI data, convert to byte array
                 byte[] b = (byte[])individualZone.GetValue("TZI");
 
                 TZI.bias = BitConverter.ToInt32(b, 0);
+                TZI.standardBias = BitConverter.ToInt32(b, 4);
+                TZI.daylightBias = BitConverter.ToInt32(b, 8);
+                TZI.standardDate = ByteArrayToSystemTime(b, 12);
+                TZI.daylightDate = ByteArrayToSystemTime(b, 28);
 
-                //add the name and TZI struct to hash table
-                zones.Add(TZI.standardName, TZI);
+                // Add the name and TZI struct to hash table
+                zones.Add(individualZone.GetValue("Std").ToString(), TZI);
             }
 
             return zones;
@@ -170,13 +204,13 @@ namespace GarminFitnessUnitTests
             Assert.GreaterOrEqual(resultPosition, 0, "Invalid workout TCX serialization for past scheduled dates");
 
             // New Zealand time (UST+12H) is a case where we had problems because the offset changes the day
-            String currentZoneName = Time.CurrentTimeZone.StandardName;
+            String currentZoneName = Time.CurrentTimeZone.standardName;
             workout.Name = "WorkoutTest7";
             workout.ScheduledDates.Clear();
-            Time.SetTimeZone(Time.GetTimeZones()["New Zealand Standard Time"]);
+            bool res = Time.SetTimeZone("New Zealand Standard Time");
             workout.ScheduleWorkout(DateTime.Now.ToLocalTime());
             workout.Serialize(database, "WorkoutTest7", testDocument);
-            Time.SetTimeZone(Time.GetTimeZones()[currentZoneName]);
+            res = Time.SetTimeZone(currentZoneName);
             resultPosition = testDocument.InnerXml.IndexOf(workoutTestResult7);
             Assert.GreaterOrEqual(resultPosition, 0, "Invalid workout TCX serialization for UST+12 scheduled dates");
 
