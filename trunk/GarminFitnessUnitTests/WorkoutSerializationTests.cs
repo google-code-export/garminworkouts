@@ -163,45 +163,45 @@ namespace GarminFitnessUnitTests
             workout.Name = "WorkoutTest1";
             workout.Serialize(database, "WorkoutTest1", testDocument);
             resultPosition = testDocument.InnerXml.IndexOf(workoutTestResult1);
-            Assert.GreaterOrEqual(resultPosition, 0, "Invalid workout TCX serialization for active step");
+            Assert.GreaterOrEqual(resultPosition, 0, "Invalid workout name TCX serialization");
 
             workout.Name = "WorkoutTest2";
             workout.Serialize(database, "WorkoutTest2", testDocument);
             resultPosition = testDocument.InnerXml.IndexOf(workoutTestResult2);
-            Assert.GreaterOrEqual(resultPosition, 0, "Invalid workout TCX serialization for active step");
+            Assert.GreaterOrEqual(resultPosition, 0, "Invalid workout name TCX serialization");
 
             // Category/Sport
             workout.Name = "WorkoutTest3";
             workout.Category = logbook.ActivityCategories[0].SubCategories[5];
             workout.Serialize(database, "WorkoutTest3", testDocument);
             resultPosition = testDocument.InnerXml.IndexOf(workoutTestResult3);
-            Assert.GreaterOrEqual(resultPosition, 0, "Invalid workout TCX serialization for active step");
+            Assert.GreaterOrEqual(resultPosition, 0, "Invalid sport TCX serialization");
 
             workout.Name = "WorkoutTest4";
             workout.Category = logbook.ActivityCategories[0].SubCategories[6];
             workout.Serialize(database, "WorkoutTest4", testDocument);
             resultPosition = testDocument.InnerXml.IndexOf(workoutTestResult4);
-            Assert.GreaterOrEqual(resultPosition, 0, "Invalid workout TCX serialization for active step");
+            Assert.GreaterOrEqual(resultPosition, 0, "Invalid sport TCX serialization");
 
             // Scheduled dates
             workout.Name = "WorkoutTest5";
             workout.ScheduleWorkout(DateTime.Now.ToLocalTime());
             workout.Serialize(database, "WorkoutTest5", testDocument);
             resultPosition = testDocument.InnerXml.IndexOf(workoutTestResult5);
-            Assert.GreaterOrEqual(resultPosition, 0, "Invalid workout TCX serialization for current scheduled dates");
+            Assert.GreaterOrEqual(resultPosition, 0, "Invalid scheduled dates TCX serialization");
 
             workout.Name = "WorkoutTest6";
             workout.ScheduleWorkout(DateTime.Now.ToLocalTime().AddDays(1));
             workout.Serialize(database, "WorkoutTest6", testDocument);
             resultPosition = testDocument.InnerXml.IndexOf(workoutTestResult6);
-            Assert.GreaterOrEqual(resultPosition, 0, "Invalid workout TCX serialization for multiple scheduled dates");
+            Assert.GreaterOrEqual(resultPosition, 0, "Invalid multiple scheduled dates TCX serialization");
 
             // Test past dates should not schedule anything
             workout.Name = "WorkoutTest6b";
             workout.ScheduleWorkout(new DateTime(1999, 12, 31, 1, 0, 0));
             workout.Serialize(database, "WorkoutTest6b", testDocument);
             resultPosition = testDocument.InnerXml.IndexOf(workoutTestResult6b);
-            Assert.GreaterOrEqual(resultPosition, 0, "Invalid workout TCX serialization for past scheduled dates");
+            Assert.GreaterOrEqual(resultPosition, 0, "Invalid past scheduled dates TCX serialization");
 
             // New Zealand time (UST+12H) is a case where we had problems because the offset changes the day
             String currentZoneName = Time.CurrentTimeZone.standardName;
@@ -212,7 +212,7 @@ namespace GarminFitnessUnitTests
             workout.Serialize(database, "WorkoutTest7", testDocument);
             res = Time.SetTimeZone(currentZoneName);
             resultPosition = testDocument.InnerXml.IndexOf(workoutTestResult7);
-            Assert.GreaterOrEqual(resultPosition, 0, "Invalid workout TCX serialization for UST+12 scheduled dates");
+            Assert.GreaterOrEqual(resultPosition, 0, "Invalid UST+12 scheduled dates TCX serialization");
 
             // Notes
             workout.Name = "WorkoutTest8";
@@ -220,20 +220,98 @@ namespace GarminFitnessUnitTests
             workout.Notes = "Notes test 1";
             workout.Serialize(database, "WorkoutTest8", testDocument);
             resultPosition = testDocument.InnerXml.IndexOf(workoutTestResult8);
-            Assert.GreaterOrEqual(resultPosition, 0, "Invalid workout TCX serialization for notes");
+            Assert.GreaterOrEqual(resultPosition, 0, "Invalid workout notes TCX serialization");
 
             workout.Name = "WorkoutTest9";
             workout.ScheduledDates.Clear();
             workout.Notes = "Notes test 2";
             workout.Serialize(database, "WorkoutTest9", testDocument);
             resultPosition = testDocument.InnerXml.IndexOf(workoutTestResult9);
-            Assert.GreaterOrEqual(resultPosition, 0, "Invalid workout TCX serialization for notes");
+            Assert.GreaterOrEqual(resultPosition, 0, "Invalid workout notes TCX serialization");
         }
 
         [Test]
         public void TestTCXDeserialization()
         {
-            Assert.Fail("Not implemented");
+            XmlDocument testDocument = new XmlDocument();
+            XmlNode readNode;
+            XmlNode database;
+            XmlAttribute attribute;
+            Workout workout = new Workout("Test", PluginMain.GetApplication().Logbook.ActivityCategories[0]);
+            ILogbook logbook = PluginMain.GetApplication().Logbook;
+
+            // Setup document
+            testDocument.AppendChild(testDocument.CreateXmlDeclaration("1.0", "UTF-8", "no"));
+            database = testDocument.CreateNode(XmlNodeType.Element, "TrainingCenterDatabase", null);
+            testDocument.AppendChild(database);
+            attribute = testDocument.CreateAttribute("xmlns", "xsi", GarminFitnessPlugin.Constants.xmlns);
+            attribute.Value = "http://www.w3.org/2001/XMLSchema-instance";
+            database.Attributes.Append(attribute);
+            readNode = testDocument.CreateElement("TestNode");
+            database.AppendChild(readNode);
+
+            // Workout name
+            readNode.InnerXml = workoutTestResult1;
+            workout.Deserialize(readNode.FirstChild);
+            Assert.AreEqual("WorkoutTest1", workout.Name, "Invalid workout name in TCX deserialization");
+
+            readNode.InnerXml = workoutTestResult2;
+            workout.Deserialize(readNode.FirstChild);
+            Assert.AreEqual("WorkoutTest2", workout.Name, "Invalid workout name in TCX deserialization");
+
+            // Category/Sport
+            readNode.InnerXml = workoutTestResult3;
+            workout.Deserialize(readNode.FirstChild);
+            Assert.AreEqual("WorkoutTest3", workout.Name, "Invalid workout name in TCX deserialization");
+            Assert.AreEqual(logbook.ActivityCategories[0].SubCategories[5], workout.Category, "Invalid SportTracks category in TCX deserialization");
+
+            readNode.InnerXml = workoutTestResult4;
+            workout.Deserialize(readNode.FirstChild);
+            Assert.AreEqual("WorkoutTest4", workout.Name, "Invalid workout name in TCX deserialization");
+            Assert.AreEqual(logbook.ActivityCategories[0].SubCategories[6], workout.Category, "Invalid SportTracks category in TCX deserialization");
+
+            // Scheduled dates
+            readNode.InnerXml = workoutTestResult5;
+            workout.Deserialize(readNode.FirstChild);
+            Assert.AreEqual("WorkoutTest5", workout.Name, "Invalid workout name in TCX deserialization");
+            Assert.AreEqual(1, workout.ScheduledDates.Count, "Invalid number of scheduled dates in TCX deserialization");
+            Assert.LessOrEqual(0, (DateTime.Now - workout.ScheduledDates[0]).TotalDays, "Invalid scheduled date in TCX deserialization");
+
+            readNode.InnerXml = workoutTestResult6;
+            workout.Deserialize(readNode.FirstChild);
+            Assert.AreEqual("WorkoutTest6", workout.Name, "Invalid workout name in TCX deserialization");
+            Assert.AreEqual(2, workout.ScheduledDates.Count, "Invalid number of scheduled dates in TCX deserialization");
+            Assert.LessOrEqual(0, (DateTime.Now - workout.ScheduledDates[0]).TotalDays, "Invalid scheduled date in TCX deserialization");
+            Assert.LessOrEqual(0, (DateTime.Now.AddDays(1) - workout.ScheduledDates[0]).TotalDays, "Invalid future scheduled date in TCX deserialization");
+
+            // New Zealand time (UST+12H) is a case where we had problems because the offset changes the day
+            String currentZoneName = Time.CurrentTimeZone.standardName;
+            Time.SetTimeZone("New Zealand Standard Time");
+            readNode.InnerXml = workoutTestResult7;
+            workout.Deserialize(readNode.FirstChild);
+            Time.SetTimeZone(currentZoneName);
+            Assert.AreEqual("WorkoutTest7", workout.Name, "Invalid workout name in TCX deserialization");
+            Assert.AreEqual(1, workout.ScheduledDates.Count, "Invalid number of scheduled dates in TCX deserialization");
+            Assert.LessOrEqual(0, (DateTime.Now - workout.ScheduledDates[0]).TotalDays, "Invalid scheduled date in TCX deserialization");
+
+            readNode.InnerXml = workoutTestResult8;
+            workout.Deserialize(readNode.FirstChild);
+            Assert.AreEqual("WorkoutTest8", workout.Name, "Invalid workout name in TCX deserialization");
+            Assert.AreEqual("Notes test 1", workout.Notes, "Invalid workout notes in TCX deserialization");
+
+            readNode.InnerXml = workoutTestResult9;
+            workout.Deserialize(readNode.FirstChild);
+            Assert.AreEqual("WorkoutTest9", workout.Name, "Invalid workout name in TCX deserialization");
+            Assert.AreEqual("Notes test 2", workout.Notes, "Invalid workout notes in TCX deserialization");
+
+            // Erase old value for successive deserializations
+            Assert.AreNotEqual(logbook.ActivityCategories[1], workout.Category, "No SportTracks category TCX deserialization setup failure");
+            readNode.InnerXml = workoutTestResult10;
+            workout.Category = logbook.ActivityCategories[1];
+            workout.Deserialize(readNode.FirstChild);
+            Assert.AreEqual("WorkoutTest10", workout.Name, "Invalid workout name in TCX deserialization");
+            Assert.AreEqual(logbook.ActivityCategories[1], workout.Category, "No SportTracks category TCX deserialization won't request category");
+            Assert.IsTrue(String.IsNullOrEmpty(workout.Notes), "TCXDeserialization without notes didn't erase old notes");
         }
 
         [Test]
@@ -264,5 +342,6 @@ namespace GarminFitnessUnitTests
         readonly String workoutTestResult7 = "<WorkoutTest7 Sport=\"Running\"><Name>WorkoutTest7</Name><Step xsi:type=\"Step_t\"><StepId>1</StepId><Duration xsi:type=\"UserInitiated_t\" /><Intensity>Active</Intensity><Target xsi:type=\"None_t\" /></Step><ScheduledOn>" + DateTime.Now.ToString("yyyy-MM-dd") + "</ScheduledOn><Creator xsi:type=\"Device_t\"><Name /><UnitId>1234567890</UnitId><ProductID>0</ProductID><Version><VersionMajor>0</VersionMajor><VersionMinor>0</VersionMinor><BuildMajor>0</BuildMajor><BuildMinor>0</BuildMinor></Version></Creator><Extensions><SportTracksExtensions xmlns=\"http://www.zonefivesoftware.com/sporttracks/plugins/?p=garmin-fitness\"><SportTracksCategory>662a48c8-29f7-46a0-a488-903f69191a2e</SportTracksCategory><StepNotes><StepId>1</StepId><Notes></Notes></StepNotes></SportTracksExtensions></Extensions></WorkoutTest7>";
         const String workoutTestResult8 = "<WorkoutTest8 Sport=\"Running\"><Name>WorkoutTest8</Name><Step xsi:type=\"Step_t\"><StepId>1</StepId><Duration xsi:type=\"UserInitiated_t\" /><Intensity>Active</Intensity><Target xsi:type=\"None_t\" /></Step><Notes>Notes test 1</Notes><Creator xsi:type=\"Device_t\"><Name /><UnitId>1234567890</UnitId><ProductID>0</ProductID><Version><VersionMajor>0</VersionMajor><VersionMinor>0</VersionMinor><BuildMajor>0</BuildMajor><BuildMinor>0</BuildMinor></Version></Creator><Extensions><SportTracksExtensions xmlns=\"http://www.zonefivesoftware.com/sporttracks/plugins/?p=garmin-fitness\"><SportTracksCategory>662a48c8-29f7-46a0-a488-903f69191a2e</SportTracksCategory><StepNotes><StepId>1</StepId><Notes></Notes></StepNotes></SportTracksExtensions></Extensions></WorkoutTest8>";
         const String workoutTestResult9 = "<WorkoutTest9 Sport=\"Running\"><Name>WorkoutTest9</Name><Step xsi:type=\"Step_t\"><StepId>1</StepId><Duration xsi:type=\"UserInitiated_t\" /><Intensity>Active</Intensity><Target xsi:type=\"None_t\" /></Step><Notes>Notes test 2</Notes><Creator xsi:type=\"Device_t\"><Name /><UnitId>1234567890</UnitId><ProductID>0</ProductID><Version><VersionMajor>0</VersionMajor><VersionMinor>0</VersionMinor><BuildMajor>0</BuildMajor><BuildMinor>0</BuildMinor></Version></Creator><Extensions><SportTracksExtensions xmlns=\"http://www.zonefivesoftware.com/sporttracks/plugins/?p=garmin-fitness\"><SportTracksCategory>662a48c8-29f7-46a0-a488-903f69191a2e</SportTracksCategory><StepNotes><StepId>1</StepId><Notes></Notes></StepNotes></SportTracksExtensions></Extensions></WorkoutTest9>";
+        const String workoutTestResult10 = "<WorkoutTest10 Sport=\"Biking\"><Name>WorkoutTest10</Name><Step xsi:type=\"Step_t\"><StepId>1</StepId><Duration xsi:type=\"UserInitiated_t\" /><Intensity>Active</Intensity><Target xsi:type=\"None_t\" /></Step><Creator xsi:type=\"Device_t\"><Name /><UnitId>1234567890</UnitId><ProductID>0</ProductID><Version><VersionMajor>0</VersionMajor><VersionMinor>0</VersionMinor><BuildMajor>0</BuildMajor><BuildMinor>0</BuildMinor></Version></Creator></WorkoutTest10>";
     }
 }

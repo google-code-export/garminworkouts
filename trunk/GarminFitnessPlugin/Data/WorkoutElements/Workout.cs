@@ -212,6 +212,7 @@ namespace GarminFitnessPlugin.Data
             XmlNode STExtensionsNode = null;
             bool nameRead = false;
 
+            m_Notes.Value = "";
             ScheduledDates.Clear();
 
             for (int i = 0; i < parentNode.ChildNodes.Count; ++i)
