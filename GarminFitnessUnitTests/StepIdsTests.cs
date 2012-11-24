@@ -68,6 +68,7 @@ namespace GarminFitnessUnitTests
             Assert.AreEqual(3, placeholderWorkout.GetStepExportId(repeatStep.StepsToRepeat[0]), "Invalid step id for multiple nested regular steps");
             Assert.AreEqual(7, placeholderWorkout.GetStepExportId(placeholderWorkout.Steps[2]), "Invalid step id for multiple regular steps");
             linkStep = placeholderWorkout.Steps[3] as WorkoutLinkStep;
+            Assert.AreEqual(placeholderWorkout.GetStepExportId(linkStep), placeholderWorkout.GetStepExportId(linkStep.LinkedWorkoutSteps[0]), "Invalid step id for link step");
             Assert.AreEqual(8, placeholderWorkout.GetStepExportId(linkStep.LinkedWorkoutSteps[0]), "Invalid step id for link nested regular step");
             Assert.AreEqual(9, placeholderWorkout.GetStepExportId(linkStep.LinkedWorkoutSteps[1]), "Invalid step id for link nested regular step");
             repeatStep = linkStep.LinkedWorkoutSteps[2] as RepeatStep;

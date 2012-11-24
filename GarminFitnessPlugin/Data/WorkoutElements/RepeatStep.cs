@@ -182,8 +182,8 @@ namespace GarminFitnessPlugin.Data
 
                     while (precedingStepCounter < precedingStepsToRepeat)
                     {
-                        precedingStepCounter += ParentWorkout.Steps[precedingStepIndex].StepCount;
                         precedingStepIndex--;
+                        precedingStepCounter += ParentWorkout.Steps[precedingStepIndex].StepCount;
                     }
 
                     IStep precedingStep = ParentWorkout.Steps[precedingStepIndex];

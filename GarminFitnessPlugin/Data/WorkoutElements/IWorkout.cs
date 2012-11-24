@@ -689,6 +689,11 @@ namespace GarminFitnessPlugin.Data
             IWorkout containerWorkout = this;
             UInt16 counter = 0;
 
+            if (step is WorkoutLinkStep)
+            {
+                step = (step as WorkoutLinkStep).LinkedWorkoutSteps[0];
+            }
+
             if (GetSplitPartsCount() > 1)
             {
                 ushort stepSplitPart = GetStepSplitPart(step);
