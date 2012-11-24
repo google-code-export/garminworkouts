@@ -724,6 +724,12 @@ namespace GarminFitnessPlugin.Data
         public int GetStepExportId(IStep step)
         {
             UInt16 counter = 0;
+
+            if (step is WorkoutLinkStep)
+            {
+                step = (step as WorkoutLinkStep).LinkedWorkoutSteps[0];
+            }
+
             bool result = GetStepExportIdInternal(step, Steps, ref counter);
 
             Debug.Assert(result);
