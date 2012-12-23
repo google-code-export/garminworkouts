@@ -318,6 +318,8 @@ namespace GarminFitnessUnitTests
         public void TestFITSerialization()
         {
             Assert.Fail("Not implemented");
+
+            // Nested repeats duration = id - count
         }
 
         [Test]
