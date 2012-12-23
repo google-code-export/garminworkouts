@@ -217,7 +217,7 @@ namespace GarminFitnessPlugin.Data
             FITMessageField repeatFromStep = message.GetExistingOrAddField((Byte)FITWorkoutStepFieldIds.DurationValue);
             FITMessageField targetType = message.GetExistingOrAddField((Byte)FITWorkoutStepFieldIds.TargetType);
 
-            repeatFromStep.SetUInt32((UInt32)(ParentWorkout.GetStepExportId(StepsToRepeat[0]) - 1));
+            repeatFromStep.SetUInt32((UInt32)(ParentWorkout.GetStepExportId(this) - StepCount));
             targetType.SetEnum((Byte)FITWorkoutStepTargetTypes.NoTarget);
 
             Duration.FillFITStepMessage(message);
