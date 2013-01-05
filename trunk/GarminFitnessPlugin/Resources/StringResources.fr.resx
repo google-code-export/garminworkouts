@@ -223,7 +223,7 @@
     <value>Lorsque j'aurai parcouru une certaine distance</value>
   </data>
   <data name="DistanceDurationDescriptionText" xml:space="preserve">
-    <value>Continuer jusqu'à ce que j'ai parcouru {0:0.00} {1}.</value>
+    <value>Continuer jusqu'à ce que j'ai parcouru {0:0.00#} {1}.</value>
   </data>
   <data name="DistanceDurationLabelText" xml:space="preserve">
     <value>Quelle distance?</value>
@@ -787,7 +787,7 @@
     <value>Répéter jusqu'à ce que j'ai brûle {0} calories.</value>
   </data>
   <data name="RepeatUntilDistanceDurationDescriptionText" xml:space="preserve">
-    <value>Répéter pour {0:0.00} {1}.</value>
+    <value>Répéter pour {0:0.00#} {1}.</value>
   </data>
   <data name="RepeatUntilHeartRateAboveDurationDescriptionText" xml:space="preserve">
     <value>Répéter jusqu'à ce que ma FC dépasse {0} {1}.</value>

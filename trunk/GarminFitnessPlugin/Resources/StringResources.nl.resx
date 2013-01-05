@@ -223,7 +223,7 @@
     <value>Nadat ik een bepaalde afstand heb afgelegd</value>
   </data>
   <data name="DistanceDurationDescriptionText" xml:space="preserve">
-    <value>Ga {0:0.00} {1}.</value>
+    <value>Ga {0:0.00#} {1}.</value>
   </data>
   <data name="DistanceDurationLabelText" xml:space="preserve">
     <value>Hoe ver?</value>
@@ -781,7 +781,7 @@
     <value>Herhaal totdat ik {0} calorieën heb verbruikt</value>
   </data>
   <data name="RepeatUntilDistanceDurationDescriptionText" xml:space="preserve">
-    <value>Herhaal voor {0:0.00} {1}.</value>
+    <value>Herhaal voor {0:0.00#} {1}.</value>
   </data>
   <data name="RepeatUntilHeartRateAboveDurationDescriptionText" xml:space="preserve">
     <value>Herhaal totdat mijn hartslag stijgt boven {0} {1}.</value>
