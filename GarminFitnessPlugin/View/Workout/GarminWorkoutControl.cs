@@ -1060,7 +1060,7 @@ namespace GarminFitnessPlugin.View
                         System.Media.SystemSounds.Asterisk.Play();
 
                         // Reset old valid value
-                        DistanceDurationText.Text = String.Format("{0:0.00}", concreteDuration.GetDistanceInBaseUnit());
+                        DistanceDurationText.Text = String.Format("{0:0.00#}", concreteDuration.GetDistanceInBaseUnit());
                     }
                 }
                 else if (SelectedStep is RepeatStep)
@@ -1088,7 +1088,7 @@ namespace GarminFitnessPlugin.View
                         System.Media.SystemSounds.Asterisk.Play();
 
                         // Reset old valid value
-                        DistanceDurationText.Text = String.Format("{0:0.00}", concreteDuration.GetDistanceInBaseUnit());
+                        DistanceDurationText.Text = String.Format("{0:0.00#}", concreteDuration.GetDistanceInBaseUnit());
                     }
                 }
             }
@@ -2998,7 +2998,7 @@ namespace GarminFitnessPlugin.View
                         {
                             DistanceDuration concreteDuration = concreteStep.Duration as DistanceDuration;
                             double distance = concreteDuration.GetDistanceInBaseUnit();
-                            DistanceDurationText.Text = String.Format("{0:0.00}", distance);
+                            DistanceDurationText.Text = String.Format("{0:0.00#}", distance);
                             DistanceDurationUnitsLabel.Text = Length.LabelAbbr(concreteDuration.BaseUnit);
                             break;
                         }
@@ -3066,7 +3066,7 @@ namespace GarminFitnessPlugin.View
                         {
                             RepeatUntilDistanceDuration concreteDuration = concreteStep.Duration as RepeatUntilDistanceDuration;
                             double distance = concreteDuration.GetDistanceInBaseUnit();
-                            DistanceDurationText.Text = String.Format("{0:0.00}", distance);
+                            DistanceDurationText.Text = String.Format("{0:0.00#}", distance);
                             DistanceDurationUnitsLabel.Text = Length.LabelAbbr(concreteDuration.BaseUnit);
                             break;
                         }

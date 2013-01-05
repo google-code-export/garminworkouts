@@ -403,7 +403,7 @@ namespace GarminFitnessPlugin.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Go {0:0.00} {1}..
+        ///   Looks up a localized string similar to Go {0:0.00#} {1}..
         /// </summary>
         internal static string DistanceDurationDescriptionText {
             get {
@@ -1618,7 +1618,7 @@ namespace GarminFitnessPlugin.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Repeat for {0:0.00} {1}..
+        ///   Looks up a localized string similar to Repeat for {0:0.00#} {1}..
         /// </summary>
         internal static string RepeatUntilDistanceDurationDescriptionText {
             get {

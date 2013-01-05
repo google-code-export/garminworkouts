@@ -223,7 +223,7 @@
     <value>Dopo aver raggiunto una certa distanza</value>
   </data>
   <data name="DistanceDurationDescriptionText" xml:space="preserve">
-    <value>Vai {0:0.00} {1}.</value>
+    <value>Vai {0:0.00#} {1}.</value>
   </data>
   <data name="DistanceDurationLabelText" xml:space="preserve">
     <value>Quanto distante ?</value>
