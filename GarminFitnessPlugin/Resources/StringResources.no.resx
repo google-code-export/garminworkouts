@@ -223,7 +223,7 @@
     <value>Når jeg har fullført en gitt distanse</value>
   </data>
   <data name="DistanceDurationDescriptionText" xml:space="preserve">
-    <value>Fullfør {0:0.00} {1}</value>
+    <value>Fullfør {0:0.00#} {1}</value>
   </data>
   <data name="DistanceDurationLabelText" xml:space="preserve">
     <value>Hvor langt?</value>
