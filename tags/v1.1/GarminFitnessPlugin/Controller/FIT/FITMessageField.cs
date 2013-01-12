@@ -398,7 +398,7 @@ namespace GarminFitnessPlugin.Controller
         {
             Debug.Assert(m_Type == DataType.String);
 
-            return Encoding.UTF8.GetString(m_ByteValues).TrimEnd(new char[] { '\0' });
+            return Encoding.UTF8.GetString(m_ByteValues).Split(new char[] { '\0' })[0];
         }
 
         public void SetFloat32(Single value)
