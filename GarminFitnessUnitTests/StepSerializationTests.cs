@@ -389,6 +389,10 @@ namespace GarminFitnessUnitTests
             //   - Regular step (id = 1)
             //   - Repeat step (id = 3)
             //    - Regular step (id = 2)
+            //  - Repeat step (id = 8)
+            //   - Repeat step (id = 6)
+            //    - Regular step (id = 5)
+            //   - Regular step (id = 7)
             placeholderWorkout.Steps.AddStepToRoot(repeatStep);
             placeholderWorkout.Steps.RemoveStep(placeholderWorkout.Steps[0]);
 
@@ -413,6 +417,15 @@ namespace GarminFitnessUnitTests
             messageField = serializedMessage.GetField((Byte)FITWorkoutStepFieldIds.DurationValue);
             Assert.IsNotNull(messageField, "Duration value field not serialized for repeat step");
             Assert.AreEqual(2, messageField.GetUInt32(), "Invalid duration value FIT serialization for repeat step with single child");
+            serializedMessage.Clear();
+
+            // Nested repeats with 2nd repeat as first nested step
+            repeatStep = new RepeatStep(placeholderWorkout);
+            repeatStep.StepsToRepeat.Insert(0, new RepeatStep(placeholderWorkout));
+            repeatStep.FillFITStepMessage(serializedMessage);
+            messageField = serializedMessage.GetField((Byte)FITWorkoutStepFieldIds.DurationValue);
+            Assert.IsNotNull(messageField, "Duration value field not serialized for repeat step");
+            Assert.AreEqual(5, messageField.GetUInt32(), "Invalid duration value FIT serialization for repeat step with single child");
             serializedMessage.Clear();
         }
 

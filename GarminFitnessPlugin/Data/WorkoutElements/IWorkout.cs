@@ -49,7 +49,7 @@ namespace GarminFitnessPlugin.Data
                 // Scheduled dates
                 foreach (DateTime scheduledDate in ScheduledDates)
                 {
-                    GarminFitnessDate currentSchedule = new GarminFitnessDate(scheduledDate.AddHours(12).ToUniversalTime());
+                    GarminFitnessDate currentSchedule = new GarminFitnessDate(scheduledDate.ToUniversalTime());
                     currentSchedule.Serialize(workoutNode, "ScheduledOn", document);
                 }
 
@@ -147,11 +147,25 @@ namespace GarminFitnessPlugin.Data
 
 #endregion
 
-        public virtual void SerializetoFIT(Stream stream)
+        public virtual void SerializeToFIT(Stream stream)
         {
             Debug.Assert(GetSplitPartsCount() == 1);
 
             FITMessage workoutMessage = new FITMessage(FITGlobalMessageIds.Workout);
+
+            FillFITStepMessage(workoutMessage);
+            workoutMessage.Serialize(stream);
+
+            bool serializeDefinition = true;
+            foreach (IStep step in Steps)
+            {
+                step.SerializeToFIT(stream, serializeDefinition);
+                serializeDefinition = false;
+            }
+        }
+
+        public virtual void FillFITStepMessage(FITMessage workoutMessage)
+        {
             FITMessageField capabilities = new FITMessageField((Byte)FITWorkoutFieldIds.Capabilities);
             FITMessageField sportType = new FITMessageField((Byte)FITWorkoutFieldIds.SportType);
             FITMessageField numValidSteps = new FITMessageField((Byte)FITWorkoutFieldIds.NumSteps);
@@ -172,22 +186,25 @@ namespace GarminFitnessPlugin.Data
             workoutMessage.AddField(numValidSteps);
             workoutMessage.AddField(unknown);
             workoutMessage.AddField(sportType);
-
-            workoutMessage.Serialize(stream);
-
-            bool serializeDefinition = true;
-            foreach (IStep step in Steps)
-            {
-                step.SerializetoFIT(stream, serializeDefinition);
-                serializeDefinition = false;
-            }
         }
 
-        public virtual void SerializetoFITSchedule(Stream stream, bool serializeDefiniton)
+        public virtual void SerializeToFITSchedule(Stream stream, bool serializeDefiniton)
         {
             Debug.Assert(GetSplitPartsCount() == 1);
 
             FITMessage scheduleMessage = new FITMessage(FITGlobalMessageIds.WorkoutSchedules);
+
+            foreach (DateTime scheduledDate in ScheduledDates)
+            {
+                FillFITMessageForScheduledDate(scheduleMessage, scheduledDate);
+
+                scheduleMessage.Serialize(stream, serializeDefiniton);
+                serializeDefiniton = false;
+            }
+        }
+
+        public virtual void FillFITMessageForScheduledDate(FITMessage scheduleMessage, DateTime scheduledDate)
+        {
             FITMessageField workoutManufacturer = new FITMessageField((Byte)FITScheduleFieldIds.WorkoutManufacturer);
             FITMessageField workoutProduct = new FITMessageField((Byte)FITScheduleFieldIds.WorkoutProduct);
             FITMessageField workoutSN = new FITMessageField((Byte)FITScheduleFieldIds.WorkoutSN);
@@ -195,8 +212,10 @@ namespace GarminFitnessPlugin.Data
             FITMessageField workoutCompleted = new FITMessageField((Byte)FITScheduleFieldIds.WorkoutCompleted);
             FITMessageField workoutId = new FITMessageField((Byte)FITScheduleFieldIds.WorkoutId);
             FITMessageField scheduledField = new FITMessageField((Byte)FITScheduleFieldIds.ScheduledDate);
+            DateTime midDaySchedule = new DateTime(scheduledDate.Date.Year, scheduledDate.Date.Month, scheduledDate.Day, 12, 0, 0);
+            TimeSpan timeSinceReference = midDaySchedule - new DateTime(1989, 12, 31);
 
-            // Hardcoded fields from the workout file
+            // Hardcoded fields from the schedule file
             workoutManufacturer.SetUInt16(1);           // Always 1
             workoutProduct.SetUInt16(20119);            // Always 20119
             workoutSN.SetUInt32z(0);                    // Invalid
@@ -212,17 +231,9 @@ namespace GarminFitnessPlugin.Data
             scheduleMessage.AddField(workoutManufacturer);
             scheduleMessage.AddField(workoutProduct);
             scheduleMessage.AddField(workoutCompleted);
-            scheduleMessage.AddField(scheduleType);
+            scheduleMessage.AddField(scheduleType); 
 
-            foreach (DateTime scheduledDate in ScheduledDates)
-            {
-                TimeSpan timeSinceReference = scheduledDate.ToUniversalTime().AddHours(12) - new DateTime(1989, 12, 31);
-
-                scheduledField.SetUInt32((UInt32)timeSinceReference.TotalSeconds);
-
-                scheduleMessage.Serialize(stream, serializeDefiniton);
-                serializeDefiniton = false;
-            }
+            scheduledField.SetUInt32((UInt32)timeSinceReference.TotalSeconds);
         }
 
         public abstract void DeserializeFromFIT(FITMessage workoutMessage);
@@ -754,7 +765,9 @@ namespace GarminFitnessPlugin.Data
 
         public void ScheduleWorkout(DateTime date)
         {
-            GarminFitnessDate temp = new GarminFitnessDate(date.Date);
+            // Force it to be at noon
+            DateTime midDaySchedule = new DateTime(date.Date.Year, date.Date.Month, date.Day, 12, 0, 0);
+            GarminFitnessDate temp = new GarminFitnessDate(midDaySchedule);
 
             if (!ScheduledDates.Contains(temp) && date.Ticks >= DateTime.Today.Ticks)
             {

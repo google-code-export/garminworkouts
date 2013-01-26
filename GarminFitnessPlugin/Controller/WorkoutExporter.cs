@@ -119,7 +119,7 @@ namespace GarminFitnessPlugin.Controller
             fileCreatorMessage.Serialize(dataStream);
 
             // Write workout
-            workout.SerializetoFIT(dataStream);
+            workout.SerializeToFIT(dataStream);
 
             // Write FIT header at the start of the stream
             GarminFitnessByteRange headerSize = new GarminFitnessByteRange(12);

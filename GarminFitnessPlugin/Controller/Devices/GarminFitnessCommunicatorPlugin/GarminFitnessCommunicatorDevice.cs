@@ -528,7 +528,7 @@ namespace GarminFitnessPlugin.Controller
 
                             // Serialize workout & schedules
                             WorkoutExporter.ExportWorkoutToFIT(currentWorkout, fileStream);
-                            currentWorkout.SerializetoFITSchedule(schedulesDataStream, serializeDefiniton);
+                            currentWorkout.SerializeToFITSchedule(schedulesDataStream, serializeDefiniton);
                             serializeDefiniton = false;
 
                             fileStream.Close();

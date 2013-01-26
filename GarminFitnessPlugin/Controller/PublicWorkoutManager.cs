@@ -143,7 +143,7 @@ namespace GarminFitnessPlugin.Controller
                 if (file != null)
                 {
                     WorkoutExporter.ExportWorkoutToFIT(concreteWorkout, file, false);
-                    concreteWorkout.SerializetoFITSchedule(schedulesDataStream, serializeDefiniton);
+                    concreteWorkout.SerializeToFITSchedule(schedulesDataStream, serializeDefiniton);
                     serializeDefiniton = false;
 
                     file.Close();
