@@ -317,13 +317,111 @@ namespace GarminFitnessUnitTests
         [Test]
         public void TestFITSerialization()
         {
-            Assert.Fail("Not implemented");
+            Workout placeholderWorkout = new Workout("Test", PluginMain.GetApplication().Logbook.ActivityCategories[0]);
+            RegularStep placeholderStep = new RegularStep(placeholderWorkout);
+            ILogbook logbook = PluginMain.GetApplication().Logbook;
+            bool exportHRAsMax = Options.Instance.ExportSportTracksHeartRateAsPercentMax;
+            bool exportPowerAsFTP = Options.Instance.ExportSportTracksPowerAsPercentFTP;
+            FITMessage serializedMessage = new FITMessage(FITGlobalMessageIds.Workout);
+            FITMessageField messageField;
 
-            // Nested repeats duration = id - count
+            // Name
+            placeholderWorkout.Name = "WorkoutTest1";
+            placeholderWorkout.FillFITStepMessage(serializedMessage);
+            messageField = serializedMessage.GetField((Byte)FITWorkoutFieldIds.WorkoutName);
+            Assert.IsNotNull(messageField, "Workout name field not serialized for step");
+            Assert.AreEqual("WorkoutTest1", messageField.GetString(), "Invalid workout name FIT serialization");
+            serializedMessage.Clear();
+
+            placeholderWorkout.Name = "WorkoutTest2";
+            placeholderWorkout.FillFITStepMessage(serializedMessage);
+            messageField = serializedMessage.GetField((Byte)FITWorkoutFieldIds.WorkoutName);
+            Assert.IsNotNull(messageField, "Workout name field not serialized for step");
+            Assert.AreEqual("WorkoutTest2", messageField.GetString(), "Invalid workout name FIT serialization");
+            serializedMessage.Clear();
+
+            // Category/Sport
+            placeholderWorkout.Name = "WorkoutTest3";
+            placeholderWorkout.Category = logbook.ActivityCategories[0].SubCategories[5];
+            placeholderWorkout.FillFITStepMessage(serializedMessage);
+            messageField = serializedMessage.GetField((Byte)FITWorkoutFieldIds.SportType);
+            Assert.IsNotNull(messageField, "Workout sport field not serialized for step");
+            Assert.AreEqual(FITSports.Cycling, (FITSports)messageField.GetEnum(), "Invalid workout sport FIT serialization");
+            serializedMessage.Clear();
+
+            placeholderWorkout.Name = "WorkoutTest4";
+            placeholderWorkout.Category = logbook.ActivityCategories[0].SubCategories[6];
+            placeholderWorkout.FillFITStepMessage(serializedMessage);
+            messageField = serializedMessage.GetField((Byte)FITWorkoutFieldIds.SportType);
+            Assert.IsNotNull(messageField, "Workout sport field not serialized for step");
+            Assert.AreEqual(FITSports.Running, (FITSports)messageField.GetEnum(), "Invalid workout sport FIT serialization");
+            serializedMessage.Clear();
         }
 
         [Test]
         public void TestFITDeserialization()
+        {
+            Assert.Fail("Not implemented");
+        }
+
+        [Test]
+        public void TestFITScheduleSerialization()
+        {
+            Workout placeholderWorkout = new Workout("Test", PluginMain.GetApplication().Logbook.ActivityCategories[0]);
+            RegularStep placeholderStep = new RegularStep(placeholderWorkout);
+            ILogbook logbook = PluginMain.GetApplication().Logbook;
+            bool exportHRAsMax = Options.Instance.ExportSportTracksHeartRateAsPercentMax;
+            bool exportPowerAsFTP = Options.Instance.ExportSportTracksPowerAsPercentFTP;
+            FITMessage serializedMessage = new FITMessage(FITGlobalMessageIds.Workout);
+            FITMessageField messageField;
+            DateTime serializedDate;
+            DateTime referenceDate = new DateTime(1989, 12, 31);
+
+            // Scheduled dates
+            placeholderWorkout.Name = "WorkoutTest5";
+            serializedDate = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, 12, 0, 0);
+            placeholderWorkout.FillFITMessageForScheduledDate(serializedMessage, serializedDate);
+            messageField = serializedMessage.GetField((Byte)FITScheduleFieldIds.ScheduledDate);
+            Assert.IsNotNull(messageField, "Schedule date field not serialized for step");
+            Assert.AreEqual((UInt32)(serializedDate - referenceDate).TotalSeconds,
+                            messageField.GetUInt32(),
+                            "Invalid Schedule date FIT serialization");
+            serializedMessage.Clear();
+
+            placeholderWorkout.Name = "WorkoutTest6";
+            serializedDate.AddDays(1);
+            placeholderWorkout.FillFITMessageForScheduledDate(serializedMessage, serializedDate);
+            messageField = serializedMessage.GetField((Byte)FITScheduleFieldIds.ScheduledDate);
+            Assert.IsNotNull(messageField, "Schedule date field not serialized for step");
+            Assert.AreEqual((UInt32)(serializedDate - referenceDate).TotalSeconds,
+                            messageField.GetUInt32(),
+                            "Invalid Schedule date FIT serialization");
+            serializedMessage.Clear();
+
+            // Test specific date with hardcoded result
+            placeholderWorkout.Name = "WorkoutTest6b";
+            serializedDate = new DateTime(1999, 12, 31, 12, 0, 0);
+            placeholderWorkout.FillFITMessageForScheduledDate(serializedMessage, serializedDate);
+            messageField = serializedMessage.GetField((Byte)FITScheduleFieldIds.ScheduledDate);
+            Assert.IsNotNull(messageField, "Schedule date field not serialized for step");
+            Assert.AreEqual(315576000, messageField.GetUInt32(), "Invalid Schedule date FIT serialization");
+            serializedMessage.Clear();
+
+            // New Zealand time (UST+12H) is a case where we had problems because the offset changes the day
+            String currentZoneName = Time.CurrentTimeZone.standardName;
+            placeholderWorkout.Name = "WorkoutTest7";
+            bool res = Time.SetTimeZone("New Zealand Standard Time");
+            serializedDate = new DateTime(1999, 12, 31, 0, 0, 0);
+            placeholderWorkout.FillFITMessageForScheduledDate(serializedMessage, serializedDate);
+            res = Time.SetTimeZone(currentZoneName);
+            messageField = serializedMessage.GetField((Byte)FITScheduleFieldIds.ScheduledDate);
+            Assert.IsNotNull(messageField, "Schedule date field not serialized for step");
+            Assert.AreEqual(315576000, messageField.GetUInt32(), "Invalid Schedule date FIT serialization");
+            serializedMessage.Clear();
+        }
+
+        [Test]
+        public void TestFITScheduleDeserialization()
         {
             Assert.Fail("Not implemented");
         }

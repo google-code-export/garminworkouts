@@ -35,7 +35,7 @@ namespace GarminFitnessPlugin.Data
             m_ForceSplit.Serialize(stream);
         }
 
-        public virtual void SerializetoFIT(Stream stream, bool serializeDefiniton)
+        public virtual void SerializeToFIT(Stream stream, bool serializeDefiniton)
         {
             FITMessage message = new FITMessage(FITGlobalMessageIds.WorkoutStep);
             FITMessageField stepId = new FITMessageField((Byte)FITWorkoutStepFieldIds.MessageIndex);

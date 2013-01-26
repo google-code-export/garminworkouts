@@ -700,7 +700,7 @@
     <value>Exporter les zones de FC de ST en tant que:</value>
   </data>
   <data name="ExportWarmupAsText" xml:space="preserve">
-    <value>Exporter le réchauffement en tant que</value>
+    <value>Exporter l'échauffement en tant que</value>
   </data>
   <data name="ExportWorkoutsText" xml:space="preserve">
     <value>export d'entraînement</value>
@@ -823,7 +823,7 @@
     <value>Utiliser pour tous les entraînements</value>
   </data>
   <data name="WarmupText" xml:space="preserve">
-    <value>Réchauffement</value>
+    <value>Échauffement</value>
   </data>
   <data name="ExportSTPowerZonesAsLabelText" xml:space="preserve">
     <value>Exporter les zones de puissance de ST en tant que:</value>

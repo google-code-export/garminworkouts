@@ -155,15 +155,15 @@ namespace GarminFitnessPlugin.Data
             Duration = DurationFactory.Create(durationType, stream, version, this);
         }
 
-        public override void SerializetoFIT(Stream stream, bool serializeDefiniton)
+        public override void SerializeToFIT(Stream stream, bool serializeDefiniton)
         {
             // Serialize children first, followed by the repeat
             foreach (IStep child in StepsToRepeat)
             {
-                child.SerializetoFIT(stream, serializeDefiniton);
+                child.SerializeToFIT(stream, serializeDefiniton);
             }
 
-            base.SerializetoFIT(stream, serializeDefiniton);
+            base.SerializeToFIT(stream, serializeDefiniton);
         }
 
         public override void DeserializeFromFIT(FITMessage stepMessage)

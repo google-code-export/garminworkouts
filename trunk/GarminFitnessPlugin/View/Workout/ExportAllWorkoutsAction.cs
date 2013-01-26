@@ -171,7 +171,7 @@ namespace GarminFitnessPlugin.View
                             if (dlg.SelectedFormat == GarminWorkoutManager.FileFormats.FIT)
                             {
                                 WorkoutExporter.ExportWorkoutToFIT(currentWorkout, file);
-                                currentWorkout.SerializetoFITSchedule(schedulesDataStream, serializeDefiniton);
+                                currentWorkout.SerializeToFITSchedule(schedulesDataStream, serializeDefiniton);
                                 serializeDefiniton = false;
                             }
                             else
