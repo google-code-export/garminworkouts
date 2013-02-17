@@ -98,7 +98,7 @@ namespace GarminFitnessUnitTests
             try
             {
                 Assert.AreEqual(2, placeholderWorkout.GetStepExportId(repeatStep), "Invalid step id for link nested repeat step with step count split");
-                Assert.Fail("Expection exception when trying to get step id from wrong workout");
+                Assert.Fail("Expected exception when trying to get step id from wrong workout");
             }
             catch (System.Exception)
             {

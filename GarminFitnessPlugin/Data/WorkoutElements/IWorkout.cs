@@ -153,7 +153,7 @@ namespace GarminFitnessPlugin.Data
 
             FITMessage workoutMessage = new FITMessage(FITGlobalMessageIds.Workout);
 
-            FillFITStepMessage(workoutMessage);
+            FillFITMessage(workoutMessage);
             workoutMessage.Serialize(stream);
 
             bool serializeDefinition = true;
@@ -164,7 +164,7 @@ namespace GarminFitnessPlugin.Data
             }
         }
 
-        public virtual void FillFITStepMessage(FITMessage workoutMessage)
+        public void FillFITMessage(FITMessage workoutMessage)
         {
             FITMessageField capabilities = new FITMessageField((Byte)FITWorkoutFieldIds.Capabilities);
             FITMessageField sportType = new FITMessageField((Byte)FITWorkoutFieldIds.SportType);

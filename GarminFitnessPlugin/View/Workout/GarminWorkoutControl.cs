@@ -4386,7 +4386,7 @@ namespace GarminFitnessPlugin.View
         }
 
         private delegate void GetNewWorkoutNameAndCategoryDelegate(ref string name, ref IActivityCategory category);
-        public void GetNewWorkoutNameAndCategory(ref string name, ref  IActivityCategory category)
+        public void GetNewWorkoutNameAndCategory(ref string name, ref IActivityCategory category)
         {
             if (InvokeRequired)
             {

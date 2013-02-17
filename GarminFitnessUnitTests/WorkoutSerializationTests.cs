@@ -327,14 +327,14 @@ namespace GarminFitnessUnitTests
 
             // Name
             placeholderWorkout.Name = "WorkoutTest1";
-            placeholderWorkout.FillFITStepMessage(serializedMessage);
+            placeholderWorkout.FillFITMessage(serializedMessage);
             messageField = serializedMessage.GetField((Byte)FITWorkoutFieldIds.WorkoutName);
             Assert.IsNotNull(messageField, "Workout name field not serialized for step");
             Assert.AreEqual("WorkoutTest1", messageField.GetString(), "Invalid workout name FIT serialization");
             serializedMessage.Clear();
 
             placeholderWorkout.Name = "WorkoutTest2";
-            placeholderWorkout.FillFITStepMessage(serializedMessage);
+            placeholderWorkout.FillFITMessage(serializedMessage);
             messageField = serializedMessage.GetField((Byte)FITWorkoutFieldIds.WorkoutName);
             Assert.IsNotNull(messageField, "Workout name field not serialized for step");
             Assert.AreEqual("WorkoutTest2", messageField.GetString(), "Invalid workout name FIT serialization");
@@ -343,7 +343,7 @@ namespace GarminFitnessUnitTests
             // Category/Sport
             placeholderWorkout.Name = "WorkoutTest3";
             placeholderWorkout.Category = logbook.ActivityCategories[0].SubCategories[5];
-            placeholderWorkout.FillFITStepMessage(serializedMessage);
+            placeholderWorkout.FillFITMessage(serializedMessage);
             messageField = serializedMessage.GetField((Byte)FITWorkoutFieldIds.SportType);
             Assert.IsNotNull(messageField, "Workout sport field not serialized for step");
             Assert.AreEqual(FITSports.Cycling, (FITSports)messageField.GetEnum(), "Invalid workout sport FIT serialization");
@@ -351,17 +351,81 @@ namespace GarminFitnessUnitTests
 
             placeholderWorkout.Name = "WorkoutTest4";
             placeholderWorkout.Category = logbook.ActivityCategories[0].SubCategories[6];
-            placeholderWorkout.FillFITStepMessage(serializedMessage);
+            placeholderWorkout.FillFITMessage(serializedMessage);
             messageField = serializedMessage.GetField((Byte)FITWorkoutFieldIds.SportType);
             Assert.IsNotNull(messageField, "Workout sport field not serialized for step");
             Assert.AreEqual(FITSports.Running, (FITSports)messageField.GetEnum(), "Invalid workout sport FIT serialization");
             serializedMessage.Clear();
+
+            // Number of steps
+            placeholderWorkout.Name = "WorkoutTest5";
+            placeholderWorkout.FillFITMessage(serializedMessage);
+            messageField = serializedMessage.GetField((Byte)FITWorkoutFieldIds.NumSteps);
+            Assert.IsNotNull(messageField, "Workout sport field not serialized for step");
+            Assert.AreEqual(1, messageField.GetUInt16(), "Invalid workout step count FIT serialization");
+            serializedMessage.Clear();
+
+            placeholderWorkout.Name = "WorkoutTest6";
+            placeholderWorkout.Steps.AddStepToRoot(new RepeatStep(placeholderWorkout));
+            placeholderWorkout.FillFITMessage(serializedMessage);
+            messageField = serializedMessage.GetField((Byte)FITWorkoutFieldIds.NumSteps);
+            Assert.IsNotNull(messageField, "Workout sport field not serialized for step");
+            Assert.AreEqual(3, messageField.GetUInt16(), "Invalid workout step count FIT serialization");
+            serializedMessage.Clear();
+
+            // Do not test steps serialization here, it has it's own test
         }
 
         [Test]
         public void TestFITDeserialization()
         {
-            Assert.Fail("Not implemented");
+            ILogbook logbook = PluginMain.GetApplication().Logbook;
+            Workout placeholderWorkout = null;
+            FITMessage serializedMessage = new FITMessage(FITGlobalMessageIds.Workout);
+            FITMessageField nameField = new FITMessageField((Byte)FITWorkoutFieldIds.WorkoutName);
+            FITMessageField numStepsField = new FITMessageField((Byte)FITWorkoutFieldIds.NumSteps);
+            FITMessageField categoryField = new FITMessageField((Byte)FITWorkoutFieldIds.SportType);
+
+            try
+            {
+                placeholderWorkout = WorkoutImporter.ImportWorkoutFromMessage(serializedMessage, logbook.ActivityCategories[0]);
+                Assert.Fail("Workout without name was FIT deserialized");
+            }
+            catch (FITParserException)
+            {
+            }
+
+            nameField.SetString(String.Empty);
+            serializedMessage.AddField(nameField);
+
+            try
+            {
+                placeholderWorkout = WorkoutImporter.ImportWorkoutFromMessage(serializedMessage, logbook.ActivityCategories[0]);
+                Assert.Fail("Workout without step count was FIT deserialized");
+            }
+            catch (FITParserException)
+            {
+            }
+
+            numStepsField.SetUInt16(0);
+            serializedMessage.AddField(numStepsField);
+
+            // Name
+            nameField.SetString("TestName");
+            placeholderWorkout = WorkoutImporter.ImportWorkoutFromMessage(serializedMessage, logbook.ActivityCategories[0]);
+            Assert.AreEqual("TestName", placeholderWorkout.Name, "Workout name not properly FIT deserialized");
+            GarminWorkoutManager.Instance.RemoveWorkout(placeholderWorkout);
+
+            nameField.SetString("Workout2");
+            placeholderWorkout = WorkoutImporter.ImportWorkoutFromMessage(serializedMessage, logbook.ActivityCategories[0]);
+            Assert.AreEqual("Workout2", placeholderWorkout.Name, "Workout name not properly FIT deserialized");
+            GarminWorkoutManager.Instance.RemoveWorkout(placeholderWorkout);
+
+            // No need to test category, we ignore them in the application at this time (TODO)
+
+            // Number of steps is tested in the steps list test since it requires multiple messages
+
+            // Do not test steps deserialization here, it has it's own test
         }
 
         [Test]
@@ -422,6 +486,45 @@ namespace GarminFitnessUnitTests
 
         [Test]
         public void TestFITScheduleDeserialization()
+        {
+            FITMessage serializedMessage = new FITMessage(FITGlobalMessageIds.WorkoutSchedules);
+            FITMessageField dateField = new FITMessageField((Byte)FITScheduleFieldIds.ScheduledDate);
+            DateTime referenceDate = new DateTime(1989, 12, 31);
+            DateTime resultDate;
+
+            serializedMessage.AddField(dateField);
+
+            DateTime currentDate = DateTime.Today;
+            dateField.SetUInt32((UInt32)(currentDate - referenceDate).TotalSeconds);
+            resultDate = WorkoutImporter.ImportWorkoutScheduleMessage(serializedMessage);
+            Assert.AreEqual(currentDate, resultDate, "Deserialized date invalid for FIT format");
+
+            currentDate = currentDate.AddDays(1);
+            dateField.SetUInt32((UInt32)(currentDate - referenceDate).TotalSeconds);
+            resultDate = WorkoutImporter.ImportWorkoutScheduleMessage(serializedMessage);
+            Assert.AreEqual(currentDate, resultDate, "Deserialized date invalid for FIT format");
+
+            dateField.SetUInt32(315576000);
+            resultDate = WorkoutImporter.ImportWorkoutScheduleMessage(serializedMessage);
+            Assert.AreEqual(new DateTime(1999, 12, 31, 12, 0, 0), resultDate, "Deserialized date invalid for FIT format");
+
+            // New Zealand time (UST+12H) is a case where we had problems because the offset changes the day
+            String currentZoneName = Time.CurrentTimeZone.standardName;
+            bool res = Time.SetTimeZone("New Zealand Standard Time");
+            dateField.SetUInt32(315576000);
+            resultDate = WorkoutImporter.ImportWorkoutScheduleMessage(serializedMessage);
+            res = Time.SetTimeZone(currentZoneName);
+            Assert.AreEqual(new DateTime(1999, 12, 31, 12, 0, 0), resultDate, "Deserialized date invalid for FIT format");
+        }
+
+        [Test]
+        public void TestFITWorkoutStepsSerialization()
+        {
+            Assert.Fail("Not implemented");
+        }
+
+        [Test]
+        public void TestFITWorkoutStepsDeserialization()
         {
             Assert.Fail("Not implemented");
         }
