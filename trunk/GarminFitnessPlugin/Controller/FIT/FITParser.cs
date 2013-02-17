@@ -63,11 +63,14 @@ namespace GarminFitnessPlugin.Controller
 
         public void RestartParsing()
         {
-            int headerSize;
+            if (m_DataStream != null)
+            {
+                int headerSize;
 
-            m_DataStream.Seek(0, SeekOrigin.Begin);
-            headerSize = m_DataStream.ReadByte();
-            m_DataStream.Seek(headerSize, SeekOrigin.Begin);
+                m_DataStream.Seek(0, SeekOrigin.Begin);
+                headerSize = m_DataStream.ReadByte();
+                m_DataStream.Seek(headerSize, SeekOrigin.Begin);
+            }
 
             // Empty definitions dictionary
             m_MessageDefinitions = new Dictionary<Byte, FITMessage>();
@@ -78,29 +81,32 @@ namespace GarminFitnessPlugin.Controller
             int readByte;
             Byte recordHeader;
 
-            do
+            if (m_DataStream != null)
             {
-                // Peek record header
-                readByte = m_DataStream.ReadByte();
-                recordHeader = (Byte)readByte;
-
-                if (readByte != -1)
+                do
                 {
-                    m_DataStream.Seek(-1, SeekOrigin.Current);
+                    // Peek record header
+                    readByte = m_DataStream.ReadByte();
+                    recordHeader = (Byte)readByte;
 
-                    if (IsDefinitionHeaderByte(recordHeader))
+                    if (readByte != -1)
                     {
-                        // Definiton record
-                        ProcessMessageDefinition();
+                        m_DataStream.Seek(-1, SeekOrigin.Current);
+
+                        if (IsDefinitionHeaderByte(recordHeader))
+                        {
+                            // Definiton record
+                            ProcessMessageDefinition();
+                        }
                     }
                 }
-            }
-            while (readByte != -1 && IsDefinitionHeaderByte(recordHeader));
+                while (readByte != -1 && IsDefinitionHeaderByte(recordHeader));
 
-            // We found a data record, process it using the right header
-            if (readByte != -1)
-            {
-                return ProcessDataMessage();
+                // We found a data record, process it using the right header
+                if (readByte != -1)
+                {
+                    return ProcessDataMessage();
+                }
             }
 
             return null;
@@ -108,114 +114,125 @@ namespace GarminFitnessPlugin.Controller
 
         public FITMessage PrefetchMessageOfType(FITGlobalMessageIds messageType)
         {
-            long postitionBookmark = m_DataStream.Position;
-            FITMessage readMessage = ReadNextMessage();
-
-            while (readMessage != null &&
-                   readMessage.GlobalMessageType != messageType)
+            if (m_DataStream != null)
             {
-                readMessage = ReadNextMessage();
+                long postitionBookmark = m_DataStream.Position;
+                FITMessage readMessage = ReadNextMessage();
+
+                while (readMessage != null &&
+                       readMessage.GlobalMessageType != messageType)
+                {
+                    readMessage = ReadNextMessage();
+                }
+
+                // Reset to our original position
+                m_DataStream.Seek(postitionBookmark, SeekOrigin.Begin);
+
+                return readMessage;
             }
 
-            // Reset to our original position
-            m_DataStream.Seek(postitionBookmark, SeekOrigin.Begin);
-
-            return readMessage;
+            return null;
         }
 
         private void ProcessMessageDefinition()
         {
-            FITMessage definition = null;
-            Byte[] temp;
-            UInt16 globalMessageId = 0;
-            Byte recordHeader = 0;
-            Byte localDefinitionId = 0;
-            Byte endianness = 0;
-            Byte fieldCount = 0;
-            bool isLittleEndian = true;
-
-            // Record header
-            recordHeader = (Byte)m_DataStream.ReadByte();
-            Debug.Assert(IsDefinitionHeaderByte(recordHeader));
-            localDefinitionId = (Byte)(recordHeader & 0xF);
-
-            // Skip reserved byte
-            m_DataStream.ReadByte();
-
-            // Architecture byte
-            endianness = (Byte)m_DataStream.ReadByte();
-            isLittleEndian = (FITEndianness)endianness == FITEndianness.LittleEndian;
-
-            // Global message id
-            temp = new Byte[sizeof(UInt16)];
-            m_DataStream.Read(temp, 0, 2);
-
-            if (!isLittleEndian)
+            if (m_DataStream != null)
             {
-                Byte swapHolder = temp[0];
+                FITMessage definition = null;
+                Byte[] temp;
+                UInt16 globalMessageId = 0;
+                Byte recordHeader = 0;
+                Byte localDefinitionId = 0;
+                Byte endianness = 0;
+                Byte fieldCount = 0;
+                bool isLittleEndian = true;
 
-                temp[0] = temp[1];
-                temp[1] = swapHolder;
+                // Record header
+                recordHeader = (Byte)m_DataStream.ReadByte();
+                Debug.Assert(IsDefinitionHeaderByte(recordHeader));
+                localDefinitionId = (Byte)(recordHeader & 0xF);
+
+                // Skip reserved byte
+                m_DataStream.ReadByte();
+
+                // Architecture byte
+                endianness = (Byte)m_DataStream.ReadByte();
+                isLittleEndian = (FITEndianness)endianness == FITEndianness.LittleEndian;
+
+                // Global message id
+                temp = new Byte[sizeof(UInt16)];
+                m_DataStream.Read(temp, 0, 2);
+
+                if (!isLittleEndian)
+                {
+                    Byte swapHolder = temp[0];
+
+                    temp[0] = temp[1];
+                    temp[1] = swapHolder;
+                }
+                globalMessageId = BitConverter.ToUInt16(temp, 0);
+
+                // Field count
+                fieldCount = (Byte)m_DataStream.ReadByte();
+
+                try
+                {
+                    definition = new FITMessage((FITGlobalMessageIds)globalMessageId, isLittleEndian);
+                }
+                catch (Exception e)
+                {
+                    // Unsuported message type
+                    throw e;
+                }
+
+                // Read fields
+                for (int i = 0; i < fieldCount; ++i)
+                {
+                    Byte fieldId = 0;
+                    Byte fieldSize = 0;
+                    Byte fieldType = 0;
+
+                    fieldId = (Byte)m_DataStream.ReadByte();
+                    fieldSize = (Byte)m_DataStream.ReadByte();
+                    fieldType = (Byte)m_DataStream.ReadByte();
+
+                    definition.AddField(new FITMessageField(fieldId, fieldType, fieldSize));
+                }
+
+                // We might overwrite an old message, this is valid
+                m_MessageDefinitions[localDefinitionId] = definition;
             }
-            globalMessageId = BitConverter.ToUInt16(temp, 0);
-
-            // Field count
-            fieldCount = (Byte)m_DataStream.ReadByte();
-
-            try
-            {
-                definition = new FITMessage((FITGlobalMessageIds)globalMessageId, isLittleEndian);
-            }
-            catch(Exception e)
-            {
-                // Unsuported message type
-                throw e;
-            }
-
-            // Read fields
-            for (int i = 0; i < fieldCount; ++i)
-            {
-                Byte fieldId = 0;
-                Byte fieldSize = 0;
-                Byte fieldType = 0;
-
-                fieldId = (Byte)m_DataStream.ReadByte();
-                fieldSize = (Byte)m_DataStream.ReadByte();
-                fieldType = (Byte)m_DataStream.ReadByte();
-
-                definition.AddField(new FITMessageField(fieldId, fieldType, fieldSize));
-            }
-
-            // We might overwrite an old message, this is valid
-            m_MessageDefinitions[localDefinitionId] = definition;
         }
 
         private FITMessage ProcessDataMessage()
         {
-            Byte recordHeader;
-            Byte localMessageId;
-            FITMessage messageToDeserialize;
-
-            recordHeader = (Byte)m_DataStream.ReadByte();
-
-            if ((recordHeader & 0x80) == 0)
+            if (m_DataStream != null)
             {
-                // Normal header
-                localMessageId = (Byte)(recordHeader & 0x0F);
-            }
-            else
-            {
-                // Compressed header
-                localMessageId = (Byte)((recordHeader >> 5) & 0x03);
-            }
+                Byte recordHeader;
+                Byte localMessageId;
+                FITMessage messageToDeserialize;
 
-            if (m_MessageDefinitions.ContainsKey(localMessageId))
-            {
-                messageToDeserialize = m_MessageDefinitions[localMessageId];
+                recordHeader = (Byte)m_DataStream.ReadByte();
 
-                messageToDeserialize.DeserializeDataMessage(m_DataStream);
+                if ((recordHeader & 0x80) == 0)
+                {
+                    // Normal header
+                    localMessageId = (Byte)(recordHeader & 0x0F);
+                }
+                else
+                {
+                    // Compressed header
+                    localMessageId = (Byte)((recordHeader >> 5) & 0x03);
+                }
 
-                return messageToDeserialize;
+                if (m_MessageDefinitions.ContainsKey(localMessageId))
+                {
+                    messageToDeserialize = m_MessageDefinitions[localMessageId];
+
+                    messageToDeserialize.DeserializeDataMessage(m_DataStream);
+
+                    return messageToDeserialize;
+                }
             }
 
             return null;
@@ -223,64 +240,74 @@ namespace GarminFitnessPlugin.Controller
 
         private bool ValidateCRC(UInt16 fileCRC)
         {
-            m_DataStream.Seek(0, SeekOrigin.Begin);
+            if (m_DataStream != null)
+            {
+                m_DataStream.Seek(0, SeekOrigin.Begin);
 
-            UInt16 crc = FITUtils.ComputeStreamCRC(m_DataStream);
+                UInt16 crc = FITUtils.ComputeStreamCRC(m_DataStream);
 
-            Logger.Instance.LogText(String.Format("CRC expected = {0}, computed = {1}", fileCRC, crc));
+                Logger.Instance.LogText(String.Format("CRC expected = {0}, computed = {1}", fileCRC, crc));
 
-            return fileCRC == crc;
+                return fileCRC == crc;
+            }
+
+            return false;
         }
 
         private bool ValidateHeader()
         {
-            int headerSize;
-
-            m_DataStream.Seek(0, SeekOrigin.Begin);
-            headerSize = m_DataStream.ReadByte();
-
-            // Check header size
-            if (headerSize != 12 && headerSize  != 14)
+            if (m_DataStream != null)
             {
-                Logger.Instance.LogText("Bad Header size");
-                return false;
+                int headerSize;
+
+                m_DataStream.Seek(0, SeekOrigin.Begin);
+                headerSize = m_DataStream.ReadByte();
+
+                // Check header size
+                if (headerSize != 12 && headerSize != 14)
+                {
+                    Logger.Instance.LogText("Bad Header size");
+                    return false;
+                }
+
+                // Check version support
+                Byte versionByte = (Byte)m_DataStream.ReadByte();
+                if ((versionByte >> 4 & 0xF) > FITConstants.FITProfileMajorVersion)
+                {
+                    Logger.Instance.LogText("Bad version");
+                    return false;
+                }
+
+                // Skip profile version
+                m_DataStream.Seek(2, SeekOrigin.Current);
+
+                // Check data size
+                byte[] intBuffer = new byte[sizeof(UInt32)];
+                m_DataStream.Read(intBuffer, 0, sizeof(UInt32));
+                UInt32 dataSize = BitConverter.ToUInt32(intBuffer, 0);
+                if (dataSize + headerSize != m_DataStream.Length) // Include header & CRC bytes
+                {
+                    Logger.Instance.LogText("Bad data size");
+                    return false;
+                }
+
+                Byte[] FITDescription = new Byte[4];
+                m_DataStream.Read(FITDescription, 0, 4);
+                if (!Encoding.UTF8.GetString(FITDescription).Equals(FITConstants.FITFileDescriptor))
+                {
+                    Logger.Instance.LogText("Bad FIT descriptor");
+                    return false;
+                }
+
+                if (headerSize > 12)
+                {
+                    m_DataStream.Seek(headerSize - 12, SeekOrigin.Current);
+                }
+
+                return true;
             }
 
-            // Check version support
-            Byte versionByte = (Byte)m_DataStream.ReadByte();
-            if ((versionByte >> 4 & 0xF) > FITConstants.FITProfileMajorVersion)
-            {
-                Logger.Instance.LogText("Bad version");
-                return false;
-            }
-
-            // Skip profile version
-            m_DataStream.Seek(2, SeekOrigin.Current);
-
-            // Check data size
-            byte[] intBuffer = new byte[sizeof(UInt32)];
-            m_DataStream.Read(intBuffer, 0, sizeof(UInt32));
-            UInt32 dataSize = BitConverter.ToUInt32(intBuffer, 0);
-            if (dataSize + headerSize != m_DataStream.Length) // Include header & CRC bytes
-            {
-                Logger.Instance.LogText("Bad data size");
-                return false;
-            }
-
-            Byte[] FITDescription = new Byte[4];
-            m_DataStream.Read(FITDescription, 0, 4);
-            if (!Encoding.UTF8.GetString(FITDescription).Equals(FITConstants.FITFileDescriptor))
-            {
-                Logger.Instance.LogText("Bad FIT descriptor");
-                return false;
-            }
-
-            if (headerSize > 12)
-            {
-                m_DataStream.Seek(headerSize - 12, SeekOrigin.Current);
-            }
-
-            return true;
+            return false;
         }
 
         private bool IsDefinitionHeaderByte(Byte header)

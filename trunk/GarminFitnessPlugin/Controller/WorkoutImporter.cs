@@ -12,7 +12,7 @@ using GarminFitnessPlugin.Data;
 
 namespace GarminFitnessPlugin.Controller
 {
-    class WorkoutImporter
+    public class WorkoutImporter
     {
         public interface AsyncImportDelegate
         {
@@ -171,24 +171,14 @@ namespace GarminFitnessPlugin.Controller
                                     }
                                 case FITGlobalMessageIds.Workout:
                                     {
-                                        // Peek name
-                                        FITMessageField nameField = parsedMessage.GetField((Byte)FITWorkoutFieldIds.WorkoutName);
-
-                                        if (nameField != null &&
-                                            workoutId != UInt32.MaxValue)
+                                        // Make sure we have a valid file header
+                                        if (workoutId != UInt32.MaxValue)
                                         {
-                                            GarminFitnessView pluginView = PluginMain.GetApplication().ActiveView as GarminFitnessView;
-                                            GarminWorkoutControl workoutControl = pluginView.GetCurrentView() as GarminWorkoutControl;
-                                            IActivityCategory category = null;
-                                            String workoutName = nameField.GetString();
-
-                                            workoutControl.GetNewWorkoutNameAndCategory(ref workoutName, ref category);
-
-                                            return GarminWorkoutManager.Instance.CreateWorkout(workoutName, parsedMessage, category);
+                                            return ImportWorkoutFromMessage(parsedMessage);
                                         }
                                         else
                                         {
-                                            throw new FITParserException("No name or ID for workout");
+                                            throw new FITParserException("No ID for workout");
                                         }
                                     }
                                 default:
@@ -224,6 +214,39 @@ namespace GarminFitnessPlugin.Controller
             }
 
             return null;
+        }
+
+        public static Workout ImportWorkoutFromMessage(FITMessage workoutMessage)
+        {
+            return ImportWorkoutFromMessage(workoutMessage, null);
+        }
+
+        public static Workout ImportWorkoutFromMessage(FITMessage workoutMessage, IActivityCategory category)
+        {
+            // Peek name
+            FITMessageField nameField = workoutMessage.GetField((Byte)FITWorkoutFieldIds.WorkoutName);
+
+            if (nameField != null)
+            {
+                GarminFitnessView pluginView = PluginMain.GetApplication().ActiveView as GarminFitnessView;
+                String workoutName = nameField.GetString();
+
+                if (category == null && pluginView != null)
+                {
+                    GarminWorkoutControl workoutControl = pluginView.GetCurrentView() as GarminWorkoutControl;
+
+                    if (workoutControl != null)
+                    {
+                        workoutControl.GetNewWorkoutNameAndCategory(ref workoutName, ref category);
+                    }
+                }
+
+                return GarminWorkoutManager.Instance.CreateWorkout(workoutName, workoutMessage, category);
+            }
+            else
+            {
+                throw new FITParserException("No name for workout");
+            }
         }
 
         public static bool ImportSchedulesFromFIT(Stream importStream, Dictionary<UInt32, Workout> workoutIdMap)
@@ -264,18 +287,14 @@ namespace GarminFitnessPlugin.Controller
                                     }
                                 case FITGlobalMessageIds.WorkoutSchedules:
                                     {
-                                        // Make sure we have a workout file
                                         FITMessageField workoutId = parsedMessage.GetField((Byte)FITScheduleFieldIds.WorkoutId);
 
                                         if (workoutIdMap.ContainsKey(workoutId.GetUInt32()))
                                         {
-                                            FITMessageField scheduledDate = parsedMessage.GetField((Byte)FITScheduleFieldIds.ScheduledDate);
-                                            UInt32 secondsSinceReference = scheduledDate.GetUInt32();
-                                            DateTime scheduleDate = new DateTime(1989, 12, 31) + new TimeSpan(0, 0, (int)secondsSinceReference);
+                                            DateTime scheduleDate = ImportWorkoutScheduleMessage(parsedMessage);
 
                                             workoutIdMap[workoutId.GetUInt32()].ConcreteWorkout.ScheduleWorkout(scheduleDate);
                                         }
-
                                         break;
                                     }
                                 default:
@@ -315,6 +334,15 @@ namespace GarminFitnessPlugin.Controller
                 FITParser.Instance.Close();
                 return false;
             }
+        }
+
+        public static DateTime ImportWorkoutScheduleMessage(FITMessage scheduleMessage)
+        {
+            // Make sure we have a workout file
+            FITMessageField scheduledDate = scheduleMessage.GetField((Byte)FITScheduleFieldIds.ScheduledDate);
+            UInt32 secondsSinceReference = scheduledDate.GetUInt32();
+
+            return new DateTime(1989, 12, 31) + new TimeSpan(0, 0, (int)secondsSinceReference);
         }
 
         public static bool AsyncImportDirectory(string directory, AsyncImportDelegate completedDelegate)
